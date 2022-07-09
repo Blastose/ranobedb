@@ -15,7 +15,7 @@
 	<div class="flex-grow bg-[#fafafa]">
 		<Header {sidebarShow} {toggleSidebar} />
 
-		<main class="px-6 py-2">
+		<main class="container mx-auto px-4 py-2 duration-150">
 			<slot />
 		</main>
 	</div>
