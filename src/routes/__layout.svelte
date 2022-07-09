@@ -7,10 +7,10 @@
 <div class="flex">
 	<Sidebar />
 
-	<div class="flex-grow bg-slate-100">
+	<div class="flex-grow bg-[#fafafa]">
 		<Header />
 
-		<main>
+		<main class="px-6 py-2">
 			<slot />
 		</main>
 	</div>
