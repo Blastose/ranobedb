@@ -2,13 +2,18 @@
 	import '../app.css';
 	import Header from '$lib/header/Header.svelte';
 	import Sidebar from '$lib/sidebar/Sidebar.svelte';
+
+	let sidebarShow = true;
+	function toggleSidebar() {
+		sidebarShow = !sidebarShow;
+	}
 </script>
 
 <div class="flex">
-	<Sidebar />
+	<Sidebar {sidebarShow} {toggleSidebar} />
 
 	<div class="flex-grow bg-[#fafafa]">
-		<Header />
+		<Header {sidebarShow} {toggleSidebar} />
 
 		<main class="px-6 py-2">
 			<slot />
