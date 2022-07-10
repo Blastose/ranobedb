@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import SidebarItem from './SidebarItem.svelte';
 
 	export let sidebarShow = true;
@@ -15,7 +16,11 @@
 	{sidebarShow ? '' : '-ml-64'}"
 >
 	{#if sidebarShow && width <= 1000}
-		<div on:click={toggleSidebar} class="w-[200%] h-screen bg-gray-700 opacity-50 fixed z-9" />
+		<div
+			transition:fade={{ duration: 150 }}
+			on:click={toggleSidebar}
+			class="w-[200%] h-screen bg-gray-700 opacity-50 fixed"
+		/>
 	{/if}
 	<nav
 		class="overflow-y-scroll overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] drop-shadow-sm
