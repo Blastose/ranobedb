@@ -12,7 +12,8 @@
 	>
 		<div class="px-4 flex flex-col">
 			<button class="hover:bg-[#cdcedd] self-end px-4" on:click={toggleSidebar}>X</button>
-			<SidebarItem text={'Link1'} href={'/'} />
+			<SidebarItem text={'Home'} href={'/'} />
+			<SidebarItem text={'Log in'} href={'/login'} />
 			<SidebarItem text={'Link1'} href={'/a'} />
 			<SidebarItem text={'Link1'} href={'/b'} />
 			<SidebarItem text={'Link1'} href={'/c'} />
