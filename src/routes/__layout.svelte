@@ -9,6 +9,8 @@
 	}
 </script>
 
+<svelte:head><title>Light Novel DB</title></svelte:head>
+
 <div class="flex">
 	<Sidebar {sidebarShow} {toggleSidebar} />
 
