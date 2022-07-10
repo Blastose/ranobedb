@@ -3,9 +3,20 @@
 
 	export let sidebarShow = true;
 	export let toggleSidebar: () => void;
+	let width: number = 1000;
 </script>
 
-<div class="duration-150 ease-in-out {sidebarShow ? '' : '-ml-64'} ">
+<svelte:window bind:innerWidth={width} />
+
+<div
+	class="duration-150 ease-in-out     
+	{width <= 1000 ? 'fixed z-10 flex' : ''}
+	{width <= 1000 && sidebarShow ? 'w-full' : ''}
+	{sidebarShow ? '' : '-ml-64'}"
+>
+	{#if sidebarShow && width <= 1000}
+		<div on:click={toggleSidebar} class="w-[200%] h-screen bg-gray-700 opacity-50 fixed z-9" />
+	{/if}
 	<nav
 		class="overflow-y-scroll overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] drop-shadow-sm
     "
