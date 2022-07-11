@@ -3,13 +3,22 @@
 	import SidebarItem from './SidebarItem.svelte';
 	import { sidebarOpen } from '$lib/sidebarStore';
 	import { windowWidth } from '$lib/windowWidthStore';
+	import { onMount } from 'svelte';
 
 	let toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
 	};
-</script>
 
-<svelte:window bind:innerWidth={$windowWidth} />
+	$: if ($windowWidth <= 1000) {
+		sidebarOpen.set(false);
+	}
+
+	onMount(() => {
+		if ($windowWidth > 1000) {
+			sidebarOpen.set(true);
+		}
+	});
+</script>
 
 <div
 	class="duration-150 ease-in-out     
