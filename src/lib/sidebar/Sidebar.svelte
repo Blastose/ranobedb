@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import SidebarItem from './SidebarItem.svelte';
+	import { sidebarOpen } from '$lib/sidebarStore';
 
-	export let sidebarShow = true;
-	export let toggleSidebar: () => void;
-	let width: number = 1000;
+	let toggleSidebar = () => {
+		sidebarOpen.update((status) => !status);
+	};
+	let width: number = 2000;
 </script>
 
 <svelte:window bind:innerWidth={width} />
@@ -12,10 +14,10 @@
 <div
 	class="duration-150 ease-in-out     
 	{width <= 1000 ? 'fixed z-10 flex' : ''}
-	{width <= 1000 && sidebarShow ? 'w-full' : ''}
-	{sidebarShow ? '' : '-ml-64'}"
+	{width <= 1000 && $sidebarOpen ? 'w-full' : ''}
+	{$sidebarOpen ? '' : '-ml-64'}"
 >
-	{#if sidebarShow && width <= 1000}
+	{#if $sidebarOpen && width <= 1000}
 		<div
 			transition:fade={{ duration: 150 }}
 			on:click={toggleSidebar}
