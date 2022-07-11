@@ -2,15 +2,19 @@
 	import '../app.css';
 	import Header from '$lib/header/Header.svelte';
 	import Sidebar from '$lib/sidebar/Sidebar.svelte';
+	import { sidebarOpen } from '$lib/sidebarStore';
+	import { windowWidth } from '$lib/windowWidthStore';
 
-	let width: number = 1000;
+	$: if ($windowWidth <= 1000) {
+		sidebarOpen.set(false);
+	}
 </script>
 
 <svelte:head><title>Light Novel DB</title></svelte:head>
-<svelte:window bind:innerWidth={width} />
+<svelte:window bind:innerWidth={$windowWidth} />
 
 <!-- Need to put h-screen into conditional since it messes up the layout for some reason -->
-<div class="flex {width >= 1000 ? '' : 'h-screen'}">
+<div class="flex {$windowWidth <= 1000 ? 'h-screen' : ''}">
 	<Sidebar />
 
 	<div class="flex-grow bg-[#fafafa]">
