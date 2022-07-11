@@ -26,7 +26,7 @@
 						type="email"
 						id="email"
 						placeholder="example@example.com"
-						class="bg-gray-200 px-3 py-2 rounded-md drop-shadow-sm"
+						class="bg-gray-200 px-3 py-2 rounded-md"
 						bind:value={email}
 					/>
 				</div>
@@ -35,7 +35,7 @@
 					<input
 						type="password"
 						id="password"
-						class="bg-gray-200 px-4 py-2 rounded-md drop-shadow-sm"
+						class="bg-gray-200 px-4 py-2 rounded-md"
 						bind:value={password}
 					/>
 				</div>
