@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { sidebarOpen } from '$lib/sidebarStore';
 
 	export let text = '';
 	export let href = '';
@@ -10,7 +11,7 @@
 		? 'bg-blue-200 hover:bg-blue-300'
 		: ''} rounded-md duration-75"
 >
-	<a {href}>
+	<a {href} tabindex={$sidebarOpen ? 0 : -1}>
 		<div class="px-4 py-1">
 			<span>{text}</span>
 		</div>
