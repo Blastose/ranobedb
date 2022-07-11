@@ -4,10 +4,17 @@
 	import Sidebar from '$lib/sidebar/Sidebar.svelte';
 	import { sidebarOpen } from '$lib/sidebarStore';
 	import { windowWidth } from '$lib/windowWidthStore';
+	import { onMount } from 'svelte';
 
 	$: if ($windowWidth <= 1000) {
 		sidebarOpen.set(false);
 	}
+
+	onMount(() => {
+		if ($windowWidth > 1000) {
+			sidebarOpen.set(true);
+		}
+	});
 </script>
 
 <svelte:head><title>Light Novel DB</title></svelte:head>
