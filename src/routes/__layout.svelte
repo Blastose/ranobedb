@@ -22,8 +22,7 @@
 {#if initialLoad}
 	<div class="flex bg-[#fafafa]" />
 {:else}
-	<!-- Need to put h-screen into conditional since it messes up the layout for some reason -->
-	<div class="flex {$windowWidth <= 1000 ? 'h-screen' : ''}">
+	<div class="flex">
 		<Sidebar />
 
 		<div class="flex-grow bg-[#fafafa]">
