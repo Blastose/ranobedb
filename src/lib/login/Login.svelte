@@ -1,16 +1,27 @@
 <script lang="ts">
 	import { supabase } from '$lib/supabaseClient.js';
+	import { goto } from '$app/navigation';
 
 	let email = '';
 	let password = '';
 
 	const login = async () => {
 		try {
-			const { error } = await supabase.auth.signIn({ email });
+			const { error } = await supabase.auth.signIn({ email, password });
 			if (error) throw error;
+			goto('/');
 		} catch (error: any) {
 			console.log(error);
 		} finally {
+		}
+	};
+
+	const setPassword = async () => {
+		try {
+			const { error } = await supabase.auth.update({ password });
+			if (error) throw error;
+		} catch (error: any) {
+			console.error(error);
 		}
 	};
 </script>
@@ -48,5 +59,12 @@
 				</div>
 			</div>
 		</form>
+		<button
+			disabled={true}
+			class="w-full text-white bg-blue-500 hover:bg-blue-600 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm"
+			on:click={setPassword}
+		>
+			<span>Set Password</span>
+		</button>
 	</div>
 </div>

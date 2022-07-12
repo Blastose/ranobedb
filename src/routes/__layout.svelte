@@ -4,9 +4,21 @@
 	import Sidebar from '$lib/sidebar/Sidebar.svelte';
 	import { windowWidth } from '$lib/windowWidthStore';
 	import { onMount } from 'svelte';
+	import { supabase } from '$lib/supabaseClient';
 	import { sidebarOpen } from '$lib/sidebarStore';
+	import { user } from '$lib/sessionStore';
 
 	let initialLoad = true;
+
+	user.set(supabase.auth.user());
+
+	supabase.auth.onAuthStateChange((_, session) => {
+		if (session) {
+			user.set(session.user);
+		} else {
+			user.set(null);
+		}
+	});
 
 	onMount(() => {
 		if ($windowWidth <= 1000) {
