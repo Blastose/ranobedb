@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { sidebarOpen } from '$lib/sidebarStore';
+	import { user } from '$lib/sessionStore';
 
-	let toggleSidebar = () => {
+	const toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
 	};
 </script>
@@ -12,5 +13,8 @@
 			<button on:click={toggleSidebar}><span class="text-2xl">=</span></button>
 		{/if}
 		<span class="text-2xl font-bold">Header</span>
+		{#if $user}
+			<span>{$user.id}</span>
+		{/if}
 	</div>
 </header>

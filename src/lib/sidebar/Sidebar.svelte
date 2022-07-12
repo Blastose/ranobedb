@@ -41,8 +41,8 @@
 			<button class="hover:bg-[#cdcedd] self-end px-4" on:click={toggleSidebar}>X</button>
 			<SidebarItem text={'Home'} href={'/'} />
 			<SidebarItem text={'Log in'} href={'/login'} />
-			<SidebarItem text={'Link1'} href={'/a'} />
-			<SidebarItem text={'Link1'} href={'/b'} />
+			<SidebarItem text={'Sign up'} href={'/signup'} />
+			<SidebarItem text={'Books'} href={'/books'} />
 			<SidebarItem text={'Link1'} href={'/c'} />
 			<SidebarItem text={'Link1'} href={'/d'} />
 		</div>

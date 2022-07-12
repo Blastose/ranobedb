@@ -1,37 +1,40 @@
 <script lang="ts">
 	import { supabase } from '$lib/supabaseClient.js';
-	import { goto } from '$app/navigation';
 	import FormInput from '$lib/forms/FormInput.svelte';
 
+	let username = '';
 	let email = '';
 	let password = '';
 
-	const login = async () => {
+	const signUp = async () => {
 		try {
-			const { error } = await supabase.auth.signIn({ email, password });
+			const { error } = await supabase.auth.signUp({ email, password }, { data: { username } });
 			if (error) throw error;
-			goto('/');
 		} catch (error: any) {
 			console.log(error);
 		} finally {
-		}
-	};
-
-	const setPassword = async () => {
-		try {
-			const { error } = await supabase.auth.update({ password });
-			if (error) throw error;
-		} catch (error: any) {
-			console.error(error);
 		}
 	};
 </script>
 
 <div class="max-w-xl mx-auto">
 	<div class="flex flex-col gap-4">
-		<h1 class="text-2xl font-bold">Log In</h1>
-		<form on:submit|preventDefault={login}>
-			<div class="flex flex-col gap-3">
+		<h1 class="text-2xl font-bold">Sign up</h1>
+		<form on:submit|preventDefault={signUp}>
+			<div class="flex flex-col gap-4">
+				<div class="flex flex-col">
+					<span class="text-sm"
+						>Your username does not have to be unique and will not be used for logging in.</span
+					>
+					<FormInput
+						bind:value={username}
+						type="text"
+						id="username"
+						labelName="Username"
+						placeholder="Username"
+						required={true}
+					/>
+				</div>
 				<FormInput
 					bind:value={email}
 					type="email"
@@ -51,18 +54,11 @@
 				<div class="flex">
 					<input
 						type="submit"
-						value="Log In"
+						value="Sign up"
 						class="w-full text-white bg-blue-500 hover:bg-blue-600 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm"
 					/>
 				</div>
 			</div>
 		</form>
-		<button
-			disabled={true}
-			class="w-full text-white bg-blue-500 hover:bg-blue-600 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm"
-			on:click={setPassword}
-		>
-			<span>Set Password</span>
-		</button>
 	</div>
 </div>
