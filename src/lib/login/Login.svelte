@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { supabase } from '$lib/supabaseClient.js';
 	import { goto } from '$app/navigation';
+	import FormInput from '$lib/forms/FormInput.svelte';
 
 	let email = '';
 	let password = '';
@@ -31,25 +32,22 @@
 		<h1 class="text-2xl font-bold">Log In</h1>
 		<form on:submit|preventDefault={login}>
 			<div class="flex flex-col gap-3">
-				<div class="flex flex-col gap-1">
-					<label for="email">Email *</label>
-					<input
-						type="email"
-						id="email"
-						placeholder="example@example.com"
-						class="bg-gray-200 px-3 py-2 rounded-md"
-						bind:value={email}
-					/>
-				</div>
-				<div class="flex flex-col gap-1">
-					<label for="password">Password *</label>
-					<input
-						type="password"
-						id="password"
-						class="bg-gray-200 px-4 py-2 rounded-md"
-						bind:value={password}
-					/>
-				</div>
+				<FormInput
+					bind:value={email}
+					type="email"
+					id="email"
+					labelName="Email"
+					placeholder="example@example.com"
+					required={true}
+				/>
+				<FormInput
+					bind:value={password}
+					type="password"
+					id="password"
+					labelName="Password"
+					placeholder=""
+					required={true}
+				/>
 				<div class="flex">
 					<input
 						type="submit"
