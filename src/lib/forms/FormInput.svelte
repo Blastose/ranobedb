@@ -1,0 +1,29 @@
+<script lang="ts">
+	export let type = 'text';
+	export let value: any;
+	export let labelName = '';
+	export let id = '';
+	export let placeholder = '';
+	export let required = false;
+
+	function typeAction(node: any) {
+		node.type = type;
+	}
+</script>
+
+<div class="flex flex-col gap-1">
+	<label for={id}>
+		<span>{labelName}</span>
+		{#if required}
+			<span class="text-red-600">*</span>
+		{/if}
+	</label>
+	<input
+		use:typeAction
+		{required}
+		{id}
+		{placeholder}
+		class="bg-gray-200 px-3 py-2 rounded-md"
+		bind:value
+	/>
+</div>
