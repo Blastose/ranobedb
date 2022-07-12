@@ -33,8 +33,6 @@
 	onMount(getBook);
 </script>
 
-<!-- TODO Don't commit!!!! -->
-
 <svelte:head>
 	{#if book}
 		<title>{book.title}</title>

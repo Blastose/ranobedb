@@ -32,5 +32,3 @@
 {:else}
 	<div><span>Loading</span></div>
 {/if}
-
-<!-- TODO Don't commit!!!! -->
