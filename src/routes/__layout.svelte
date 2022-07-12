@@ -7,22 +7,42 @@
 	import { supabase } from '$lib/supabaseClient';
 	import { sidebarOpen } from '$lib/sidebarStore';
 	import { user } from '$lib/sessionStore';
+	import { reader } from '$lib/readerStore';
 
 	let initialLoad = true;
 
-	user.set(supabase.auth.user());
-
-	supabase.auth.onAuthStateChange((_, session) => {
+	supabase.auth.onAuthStateChange(async (_, session) => {
 		if (session) {
 			user.set(session.user);
+			reader.set(await getReader(session.user!.id));
 		} else {
 			user.set(null);
+			reader.set(null);
 		}
 	});
 
-	onMount(() => {
+	const getReader = async (id: string) => {
+		try {
+			let { data, error, status } = await supabase
+				.from('reader')
+				.select('*')
+				.eq('auth_id', id)
+				.single();
+			if (error) throw error;
+			return data;
+		} catch (error: any) {
+			console.error(error);
+			return null;
+		}
+	};
+
+	onMount(async () => {
 		if ($windowWidth <= 1000) {
 			sidebarOpen.set(false);
+		}
+		user.set(supabase.auth.user());
+		if ($user) {
+			reader.set(await getReader($user!.id));
 		}
 		initialLoad = false;
 	});
