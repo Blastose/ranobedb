@@ -52,17 +52,10 @@
 					<input
 						type="submit"
 						value="Log In"
-						class="w-full text-white bg-blue-500 hover:bg-blue-600 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm"
+						class="w-full text-white bg-blue-500 hover:bg-blue-600 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-blue-400"
 					/>
 				</div>
 			</div>
 		</form>
-		<button
-			disabled={true}
-			class="w-full text-white bg-blue-500 hover:bg-blue-600 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm"
-			on:click={setPassword}
-		>
-			<span>Set Password</span>
-		</button>
 	</div>
 </div>

@@ -23,7 +23,7 @@
 		{required}
 		{id}
 		{placeholder}
-		class="bg-gray-200 px-3 py-2 rounded-md"
+		class="bg-gray-200 px-3 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-400"
 		bind:value
 	/>
 </div>
