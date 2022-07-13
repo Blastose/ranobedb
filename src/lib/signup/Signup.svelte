@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabaseClient.js';
+	import { supabase } from '$lib/supabaseClient';
 	import FormInput from '$lib/forms/FormInput.svelte';
 
 	let username = '';
