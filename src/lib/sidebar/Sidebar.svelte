@@ -38,7 +38,11 @@
     "
 	>
 		<div class="px-4 flex flex-col">
-			<button class="hover:bg-[#cdcedd] self-end px-4" on:click={toggleSidebar}>X</button>
+			<button
+				class="hover:bg-[#cdcedd] self-end px-4"
+				tabindex={$sidebarOpen ? 0 : -1}
+				on:click={toggleSidebar}>X</button
+			>
 			<SidebarItem text={'Home'} href={'/'} />
 			<SidebarItem text={'Log in'} href={'/login'} />
 			<SidebarItem text={'Sign up'} href={'/signup'} />
