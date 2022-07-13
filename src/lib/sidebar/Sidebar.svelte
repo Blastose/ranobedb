@@ -9,6 +9,7 @@
 	import DatabaseIcon from '$lib/svg/DatabaseIcon.svelte';
 	import HomeIcon from '$lib/svg/HomeIcon.svelte';
 	import CloseIcon from '$lib/svg/CloseIcon.svelte';
+	import { reader } from '$lib/readerStore';
 
 	let toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
@@ -54,11 +55,16 @@
 			</SidebarHeading>
 
 			<div>
-				<SidebarHeading text="User">
+				<SidebarHeading text={$reader ? $reader.reader_name : 'User'}>
 					<ProfileIcon />
 				</SidebarHeading>
-				<SidebarItem text={'Log in'} href={'/login'} />
-				<SidebarItem text={'Sign up'} href={'/signup'} />
+				{#if $reader}
+					<SidebarItem text={'My List'} href={'/my-list'} />
+					<SidebarItem text={'My Profile'} href={'/profile'} />
+				{:else}
+					<SidebarItem text={'Log in'} href={'/login'} />
+					<SidebarItem text={'Sign up'} href={'/signup'} />
+				{/if}
 			</div>
 
 			<div>
