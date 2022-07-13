@@ -7,8 +7,6 @@
 	export let href = '';
 </script>
 
-<svelte:window bind:innerWidth={$windowWidth} />
-
 <div
 	class="hover:bg-[#cdcedd] {$page.url.pathname === href
 		? 'bg-blue-200 hover:bg-blue-300'
