@@ -10,14 +10,25 @@
 	import HomeIcon from '$lib/svg/HomeIcon.svelte';
 	import CloseIcon from '$lib/svg/CloseIcon.svelte';
 	import { reader } from '$lib/readerStore';
+	import SidebarButton from './SidebarButton.svelte';
+	import { supabase } from '$lib/supabaseClient';
 
-	let toggleSidebar = () => {
+	const toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
 	};
 
 	$: if ($windowWidth <= 1000) {
 		sidebarOpen.set(false);
 	}
+
+	const signOut = async () => {
+		try {
+			const { error } = await supabase.auth.signOut();
+			if (error) throw error;
+		} catch (error: any) {
+			console.error(error);
+		}
+	};
 
 	onMount(() => {
 		if ($windowWidth > 1000) {
@@ -61,6 +72,7 @@
 				{#if $reader}
 					<SidebarItem text={'My List'} href={'/my-list'} />
 					<SidebarItem text={'My Profile'} href={'/profile'} />
+					<SidebarButton text={'Sign out'} onClickFunction={signOut} />
 				{:else}
 					<SidebarItem text={'Log in'} href={'/login'} />
 					<SidebarItem text={'Sign up'} href={'/signup'} />
