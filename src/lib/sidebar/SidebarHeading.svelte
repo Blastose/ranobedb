@@ -5,6 +5,7 @@
 
 	export let text = '';
 	export let href: string | null = null;
+	export let highlight = true;
 </script>
 
 <!-- A bit of repetition here, maybe better way to simplify -->
@@ -15,7 +16,7 @@
 	</div>
 {:else}
 	<div
-		class="hover:bg-[#cdcedd] {$page.url.pathname === href
+		class="hover:bg-[#cdcedd] {highlight && $page.url.pathname === href
 			? 'bg-blue-200 hover:bg-blue-300'
 			: 'active:bg-[#a5a6b8]'} rounded-md duration-75"
 	>

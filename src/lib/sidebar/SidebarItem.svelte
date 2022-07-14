@@ -5,10 +5,11 @@
 
 	export let text = '';
 	export let href = '';
+	export let highlight = true;
 </script>
 
 <div
-	class="hover:bg-[#cdcedd] {$page.url.pathname === href
+	class="hover:bg-[#cdcedd] {highlight && $page.url.pathname === href
 		? 'bg-blue-200 hover:bg-blue-300'
 		: 'active:bg-[#a5a6b8]'} rounded-md duration-75"
 >

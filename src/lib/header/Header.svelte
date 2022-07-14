@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { sidebarOpen } from '$lib/sidebarStore';
-	import { user } from '$lib/sessionStore';
+	import ProfileCircle from './ProfileCircle.svelte';
 	import { reader } from '$lib/readerStore';
 	import MenuIcon from '$lib/svg/MenuIcon.svelte';
 
@@ -23,9 +23,7 @@
 				{/if}
 				<span class="text-2xl font-bold">Header</span>
 			</div>
-			{#if $reader}
-				<span>{$reader.reader_name}</span>
-			{/if}
+			<ProfileCircle />
 		</div>
 	</div>
 </header>
