@@ -6,9 +6,9 @@
 	export let onClickFunction = () => {};
 </script>
 
-<div class="hover:bg-[#cdcedd] rounded-md duration-75">
+<div class="hover:bg-[#cdcedd] active:bg-[#a5a6b8] rounded-md duration-75">
 	<button
-		class="w-full hover:bg-[#cdcedd] rounded-md duration-75 text-left"
+		class="w-full text-left"
 		tabindex={$sidebarOpen ? 0 : -1}
 		on:click={() => {
 			onClickFunction();

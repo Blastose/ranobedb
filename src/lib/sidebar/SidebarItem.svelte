@@ -10,7 +10,7 @@
 <div
 	class="hover:bg-[#cdcedd] {$page.url.pathname === href
 		? 'bg-blue-200 hover:bg-blue-300'
-		: ''} rounded-md duration-75"
+		: 'active:bg-[#a5a6b8]'} rounded-md duration-75"
 >
 	<a
 		{href}
