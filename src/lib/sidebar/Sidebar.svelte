@@ -17,6 +17,12 @@
 		sidebarOpen.update((status) => !status);
 	};
 
+	const hideSidebar = () => {
+		if ($windowWidth <= 1000) {
+			sidebarOpen.set(false);
+		}
+	};
+
 	$: if ($windowWidth <= 1000) {
 		sidebarOpen.set(false);
 	}
@@ -61,32 +67,38 @@
 				on:click={toggleSidebar}><CloseIcon /></button
 			>
 
-			<SidebarHeading text={'Home'} href={'/'}>
+			<SidebarHeading text={'Home'} href={'/'} onClickFunction={hideSidebar}>
 				<HomeIcon />
 			</SidebarHeading>
 
 			<div>
-				<SidebarHeading text={$reader ? $reader.reader_name : 'User'}>
+				<SidebarHeading text={$reader ? $reader.reader_name : 'User'} onClickFunction={hideSidebar}>
 					<ProfileIcon />
 				</SidebarHeading>
 				{#if $reader}
-					<SidebarItem text={'My List'} href={'/my-list'} />
-					<SidebarItem text={'My Profile'} href={'/profile'} />
-					<SidebarButton text={'Sign out'} onClickFunction={signOut} />
+					<SidebarItem text={'My List'} href={'/my-list'} onClickFunction={hideSidebar} />
+					<SidebarItem text={'My Profile'} href={'/profile'} onClickFunction={hideSidebar} />
+					<SidebarButton
+						text={'Sign out'}
+						onClickFunction={() => {
+							signOut();
+							hideSidebar();
+						}}
+					/>
 				{:else}
-					<SidebarItem text={'Log in'} href={'/login'} />
-					<SidebarItem text={'Sign up'} href={'/signup'} />
+					<SidebarItem text={'Log in'} href={'/login'} onClickFunction={hideSidebar} />
+					<SidebarItem text={'Sign up'} href={'/signup'} onClickFunction={hideSidebar} />
 				{/if}
 			</div>
 
 			<div>
-				<SidebarHeading text="Database">
+				<SidebarHeading text="Database" onClickFunction={hideSidebar}>
 					<DatabaseIcon />
 				</SidebarHeading>
-				<SidebarItem text={'Books'} href={'/books'} />
-				<SidebarItem text={'Series'} href={'/series'} />
-				<SidebarItem text={'People'} href={'/people'} />
-				<SidebarItem text={'Publishers'} href={'/publishers'} />
+				<SidebarItem text={'Books'} href={'/books'} onClickFunction={hideSidebar} />
+				<SidebarItem text={'Series'} href={'/series'} onClickFunction={hideSidebar} />
+				<SidebarItem text={'People'} href={'/people'} onClickFunction={hideSidebar} />
+				<SidebarItem text={'Publishers'} href={'/publishers'} onClickFunction={hideSidebar} />
 			</div>
 		</div>
 	</nav>
