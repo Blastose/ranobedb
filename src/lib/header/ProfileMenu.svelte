@@ -16,6 +16,10 @@
 			console.error(error);
 		}
 	};
+
+	const hideProfileMenu = () => {
+		$profileMenuOpen = false;
+	};
 </script>
 
 <ul
@@ -24,11 +28,37 @@
 	on:outclick={() => ($profileMenuOpen = false)}
 >
 	{#if $reader}
-		<SidebarItem text={'My List'} href={'/my-list'} highlight={false} />
-		<SidebarItem text={'My Profile'} href={'/profile'} highlight={false} />
-		<SidebarButton text={'Sign out'} onClickFunction={signOut} />
+		<SidebarItem
+			text={'My List'}
+			href={'/my-list'}
+			highlight={false}
+			onClickFunction={hideProfileMenu}
+		/>
+		<SidebarItem
+			text={'My Profile'}
+			href={'/profile'}
+			highlight={false}
+			onClickFunction={hideProfileMenu}
+		/>
+		<SidebarButton
+			text={'Sign out'}
+			onClickFunction={() => {
+				signOut();
+				hideProfileMenu();
+			}}
+		/>
 	{:else}
-		<SidebarItem text={'Log in'} href={'/login'} highlight={false} />
-		<SidebarItem text={'Sign up'} href={'/signup'} highlight={false} />
+		<SidebarItem
+			text={'Log in'}
+			href={'/login'}
+			highlight={false}
+			onClickFunction={hideProfileMenu}
+		/>
+		<SidebarItem
+			text={'Sign up'}
+			href={'/signup'}
+			highlight={false}
+			onClickFunction={hideProfileMenu}
+		/>
 	{/if}
 </ul>
