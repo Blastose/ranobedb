@@ -17,7 +17,7 @@
 {:else}
 	<div
 		class="hover:bg-[#cdcedd] {highlight && $page.url.pathname === href
-			? 'bg-blue-200 hover:bg-blue-300'
+			? 'bg-[#73739C] hover:bg-[#474963] text-white'
 			: 'active:bg-[#a5a6b8]'} rounded-md duration-75"
 	>
 		<a {href} tabindex={$sidebarOpen ? 0 : -1} on:click={onClickFunction}>

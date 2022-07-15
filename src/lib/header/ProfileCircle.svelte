@@ -14,7 +14,7 @@
 			$profileMenuOpen = !$profileMenuOpen;
 		}}
 		class="rounded-full flex items-center justify-center {$reader
-			? 'bg-blue-400 w-12 h-12'
+			? 'bg-[#73739C] w-12 h-12'
 			: 'p-3 bg-gray-300'} text-white"
 	>
 		{#if $reader}

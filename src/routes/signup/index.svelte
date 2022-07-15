@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Signup from '$lib/signup/Signup.svelte';
-	import { user } from '$lib/sessionStore';
+	import { user } from '$lib/stores/sessionStore';
 </script>
 
 {#if !$user}

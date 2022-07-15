@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Login from '$lib/login/Login.svelte';
-	import { user } from '$lib/sessionStore';
+	import { user } from '$lib/stores/sessionStore';
 </script>
 
 {#if !$user}
