@@ -1,8 +1,8 @@
 <script lang="ts">
 	import ProfileIcon from '$lib/svg/ProfileIcon.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
-	import { reader } from '$lib/readerStore';
-	import { profileMenuOpen } from '$lib/profileMenuStore';
+	import { reader } from '$lib/stores/readerStore';
+	import { profileMenuOpen } from '$lib/stores/profileMenuStore';
 
 	let profileButton;
 </script>

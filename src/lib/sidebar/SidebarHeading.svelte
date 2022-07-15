@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { sidebarOpen } from '$lib/sidebarStore';
+	import { sidebarOpen } from '$lib/stores/sidebarStore';
 
 	export let text = '';
 	export let href: string | null = null;

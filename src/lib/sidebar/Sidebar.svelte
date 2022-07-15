@@ -2,14 +2,14 @@
 	import { fade } from 'svelte/transition';
 	import SidebarItem from './SidebarItem.svelte';
 	import SidebarHeading from './SidebarHeading.svelte';
-	import { sidebarOpen } from '$lib/sidebarStore';
-	import { windowWidth } from '$lib/windowWidthStore';
+	import { sidebarOpen } from '$lib/stores/sidebarStore';
+	import { windowWidth } from '$lib/stores/windowWidthStore';
 	import { onMount } from 'svelte';
 	import ProfileIcon from '$lib/svg/ProfileIcon.svelte';
 	import DatabaseIcon from '$lib/svg/DatabaseIcon.svelte';
 	import HomeIcon from '$lib/svg/HomeIcon.svelte';
 	import CloseIcon from '$lib/svg/CloseIcon.svelte';
-	import { reader } from '$lib/readerStore';
+	import { reader } from '$lib/stores/readerStore';
 	import SidebarButton from './SidebarButton.svelte';
 	import { supabase } from '$lib/supabaseClient';
 

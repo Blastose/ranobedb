@@ -2,12 +2,12 @@
 	import '../app.css';
 	import Header from '$lib/header/Header.svelte';
 	import Sidebar from '$lib/sidebar/Sidebar.svelte';
-	import { windowWidth } from '$lib/windowWidthStore';
+	import { windowWidth } from '$lib/stores/windowWidthStore';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient';
-	import { sidebarOpen } from '$lib/sidebarStore';
-	import { user } from '$lib/sessionStore';
-	import { reader } from '$lib/readerStore';
+	import { sidebarOpen } from '$lib/stores/sidebarStore';
+	import { user } from '$lib/stores/sessionStore';
+	import { reader } from '$lib/stores/readerStore';
 
 	let initialLoad = true;
 

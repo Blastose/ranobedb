@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { reader } from '$lib/readerStore';
+	import { reader } from '$lib/stores/readerStore';
 	import SidebarItem from '$lib/sidebar/SidebarItem.svelte';
 	import SidebarButton from '$lib/sidebar/SidebarButton.svelte';
 	import { supabase } from '$lib/supabaseClient';
 	import { clickOutside } from '$lib/clickOutside';
-	import { profileMenuOpen } from '$lib/profileMenuStore';
+	import { profileMenuOpen } from '$lib/stores/profileMenuStore';
 
 	export let toggleButton: Node | null = null;
 
