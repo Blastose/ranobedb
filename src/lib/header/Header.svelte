@@ -21,7 +21,7 @@
 						<span class="text-2xl"><MenuIcon /></span>
 					</button>
 				{/if}
-				<span class="text-2xl font-bold">Header</span>
+				<span class="text-2xl font-bold">Light Novel DB</span>
 			</div>
 			<ProfileCircle />
 		</div>
