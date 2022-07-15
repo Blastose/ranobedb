@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { sidebarOpen } from '$lib/sidebarStore';
+	import { sidebarOpen } from '$lib/stores/sidebarStore';
 	import ProfileCircle from './ProfileCircle.svelte';
-	import { reader } from '$lib/readerStore';
+	import { reader } from '$lib/stores/readerStore';
 	import MenuIcon from '$lib/svg/MenuIcon.svelte';
 
 	const toggleSidebar = () => {

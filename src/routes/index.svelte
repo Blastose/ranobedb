@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabaseClient';
-	import { user } from '$lib/sessionStore';
 </script>
 
 <h1 class="text-2xl text-sky-600">Welcome to SvelteKit</h1>

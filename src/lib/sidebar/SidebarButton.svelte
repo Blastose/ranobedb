@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { sidebarOpen } from '$lib/sidebarStore';
+	import { sidebarOpen } from '$lib/stores/sidebarStore';
 
 	export let text = '';
 	export let onClickFunction: () => void = () => {};
