@@ -20,7 +20,7 @@
 				}
 			}
 
-			let { publicURL, error: error2 } = await supabase.storage
+			let { publicURL, error: error2 } = supabase.storage
 				.from('cover-images')
 				.getPublicUrl(`${book.cover_image_file_name}.jpg`);
 			if (error2) throw error2;
