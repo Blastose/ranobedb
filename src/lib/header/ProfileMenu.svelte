@@ -23,11 +23,16 @@
 </script>
 
 <ul
-	class="absolute left-auto right-0 w-48 rounded-md mt-1 bg-[#e4e7ee]"
+	class="absolute left-auto right-0 w-60 rounded-md px-2 py-2 mt-2 drop-shadow-md outline outline-[#dddfe7] outline-1 bg-[#e4e7ee]"
 	use:clickOutside={toggleButton}
 	on:outclick={() => ($profileMenuOpen = false)}
 >
 	{#if $reader}
+		<li class="text-center py-2">
+			<a href="/profile">
+				<span class="font-bold text-lg">{$reader.reader_name}</span>
+			</a>
+		</li>
 		<SidebarItem
 			text={'My List'}
 			href={'/my-list'}
