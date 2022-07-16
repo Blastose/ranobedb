@@ -17,13 +17,15 @@
 	onMount(getCover);
 </script>
 
-<div class="bg-[#e4e7ee] p-2 rounded-sm grid grid-cols-[150px_1fr] gap-x-2">
+<div
+	class="bg-[#e4e7ee] p-2 rounded-sm grid grid-cols-[1fr_60%] md:grid-cols-[150px_1fr] gap-x-2 shadow-sm"
+>
 	<div class="row-span-2">
 		<a href="/book/{book.id}">
-			<img class="shadow-sm" src={coverUrl} alt="Cover image for {book.title}" />
+			<img class="shadow-sm rounded-sm" src={coverUrl} alt="Cover image for {book.title}" />
 		</a>
 	</div>
-	<div class="grid grid-rows-[min_1fr] gap-2">
+	<div class="flex flex-col gap-2">
 		<a href="/book/{book.id}">
 			<span class="font-bold text-xl">{book.title}</span>
 		</a>
