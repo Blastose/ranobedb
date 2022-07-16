@@ -2,6 +2,7 @@
 	import BookCard from '$lib/book/BookCard.svelte';
 	import { supabase } from '$lib/supabaseClient';
 	import { onMount } from 'svelte';
+	import LoadingIcon from '$lib/svg/LoadingIcon.svelte';
 
 	let books: any = null;
 
@@ -33,5 +34,5 @@
 		</div>
 	</div>
 {:else}
-	<div><span>Loading</span></div>
+	<div class="flex justify-center py-2"><LoadingIcon /></div>
 {/if}
