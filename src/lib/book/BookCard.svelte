@@ -18,7 +18,7 @@
 </script>
 
 <div
-	class="bg-[#e4e7ee] p-2 rounded-sm grid grid-cols-[1fr_60%] md:grid-cols-[150px_1fr] gap-x-2 shadow-sm"
+	class="bg-[#e4e7ee] p-2 rounded-sm grid grid-cols-[1fr_75%] md:grid-cols-[150px_1fr] gap-x-2 shadow-sm"
 >
 	<div class="row-span-2">
 		<a href="/book/{book.id}">
@@ -34,3 +34,12 @@
 		</div>
 	</div>
 </div>
+
+<!-- TODO Trying to fade out book description -->
+
+<!-- Use grid with a fade out div? -->
+<style>
+	.fade {
+		background: linear-gradient(transparent 100px, white);
+	}
+</style>
