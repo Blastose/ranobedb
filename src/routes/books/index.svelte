@@ -3,13 +3,14 @@
 	import { supabase } from '$lib/supabaseClient';
 	import { onMount } from 'svelte';
 	import LoadingIcon from '$lib/svg/LoadingIcon.svelte';
+	import type Book from '$lib/models/book';
 
-	let books: any = null;
+	let books: Book[] | null = null;
 
 	const getBooks = async () => {
 		try {
 			let { data, error } = await supabase
-				.from('book')
+				.from<Book>('book')
 				.select('*')
 				.order('title_romaji', { ascending: true });
 			if (error) throw error;
