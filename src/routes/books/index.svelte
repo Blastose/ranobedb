@@ -1,13 +1,16 @@
 <script lang="ts">
+	import BookCard from '$lib/book/BookCard.svelte';
 	import { supabase } from '$lib/supabaseClient';
 	import { onMount } from 'svelte';
+	import LoadingIcon from '$lib/svg/LoadingIcon.svelte';
+	import type Book from '$lib/models/book';
 
-	let books: any = null;
+	let books: Book[] | null = null;
 
 	const getBooks = async () => {
 		try {
 			let { data, error } = await supabase
-				.from('book_info')
+				.from<Book>('book')
 				.select('*')
 				.order('title_romaji', { ascending: true });
 			if (error) throw error;
@@ -23,12 +26,14 @@
 </script>
 
 {#if books}
-	{#each books as book}
-		<p>
-			<a href="/book/{book.id}" class="text-blue-600">{book.title}</a>
-			| {book.publisher.join(', ')}
-		</p>
-	{/each}
+	<div class="flex flex-col gap-2">
+		<p>{books.length} books</p>
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-2">
+			{#each books as book}
+				<BookCard {book} />
+			{/each}
+		</div>
+	</div>
 {:else}
-	<div><span>Loading</span></div>
+	<div class="flex justify-center py-2"><LoadingIcon /></div>
 {/if}
