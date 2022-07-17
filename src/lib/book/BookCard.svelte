@@ -7,7 +7,7 @@
 
 	let coverUrl: string | null;
 	const getCover = () => {
-		let { publicURL, error } = supabase.storage
+		let { publicURL } = supabase.storage
 			.from('cover-images')
 			.getPublicUrl(`${book.cover_image_file_name}.jpg`);
 
@@ -34,12 +34,3 @@
 		</div>
 	</div>
 </div>
-
-<!-- TODO Trying to fade out book description -->
-
-<!-- Use grid with a fade out div? -->
-<style>
-	.fade {
-		background: linear-gradient(transparent 100px, white);
-	}
-</style>
