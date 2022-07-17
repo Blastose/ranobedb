@@ -25,6 +25,8 @@
 	});
 </script>
 
+<svelte:head><title>Books - Light Novel DB</title></svelte:head>
+
 {#if books}
 	<div class="flex flex-col gap-2">
 		<p>{books.length} books</p>

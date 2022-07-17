@@ -35,9 +35,9 @@
 
 <svelte:head>
 	{#if book}
-		<title>{book.title}</title>
+		<title>{book.title} - Light Novel DB</title>
 	{:else}
-		<title>Ranobe DB</title>
+		<title>Light Novel DB</title>
 	{/if}
 </svelte:head>
 
