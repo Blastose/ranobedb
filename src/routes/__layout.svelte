@@ -70,11 +70,11 @@
 
 			<div class="flex-grow">
 				<main class="container mx-auto px-8 py-2 duration-150">
-					{#if !$navigating}
-						<slot />
-					{:else}
+					<!-- {#if !$navigating} -->
+					<slot />
+					<!-- {:else}
 						<div class="flex justify-center py-2"><LoadingIcon /></div>
-					{/if}
+					{/if} -->
 				</main>
 			</div>
 		</div>
