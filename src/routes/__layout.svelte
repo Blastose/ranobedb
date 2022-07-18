@@ -4,48 +4,16 @@
 	import Sidebar from '$lib/sidebar/Sidebar.svelte';
 	import { windowWidth } from '$lib/stores/windowWidthStore';
 	import { onMount } from 'svelte';
-	import { supabase } from '$lib/supabaseClient';
 	import { sidebarOpen } from '$lib/stores/sidebarStore';
-	import { user } from '$lib/stores/sessionStore';
-	import { reader } from '$lib/stores/readerStore';
 	import { session } from '$app/stores';
 	import { supabaseClient } from '$lib/db';
 	import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
 
 	let initialLoad = true;
 
-	supabase.auth.onAuthStateChange(async (_, session) => {
-		if (session) {
-			user.set(session.user);
-			reader.set(await getReader(session.user!.id));
-		} else {
-			user.set(null);
-			reader.set(null);
-		}
-	});
-
-	const getReader = async (id: string) => {
-		try {
-			let { data, error, status } = await supabase
-				.from('reader')
-				.select('*')
-				.eq('auth_id', id)
-				.single();
-			if (error) throw error;
-			return data;
-		} catch (error: any) {
-			console.error(error);
-			return null;
-		}
-	};
-
 	onMount(async () => {
 		if ($windowWidth <= 1000) {
 			sidebarOpen.set(false);
-		}
-		user.set(supabase.auth.user());
-		if ($user) {
-			reader.set(await getReader($user!.id));
 		}
 		initialLoad = false;
 	});
