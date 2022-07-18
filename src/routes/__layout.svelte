@@ -8,8 +8,6 @@
 	import { sidebarOpen } from '$lib/stores/sidebarStore';
 	import { user } from '$lib/stores/sessionStore';
 	import { reader } from '$lib/stores/readerStore';
-	import { navigating } from '$app/stores';
-	import LoadingIcon from '$lib/svg/LoadingIcon.svelte';
 
 	let initialLoad = true;
 
@@ -70,11 +68,7 @@
 
 			<div class="flex-grow">
 				<main class="container mx-auto px-8 py-2 duration-150">
-					<!-- {#if !$navigating} -->
 					<slot />
-					<!-- {:else}
-						<div class="flex justify-center py-2"><LoadingIcon /></div>
-					{/if} -->
 				</main>
 			</div>
 		</div>
