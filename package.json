@@ -14,7 +14,9 @@
 		"format": "prettier --write --plugin-search-dir=. ."
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^1.35.4"
+		"@supabase/supabase-js": "^1.35.4",
+		"@supabase/auth-helpers-svelte": "^0.4.5",
+		"@supabase/auth-helpers-sveltekit": "^0.6.8"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.22.2",

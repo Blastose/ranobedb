@@ -4,8 +4,17 @@
 // for information about these interfaces
 // and what to do when importing types
 declare namespace App {
-	// interface Locals {}
+	interface UserSession {
+		user: import('@supabase/supabase-js').User;
+		accessToken?: string;
+	}
+
+	interface Locals extends UserSession {
+		error: import('@supabase/supabase-js').ApiError;
+	}
+
+	// eslint-disable-next-line @typescript-eslint/no-empty-interface
+	interface Session extends UserSession {}
 	// interface Platform {}
-	// interface Session {}
 	// interface Stuff {}
 }
