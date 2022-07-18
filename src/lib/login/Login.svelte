@@ -1,41 +1,20 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabaseClient';
-	import { goto } from '$app/navigation';
 	import FormInput from '$lib/forms/FormInput.svelte';
 
 	let email = '';
 	let password = '';
-
-	const login = async () => {
-		try {
-			const { error } = await supabase.auth.signIn({ email, password });
-			if (error) throw error;
-			goto('/');
-		} catch (error: any) {
-			console.log(error);
-		} finally {
-		}
-	};
-
-	const setPassword = async () => {
-		try {
-			const { error } = await supabase.auth.update({ password });
-			if (error) throw error;
-		} catch (error: any) {
-			console.error(error);
-		}
-	};
 </script>
 
 <div class="max-w-xl mx-auto">
 	<div class="flex flex-col gap-4">
 		<h1 class="text-2xl font-bold">Log In</h1>
-		<form on:submit|preventDefault={login}>
+		<form action="/login" method="POST">
 			<div class="flex flex-col gap-3">
 				<FormInput
 					bind:value={email}
 					type="email"
 					id="email"
+					name="email"
 					labelName="Email"
 					placeholder="example@example.com"
 					required={true}
@@ -44,6 +23,7 @@
 					bind:value={password}
 					type="password"
 					id="password"
+					name="password"
 					labelName="Password"
 					placeholder=""
 					required={true}

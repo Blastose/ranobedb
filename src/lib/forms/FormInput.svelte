@@ -5,6 +5,7 @@
 	export let id = '';
 	export let placeholder = '';
 	export let required = false;
+	export let name = '';
 
 	function typeAction(node: any) {
 		node.type = type;
@@ -20,6 +21,7 @@
 	</label>
 	<input
 		use:typeAction
+		{name}
 		{required}
 		{id}
 		{placeholder}
