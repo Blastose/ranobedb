@@ -10,8 +10,6 @@ export const POST = async ({ request }: { request: Request }) => {
 
 	const { session, error } = await supabaseClient.auth.signIn({ email, password });
 
-	console.log(error);
-
 	if (error) {
 		return {
 			status: 400,
