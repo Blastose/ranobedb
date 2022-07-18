@@ -13,7 +13,7 @@
 		? 'bg-[#73739C] hover:bg-[#474963] text-white'
 		: 'active:bg-[#a5a6b8]'} rounded-md duration-75"
 >
-	<a {href} tabindex={$sidebarOpen ? 0 : -1} on:click={onClickFunction}>
+	<a {href} sveltekit:prefetch tabindex={$sidebarOpen ? 0 : -1} on:click={onClickFunction}>
 		<div class="px-4 py-1">
 			<span>{text}</span>
 		</div>
