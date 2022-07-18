@@ -4,8 +4,14 @@ import type Book from '$lib/models/book';
 
 export const GET: RequestHandler = async ({ params }) => {
 	const { data, error, status } = await supabase.from<Book>('book').select('*').eq('id', params.id);
-	if (error || data === null || data.length === 0) {
+	if (error) {
 		return { status };
+	}
+
+	if (data === null || data.length === 0) {
+		return {
+			status: 404
+		};
 	}
 
 	const { publicURL } = supabase.storage
