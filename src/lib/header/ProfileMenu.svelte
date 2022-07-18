@@ -1,20 +1,10 @@
 <script lang="ts">
 	import SidebarItem from '$lib/sidebar/SidebarItem.svelte';
-	import { supabase } from '$lib/supabaseClient';
 	import { clickOutside } from '$lib/clickOutside';
 	import { profileMenuOpen } from '$lib/stores/profileMenuStore';
 	import { session } from '$app/stores';
 
 	export let toggleButton: Node | null = null;
-
-	const signOut = async () => {
-		try {
-			const { error } = await supabase.auth.signOut();
-			if (error) throw error;
-		} catch (error: any) {
-			console.error(error);
-		}
-	};
 
 	const hideProfileMenu = () => {
 		$profileMenuOpen = false;
@@ -22,7 +12,7 @@
 </script>
 
 <ul
-	class="absolute left-auto right-0 w-60 rounded-md px-2 py-2 mt-2 drop-shadow-md outline outline-[#dddfe7] outline-1 bg-[#e4e7ee]"
+	class="absolute left-auto right-0 min-w-[15rem] rounded-md px-2 py-2 mt-2 drop-shadow-md outline outline-[#dddfe7] outline-1 bg-[#e4e7ee]"
 	use:clickOutside={toggleButton}
 	on:outclick={() => ($profileMenuOpen = false)}
 >

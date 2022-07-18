@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabaseClient';
+	import { supabaseClient } from '$lib/db';
 	import type Book from '$lib/models/book';
 	import { onMount } from 'svelte';
 
@@ -7,7 +7,7 @@
 
 	let coverUrl: string | null;
 	const getCover = () => {
-		let { publicURL } = supabase.storage
+		let { publicURL } = supabaseClient.storage
 			.from('cover-images')
 			.getPublicUrl(`${book.cover_image_file_name}.jpg`);
 
