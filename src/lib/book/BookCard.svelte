@@ -29,7 +29,7 @@
 		<a href="/book/{book.id}" sveltekit:prefetch>
 			<span class="font-bold text-xl">{book.title}</span>
 		</a>
-		<div class="text-sm">
+		<div class="text-sm text-[#263147]">
 			{@html book.description}
 		</div>
 	</div>
