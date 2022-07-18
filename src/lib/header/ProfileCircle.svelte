@@ -1,8 +1,8 @@
 <script lang="ts">
 	import ProfileIcon from '$lib/svg/ProfileIcon.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
-	import { reader } from '$lib/stores/readerStore';
 	import { profileMenuOpen } from '$lib/stores/profileMenuStore';
+	import { session } from '$app/stores';
 
 	let profileButton;
 </script>
@@ -13,12 +13,12 @@
 		on:click={() => {
 			$profileMenuOpen = !$profileMenuOpen;
 		}}
-		class="rounded-full flex items-center justify-center {$reader
+		class="rounded-full flex items-center justify-center {$session.user
 			? 'bg-[#73739C] w-12 h-12'
 			: 'p-3 bg-gray-300'} text-white"
 	>
-		{#if $reader}
-			<span class="text-lg font-bold">{$reader.reader_name.charAt(0)}</span>
+		{#if $session.user}
+			<span class="text-lg font-bold">{$session.user.email.charAt(0).toUpperCase()}</span>
 		{:else}
 			<ProfileIcon />
 		{/if}

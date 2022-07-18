@@ -10,8 +10,7 @@
 	import HomeIcon from '$lib/svg/HomeIcon.svelte';
 	import CloseIcon from '$lib/svg/CloseIcon.svelte';
 	import { reader } from '$lib/stores/readerStore';
-	import SidebarButton from './SidebarButton.svelte';
-	import { supabase } from '$lib/supabaseClient';
+	import { session } from '$app/stores';
 
 	const toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
@@ -26,15 +25,6 @@
 	$: if ($windowWidth <= 1000) {
 		sidebarOpen.set(false);
 	}
-
-	const signOut = async () => {
-		try {
-			const { error } = await supabase.auth.signOut();
-			if (error) throw error;
-		} catch (error: any) {
-			console.error(error);
-		}
-	};
 
 	onMount(() => {
 		if ($windowWidth > 1000) {
@@ -75,16 +65,10 @@
 				<SidebarHeading text={$reader ? $reader.reader_name : 'User'} onClickFunction={hideSidebar}>
 					<ProfileIcon />
 				</SidebarHeading>
-				{#if $reader}
+				{#if $session.user}
 					<SidebarItem text={'My List'} href={'/my-list'} onClickFunction={hideSidebar} />
 					<SidebarItem text={'My Profile'} href={'/profile'} onClickFunction={hideSidebar} />
-					<SidebarButton
-						text={'Sign out'}
-						onClickFunction={() => {
-							signOut();
-							hideSidebar();
-						}}
-					/>
+					<SidebarItem text={'Sign out'} href={'/api/auth/logout'} />
 				{:else}
 					<SidebarItem text={'Log in'} href={'/login'} onClickFunction={hideSidebar} />
 					<SidebarItem text={'Sign up'} href={'/signup'} onClickFunction={hideSidebar} />
