@@ -40,6 +40,8 @@
 	supabaseClient.auth.onAuthStateChange(async (event, supabaseSession) => {
 		if ($session.user) {
 			reader.set(await getReader($session.user.id));
+		} else {
+			reader.set(null);
 		}
 	});
 </script>
@@ -47,7 +49,7 @@
 <svelte:head><title>Light Novel DB</title></svelte:head>
 <svelte:window bind:innerWidth={$windowWidth} />
 
-<SupaAuthHelper {supabaseClient} {session}>
+<SupaAuthHelper {supabaseClient} {session} autoRefreshToken={true}>
 	{#if initialLoad}
 		<div class="flex bg-[#fafafa]" />
 	{:else}
