@@ -3,6 +3,7 @@
 
 	let email = '';
 	let password = '';
+	let remember = false;
 </script>
 
 <div class="max-w-xl mx-auto">
@@ -28,6 +29,17 @@
 					placeholder=""
 					required={true}
 				/>
+				<div>
+					<input
+						bind:checked={remember}
+						value={remember}
+						type="checkbox"
+						id="remember"
+						name="remember"
+						class="self-start"
+					/>
+					<label for="remember">Remember me</label>
+				</div>
 				<div class="flex">
 					<input
 						type="submit"

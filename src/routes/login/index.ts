@@ -5,6 +5,7 @@ export const POST = async ({ request }: { request: Request }) => {
 
 	const email = data.get('email') as string;
 	const password = data.get('password') as string;
+	const remember = data.get('remember') as string;
 
 	const headers = { location: '/' };
 
@@ -34,6 +35,13 @@ export const POST = async ({ request }: { request: Request }) => {
 			.map((cookie) => {
 				if (!cookie.includes('SameSite=Lax')) {
 					cookie += 'SameSite=Lax';
+				}
+				if (!remember) {
+					// Set the cookie to session
+					const regexExpires = /Expires.*?; /;
+					cookie = cookie.replace(regexExpires, '');
+					const regex2MaxAge = /Max-Age.*?; /;
+					cookie = cookie.replace(regex2MaxAge, '');
 				}
 				return cookie;
 			});
