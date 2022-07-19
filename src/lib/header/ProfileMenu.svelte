@@ -3,6 +3,7 @@
 	import { clickOutside } from '$lib/clickOutside';
 	import { profileMenuOpen } from '$lib/stores/profileMenuStore';
 	import { session } from '$app/stores';
+	import { reader } from '$lib/stores/readerStore';
 
 	export let toggleButton: Node | null = null;
 
@@ -19,7 +20,7 @@
 	{#if $session.user}
 		<li class="text-center py-2">
 			<a href="/profile">
-				<span class="font-bold text-lg">{$session.user.email}</span>
+				<span class="font-bold text-lg">{$reader ? $reader.reader_name : $session.user.email}</span>
 			</a>
 		</li>
 		<SidebarItem

@@ -6,16 +6,41 @@
 	import { onMount } from 'svelte';
 	import { sidebarOpen } from '$lib/stores/sidebarStore';
 	import { session } from '$app/stores';
+	import { reader } from '$lib/stores/readerStore';
 	import { supabaseClient } from '$lib/db';
 	import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
 
 	let initialLoad = true;
 
+	const getReader = async (id: string) => {
+		try {
+			let { data, error, status } = await supabaseClient
+				.from('reader')
+				.select('*')
+				.eq('auth_id', id)
+				.single();
+			if (error) throw error;
+			return data;
+		} catch (error: any) {
+			console.error(error);
+			return null;
+		}
+	};
+
 	onMount(async () => {
 		if ($windowWidth <= 1000) {
 			sidebarOpen.set(false);
 		}
+		if ($session.user) {
+			reader.set(await getReader($session.user.id));
+		}
 		initialLoad = false;
+	});
+
+	supabaseClient.auth.onAuthStateChange(async (event, supabaseSession) => {
+		if ($session.user) {
+			reader.set(await getReader($session.user.id));
+		}
 	});
 </script>
 
