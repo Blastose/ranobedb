@@ -20,7 +20,8 @@ export const POST = async ({ request }: { request: Request }) => {
 	}
 
 	if (session) {
-		const response = await fetch('http://localhost:5173/api/auth/callback', {
+		const baseUrl = import.meta.env.VITE_BASE_URL as string;
+		const response = await fetch(`${baseUrl}/api/auth/callback`, {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
 			credentials: 'same-origin',
