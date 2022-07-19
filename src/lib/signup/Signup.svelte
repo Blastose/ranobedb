@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { supabase } from '$lib/supabaseClient';
+	import { supabaseClient } from '$lib/db';
 	import FormInput from '$lib/forms/FormInput.svelte';
 
 	let username = '';
@@ -8,7 +8,10 @@
 
 	const signUp = async () => {
 		try {
-			const { error } = await supabase.auth.signUp({ email, password }, { data: { username } });
+			const { error } = await supabaseClient.auth.signUp(
+				{ email, password },
+				{ data: { username } }
+			);
 			if (error) throw error;
 		} catch (error: any) {
 			console.log(error);

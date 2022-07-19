@@ -1,10 +1,11 @@
 <script lang="ts">
 	import Login from '$lib/login/Login.svelte';
-	import { user } from '$lib/stores/sessionStore';
+	import { session } from '$app/stores';
 </script>
 
-{#if !$user}
+{#if !$session.user}
 	<Login />
 {:else}
+	<h1>Hello {$session.user.email}</h1>
 	<span>You are already logged in!</span>
 {/if}

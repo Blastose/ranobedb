@@ -4,26 +4,17 @@
 	import Sidebar from '$lib/sidebar/Sidebar.svelte';
 	import { windowWidth } from '$lib/stores/windowWidthStore';
 	import { onMount } from 'svelte';
-	import { supabase } from '$lib/supabaseClient';
 	import { sidebarOpen } from '$lib/stores/sidebarStore';
-	import { user } from '$lib/stores/sessionStore';
+	import { session } from '$app/stores';
 	import { reader } from '$lib/stores/readerStore';
+	import { supabaseClient } from '$lib/db';
+	import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
 
 	let initialLoad = true;
 
-	supabase.auth.onAuthStateChange(async (_, session) => {
-		if (session) {
-			user.set(session.user);
-			reader.set(await getReader(session.user!.id));
-		} else {
-			user.set(null);
-			reader.set(null);
-		}
-	});
-
 	const getReader = async (id: string) => {
 		try {
-			let { data, error, status } = await supabase
+			let { data, error, status } = await supabaseClient
 				.from('reader')
 				.select('*')
 				.eq('auth_id', id)
@@ -40,37 +31,44 @@
 		if ($windowWidth <= 1000) {
 			sidebarOpen.set(false);
 		}
-		user.set(supabase.auth.user());
-		if ($user) {
-			reader.set(await getReader($user!.id));
+		if ($session.user) {
+			reader.set(await getReader($session.user.id));
 		}
 		initialLoad = false;
+	});
+
+	supabaseClient.auth.onAuthStateChange(async (event, supabaseSession) => {
+		if ($session.user) {
+			reader.set(await getReader($session.user.id));
+		}
 	});
 </script>
 
 <svelte:head><title>Light Novel DB</title></svelte:head>
 <svelte:window bind:innerWidth={$windowWidth} />
 
-{#if initialLoad}
-	<div class="flex bg-[#fafafa]" />
-{:else}
-	<div class="flex">
-		<Sidebar />
+<SupaAuthHelper {supabaseClient} {session}>
+	{#if initialLoad}
+		<div class="flex bg-[#fafafa]" />
+	{:else}
+		<div class="flex">
+			<Sidebar />
 
-		<!-- Hack to make screen full on smaller widths -->
-		<!-- Normally done on sidebar, but sidebar is removed from flow on small screens -->
-		{#if $windowWidth <= 1000}
-			<div class="h-screen" />
-		{/if}
+			<!-- Hack to make screen full on smaller widths -->
+			<!-- Normally done on sidebar, but sidebar is removed from flow on small screens -->
+			{#if $windowWidth <= 1000}
+				<div class="h-screen" />
+			{/if}
 
-		<div class="flex flex-col flex-grow bg-[#fafafa]">
-			<Header />
+			<div class="flex flex-col flex-grow bg-[#fafafa]">
+				<Header />
 
-			<div class="flex-grow">
-				<main class="container mx-auto px-8 py-2 duration-150">
-					<slot />
-				</main>
+				<div class="flex-grow">
+					<main class="container mx-auto px-8 py-2 duration-150">
+						<slot />
+					</main>
+				</div>
 			</div>
 		</div>
-	</div>
-{/if}
+	{/if}
+</SupaAuthHelper>

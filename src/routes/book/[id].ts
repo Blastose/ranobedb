@@ -1,9 +1,12 @@
-import { supabase } from '$lib/supabaseClient';
+import { supabaseClient } from '$lib/db';
 import type { RequestHandler } from '@sveltejs/kit';
 import type Book from '$lib/models/book';
 
 export const GET: RequestHandler = async ({ params }) => {
-	const { data, error, status } = await supabase.from<Book>('book').select('*').eq('id', params.id);
+	const { data, error, status } = await supabaseClient
+		.from<Book>('book')
+		.select('*')
+		.eq('id', params.id);
 	if (error) {
 		return { status };
 	}
@@ -14,7 +17,7 @@ export const GET: RequestHandler = async ({ params }) => {
 		};
 	}
 
-	const { publicURL } = supabase.storage
+	const { publicURL } = supabaseClient.storage
 		.from('cover-images')
 		.getPublicUrl(`${data[0].cover_image_file_name}.jpg`);
 
