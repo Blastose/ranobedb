@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { sidebarOpen } from '$lib/stores/sidebarStore';
 	import ProfileCircle from './ProfileCircle.svelte';
-	import { reader } from '$lib/stores/readerStore';
-	import MenuIcon from '$lib/svg/MenuIcon.svelte';
+	import Icon from '$lib/components/Icon.svelte';
 
 	const toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
@@ -18,7 +17,7 @@
 						class="hover:bg-[#cdcedd] self-end rounded-lg p-1 duration-75"
 						on:click={toggleSidebar}
 					>
-						<span class="text-2xl"><MenuIcon /></span>
+						<span class="text-2xl"><Icon name="menu" width="24" height="24" /></span>
 					</button>
 				{/if}
 				<span class="text-2xl font-bold">Light Novel DB</span>

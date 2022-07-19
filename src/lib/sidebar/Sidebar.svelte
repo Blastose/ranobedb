@@ -5,12 +5,9 @@
 	import { sidebarOpen } from '$lib/stores/sidebarStore';
 	import { windowWidth } from '$lib/stores/windowWidthStore';
 	import { onMount } from 'svelte';
-	import ProfileIcon from '$lib/svg/ProfileIcon.svelte';
-	import DatabaseIcon from '$lib/svg/DatabaseIcon.svelte';
-	import HomeIcon from '$lib/svg/HomeIcon.svelte';
-	import CloseIcon from '$lib/svg/CloseIcon.svelte';
 	import { reader } from '$lib/stores/readerStore';
 	import { session } from '$app/stores';
+	import Icon from '$lib/components/Icon.svelte';
 
 	const toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
@@ -54,16 +51,18 @@
 			<button
 				class="hover:bg-[#cdcedd] self-end rounded-lg p-1 duration-75"
 				tabindex={$sidebarOpen ? 0 : -1}
-				on:click={toggleSidebar}><CloseIcon /></button
+				on:click={toggleSidebar}
 			>
+				<Icon name="close" width="24" height="24" />
+			</button>
 
 			<SidebarHeading text={'Home'} href={'/'} onClickFunction={hideSidebar}>
-				<HomeIcon />
+				<Icon name="home" width="24" height="24" />
 			</SidebarHeading>
 
 			<div>
 				<SidebarHeading text={$reader ? $reader.reader_name : 'User'} onClickFunction={hideSidebar}>
-					<ProfileIcon />
+					<Icon name="profile" width="24" height="24" />
 				</SidebarHeading>
 				{#if $session.user}
 					<SidebarItem text={'My List'} href={'/my-list'} onClickFunction={hideSidebar} />
@@ -77,7 +76,7 @@
 
 			<div>
 				<SidebarHeading text="Database" onClickFunction={hideSidebar}>
-					<DatabaseIcon />
+					<Icon name="database" width="24" height="24" />
 				</SidebarHeading>
 				<SidebarItem text={'Books'} href={'/books'} onClickFunction={hideSidebar} />
 				<SidebarItem text={'Series'} href={'/series'} onClickFunction={hideSidebar} />

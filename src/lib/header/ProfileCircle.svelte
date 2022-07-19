@@ -1,9 +1,9 @@
 <script lang="ts">
-	import ProfileIcon from '$lib/svg/ProfileIcon.svelte';
 	import ProfileMenu from './ProfileMenu.svelte';
 	import { profileMenuOpen } from '$lib/stores/profileMenuStore';
 	import { session } from '$app/stores';
 	import { reader } from '$lib/stores/readerStore';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let profileButton: HTMLElement;
 </script>
@@ -21,7 +21,7 @@
 		{#if $session.user}
 			<span class="text-lg font-bold">{$reader.reader_name.charAt(0).toUpperCase()}</span>
 		{:else}
-			<ProfileIcon />
+			<Icon name="profile" width="24" height="24" />
 		{/if}
 	</button>
 	{#if $profileMenuOpen}
