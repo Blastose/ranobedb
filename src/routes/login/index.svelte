@@ -3,6 +3,10 @@
 	import { session } from '$app/stores';
 </script>
 
+<svelte:head>
+	<title>Login - Light Novel DB</title>
+</svelte:head>
+
 {#if !$session.user}
 	<Login />
 {:else}
