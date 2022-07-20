@@ -15,7 +15,7 @@ export const POST = async ({ request }: { request: Request }) => {
 		return {
 			status: 400,
 			body: {
-				error
+				error: 'Invalid login credentials'
 			}
 		};
 	}
