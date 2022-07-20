@@ -61,7 +61,10 @@
 			</SidebarHeading>
 
 			<div>
-				<SidebarHeading text={$reader ? $reader.reader_name : 'User'} onClickFunction={hideSidebar}>
+				<SidebarHeading
+					text={$session.user ? $session.user.user_metadata.username : 'User'}
+					onClickFunction={hideSidebar}
+				>
 					<Icon name="profile" width="24" height="24" />
 				</SidebarHeading>
 				{#if $session.user}

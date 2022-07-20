@@ -2,7 +2,6 @@
 	import ProfileMenu from './ProfileMenu.svelte';
 	import { profileMenuOpen } from '$lib/stores/profileMenuStore';
 	import { session } from '$app/stores';
-	import { reader } from '$lib/stores/readerStore';
 	import Icon from '$lib/components/Icon.svelte';
 
 	let profileButton: HTMLElement;
@@ -19,7 +18,9 @@
 			: 'p-3 bg-gray-300'} text-white"
 	>
 		{#if $session.user}
-			<span class="text-lg font-bold">{$reader.reader_name.charAt(0).toUpperCase()}</span>
+			<span class="text-lg font-bold">
+				{$session.user.user_metadata.username.charAt(0).toUpperCase()}
+			</span>
 		{:else}
 			<Icon name="profile" width="24" height="24" />
 		{/if}
