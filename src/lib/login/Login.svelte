@@ -1,6 +1,6 @@
 <script lang="ts">
 	import FormInput from '$lib/forms/FormInput.svelte';
-
+	export let error: string;
 	let email = '';
 	let password = '';
 	let remember = false;
@@ -11,6 +11,11 @@
 		<h1 class="text-2xl font-bold">Log In</h1>
 		<form action="/login" method="POST">
 			<div class="flex flex-col gap-3">
+				{#if error}
+					<div class="text-red-600">
+						<span>{error}</span>
+					</div>
+				{/if}
 				<FormInput
 					bind:value={email}
 					type="email"

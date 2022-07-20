@@ -6,6 +6,7 @@
 	export let placeholder = '';
 	export let required = false;
 	export let name = '';
+	export let error = '';
 
 	function typeAction(node: any) {
 		node.type = type;
@@ -21,11 +22,18 @@
 	</label>
 	<input
 		use:typeAction
+		on:input={() => (error = '')}
 		{name}
 		{required}
 		{id}
 		{placeholder}
-		class="bg-gray-200 px-3 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-400"
+		class="
+			{error ? 'ring-2 ring-red-600' : ''}
+		bg-gray-200 px-3 py-2 rounded-md focus:outline-none focus:ring focus:ring-blue-400
+		"
 		bind:value
 	/>
+	{#if error}
+		<span class="text-red-600">{error}</span>
+	{/if}
 </div>
