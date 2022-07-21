@@ -6,6 +6,7 @@
 	export let href = '';
 	export let highlight = true;
 	export let onClickFunction: () => void = () => {};
+	export let prefetch = null;
 </script>
 
 <div
@@ -13,7 +14,12 @@
 		? 'bg-[#73739C] hover:bg-[#474963] text-white'
 		: 'active:bg-[#a5a6b8]'} rounded-md duration-75"
 >
-	<a {href} sveltekit:prefetch tabindex={$sidebarOpen ? 0 : -1} on:click={onClickFunction}>
+	<a
+		{href}
+		sveltekit:prefetch={prefetch}
+		tabindex={$sidebarOpen ? 0 : -1}
+		on:click={onClickFunction}
+	>
 		<div class="px-4 py-1">
 			<span>{text}</span>
 		</div>

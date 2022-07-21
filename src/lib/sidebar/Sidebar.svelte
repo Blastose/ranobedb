@@ -81,7 +81,7 @@
 				<SidebarHeading text="Database" onClickFunction={hideSidebar}>
 					<Icon name="database" width="24" height="24" />
 				</SidebarHeading>
-				<SidebarItem text={'Books'} href={'/books'} onClickFunction={hideSidebar} />
+				<SidebarItem text={'Books'} href={'/books'} prefetch={true} onClickFunction={hideSidebar} />
 				<SidebarItem text={'Series'} href={'/series'} onClickFunction={hideSidebar} />
 				<SidebarItem text={'People'} href={'/people'} onClickFunction={hideSidebar} />
 				<SidebarItem text={'Publishers'} href={'/publishers'} onClickFunction={hideSidebar} />
