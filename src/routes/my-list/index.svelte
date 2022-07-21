@@ -11,7 +11,7 @@
 <svelte:head><title>My List - Light Novel DB</title></svelte:head>
 
 <div class="flex flex-col gap-2">
-	<div class="flex gap-2">
+	<div class="flex flex-wrap gap-2">
 		<Label name="All" {queryName} queryValue="" />
 		<Label name="Reading" {queryName} queryValue="Reading" />
 		<Label name="Plan to read" {queryName} queryValue="Plan to read" />
