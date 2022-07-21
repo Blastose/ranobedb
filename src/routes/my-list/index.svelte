@@ -5,7 +5,7 @@
 	export let books: Book[];
 </script>
 
-<svelte:head><title>User List - Light Novel DB</title></svelte:head>
+<svelte:head><title>My List - Light Novel DB</title></svelte:head>
 
 <div class="flex flex-col gap-2">
 	<p>{books.length} books</p>
