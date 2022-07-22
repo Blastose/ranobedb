@@ -1,7 +1,6 @@
 <script lang="ts">
 	import BookCard from '$lib/book/BookCard.svelte';
 	import type Book from '$lib/models/book';
-	import { page } from '$app/stores';
 	import Label from '$lib/reading-labels/Label.svelte';
 
 	let queryName = 'label-name';
