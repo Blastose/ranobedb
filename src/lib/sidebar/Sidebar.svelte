@@ -68,7 +68,12 @@
 					<Icon name="profile" width="24" height="24" />
 				</SidebarHeading>
 				{#if $session.user}
-					<SidebarItem text={'My List'} href={'/my-list'} onClickFunction={hideSidebar} />
+					<SidebarItem
+						text={'My List'}
+						href={'/my-list'}
+						prefetch={true}
+						onClickFunction={hideSidebar}
+					/>
 					<SidebarItem text={'My Profile'} href={'/profile'} onClickFunction={hideSidebar} />
 					<SidebarItem text={'Sign out'} href={'/api/auth/logout'} />
 				{:else}

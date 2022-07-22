@@ -72,7 +72,7 @@
 						{#if !loading}
 							Sign up
 						{:else}
-							<Icon _class="animate-spin" height="24" width="24" name="loading" />
+							<Icon class="animate-spin" height="24" width="24" name="loading" />
 						{/if}
 					</button>
 				</div>

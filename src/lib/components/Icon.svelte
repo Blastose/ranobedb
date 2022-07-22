@@ -1,6 +1,5 @@
 <script lang="ts">
 	type IconType = keyof typeof icons;
-	export let _class: string = '';
 	export let name: IconType;
 	export let width: string;
 	export let height: string;
@@ -35,6 +34,6 @@
 	const icon = icons[name];
 </script>
 
-<svg class={_class} {width} {height} viewBox="0 0 {icon.box} {icon.box}">
+<svg class={$$props.class} {width} {height} viewBox="0 0 {icon.box} {icon.box}">
 	{@html icon.svg}
 </svg>
