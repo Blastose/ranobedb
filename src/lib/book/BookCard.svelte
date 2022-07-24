@@ -27,8 +27,22 @@
 		<a href="/book/{book.id}" sveltekit:prefetch>
 			<span class="font-bold text-xl">{book.title}</span>
 		</a>
-		<p class="overflow-hidden min-h-min max-h-[100px] sm:max-h-[200px] text-sm text-[#263147]">
-			{@html book.description}
-		</p>
+		<div class="relative blur-text overflow-hidden h-full">
+			<p class="min-h-min max-h-[100px] sm:max-h-[200px] text-sm text-[#263147]">
+				{@html book.description}
+			</p>
+		</div>
 	</div>
 </div>
+
+<style>
+	.blur-text:after {
+		content: '';
+		width: 100%;
+		height: 1em;
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		background: linear-gradient(transparent, #e4e7ee);
+	}
+</style>
