@@ -32,7 +32,7 @@
 
 <div
 	class="duration-150 ease-in-out     
-	{$windowWidth <= 1000 ? 'fixed z-10 flex' : ''}
+	{$windowWidth <= 1000 ? 'fixed z-50 flex' : ''}
 	{$windowWidth <= 1000 && $sidebarOpen ? 'w-full' : ''}
 	{$sidebarOpen ? '' : '-ml-64'}"
 >
