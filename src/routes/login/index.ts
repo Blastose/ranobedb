@@ -1,6 +1,6 @@
 import { supabaseClient } from '$lib/db';
 
-export const POST = async ({ request }: { request: Request }) => {
+export const POST = async ({ request, url }: { request: Request; url: URL }) => {
 	const data = await request.formData();
 
 	const email = data.get('email') as string;
@@ -21,8 +21,7 @@ export const POST = async ({ request }: { request: Request }) => {
 	}
 
 	if (session) {
-		const baseUrl = import.meta.env.VITE_BASE_URL as string;
-		const response = await fetch(`${baseUrl}/api/auth/callback`, {
+		const response = await fetch(`${url.origin}/api/auth/callback`, {
 			method: 'POST',
 			headers: new Headers({ 'Content-Type': 'application/json' }),
 			credentials: 'same-origin',
