@@ -43,10 +43,7 @@
 			class="w-[200%] h-screen bg-gray-700 opacity-50 fixed"
 		/>
 	{/if}
-	<nav
-		class="overflow-y-scroll overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] drop-shadow-sm
-    "
-	>
+	<nav class="overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] drop-shadow-sm">
 		<div class="px-4 py-2 flex flex-col gap-2">
 			<button
 				class="hover:bg-[#cdcedd] self-end rounded-lg p-1 duration-75"
