@@ -1,0 +1,13 @@
+diff --git a/node_modules/@supabase/auth-helpers-sveltekit/dist/utils/getUser.js b/node_modules/@supabase/auth-helpers-sveltekit/dist/utils/getUser.js
+index dc5193f..ae685c5 100644
+--- a/node_modules/@supabase/auth-helpers-sveltekit/dist/utils/getUser.js
++++ b/node_modules/@supabase/auth-helpers-sveltekit/dist/utils/getUser.js
+@@ -12,7 +12,7 @@ import logger from './log.js';
+  */
+ export async function getUser(req, options = { forceRefresh: false }) {
+     try {
+-        const { apiInfo: { supabaseUrl, supabaseAnonKey } } = createSupabaseClient();
++        const { apiInfo: { supabaseUrl, supabaseAnonKey } } = createSupabaseClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_ANON_KEY);
+         if (!supabaseUrl || !supabaseAnonKey) {
+             throw new Error('supabaseUrl and supabaseAnonKey env variables are required!');
+         }
