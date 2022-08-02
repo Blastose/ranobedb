@@ -1,9 +1,10 @@
 <script lang="ts">
+	import PersonBox from '$lib/book/PersonBox.svelte';
 	import { supabaseClient } from '$lib/db';
-	import type Book from '$lib/models/book';
+	import type BookInfo from '$lib/models/bookInfo';
 	import { onMount } from 'svelte';
 
-	export let book: Book;
+	export let book: BookInfo;
 
 	let coverUrl: string | null;
 	const getCover = () => {
@@ -25,15 +26,24 @@
 			loading="lazy"
 			class="shadow-sm rounded-sm"
 			src={coverUrl}
+			width="150px"
 			alt="Cover image for {book.title}"
 		/>
 	</a>
-	<div class="flex flex-col gap-2 ">
+	<div class="flex flex-col gap-2">
 		<a href="/book/{book.id}" sveltekit:prefetch>
 			<span class="font-bold text-xl">{book.title}</span>
 		</a>
+		<div class="flex flex-wrap gap-4">
+			{#each book.authors as author (author.id)}
+				<PersonBox person={author} type="author" />
+			{/each}
+			{#each book.artists as artist (artist.id)}
+				<PersonBox person={artist} type="artist" />
+			{/each}
+		</div>
 		<div class="relative blur-text overflow-hidden h-full">
-			<p class="min-h-min max-h-[100px] sm:max-h-[200px] text-sm text-[#263147]">
+			<p class="min-h-min max-h-[100px] sm:max-h-[175px] text-sm text-[#263147]">
 				{@html book.description}
 			</p>
 		</div>

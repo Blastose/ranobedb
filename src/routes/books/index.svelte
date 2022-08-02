@@ -1,8 +1,8 @@
 <script lang="ts">
 	import BookCardContainer from '$lib/book/BookCardContainer.svelte';
-	import type Book from '$lib/models/book';
+	import type BookInfo from '$lib/models/bookInfo';
 
-	export let books: Book[];
+	export let books: BookInfo[];
 </script>
 
 <svelte:head><title>Books - Light Novel DB</title></svelte:head>
