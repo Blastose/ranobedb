@@ -1,10 +1,10 @@
 <script lang="ts">
 	import BookCardContainer from '$lib/book/BookCardContainer.svelte';
-	import type Book from '$lib/models/book';
+	import type BookInfo from '$lib/models/bookInfo';
 	import Label from '$lib/reading-labels/Label.svelte';
 
 	let queryName = 'label-name';
-	export let books: Book[];
+	export let books: BookInfo[];
 </script>
 
 <svelte:head><title>My List - Light Novel DB</title></svelte:head>
