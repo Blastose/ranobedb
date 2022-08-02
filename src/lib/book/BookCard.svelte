@@ -25,6 +25,7 @@
 			loading="lazy"
 			class="shadow-sm rounded-sm"
 			src={coverUrl}
+			width="150px"
 			alt="Cover image for {book.title}"
 		/>
 	</a>
