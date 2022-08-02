@@ -43,7 +43,7 @@
 			{/each}
 		</div>
 		<div class="relative blur-text overflow-hidden h-full">
-			<p class="min-h-min max-h-[100px] sm:max-h-[200px] text-sm text-[#263147]">
+			<p class="min-h-min max-h-[100px] sm:max-h-[175px] text-sm text-[#263147]">
 				{@html book.description}
 			</p>
 		</div>
