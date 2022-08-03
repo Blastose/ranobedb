@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type Book from '$lib/models/book';
+	import { session } from '$app/stores';
 
 	export let book: Book;
 	export let image: string;
@@ -17,5 +18,7 @@
 	<p>{@html book.description}</p>
 
 	<br />
-	<p><a href="/books" class="text-blue-500">Back to books</a></p>
+	{#if $session.user}
+		<button class="rounded-md bg-slate-500 px-4 py-1 text-white">Add</button>
+	{/if}
 </div>
