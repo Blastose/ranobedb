@@ -11,7 +11,8 @@
 	const showModal = () => {
 		modal.set(
 			bind(AddBookModal, {
-				book
+				book,
+				image
 			})
 		);
 	};
