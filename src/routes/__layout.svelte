@@ -8,24 +8,9 @@
 	import { session } from '$app/stores';
 	import { supabaseClient } from '$lib/db';
 	import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
-	import AddBookModal from '$lib/add-book-modal/AddBookModal.svelte';
-	import { writable } from 'svelte/store';
-	import Modal, { bind } from 'svelte-simple-modal';
 
-	const modal = writable(null);
-	const showModal = () => {
-		modal.set(
-			bind(AddBookModal, {
-				book: {
-					title: '経験済みなキミと、 経験ゼロなオレが、 お付き合いする話。',
-					cover_image_file_name: '993ebd8e-031a-40e6-8df8-1bf5a78702ac',
-					description: 'f',
-					id: 1,
-					title_romaji: 'f'
-				}
-			})
-		);
-	};
+	import Modal from 'svelte-simple-modal';
+	import { modal } from '$lib/stores/modalStore';
 
 	let initialLoad = true;
 
@@ -60,13 +45,7 @@
 
 				<div class="flex-grow">
 					<main class="container mx-auto px-8 py-4 duration-150">
-						<button on:click={showModal} class="px-2 py-1 rounded-md text-white bg-slate-500"
-							>Show modal</button
-						>
 						<slot />
-						<button on:click={showModal} class="px-2 py-1 rounded-md text-white bg-slate-500"
-							>Show modal</button
-						>
 					</main>
 				</div>
 			</div>
