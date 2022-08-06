@@ -7,6 +7,7 @@
 
 	export let book: Book;
 	export let image: string;
+	export let readingStatus: string | null;
 
 	const showModal = () => {
 		modal.set(
@@ -31,6 +32,15 @@
 
 	<br />
 	{#if $session.user}
-		<button on:click={showModal} class="rounded-md bg-slate-500 px-4 py-1 text-white">Add</button>
+		<button
+			on:click={showModal}
+			class="rounded-md bg-slate-500 hover:bg-slate-600 text-lg px-12 py-2 text-white"
+		>
+			{#if readingStatus}
+				{readingStatus}
+			{:else}
+				Add
+			{/if}
+		</button>
 	{/if}
 </div>
