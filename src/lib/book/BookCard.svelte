@@ -21,7 +21,7 @@
 <div
 	class="bg-[#e4e7ee] p-2 rounded-sm grid grid-cols-[1fr_75%] md:grid-cols-[150px_1fr] gap-x-2 shadow-sm"
 >
-	<a href="/book/{book.id}" sveltekit:prefetch>
+	<a class="h-min" href="/book/{book.id}" sveltekit:prefetch>
 		<img
 			loading="lazy"
 			class="shadow-sm rounded-sm"
