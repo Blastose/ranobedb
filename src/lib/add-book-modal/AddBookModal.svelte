@@ -54,11 +54,10 @@
 
 <div class="flex flex-col gap-2">
 	<span class="text-xl">Add book to reading list</span>
-	<div class="grid grid-cols-[150px,_1fr] gap-2">
+	<div class="grid grid-cols-[35%,_1fr] gap-6">
 		<img class="shadow-sm rounded-sm" src={image} alt="Cover image for {book.title}" />
 		<div class="flex flex-grow flex-col">
-			<span class="font-semibold flex-grow">{book.title}</span>
-
+			<span class="text-lg font-semibold flex-grow">{book.title}</span>
 			<form class="flex flex-col">
 				<label for="startDate">Start date</label>
 				<input
