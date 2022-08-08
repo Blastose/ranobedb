@@ -1,0 +1,17 @@
+diff --git a/node_modules/svelte-simple-modal/src/Modal.svelte b/node_modules/svelte-simple-modal/src/Modal.svelte
+index 256b4cb..2fcda6c 100644
+--- a/node_modules/svelte-simple-modal/src/Modal.svelte
++++ b/node_modules/svelte-simple-modal/src/Modal.svelte
+@@ -381,10 +381,10 @@
+     prevBodyPosition = document.body.style.position;
+     prevBodyOverflow = document.body.style.overflow;
+     prevBodyWidth = document.body.style.width;
+-    document.body.style.position = 'fixed';
++    // document.body.style.position = 'fixed';
+     document.body.style.top = `-${scrollY}px`;
+     document.body.style.overflow = 'hidden';
+-    document.body.style.width = '100%';
++    // document.body.style.width = '100%';
+   };
+ 
+   const enableScroll = () => {

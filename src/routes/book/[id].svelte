@@ -1,8 +1,22 @@
 <script lang="ts">
 	import type Book from '$lib/models/book';
+	import { session } from '$app/stores';
+	import { bind } from 'svelte-simple-modal';
+	import { modal } from '$lib/stores/modalStore';
+	import AddBookModal from '$lib/add-book-modal/AddBookModal.svelte';
 
 	export let book: Book;
 	export let image: string;
+	export let readingStatus: string | null;
+
+	const showModal = () => {
+		modal.set(
+			bind(AddBookModal, {
+				book,
+				image
+			})
+		);
+	};
 </script>
 
 <svelte:head>
@@ -17,5 +31,16 @@
 	<p>{@html book.description}</p>
 
 	<br />
-	<p><a href="/books" class="text-blue-500">Back to books</a></p>
+	{#if $session.user}
+		<button
+			on:click={showModal}
+			class="rounded-md bg-slate-500 hover:bg-slate-600 text-lg px-12 py-2 text-white"
+		>
+			{#if readingStatus}
+				{readingStatus}
+			{:else}
+				Add
+			{/if}
+		</button>
+	{/if}
 </div>

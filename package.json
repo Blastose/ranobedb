@@ -15,10 +15,11 @@
 		"postinstall": "patch-package"
 	},
 	"dependencies": {
-		"@supabase/supabase-js": "^1.35.4",
 		"@supabase/auth-helpers-svelte": "^0.4.5",
 		"@supabase/auth-helpers-sveltekit": "^0.6.8",
-		"dotenv": "^16.0.1"
+		"@supabase/supabase-js": "^1.35.4",
+		"dotenv": "^16.0.1",
+		"svelte-simple-modal": "^1.4.1"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.22.2",
@@ -31,6 +32,7 @@
 		"eslint": "^8.16.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-svelte3": "^4.0.0",
+		"patch-package": "^6.4.7",
 		"postcss": "^8.4.14",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
@@ -40,8 +42,7 @@
 		"tailwindcss": "^3.1.6",
 		"tslib": "^2.3.1",
 		"typescript": "^4.7.4",
-		"vite": "^3.0.0",
-		"patch-package": "^6.4.7"
+		"vite": "^3.0.0"
 	},
 	"type": "module"
 }

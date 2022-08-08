@@ -9,6 +9,9 @@
 	import { supabaseClient } from '$lib/db';
 	import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
 
+	import Modal from 'svelte-simple-modal';
+	import { modal } from '$lib/stores/modalStore';
+
 	let initialLoad = true;
 
 	onMount(async () => {
@@ -26,6 +29,8 @@
 	{#if initialLoad}
 		<div class="flex bg-[#fafafa]" />
 	{:else}
+		<Modal show={$modal} />
+
 		<div class="flex">
 			<Sidebar />
 
