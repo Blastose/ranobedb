@@ -162,7 +162,7 @@
 				</select>
 			</form>
 
-			<div class="flex justify-between">
+			<div class="flex flex-col gap-2 sm:justify-between sm:flex-row">
 				<button
 					on:click={async () => {
 						if (status === 'N/A') {
