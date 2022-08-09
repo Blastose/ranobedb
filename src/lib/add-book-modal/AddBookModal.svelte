@@ -7,6 +7,7 @@
 	import { navigating } from '$app/stores';
 	import { invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
+	import Icon from '$lib/components/Icon.svelte';
 
 	const { close } = getContext('simple-modal');
 
@@ -127,69 +128,76 @@
 		<img class="shadow-sm rounded-sm" src={image} alt="Cover image for {book.title}" />
 		<div class="flex flex-grow flex-col gap-4">
 			<span class="text-lg font-semibold ">{book.title}</span>
-			<form class="flex flex-col">
-				<label for="startDate">Start date</label>
-				<input
-					class="bg-slate-200 p-2 rounded-md"
-					type="date"
-					name="startDate"
-					id="startDate"
-					bind:value={startDate}
-				/>
-				<label for="finishDate">Finish date</label>
-				<input
-					class="bg-slate-200 p-2 rounded-md"
-					type="date"
-					name="finishDate"
-					id="finishDate"
-					bind:value={finishDate}
-				/>
 
-				<label for="label">Status</label>
-				<select
-					bind:value={selectStatus}
-					class="bg-slate-200 p-2 rounded-md"
-					name="label"
-					id="label"
-				>
-					{#if labels && status}
-						{#each labels as label (label.label_id)}
-							<option selected={label.label_name === status} value={label.label_name}>
-								{label.label_name}
-							</option>
-						{/each}
-					{/if}
-				</select>
-			</form>
+			{#if loading}
+				<div class="flex flex-grow items-center justify-center">
+					<Icon class="animate-spin" name="loading" height="64" width="64" />
+				</div>
+			{:else}
+				<form class="flex flex-col">
+					<label for="startDate">Start date</label>
+					<input
+						class="bg-slate-200 p-2 rounded-md"
+						type="date"
+						name="startDate"
+						id="startDate"
+						bind:value={startDate}
+					/>
+					<label for="finishDate">Finish date</label>
+					<input
+						class="bg-slate-200 p-2 rounded-md"
+						type="date"
+						name="finishDate"
+						id="finishDate"
+						bind:value={finishDate}
+					/>
 
-			<div class="flex flex-col gap-2 sm:justify-between sm:flex-row">
-				<button
-					on:click={async () => {
-						if (status === 'N/A') {
-							await addBook();
-						} else {
-							await updateBook();
-						}
-						await invalidate($page.url.href);
-						close();
-					}}
-					class=" w-min px-8 py-1 rounded-md text-white bg-slate-500"
-				>
-					{status === 'N/A' || status === null ? 'Add' : 'Update'}
-				</button>
-				{#if status !== 'N/A' && !loading}
+					<label for="label">Status</label>
+					<select
+						bind:value={selectStatus}
+						class="bg-slate-200 p-2 rounded-md"
+						name="label"
+						id="label"
+					>
+						{#if labels && status}
+							{#each labels as label (label.label_id)}
+								<option selected={label.label_name === status} value={label.label_name}>
+									{label.label_name}
+								</option>
+							{/each}
+						{/if}
+					</select>
+				</form>
+
+				<div class="flex flex-col gap-2 sm:justify-between sm:flex-row">
 					<button
 						on:click={async () => {
-							await removeBook();
+							if (status === 'N/A') {
+								await addBook();
+							} else {
+								await updateBook();
+							}
 							await invalidate($page.url.href);
 							close();
 						}}
-						class=" w-fit px-8 py-1 rounded-md text-white bg-slate-500"
+						class=" w-min px-8 py-1 rounded-md text-white bg-slate-500"
 					>
-						Remove
+						{status === 'N/A' || status === null ? 'Add' : 'Update'}
 					</button>
-				{/if}
-			</div>
+					{#if status !== 'N/A' && !loading}
+						<button
+							on:click={async () => {
+								await removeBook();
+								await invalidate($page.url.href);
+								close();
+							}}
+							class=" w-fit px-8 py-1 rounded-md text-white bg-slate-500"
+						>
+							Remove
+						</button>
+					{/if}
+				</div>
+			{/if}
 		</div>
 	</div>
 </div>
