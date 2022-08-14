@@ -5,6 +5,7 @@
 	import View from '$lib/models/view';
 	import ViewSelect from '$lib/book/ViewSelect.svelte';
 	import { booksView } from '$lib/stores/booksViewStore';
+	import BookImageContainer from './BookImageContainer.svelte';
 
 	export let books: BookInfo[];
 </script>
@@ -18,5 +19,7 @@
 		<BookCardContainer {books} />
 	{:else if $booksView === View.table}
 		<BookTable {books} />
+	{:else if $booksView === View.picture}
+		<BookImageContainer {books} />
 	{/if}
 </div>
