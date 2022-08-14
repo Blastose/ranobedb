@@ -32,7 +32,7 @@
 	</a>
 	<div class="flex flex-col gap-2">
 		<a href="/book/{book.id}" sveltekit:prefetch>
-			<span class="font-bold text-xl">{book.title}</span>
+			<span class="font-bold md:text-xl">{book.title}</span>
 		</a>
 		<div class="flex flex-wrap gap-4">
 			{#each book.authors as author (author.id)}
