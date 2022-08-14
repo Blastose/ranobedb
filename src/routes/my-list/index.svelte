@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BookCardContainer from '$lib/book/BookCardContainer.svelte';
+	import BookView from '$lib/book/BookView.svelte';
 	import type BookInfo from '$lib/models/bookInfo';
 	import Label from '$lib/reading-labels/Label.svelte';
 
@@ -17,6 +17,5 @@
 		<Label name="Finished" {queryName} queryValue="Finished" />
 	</div>
 
-	<p>{books.length} books</p>
-	<BookCardContainer {books} />
+	<BookView {books} />
 </div>
