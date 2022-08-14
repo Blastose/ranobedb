@@ -5,7 +5,7 @@
 	export let books: BookInfo[];
 </script>
 
-<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2">
+<div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-2">
 	{#each books as book (book.id)}
 		<BookImage {book} />
 	{/each}
