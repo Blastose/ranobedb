@@ -19,11 +19,14 @@
 
 <div>
 	<a class="h-min" href="/book/{book.id}" sveltekit:prefetch>
-		<img
-			loading="lazy"
-			class="shadow-sm rounded-sm"
-			src={coverUrl}
-			alt="Cover image for {book.title}"
-		/>
+		<div class="flex flex-col gap-1">
+			<img
+				loading="lazy"
+				class="shadow-sm rounded-sm"
+				src={coverUrl}
+				alt="Cover image for {book.title}"
+			/>
+			<span>{book.title}</span>
+		</div>
 	</a>
 </div>
