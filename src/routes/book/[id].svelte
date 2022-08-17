@@ -24,6 +24,14 @@
 </svelte:head>
 
 <div class="">
+	<div
+		class="bg-image h-16 md:h-56"
+		style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)),
+	url({image});"
+	>
+		<div class="backdrop-blur w-full h-full" />
+	</div>
+
 	<img src={image} alt="Cover image for {book.title}" width="240" height="340" />
 	<br />
 	<h1 class="text-2xl font-bold">{book.title}</h1>
@@ -44,3 +52,11 @@
 		</button>
 	{/if}
 </div>
+
+<style>
+	.bg-image {
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 20% 20%;
+	}
+</style>
