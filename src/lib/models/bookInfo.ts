@@ -4,6 +4,7 @@ type BookInfo = {
 	description: string;
 	title_romaji: string;
 	release_date: Date;
+	volume: string;
 	cover_image_file_name: string;
 	publisher: string[];
 	artists: { id: number; name: string }[];
