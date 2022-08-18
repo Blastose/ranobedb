@@ -23,35 +23,43 @@
 	<title>{book.title} - Light Novel DB</title>
 </svelte:head>
 
-<div class="">
+<main>
 	<div
-		class="bg-image h-16 md:h-56"
+		class="bg-image h-24 md:h-48"
 		style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5)),
 	url({image});"
 	>
-		<div class="backdrop-blur w-full h-full" />
+		<div class="backdrop-blur w-full h-full flex flex-col-reverse">
+			<span
+				class="container mx-auto px-8 py-4 text-white font-bold md:text-4xl overflow-hidden p-4"
+			>
+				{book.title}
+			</span>
+		</div>
 	</div>
 
-	<img src={image} alt="Cover image for {book.title}" width="240" height="340" />
-	<br />
-	<h1 class="text-2xl font-bold">{book.title}</h1>
-	<br />
-	<p>{@html book.description}</p>
+	<div class="container mx-auto px-8 py-4 duration-150">
+		<img src={image} alt="Cover image for {book.title}" width="240" height="340" />
+		<br />
+		<h1 class="text-2xl font-bold">{book.title}</h1>
+		<br />
+		<p>{@html book.description}</p>
 
-	<br />
-	{#if $session.user}
-		<button
-			on:click={showModal}
-			class="rounded-md bg-slate-500 hover:bg-slate-600 text-lg px-12 py-2 text-white"
-		>
-			{#if readingStatus}
-				{readingStatus}
-			{:else}
-				Add
-			{/if}
-		</button>
-	{/if}
-</div>
+		<br />
+		{#if $session.user}
+			<button
+				on:click={showModal}
+				class="rounded-md bg-slate-500 hover:bg-slate-600 text-lg px-12 py-2 text-white"
+			>
+				{#if readingStatus}
+					{readingStatus}
+				{:else}
+					Add
+				{/if}
+			</button>
+		{/if}
+	</div>
+</main>
 
 <style>
 	.bg-image {
