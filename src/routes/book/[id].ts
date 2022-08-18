@@ -1,11 +1,11 @@
 import { supabaseClient } from '$lib/db';
 import { supabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 import type { RequestHandler } from '@sveltejs/kit';
-import type Book from '$lib/models/book';
+import type BookInfo from '$lib/models/bookInfo';
 
 export const GET: RequestHandler = async ({ params, locals, request }) => {
 	const { data, error, status } = await supabaseServerClient(request)
-		.from<Book>('book')
+		.from<BookInfo>('book_info')
 		.select('*')
 		.eq('id', params.id);
 	if (error) {

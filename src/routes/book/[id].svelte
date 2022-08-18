@@ -1,11 +1,12 @@
 <script lang="ts">
-	import type Book from '$lib/models/book';
+	import type BookInfo from '$lib/models/bookInfo';
 	import { session } from '$app/stores';
 	import { bind } from 'svelte-simple-modal';
 	import { modal } from '$lib/stores/modalStore';
 	import AddBookModal from '$lib/add-book-modal/AddBookModal.svelte';
+	import PersonBox from '$lib/book/PersonBox.svelte';
 
-	export let book: Book;
+	export let book: BookInfo;
 	export let image: string;
 	export let readingStatus: string | null;
 
@@ -61,6 +62,15 @@
 						{/if}
 					</button>
 				{/if}
+
+				<div class="flex gap-2">
+					{#each book.authors as author (author.id)}
+						<PersonBox person={author} type="author" />
+					{/each}
+					{#each book.artists as artist (artist.id)}
+						<PersonBox person={artist} type="artist" />
+					{/each}
+				</div>
 
 				<p>{@html book.description}</p>
 			</div>
