@@ -124,16 +124,21 @@
 
 <div class="flex flex-col gap-2">
 	<span class="text-xl">Add book to reading list</span>
-	<div class="grid grid-cols-[35%,_1fr] gap-6">
-		<img class="shadow-sm rounded-sm" src={image} alt="Cover image for {book.title}" />
-		<div class="flex flex-grow flex-col gap-4">
-			<span class="text-lg font-semibold ">{book.title}</span>
+	<div class="grid grid-rows-[min-content,_1fr] md:grid-cols-[35%,_1fr] gap-y-2 md:gap-x-4">
+		<div class="grid grid-cols-[25%,_1fr] md:grid-cols-none md:grid-rows-[1fr,_min-content] gap-2">
+			<img class="shadow-sm rounded-sm" src={image} alt="Cover image for {book.title}" />
+			<span class="md:hidden text-lg font-semibold">{book.title}</span>
+		</div>
 
+		<div class="flex flex-grow flex-col gap-4">
 			{#if loading}
 				<div class="flex flex-grow items-center justify-center">
 					<Icon class="animate-spin" name="loading" height="64" width="64" />
 				</div>
 			{:else}
+				<!-- This span is repeated above but hidden depending on screen size. -->
+				<!-- There might be a way to accomplish this with grid template areas -->
+				<span class="hidden md:block text-lg font-semibold">{book.title}</span>
 				<form class="flex flex-col">
 					<label for="startDate">Start date</label>
 					<input
@@ -169,7 +174,7 @@
 					</select>
 				</form>
 
-				<div class="flex flex-col gap-2 sm:justify-between sm:flex-row">
+				<div class="flex flex-col gap-2">
 					<button
 						on:click={async () => {
 							if (status === 'N/A') {
@@ -180,7 +185,7 @@
 							await invalidate($page.url.href);
 							close();
 						}}
-						class=" w-min px-8 py-1 rounded-md text-white bg-slate-500"
+						class="px-8 py-1 rounded-md text-white bg-slate-500 hover:bg-slate-600"
 					>
 						{status === 'N/A' || status === null ? 'Add' : 'Update'}
 					</button>
@@ -191,7 +196,7 @@
 								await invalidate($page.url.href);
 								close();
 							}}
-							class=" w-fit px-8 py-1 rounded-md text-white bg-slate-500"
+							class="px-8 py-1 rounded-md text-white bg-slate-500 hover:bg-slate-600"
 						>
 							Remove
 						</button>
