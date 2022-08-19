@@ -42,6 +42,7 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 		.from('cover-images')
 		.getPublicUrl(`${data[0].cover_image_file_name}.jpg`);
 
+	let readingStatus: string | null = null;
 	if (locals.user) {
 		const { data: readData, error } = await supabaseServerClient(request)
 			.from('reads')
@@ -57,21 +58,13 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 			.limit(1)
 			.single();
 
-		let readingStatus: string | null;
-		if (error) {
-			readingStatus = null;
-		} else {
+		if (!error) {
 			readingStatus = readData.reader_labels[0].label_name;
 		}
-
-		return {
-			status,
-			body: { book: data[0], seriesBooks, releases, image: publicURL, readingStatus }
-		};
 	}
 
 	return {
 		status,
-		body: { book: data[0], seriesBooks, releases, image: publicURL, readingStatus: null }
+		body: { book: data[0], seriesBooks, releases, image: publicURL, readingStatus }
 	};
 };
