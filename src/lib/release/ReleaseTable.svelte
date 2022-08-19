@@ -1,30 +1,29 @@
 <script lang="ts">
 	import type Release from '$lib/models/release';
-
 	export let releases: Release[];
 </script>
 
 <!-- The container has padding of 32px on both sides so we need to subtract that -->
 <!-- Not sure if there is a better way for the table widths to be responsive -->
-<div class="overflow-x-auto max-w-[calc(100vw_-_64px)]">
+<div class="overflow-x-auto rounded-sm max-w-[16rem] sm:max-w-lg md:max-w-xl lg:max-w-2xl">
 	<table class="table-auto bg-[#e4e7ee] w-full whitespace-nowrap">
 		<thead class="text-left">
 			<tr class="text-white">
 				<th>Lang</th>
-				<th>Title</th>
-				<th>Format</th>
 				<th>Release date</th>
+				<th>Format</th>
 				<th>ISBN13</th>
+				<th>Title</th>
 			</tr>
 		</thead>
 		<tbody>
 			{#each releases as release (release.id)}
 				<tr>
 					<td>{release.lang}</td>
-					<td>{release.name}</td>
-					<td>{release.format}</td>
 					<td>{release.release_date}</td>
+					<td>{release.format}</td>
 					<td>{release.isbn13 || 'N/A'}</td>
+					<td>{release.name}</td>
 				</tr>
 			{/each}
 		</tbody>
