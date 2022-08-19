@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { supabaseClient } from '$lib/db';
-	import type BookInfo from '$lib/models/bookInfo';
 	import { onMount } from 'svelte';
 
-	export let book: BookInfo;
+	export let book: { id: number; title: string; cover_image_file_name: string };
 
 	let coverUrl: string | null;
 	const getCover = () => {
@@ -22,7 +21,7 @@
 		<div class="flex flex-col gap-1">
 			<img
 				loading="lazy"
-				class="shadow-sm rounded-sm"
+				class="shadow-md rounded-sm"
 				src={coverUrl}
 				alt="Cover image for {book.title}"
 			/>
