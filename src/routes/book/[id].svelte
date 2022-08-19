@@ -84,7 +84,7 @@
 						{/each}
 					</div>
 
-					<p>{@html book.description}</p>
+					<p class="max-w-3xl">{@html book.description}</p>
 				</div>
 			</div>
 
