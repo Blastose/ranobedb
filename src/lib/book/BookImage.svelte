@@ -21,7 +21,7 @@
 		<div class="flex flex-col gap-1">
 			<img
 				loading="lazy"
-				class="shadow-sm rounded-sm"
+				class="shadow-md rounded-sm"
 				src={coverUrl}
 				alt="Cover image for {book.title}"
 			/>
