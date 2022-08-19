@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type BookInfo from '$lib/models/bookInfo';
 	import BookImage from './BookImage.svelte';
 
-	export let books: BookInfo[];
+	export let books: { id: number; title: string; cover_image_file_name: string }[];
 </script>
 
 <div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-2">

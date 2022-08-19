@@ -5,11 +5,19 @@
 	import { modal } from '$lib/stores/modalStore';
 	import AddBookModal from '$lib/add-book-modal/AddBookModal.svelte';
 	import PersonBox from '$lib/book/PersonBox.svelte';
-	import type Release from '$lib/models/release';
 	import ReleaseTable from '$lib/release/ReleaseTable.svelte';
+	import type Release from '$lib/models/release';
+	import BookImageContainer from '$lib/book/BookImageContainer.svelte';
 
 	export let book: BookInfo;
 	export let image: string;
+	export let seriesBooks: {
+		series_id: number;
+		series_title: string;
+		id: number;
+		title: string;
+		cover_image_file_name: string;
+	}[];
 	export let releases: Release[];
 	export let readingStatus: string | null;
 
@@ -43,7 +51,7 @@
 	</div>
 
 	<div class="container mx-auto px-8 py-4 duration-150">
-		<div class="flex flex-col gap-4">
+		<div class="flex flex-col gap-6">
 			<div class="flex flex-col md:flex-row gap-4">
 				<img
 					src={image}
@@ -79,10 +87,18 @@
 					<p>{@html book.description}</p>
 				</div>
 			</div>
+
 			<div class="flex flex-col gap-2">
 				<span class="font-bold">Releases:</span>
 				<ReleaseTable {releases} />
 			</div>
+
+			{#if seriesBooks.length > 1}
+				<div class="flex flex-col gap-2">
+					<span class="font-bold">Other books in the same series:</span>
+					<BookImageContainer books={seriesBooks} />
+				</div>
+			{/if}
 		</div>
 	</div>
 </main>

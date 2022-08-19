@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { supabaseClient } from '$lib/db';
-	import type BookInfo from '$lib/models/bookInfo';
 	import { onMount } from 'svelte';
 
-	export let book: BookInfo;
+	export let book: { id: number; title: string; cover_image_file_name: string };
 
 	let coverUrl: string | null;
 	const getCover = () => {

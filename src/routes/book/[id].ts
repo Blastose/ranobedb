@@ -29,6 +29,15 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 		};
 	}
 
+	const { data: seriesBooks, error: sError } = await supabaseClient.rpc('get_books_same_series', {
+		f_book_id: params.id
+	});
+	if (sError) {
+		return {
+			status: 404
+		};
+	}
+
 	const { publicURL } = supabaseClient.storage
 		.from('cover-images')
 		.getPublicUrl(`${data[0].cover_image_file_name}.jpg`);
@@ -57,12 +66,12 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 
 		return {
 			status,
-			body: { book: data[0], releases, image: publicURL, readingStatus }
+			body: { book: data[0], seriesBooks, releases, image: publicURL, readingStatus }
 		};
 	}
 
 	return {
 		status,
-		body: { book: data[0], releases, image: publicURL, readingStatus: null }
+		body: { book: data[0], seriesBooks, releases, image: publicURL, readingStatus: null }
 	};
 };
