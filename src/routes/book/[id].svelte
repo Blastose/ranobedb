@@ -88,10 +88,10 @@
 				</div>
 			</div>
 
-			<div class="flex flex-col gap-2">
+			<!-- <div class="flex flex-col gap-2">
 				<span class="font-bold">Releases:</span>
 				<ReleaseTable {releases} />
-			</div>
+			</div> -->
 
 			{#if seriesBooks.length > 1}
 				<div class="flex flex-col gap-2">
