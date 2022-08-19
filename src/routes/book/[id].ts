@@ -29,9 +29,12 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 		};
 	}
 
-	const { data: seriesBooks, error: sError } = await supabaseClient.rpc('get_books_same_series', {
-		f_book_id: params.id
-	});
+	const { data: seriesBooks, error: sError } = await supabaseServerClient(request).rpc(
+		'get_books_same_series',
+		{
+			f_book_id: params.id
+		}
+	);
 	if (sError) {
 		return {
 			status: 404
