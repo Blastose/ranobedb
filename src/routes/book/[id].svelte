@@ -5,9 +5,12 @@
 	import { modal } from '$lib/stores/modalStore';
 	import AddBookModal from '$lib/add-book-modal/AddBookModal.svelte';
 	import PersonBox from '$lib/book/PersonBox.svelte';
+	import type Release from '$lib/models/release';
+	import ReleaseTable from '$lib/release/ReleaseTable.svelte';
 
 	export let book: BookInfo;
 	export let image: string;
+	export let releases: Release[];
 	export let readingStatus: string | null;
 
 	const showModal = () => {
@@ -40,39 +43,45 @@
 	</div>
 
 	<div class="container mx-auto px-8 py-4 duration-150">
-		<div class="flex flex-col md:flex-row gap-2">
-			<img
-				src={image}
-				alt="Cover image for {book.title}"
-				class="h-fit shadow-md rounded-sm"
-				width="240"
-				height="340"
-			/>
+		<div class="flex flex-col gap-4">
+			<div class="flex flex-col md:flex-row gap-4">
+				<img
+					src={image}
+					alt="Cover image for {book.title}"
+					class="h-fit shadow-md rounded-sm"
+					width="240"
+					height="340"
+				/>
 
-			<div class="flex flex-col gap-4 p-4">
-				{#if $session.user}
-					<button
-						on:click={showModal}
-						class="w-fit rounded-md bg-slate-500 hover:bg-slate-600 text-lg px-12 py-2 text-white"
-					>
-						{#if readingStatus}
-							{readingStatus}
-						{:else}
-							Add
-						{/if}
-					</button>
-				{/if}
+				<div class="flex flex-col gap-4 py-4">
+					{#if $session.user}
+						<button
+							on:click={showModal}
+							class="w-fit rounded-md bg-slate-500 hover:bg-slate-600 text-lg px-12 py-2 text-white"
+						>
+							{#if readingStatus}
+								{readingStatus}
+							{:else}
+								Add
+							{/if}
+						</button>
+					{/if}
 
-				<div class="flex gap-2">
-					{#each book.authors as author (author.id)}
-						<PersonBox person={author} type="author" />
-					{/each}
-					{#each book.artists as artist (artist.id)}
-						<PersonBox person={artist} type="artist" />
-					{/each}
+					<div class="flex gap-2">
+						{#each book.authors as author (author.id)}
+							<PersonBox person={author} type="author" />
+						{/each}
+						{#each book.artists as artist (artist.id)}
+							<PersonBox person={artist} type="artist" />
+						{/each}
+					</div>
+
+					<p>{@html book.description}</p>
 				</div>
-
-				<p>{@html book.description}</p>
+			</div>
+			<div class="flex flex-col gap-2">
+				<span class="font-bold">Releases:</span>
+				<ReleaseTable {releases} />
 			</div>
 		</div>
 	</div>

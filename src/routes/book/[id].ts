@@ -2,6 +2,7 @@ import { supabaseClient } from '$lib/db';
 import { supabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 import type { RequestHandler } from '@sveltejs/kit';
 import type BookInfo from '$lib/models/bookInfo';
+import type Release from '$lib/models/release';
 
 export const GET: RequestHandler = async ({ params, locals, request }) => {
 	const { data, error, status } = await supabaseServerClient(request)
@@ -13,6 +14,16 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 	}
 
 	if (data === null || data.length === 0) {
+		return {
+			status: 404
+		};
+	}
+
+	const { data: releases, error: relError } = await supabaseServerClient(request)
+		.from<Release>('book_releases')
+		.select('*')
+		.eq('book_id', params.id);
+	if (relError) {
 		return {
 			status: 404
 		};
@@ -46,12 +57,12 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 
 		return {
 			status,
-			body: { book: data[0], image: publicURL, readingStatus }
+			body: { book: data[0], releases, image: publicURL, readingStatus }
 		};
 	}
 
 	return {
 		status,
-		body: { book: data[0], image: publicURL, readingStatus: null }
+		body: { book: data[0], releases, image: publicURL, readingStatus: null }
 	};
 };
