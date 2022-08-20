@@ -7,7 +7,7 @@
 
 <svelte:head><title>Books - Light Novel DB</title></svelte:head>
 
-<main class="container mx-auto px-8 py-4 duration-150">
+<main class="container mx-auto px-8 pt-4 pb-8 duration-150">
 	<div class="flex flex-col gap-2">
 		<BookView {books} />
 	</div>

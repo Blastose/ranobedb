@@ -50,7 +50,7 @@
 		</div>
 	</div>
 
-	<div class="container mx-auto px-8 py-4 duration-150">
+	<div class="container mx-auto px-8 pt-4 pb-8 duration-150">
 		<div class="flex flex-col gap-6">
 			<div class="flex flex-col md:flex-row gap-4">
 				<img

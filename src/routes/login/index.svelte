@@ -9,7 +9,7 @@
 	<title>Login - Light Novel DB</title>
 </svelte:head>
 
-<main class="container mx-auto px-8 py-4 duration-150">
+<main class="container mx-auto px-8 pt-4 pb-8 duration-150">
 	{#if !$session.user}
 		<Login {error} />
 	{:else}

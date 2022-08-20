@@ -1,4 +1,4 @@
-<main class="container mx-auto px-8 py-4 duration-150">
+<main class="container mx-auto px-8 pt-4 pb-8 duration-150">
 	<div class="max-w-xl mx-auto flex flex-col gap-4">
 		<div>
 			<h1 class="text-2xl font-bold">Verification email sent!</h1>
