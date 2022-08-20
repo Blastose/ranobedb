@@ -8,6 +8,7 @@
 	import ReleaseTable from '$lib/release/ReleaseTable.svelte';
 	import type Release from '$lib/models/release';
 	import BookImageContainer from '$lib/book/BookImageContainer.svelte';
+	import ReleaseCardContainer from '$lib/release/ReleaseCardContainer.svelte';
 
 	export let book: BookInfo;
 	export let image: string;
@@ -90,7 +91,7 @@
 
 			<div class="flex flex-col gap-2">
 				<span class="font-bold">Releases:</span>
-				<ReleaseTable {releases} />
+				<ReleaseCardContainer {releases} />
 			</div>
 
 			{#if seriesBooks.length > 1}
