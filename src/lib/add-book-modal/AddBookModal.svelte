@@ -19,8 +19,8 @@
 	let readerId: number | null = null;
 	let status: string | null = null;
 	let selectStatus: string | null = 'Reading';
-	let startDate: Date | null = null;
-	let finishDate: Date | null = null;
+	let startDate: string = '';
+	let finishDate: string = '';
 	let labels: { label_name: string; label_id: number }[] | null = null;
 
 	const addBook = async () => {
@@ -28,8 +28,8 @@
 			{
 				reader_id: readerId,
 				book_id: book.id,
-				start_date: startDate,
-				finish_date: finishDate,
+				start_date: startDate.length !== 0 ? startDate : null,
+				finish_date: finishDate.length !== 0 ? finishDate : null,
 				added_date: new Date()
 			}
 		]);
@@ -47,8 +47,8 @@
 		const { data, error } = await supabaseClient
 			.from('reads')
 			.update({
-				start_date: startDate,
-				finish_date: finishDate
+				start_date: startDate.length !== 0 ? startDate : null,
+				finish_date: finishDate.length !== 0 ? finishDate : null
 			})
 			.match({ reader_id: readerId, book_id: book.id });
 		const {} = await supabaseClient
@@ -94,13 +94,12 @@
 			)
 			.eq('book_id', book.id)
 			.eq('reader.auth_id', $session.user.id);
-		console.log(data);
 
 		if (data.length !== 0) {
 			status = data[0].reader_labels[0].label_name;
 			selectStatus = status;
-			startDate = data[0].start_date;
-			finishDate = data[0].finish_date;
+			startDate = data[0].start_date || '';
+			finishDate = data[0].finish_date || '';
 		} else {
 			status = 'N/A';
 		}
@@ -109,7 +108,6 @@
 			.from('reading_list_label')
 			.select('*')
 			.order('label_id');
-		console.log(r);
 		labels = r;
 
 		loading = false;
