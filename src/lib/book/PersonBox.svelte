@@ -4,7 +4,9 @@
 	export let type: string;
 </script>
 
-<div class="bg-[#cfd7e7] hover:bg-[#697596] duration-75 hover:text-white rounded-sm text-sm">
+<div
+	class="bg-[#cfd7e7] hover:bg-[#697596] duration-75 hover:text-white rounded-sm shadow-sm text-sm"
+>
 	<a href="/person/{person.id}">
 		<div class="px-2 py-1 flex gap-1 items-center justify-center">
 			{#if type === 'artist'}
