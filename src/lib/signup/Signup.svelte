@@ -58,7 +58,7 @@
 					type="password"
 					id="password"
 					name="password"
-					labelName="Password"
+					labelName="Password (6+ characters)"
 					placeholder=""
 					required={true}
 					error={errors.password}
