@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Icon from '$lib/components/Icon.svelte';
+
 	import type Release from '$lib/models/release';
 	export let release: Release;
 </script>
@@ -10,9 +12,21 @@
 		</span>
 	</a>
 	<div class="grid grid-cols-2 sm:grid-cols-4">
-		<span title="Language">{release.lang}</span>
-		<span title="Release date">{release.release_date}</span>
-		<span title="Format">{release.format}</span>
-		<span title="ISBN13">{release.isbn13 || 'N/A'}</span>
+		<div class="flex gap-1 items-center">
+			<Icon height="24" width="24" name="language" />
+			<span title="Language">{release.lang}</span>
+		</div>
+		<div class="flex gap-1 items-center">
+			<Icon height="24" width="24" name="calendarRange" />
+			<span title="Release date">{release.release_date}</span>
+		</div>
+		<div class="flex gap-1 items-center">
+			<Icon height="24" width="24" name="bookOpen" />
+			<span title="Format">{release.format}</span>
+		</div>
+		<div class="flex gap-1 items-center">
+			<Icon height="24" width="24" name="barcode" />
+			<span title="ISBN13">{release.isbn13 || 'N/A'}</span>
+		</div>
 	</div>
 </div>
