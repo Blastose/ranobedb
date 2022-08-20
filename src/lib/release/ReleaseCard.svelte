@@ -11,7 +11,7 @@
 			{release.name}
 		</span>
 	</a>
-	<div class="grid grid-cols-2 sm:grid-cols-4">
+	<div class="grid grid-rows-4 gap-1 sm:gap-0 sm:grid-rows-none sm:grid-cols-4">
 		<div class="flex gap-1 items-center">
 			<Icon height="24" width="24" name="language" />
 			<span title="Language">{release.lang}</span>
