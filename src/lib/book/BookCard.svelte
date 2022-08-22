@@ -1,21 +1,10 @@
 <script lang="ts">
 	import PersonBox from '$lib/book/PersonBox.svelte';
-	import { supabaseClient } from '$lib/db';
 	import type BookInfo from '$lib/models/bookInfo';
-	import { onMount } from 'svelte';
 
 	export let book: BookInfo;
 
-	let coverUrl: string | null;
-	const getCover = () => {
-		let { publicURL } = supabaseClient.storage
-			.from('cover-images')
-			.getPublicUrl(`${book.cover_image_file_name}.jpg`);
-
-		coverUrl = publicURL;
-	};
-
-	onMount(getCover);
+	export let coverUrl: string;
 </script>
 
 <div
