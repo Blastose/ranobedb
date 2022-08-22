@@ -14,29 +14,29 @@
 	};
 
 	const hideSidebar = () => {
-		if ($windowWidth <= 1000) {
+		if ($windowWidth < 1024) {
 			sidebarOpen.set(false);
 		}
 	};
 
-	$: if ($windowWidth <= 1000) {
+	$: if ($windowWidth < 1024) {
 		sidebarOpen.set(false);
 	}
 
 	onMount(() => {
-		if ($windowWidth > 1000) {
+		if ($windowWidth >= 1024) {
 			sidebarOpen.set(true);
 		}
 	});
 </script>
 
 <div
-	class="duration-150 ease-in-out     
-	{$windowWidth <= 1000 ? 'fixed z-50 flex' : ''}
-	{$windowWidth <= 1000 && $sidebarOpen ? 'w-full' : ''}
+	class="duration-150 ease-in-out 
+	{$windowWidth < 1024 ? 'fixed z-50 flex' : ''}
+	{$windowWidth < 1024 && $sidebarOpen ? 'w-full' : ''}
 	{$sidebarOpen ? '' : '-ml-64'}"
 >
-	{#if $sidebarOpen && $windowWidth <= 1000}
+	{#if $sidebarOpen && $windowWidth < 1024}
 		<div
 			transition:fade={{ duration: 150 }}
 			on:click={toggleSidebar}

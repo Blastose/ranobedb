@@ -16,7 +16,7 @@
 	let initialLoad = true;
 
 	onMount(async () => {
-		if ($windowWidth <= 1000) {
+		if ($windowWidth < 1024) {
 			sidebarOpen.set(false);
 		}
 		initialLoad = false;
@@ -39,7 +39,7 @@
 
 			<!-- Hack to make screen full on smaller widths -->
 			<!-- Normally done on sidebar, but sidebar is removed from flow on small screens -->
-			{#if $windowWidth <= 1000}
+			{#if $windowWidth < 1024}
 				<div class="h-screen" />
 			{/if}
 
