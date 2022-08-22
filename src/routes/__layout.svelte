@@ -11,6 +11,7 @@
 
 	import Modal from 'svelte-simple-modal';
 	import { modal } from '$lib/stores/modalStore';
+	import Icon from '$lib/components/Icon.svelte';
 
 	let initialLoad = true;
 
@@ -27,7 +28,9 @@
 
 <SupaAuthHelper {supabaseClient} {session} autoRefreshToken={true}>
 	{#if initialLoad}
-		<div class="flex bg-[#fafafa]" />
+		<div class="flex h-screen w-screen justify-center items-center bg-[#fafafa]">
+			<Icon height="48" width="48" name="loading" class="animate-spin" />
+		</div>
 	{:else}
 		<Modal show={$modal} />
 
