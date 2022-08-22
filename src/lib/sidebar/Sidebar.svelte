@@ -31,7 +31,7 @@
 </script>
 
 <div
-	class="duration-150 ease-in-out 
+	class="duration-150 ease-in-out
 	{$windowWidth < 1024 ? 'fixed z-50 flex' : ''}
 	{$windowWidth < 1024 && $sidebarOpen ? 'w-full' : ''}
 	{$sidebarOpen ? '' : '-ml-64'}"
