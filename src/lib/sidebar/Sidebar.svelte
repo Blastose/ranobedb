@@ -5,7 +5,6 @@
 	import { sidebarOpen } from '$lib/stores/sidebarStore';
 	import { windowWidth } from '$lib/stores/windowWidthStore';
 	import { onMount } from 'svelte';
-	import { reader } from '$lib/stores/readerStore';
 	import { session } from '$app/stores';
 	import Icon from '$lib/components/Icon.svelte';
 
@@ -14,29 +13,33 @@
 	};
 
 	const hideSidebar = () => {
-		if ($windowWidth <= 1000) {
+		if ($windowWidth < 1024) {
 			sidebarOpen.set(false);
 		}
 	};
 
-	$: if ($windowWidth <= 1000) {
-		sidebarOpen.set(false);
-	}
+	let initialLoad = true;
 
 	onMount(() => {
-		if ($windowWidth > 1000) {
-			sidebarOpen.set(true);
-		}
+		hideSidebar();
+		initialLoad = false;
 	});
 </script>
 
+<svelte:window
+	bind:innerWidth={$windowWidth}
+	on:resize={() => {
+		hideSidebar();
+	}}
+/>
+
 <div
-	class="duration-150 ease-in-out     
-	{$windowWidth <= 1000 ? 'fixed z-50 flex' : ''}
-	{$windowWidth <= 1000 && $sidebarOpen ? 'w-full' : ''}
+	class="duration-150 ease-in-out
+	fixed z-50 flex lg:static lg:z-auto lg:block
+	{initialLoad ? '-ml-64 lg:ml-0' : ''}
 	{$sidebarOpen ? '' : '-ml-64'}"
 >
-	{#if $sidebarOpen && $windowWidth <= 1000}
+	{#if $sidebarOpen && $windowWidth < 1024 && !initialLoad}
 		<div
 			transition:fade={{ duration: 150 }}
 			on:click={toggleSidebar}
