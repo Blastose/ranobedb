@@ -32,8 +32,7 @@
 
 <div
 	class="duration-150 ease-in-out
-	{$windowWidth < 1024 ? 'fixed z-50 flex' : ''}
-	{$windowWidth < 1024 && $sidebarOpen ? 'w-full' : ''}
+	fixed z-50 flex lg:static lg:z-auto lg:block
 	{$sidebarOpen ? '' : '-ml-64'}"
 >
 	{#if $sidebarOpen && $windowWidth < 1024}
