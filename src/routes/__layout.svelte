@@ -13,9 +13,10 @@
 <svelte:head><title>Light Novel DB</title></svelte:head>
 
 <SupaAuthHelper {supabaseClient} {session} autoRefreshToken={true}>
-	<Modal show={$modal} />
-
 	<div class="dark flex">
+		<!-- The background color for the modal is hard coded here -->
+		<!-- Need's to be changed so it works with both light and dark mode -->
+		<Modal show={$modal} styleWindow={{ backgroundColor: '#212224' }} />
 		<Sidebar />
 
 		<!-- Hack to make screen full on smaller widths -->
