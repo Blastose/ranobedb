@@ -12,7 +12,7 @@
 				src={coverUrl}
 				alt="Cover image for {book.title}"
 			/>
-			<span>{book.title}</span>
+			<span class="dark:text-white">{book.title}</span>
 		</div>
 	</a>
 </div>

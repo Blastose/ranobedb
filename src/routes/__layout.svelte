@@ -15,14 +15,14 @@
 <SupaAuthHelper {supabaseClient} {session} autoRefreshToken={true}>
 	<Modal show={$modal} />
 
-	<div class="flex">
+	<div class="dark flex">
 		<Sidebar />
 
 		<!-- Hack to make screen full on smaller widths -->
 		<!-- Normally done on sidebar, but sidebar is removed from flow on small screens -->
 		<div class="h-screen lg:hidden" />
 
-		<div class="flex flex-col flex-grow bg-[#fafafa]">
+		<div class="flex flex-col flex-grow bg-[#fafafa] dark:bg-[#212224]">
 			<Header />
 
 			<div class="flex-grow">

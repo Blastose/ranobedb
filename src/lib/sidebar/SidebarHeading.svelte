@@ -10,15 +10,16 @@
 
 <!-- A bit of repetition here, maybe better way to simplify -->
 {#if !href}
-	<div class="flex items-center gap-1 px-2 py-1">
+	<div class="flex items-center gap-1 px-2 py-1 dark:text-white">
 		<slot />
 		<span class="font-semibold">{text}</span>
 	</div>
 {:else}
 	<div
-		class="hover:bg-[#cdcedd] {highlight && $page.url.pathname === href
-			? 'bg-[#73739C] hover:bg-[#474963] text-white'
-			: 'active:bg-[#a5a6b8]'} rounded-md duration-75"
+		class="hover:bg-[#cdcedd] dark:hover:bg-[#38393a] {highlight && $page.url.pathname === href
+			? 'bg-[#73739C] hover:bg-[#474963] dark:hover:bg-[#474963] text-white'
+			: 'active:bg-[#a5a6b8]'} rounded-md duration-75
+			dark:text-white"
 	>
 		<a {href} sveltekit:prefetch tabindex={$sidebarOpen ? 0 : -1} on:click={onClickFunction}>
 			<div class="flex items-center gap-1 px-2 py-1">

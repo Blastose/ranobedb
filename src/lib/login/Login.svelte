@@ -8,7 +8,7 @@
 
 <div class="max-w-xl mx-auto">
 	<div class="flex flex-col gap-4">
-		<h1 class="text-2xl font-bold">Log In</h1>
+		<h1 class="text-2xl font-bold dark:text-white">Log In</h1>
 		<form action="/login" method="POST">
 			<div class="flex flex-col gap-3">
 				{#if error}
@@ -43,7 +43,7 @@
 						name="remember"
 						class="self-start"
 					/>
-					<label for="remember">Remember me</label>
+					<label for="remember" class="dark:text-white">Remember me</label>
 				</div>
 				<div class="flex">
 					<input

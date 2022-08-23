@@ -46,10 +46,12 @@
 			class="w-[200%] h-screen bg-gray-700 opacity-50 fixed"
 		/>
 	{/if}
-	<nav class="overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] drop-shadow-sm">
-		<div class="px-4 py-2 flex flex-col gap-2">
+	<nav
+		class="overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] dark:bg-[#272829] drop-shadow-sm"
+	>
+		<div class="px-4 py-2 flex flex-col gap-2 dark:text-white">
 			<button
-				class="hover:bg-[#cdcedd] self-end rounded-lg p-1 duration-75"
+				class="hover:bg-[#cdcedd] dark:hover:text-black self-end rounded-lg p-1 duration-75"
 				tabindex={$sidebarOpen ? 0 : -1}
 				on:click={toggleSidebar}
 			>

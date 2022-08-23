@@ -84,18 +84,18 @@
 						{/each}
 					</div>
 
-					<p class="max-w-3xl">{@html book.description}</p>
+					<p class="max-w-3xl dark:text-white">{@html book.description}</p>
 				</div>
 			</div>
 
 			<div class="flex flex-col gap-2">
-				<span class="font-bold">Releases:</span>
+				<span class="font-bold dark:text-white">Releases:</span>
 				<ReleaseCardContainer {releases} />
 			</div>
 
 			{#if seriesBooks.length > 1}
 				<div class="flex flex-col gap-2">
-					<span class="font-bold">Other books in the same series:</span>
+					<span class="font-bold dark:text-white">Other books in the same series:</span>
 					<BookImageContainer books={seriesBooks} />
 				</div>
 			{/if}

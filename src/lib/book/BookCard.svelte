@@ -7,15 +7,17 @@
 	export let coverUrl: string;
 </script>
 
+<!-- Need to change the dark class that's on the div below since Svelte style is localized to component -->
+<!-- Probabily need to use Tailwind shortcuts or something -->
 <div
-	class="bg-[#e4e7ee] p-2 rounded-sm grid grid-cols-[1fr_75%] md:grid-cols-[150px_1fr] gap-x-2 shadow-sm"
+	class="bg-[#e4e7ee] dark dark:bg-[#38393a] p-2 rounded-sm grid grid-cols-[1fr_75%] md:grid-cols-[150px_1fr] gap-x-2 shadow-sm"
 >
 	<a class="h-min" href="/book/{book.id}" sveltekit:prefetch>
 		<img loading="lazy" class="shadow-sm rounded-sm" src={coverUrl} alt="Cover for {book.title}" />
 	</a>
 	<div class="flex flex-col gap-2">
 		<a href="/book/{book.id}" sveltekit:prefetch>
-			<span class="font-bold md:text-xl">{book.title}</span>
+			<span class="font-bold md:text-xl dark:text-white">{book.title}</span>
 		</a>
 		<div class="flex flex-wrap gap-4">
 			{#each book.authors as author (author.id)}
@@ -26,7 +28,7 @@
 			{/each}
 		</div>
 		<div class="relative blur-text overflow-hidden h-full">
-			<p class="min-h-min max-h-[100px] sm:max-h-[150px] text-sm text-[#263147]">
+			<p class="min-h-min max-h-[100px] sm:max-h-[150px] text-sm text-[#263147] dark:text-white">
 				{@html book.description}
 			</p>
 		</div>
@@ -42,5 +44,9 @@
 		left: 0;
 		bottom: 0;
 		background: linear-gradient(transparent, #e4e7ee);
+	}
+
+	.dark .blur-text:after {
+		background: linear-gradient(transparent, #38393a);
 	}
 </style>

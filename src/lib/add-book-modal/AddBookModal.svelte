@@ -121,44 +121,44 @@
 </script>
 
 <div class="flex flex-col gap-2">
-	<span class="text-xl">Add book to reading list</span>
+	<span class="text-xl dark:text-white">Add book to reading list</span>
 	<div class="grid grid-rows-[min-content,_1fr] md:grid-cols-[35%,_1fr] gap-y-2 md:gap-x-4">
 		<div class="grid grid-cols-[25%,_1fr] md:grid-cols-none md:grid-rows-[1fr,_min-content] gap-2">
 			<img class="shadow-sm rounded-sm" src={image} alt="Cover image for {book.title}" />
-			<span class="md:hidden text-lg font-semibold">{book.title}</span>
+			<span class="md:hidden text-lg font-semibold dark:text-white">{book.title}</span>
 		</div>
 
 		<div class="flex flex-grow flex-col gap-4">
 			{#if loading}
-				<div class="flex flex-grow items-center justify-center">
+				<div class="flex flex-grow items-center justify-center dark:text-white">
 					<Icon class="animate-spin" name="loading" height="64" width="64" />
 				</div>
 			{:else}
 				<!-- This span is repeated above but hidden depending on screen size. -->
 				<!-- There might be a way to accomplish this with grid template areas -->
-				<span class="hidden md:block text-lg font-semibold">{book.title}</span>
+				<span class="hidden md:block text-lg font-semibold dark:text-white">{book.title}</span>
 				<form class="flex flex-col">
-					<label for="startDate">Start date</label>
+					<label for="startDate" class="dark:text-white">Start date</label>
 					<input
-						class="bg-slate-200 p-2 rounded-md"
+						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-[#38393a]"
 						type="date"
 						name="startDate"
 						id="startDate"
 						bind:value={startDate}
 					/>
-					<label for="finishDate">Finish date</label>
+					<label for="finishDate" class="dark:text-white">Finish date</label>
 					<input
-						class="bg-slate-200 p-2 rounded-md"
+						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-[#38393a]"
 						type="date"
 						name="finishDate"
 						id="finishDate"
 						bind:value={finishDate}
 					/>
 
-					<label for="label">Status</label>
+					<label for="label" class="dark:text-white">Status</label>
 					<select
 						bind:value={selectStatus}
-						class="bg-slate-200 p-2 rounded-md"
+						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-[#38393a]"
 						name="label"
 						id="label"
 					>

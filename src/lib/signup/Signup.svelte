@@ -20,7 +20,7 @@
 
 <div class="max-w-xl mx-auto">
 	<div class="flex flex-col gap-4">
-		<h1 class="text-2xl font-bold">Sign up</h1>
+		<h1 class="text-2xl font-bold dark:text-white">Sign up</h1>
 		<form action="/signup" method="POST" use:enhance={[setErrors, setLoading]}>
 			<div class="flex flex-col gap-4">
 				{#if errors.requests}
@@ -29,7 +29,7 @@
 					</div>
 				{/if}
 				<div class="flex flex-col">
-					<span class="text-sm"
+					<span class="text-sm dark:text-white"
 						>Your username must be unique, but it will not be used for logging in.</span
 					>
 					<FormInput
