@@ -183,7 +183,7 @@
 							await invalidate($page.url.href);
 							close();
 						}}
-						class="px-8 py-1 rounded-md text-white bg-slate-500 hover:bg-slate-600"
+						class="px-8 py-1 rounded-md text-white bg-[#73739C] hover:bg-[#474963]"
 					>
 						{status === 'N/A' || status === null ? 'Add' : 'Update'}
 					</button>
@@ -194,7 +194,11 @@
 								await invalidate($page.url.href);
 								close();
 							}}
-							class="px-8 py-1 rounded-md text-white bg-slate-500 hover:bg-slate-600"
+							class="
+							px-8 py-1 rounded-md text-white 
+							bg-[#747490] hover:bg-[#5e5e72]
+							dark:bg-[#737387] dark:hover:bg-[#5e5e72]
+							"
 						>
 							Remove
 						</button>
