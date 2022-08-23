@@ -5,26 +5,56 @@
 	import { session } from '$app/stores';
 	import { supabaseClient } from '$lib/db';
 	import { SupaAuthHelper } from '@supabase/auth-helpers-svelte';
-
+	import { theme } from '$lib/stores/themeStore';
 	import Modal from 'svelte-simple-modal';
 	import { modal } from '$lib/stores/modalStore';
-	import { onMount } from 'svelte';
 	import ModalCloseButton from '$lib/components/ModalCloseButton.svelte';
+	import { browser } from '$app/env';
+	import { onMount } from 'svelte';
+
+	$: {
+		if (browser) {
+			if ($theme === 'dark') {
+				document.documentElement.classList.add('dark');
+			} else if ($theme === 'light') {
+				document.documentElement.classList.remove('dark');
+			}
+		}
+	}
 
 	onMount(() => {
-		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			document.documentElement.classList.add('dark');
+		if (!('theme' in localStorage)) {
+			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				document.documentElement.classList.add('dark');
+				theme.set('dark');
+			} else {
+				theme.set('light');
+			}
+		} else {
+			if (localStorage.getItem('theme') === 'dark') {
+				document.documentElement.classList.add('dark');
+				theme.set('dark');
+			} else if (localStorage.getItem('theme') === 'light') {
+				theme.set('light');
+			}
 		}
 	});
 </script>
 
 <svelte:head>
 	<script>
-		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-			document.documentElement.classList.add('dark');
+		// No functionality for ssr dark mode without js yet
+		// Same as above but needed to prevent flashing of white since this blocks
+		if (!('theme' in localStorage)) {
+			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				document.documentElement.classList.add('dark');
+			}
+		} else {
+			if (localStorage.getItem('theme') === 'dark') {
+				document.documentElement.classList.add('dark');
+			}
 		}
 	</script>
-	<title>Light Novel DB</title>
 </svelte:head>
 
 <SupaAuthHelper {supabaseClient} {session} autoRefreshToken={true}>

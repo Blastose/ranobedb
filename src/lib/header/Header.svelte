@@ -2,6 +2,7 @@
 	import { sidebarOpen } from '$lib/stores/sidebarStore';
 	import ProfileCircle from './ProfileCircle.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import ThemeToggle from './ThemeToggle.svelte';
 
 	const toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
@@ -24,7 +25,10 @@
 				{/if}
 				<span class="text-2xl font-bold dark:text-white">Light Novel DB</span>
 			</div>
-			<ProfileCircle />
+			<div class="flex gap-2">
+				<ThemeToggle />
+				<ProfileCircle />
+			</div>
 		</div>
 	</div>
 </header>
