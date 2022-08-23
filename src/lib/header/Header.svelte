@@ -25,7 +25,7 @@
 				{/if}
 				<span class="text-2xl font-bold dark:text-white">Light Novel DB</span>
 			</div>
-			<div class="flex gap-2">
+			<div class="flex gap-4">
 				<ThemeToggle />
 				<ProfileCircle />
 			</div>
