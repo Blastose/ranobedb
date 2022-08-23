@@ -8,12 +8,26 @@
 
 	import Modal from 'svelte-simple-modal';
 	import { modal } from '$lib/stores/modalStore';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			document.documentElement.classList.add('dark');
+		}
+	});
 </script>
 
-<svelte:head><title>Light Novel DB</title></svelte:head>
+<svelte:head>
+	<script>
+		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+			document.documentElement.classList.add('dark');
+		}
+	</script>
+	<title>Light Novel DB</title>
+</svelte:head>
 
 <SupaAuthHelper {supabaseClient} {session} autoRefreshToken={true}>
-	<div class="dark flex">
+	<div class="flex">
 		<!-- The background color for the modal is hard coded here -->
 		<!-- Need's to be changed so it works with both light and dark mode -->
 		<Modal show={$modal} styleWindow={{ backgroundColor: '#212224' }} />
