@@ -9,6 +9,7 @@
 	import Modal from 'svelte-simple-modal';
 	import { modal } from '$lib/stores/modalStore';
 	import { onMount } from 'svelte';
+	import ModalCloseButton from '$lib/components/ModalCloseButton.svelte';
 
 	onMount(() => {
 		if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -28,9 +29,15 @@
 
 <SupaAuthHelper {supabaseClient} {session} autoRefreshToken={true}>
 	<div class="flex">
-		<!-- The background color for the modal is hard coded here -->
-		<!-- Need's to be changed so it works with both light and dark mode -->
-		<Modal show={$modal} styleWindow={{ backgroundColor: '#212224' }} />
+		<Modal
+			show={$modal}
+			unstyled={true}
+			classBg="fixed z-[1000] top-0 left-0 flex flex-col justify-center w-screen h-screen bg-black/[.66]"
+			classWindowWrap="relative m-8 max-h-full"
+			classWindow="relative w-[40rem] max-w-full max-h-full my-8 mx-auto text-black rounded-md bg-white dark:bg-[#212224]"
+			classContent="relative p-4 max-h-[calc(100vh_-_4rem)] overflow-auto"
+			closeButton={ModalCloseButton}
+		/>
 		<Sidebar />
 
 		<!-- Hack to make screen full on smaller widths -->
