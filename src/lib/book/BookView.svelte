@@ -12,7 +12,7 @@
 
 <div class="flex flex-col gap-4">
 	<div class="flex items-center justify-between">
-		<p>{books.length} books</p>
+		<p class="dark:text-white">{books.length} books</p>
 		<ViewSelect />
 	</div>
 	{#if $booksView === View.card}

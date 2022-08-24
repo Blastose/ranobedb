@@ -15,7 +15,7 @@
 
 <div class="flex flex-col gap-1">
 	<label for={id}>
-		<span>{labelName}</span>
+		<span class="dark:text-white">{labelName}</span>
 		{#if required}
 			<span class="text-red-600">*</span>
 		{/if}
@@ -29,7 +29,7 @@
 		{placeholder}
 		class="
 			{error ? 'ring-2 ring-red-600' : ''}
-		bg-gray-200 px-3 py-2 rounded-md focus:outline-none focus:ring focus:ring-[#6b6e92]
+		bg-gray-200 dark:bg-[#38393a] dark:text-white px-3 py-2 rounded-md focus:outline-none focus:ring focus:ring-[#6b6e92]
 		"
 		bind:value
 	/>

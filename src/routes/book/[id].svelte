@@ -65,7 +65,7 @@
 					{#if $session.user}
 						<button
 							on:click={showModal}
-							class="w-fit rounded-md bg-slate-500 hover:bg-slate-600 text-lg px-12 py-2 text-white shadow-sm"
+							class="w-fit rounded-md bg-[#73739C] hover:bg-[#474963] text-lg px-12 py-2 text-white shadow-sm"
 						>
 							{#if readingStatus}
 								{readingStatus}
@@ -84,18 +84,18 @@
 						{/each}
 					</div>
 
-					<p class="max-w-3xl">{@html book.description}</p>
+					<p class="max-w-3xl dark:text-white">{@html book.description}</p>
 				</div>
 			</div>
 
 			<div class="flex flex-col gap-2">
-				<span class="font-bold">Releases:</span>
+				<span class="font-bold dark:text-white">Releases:</span>
 				<ReleaseCardContainer {releases} />
 			</div>
 
 			{#if seriesBooks.length > 1}
 				<div class="flex flex-col gap-2">
-					<span class="font-bold">Other books in the same series:</span>
+					<span class="font-bold dark:text-white">Other books in the same series:</span>
 					<BookImageContainer books={seriesBooks} />
 				</div>
 			{/if}

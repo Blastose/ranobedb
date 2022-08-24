@@ -12,14 +12,15 @@
 </script>
 
 <ul
-	class="absolute left-auto right-0 min-w-[15rem] rounded-md px-2 py-2 mt-2 drop-shadow-md outline outline-[#dddfe7] outline-1 bg-[#e4e7ee]"
+	class="absolute left-auto right-0 min-w-[15rem] rounded-md px-2 py-2 mt-2 drop-shadow-md outline outline-[#e4e7ee] dark:outline-[#3f4142] outline-1 bg-[#e4e7ee] dark:bg-[#505152]"
 	use:clickOutside={toggleButton}
 	on:outclick={() => ($profileMenuOpen = false)}
 >
 	{#if $session.user}
 		<li class="text-center py-2">
 			<a href="/profile">
-				<span class="font-bold text-lg">{$session.user.user_metadata.username}</span>
+				<span class="font-bold text-lg dark:text-white">{$session.user.user_metadata.username}</span
+				>
 			</a>
 		</li>
 		<SidebarItem
