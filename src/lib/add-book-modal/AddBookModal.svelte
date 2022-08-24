@@ -183,7 +183,7 @@
 							await invalidate($page.url.href);
 							close();
 						}}
-						class="px-8 py-1 rounded-md text-white bg-[#73739C] hover:bg-[#474963]"
+						class="px-8 py-1 rounded-md text-white bg-primary-500 hover:bg-primary-700"
 					>
 						{status === 'N/A' || status === null ? 'Add' : 'Update'}
 					</button>

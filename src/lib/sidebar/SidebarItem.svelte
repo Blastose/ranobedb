@@ -12,7 +12,7 @@
 <div
 	class="hover:bg-[#cdcedd] dark:hover:bg-[#38393a] dark:text-white 
 	{highlight && $page.url.pathname === href
-		? 'bg-[#73739C] hover:bg-[#474963] dark:hover:bg-[#474963] text-white'
+		? 'bg-primary-500 hover:bg-primary-700 dark:hover:bg-primary-700 text-white'
 		: 'active:bg-[#a5a6b8]'} 
 		rounded-md duration-75"
 >

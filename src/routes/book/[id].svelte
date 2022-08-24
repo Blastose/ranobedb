@@ -65,7 +65,7 @@
 					{#if $session.user}
 						<button
 							on:click={showModal}
-							class="w-fit rounded-md bg-[#73739C] hover:bg-[#474963] text-lg px-12 py-2 text-white shadow-sm"
+							class="w-fit rounded-md bg-primary-500 hover:bg-primary-700 text-lg px-12 py-2 text-white shadow-sm"
 						>
 							{#if readingStatus}
 								{readingStatus}

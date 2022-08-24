@@ -13,7 +13,7 @@
 	class="rounded-sm
   {$page.url.searchParams.get(queryName) === queryValue ||
 	(queryValue === '' && !$page.url.searchParams.get(queryName))
-		? 'text-white bg-[#73739C]'
+		? 'text-white bg-primary-500'
 		: 'bg-[#cdcedd] hover:bg-[#bbbcce]  dark:text-white dark:bg-[#505152] dark:hover:bg-[#434446]'}"
 >
 	<a sveltekit:prefetch href="{newUrl.pathname}{newUrl.search}">
