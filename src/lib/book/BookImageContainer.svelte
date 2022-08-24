@@ -7,7 +7,7 @@
 
 	const getCover = (book: { cover_image_file_name: string }) => {
 		let { publicURL } = supabaseClient.storage
-			.from('cover-images')
+			.from('covers')
 			.getPublicUrl(`${book.cover_image_file_name}.jpg`);
 
 		return publicURL;
