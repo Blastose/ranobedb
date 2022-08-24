@@ -43,7 +43,7 @@
 		<div
 			transition:fade={{ duration: 150 }}
 			on:click={toggleSidebar}
-			class="w-[200%] h-screen bg-gray-700 opacity-50 fixed"
+			class="w-[200%] h-screen bg-black/[.66] fixed"
 		/>
 	{/if}
 	<nav
