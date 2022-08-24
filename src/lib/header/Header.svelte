@@ -3,6 +3,7 @@
 	import ProfileCircle from './ProfileCircle.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
+	import { windowWidth } from '$lib/stores/windowWidthStore';
 
 	const toggleSidebar = () => {
 		sidebarOpen.update((status) => !status);
@@ -23,7 +24,13 @@
 						</span>
 					</button>
 				{/if}
-				<span class="text-2xl font-bold dark:text-white">Light Novel DB</span>
+				<span class="text-2xl font-bold dark:text-white ">
+					{#if $windowWidth > 400}
+						Light Novel DB
+					{:else}
+						LNDB
+					{/if}
+				</span>
 			</div>
 			<div class="flex gap-4">
 				<ThemeToggle />
