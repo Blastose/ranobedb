@@ -42,7 +42,7 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 	}
 
 	const { publicURL } = supabaseClient.storage
-		.from('cover-images')
+		.from('covers')
 		.getPublicUrl(`${data[0].cover_image_file_name}.jpg`);
 
 	let readingStatus: string | null = null;
