@@ -12,7 +12,7 @@
 				<th>Release date</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="text-black">
 			{#each books as book (book.id)}
 				<tr>
 					<td>
