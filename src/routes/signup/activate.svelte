@@ -12,7 +12,7 @@
 		<div class="flex">
 			<a
 				href="/login"
-				class="w-full text-center bg-[#cdcedd] hover:bg-[#b8b8d3] rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-[#a3a5bd]"
+				class="w-full text-center bg-primary-300 hover:bg-primary-400 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-primary-600 dark:text-black"
 			>
 				Log in
 			</a>
@@ -20,7 +20,7 @@
 		<div class="flex">
 			<a
 				href="/signup"
-				class="w-full text-center  bg-[#e3e3eb] hover:bg-[#cdcedd] rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-[#a3a5bd]"
+				class="w-full text-center bg-primary-100 hover:bg-primary-300 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-primary-600 dark:text-black"
 			>
 				Sign up
 			</a>

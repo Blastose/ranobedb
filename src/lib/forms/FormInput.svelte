@@ -29,7 +29,7 @@
 		{placeholder}
 		class="
 			{error ? 'ring-2 ring-red-600' : ''}
-		bg-gray-200 dark:bg-dark-500 dark:text-white px-3 py-2 rounded-md focus:outline-none focus:ring focus:ring-[#6b6e92]
+		bg-gray-200 dark:bg-dark-500 dark:text-white px-3 py-2 rounded-md focus:outline-none focus:ring focus:ring-primary-600
 		"
 		bind:value
 	/>

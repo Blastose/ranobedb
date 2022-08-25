@@ -47,11 +47,11 @@
 		/>
 	{/if}
 	<nav
-		class="overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] dark:bg-dark-600 drop-shadow-sm"
+		class="overflow-x-auto h-screen w-64 sticky top-0 bg-primary-100 dark:bg-dark-600 drop-shadow-sm"
 	>
 		<div class="px-4 py-2 flex flex-col gap-2 dark:text-white">
 			<button
-				class="hover:bg-[#cdcedd] dark:hover:text-black self-end rounded-lg p-1 duration-75"
+				class="hover:bg-primary-300 dark:hover:text-black self-end rounded-lg p-1 duration-75"
 				tabindex={$sidebarOpen ? 0 : -1}
 				on:click={toggleSidebar}
 			>

@@ -49,7 +49,7 @@
 					<input
 						type="submit"
 						value="Log In"
-						class="w-full text-white bg-primary-500 hover:bg-primary-700 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-[#6b6e92]"
+						class="w-full text-white bg-primary-500 hover:bg-primary-800 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-primary-600"
 					/>
 				</div>
 			</div>

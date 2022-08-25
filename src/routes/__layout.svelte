@@ -80,7 +80,7 @@
 		<!-- Normally done on sidebar, but sidebar is removed from flow on small screens -->
 		<div class="h-screen lg:hidden" />
 
-		<div class="flex flex-col flex-grow bg-[#fafafa] dark:bg-dark-700">
+		<div class="flex flex-col flex-grow bg-primary-50 dark:bg-dark-700">
 			<Header />
 
 			<div class="flex-grow">

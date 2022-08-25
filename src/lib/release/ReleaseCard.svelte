@@ -6,7 +6,7 @@
 </script>
 
 <div
-	class="bg-[#e4e7ee] dark:bg-dark-500 dark:text-white rounded-md shadow-sm flex flex-col gap-1 px-4 py-2"
+	class="bg-primary-100 dark:bg-dark-500 dark:text-white rounded-md shadow-sm flex flex-col gap-1 px-4 py-2"
 >
 	<a href="/release/{release.id}" class="w-fit">
 		<span title="Title" class="font-semibold">

@@ -4,7 +4,7 @@
 </script>
 
 <div>
-	<table class="table-auto bg-[#e4e7ee] w-full">
+	<table class="table-auto bg-primary-100 w-full">
 		<thead class="text-left">
 			<tr class="text-white">
 				<th class="w-3/4">Title</th>

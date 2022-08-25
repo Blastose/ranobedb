@@ -18,7 +18,7 @@
 				class="
           {$booksView === viewValue
 					? 'text-white bg-primary-500 dark:bg-dark-500'
-					: 'bg-[#e4e7ee] hover:bg-[#c6ccd8] dark:text-white dark:bg-dark-300 dark:hover:bg-dark-400'}
+					: 'bg-primary-100 hover:bg-primary-300 dark:text-white dark:bg-dark-300 dark:hover:bg-dark-400'}
           p-2"
 			>
 				<Icon height="24" width="24" name={viewValue} />
