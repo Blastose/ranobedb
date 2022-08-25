@@ -16,10 +16,10 @@
 	</div>
 {:else}
 	<div
-		class="hover:bg-[#cdcedd] dark:hover:bg-[#38393a] {highlight && $page.url.pathname === href
+		class="{highlight && $page.url.pathname === href
 			? 'bg-primary-500 hover:bg-primary-700 dark:hover:bg-primary-700 text-white'
-			: 'active:bg-[#a5a6b8]'} rounded-md duration-75
-			dark:text-white"
+			: 'hover:bg-[#cdcedd] dark:hover:bg-dark-500 active:bg-[#a5a6b8]'}
+			 rounded-md duration-75	dark:text-white"
 	>
 		<a {href} sveltekit:prefetch tabindex={$sidebarOpen ? 0 : -1} on:click={onClickFunction}>
 			<div class="flex items-center gap-1 px-2 py-1">

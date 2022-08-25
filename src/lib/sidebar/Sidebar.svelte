@@ -47,7 +47,7 @@
 		/>
 	{/if}
 	<nav
-		class="overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] dark:bg-[#272829] drop-shadow-sm"
+		class="overflow-x-auto h-screen w-64 sticky top-0 bg-[#e4e7ee] dark:bg-dark-600 drop-shadow-sm"
 	>
 		<div class="px-4 py-2 flex flex-col gap-2 dark:text-white">
 			<button

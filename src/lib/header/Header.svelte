@@ -9,7 +9,7 @@
 	};
 </script>
 
-<header class="sticky z-10 top-0 bg-[#fafafa] dark:bg-[#212224] drop-shadow-sm">
+<header class="sticky z-10 top-0 bg-[#fafafa] dark:bg-dark-700 drop-shadow-sm">
 	<div class="container px-8 py-2 mx-auto duration-150">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-2">
