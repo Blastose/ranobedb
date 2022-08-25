@@ -14,7 +14,7 @@
   {$page.url.searchParams.get(queryName) === queryValue ||
 	(queryValue === '' && !$page.url.searchParams.get(queryName))
 		? 'text-white bg-primary-500'
-		: 'bg-primary-300 hover:bg-primary-400  dark:text-white dark:bg-dark-300 dark:hover:bg-[#444546]'}"
+		: 'bg-primary-300 hover:bg-primary-400  dark:text-white dark:bg-dark-300 dark:hover:bg-dark-400'}"
 >
 	<a sveltekit:prefetch href="{newUrl.pathname}{newUrl.search}">
 		<div class="px-4 py-1">

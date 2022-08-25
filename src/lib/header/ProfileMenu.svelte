@@ -12,7 +12,7 @@
 </script>
 
 <ul
-	class="absolute left-auto right-0 min-w-[15rem] rounded-md px-2 py-2 mt-2 drop-shadow-md outline outline-primary-100 dark:outline-[#3f4142] outline-1 bg-primary-100 dark:bg-dark-300"
+	class="absolute left-auto right-0 min-w-[15rem] rounded-md px-2 py-2 mt-2 drop-shadow-md outline outline-primary-100 dark:outline-dark-300 outline-1 bg-primary-100 dark:bg-dark-300"
 	use:clickOutside={toggleButton}
 	on:outclick={() => ($profileMenuOpen = false)}
 >
