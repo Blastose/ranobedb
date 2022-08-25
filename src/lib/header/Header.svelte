@@ -9,13 +9,13 @@
 	};
 </script>
 
-<header class="sticky z-10 top-0 bg-[#fafafa] dark:bg-[#212224] drop-shadow-sm">
+<header class="sticky z-10 top-0 bg-primary-50 dark:bg-dark-700 drop-shadow-sm">
 	<div class="container px-8 py-2 mx-auto duration-150">
 		<div class="flex items-center justify-between">
 			<div class="flex items-center gap-2">
 				{#if !$sidebarOpen}
 					<button
-						class="hover:bg-[#cdcedd] dark:text-white dark:hover:text-black self-end rounded-lg p-1 duration-75"
+						class="hover:bg-primary-300 dark:text-white dark:hover:text-black self-end rounded-lg p-1 duration-75"
 						on:click={toggleSidebar}
 					>
 						<span class="text-2xl">

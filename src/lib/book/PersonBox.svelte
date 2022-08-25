@@ -8,7 +8,7 @@
 <!-- Can remove this check when we update the query -->
 {#if person.id !== null}
 	<div
-		class="bg-[#cfd7e7] hover:bg-[#697596] dark:text-white dark:bg-[#545555] dark:hover:bg-[#434446] duration-75 hover:text-white rounded-sm shadow-sm text-sm"
+		class="bg-[#cfd7e7] hover:bg-[#697596] dark:text-white dark:bg-dark-200 dark:hover:bg-dark-400 duration-75 hover:text-white rounded-sm shadow-sm text-sm"
 	>
 		<a href="/person/{person.id}">
 			<div class="px-2 py-1 flex gap-1 items-center justify-center">

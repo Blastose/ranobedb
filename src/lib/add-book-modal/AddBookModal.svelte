@@ -140,7 +140,7 @@
 				<form class="flex flex-col">
 					<label for="startDate" class="dark:text-white">Start date</label>
 					<input
-						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-[#38393a]"
+						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-dark-500"
 						type="date"
 						name="startDate"
 						id="startDate"
@@ -148,7 +148,7 @@
 					/>
 					<label for="finishDate" class="dark:text-white">Finish date</label>
 					<input
-						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-[#38393a]"
+						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-dark-500"
 						type="date"
 						name="finishDate"
 						id="finishDate"
@@ -158,7 +158,7 @@
 					<label for="label" class="dark:text-white">Status</label>
 					<select
 						bind:value={selectStatus}
-						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-[#38393a]"
+						class="bg-slate-200 p-2 rounded-md dark:text-white dark:bg-dark-500"
 						name="label"
 						id="label"
 					>
@@ -183,7 +183,7 @@
 							await invalidate($page.url.href);
 							close();
 						}}
-						class="px-8 py-1 rounded-md text-white bg-[#73739C] hover:bg-[#474963]"
+						class="px-8 py-1 rounded-md text-white duration-150 bg-primary-500 hover:bg-primary-800"
 					>
 						{status === 'N/A' || status === null ? 'Add' : 'Update'}
 					</button>
@@ -195,7 +195,7 @@
 								close();
 							}}
 							class="
-							px-8 py-1 rounded-md text-white 
+							px-8 py-1 rounded-md text-white duration-150
 							bg-[#747490] hover:bg-[#5e5e72]
 							dark:bg-[#737387] dark:hover:bg-[#5e5e72]
 							"

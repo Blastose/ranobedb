@@ -5,7 +5,7 @@
 	export let onClickFunction: () => void = () => {};
 </script>
 
-<div class="hover:bg-[#cdcedd] active:bg-[#a5a6b8] rounded-md duration-75">
+<div class="hover:bg-primary-300 active:bg-primary-400 rounded-md duration-75">
 	<button class="w-full text-left" tabindex={$sidebarOpen ? 0 : -1} on:click={onClickFunction}>
 		<div class="px-4 py-1">
 			<span>{text}</span>

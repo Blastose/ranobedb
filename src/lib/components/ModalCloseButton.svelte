@@ -8,7 +8,7 @@
 	on:click={onClose}
 	class="
 	block absolute z-[1000] top-4 right-4 p-1 rounded-lg duration-150
-	hover:bg-[#cdcedd]
+	hover:bg-primary-300
 	dark:text-white dark:hover:text-black
 	active:scale-95
 	"

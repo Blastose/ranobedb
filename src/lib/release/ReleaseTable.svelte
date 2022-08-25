@@ -6,7 +6,7 @@
 <!-- The container has padding of 32px on both sides so we need to subtract that -->
 <!-- Not sure if there is a better way for the table widths to be responsive -->
 <div class="overflow-x-auto rounded-sm max-w-[16rem] sm:max-w-lg md:max-w-xl lg:max-w-2xl">
-	<table class="table-auto bg-[#e4e7ee] w-full whitespace-nowrap">
+	<table class="table-auto bg-primary-100 w-full whitespace-nowrap">
 		<thead class="text-left">
 			<tr class="text-white">
 				<th>Lang</th>

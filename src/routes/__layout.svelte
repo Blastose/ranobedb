@@ -70,7 +70,7 @@
 			unstyled={true}
 			classBg="fixed z-[1000] top-0 left-0 flex flex-col justify-center w-screen h-screen bg-black/[.66]"
 			classWindowWrap="relative m-8 max-h-full"
-			classWindow="relative w-[40rem] max-w-full max-h-full my-8 mx-auto text-black rounded-md bg-white dark:bg-[#212224]"
+			classWindow="relative w-[40rem] max-w-full max-h-full my-8 mx-auto text-black rounded-md bg-white dark:bg-dark-700"
 			classContent="relative p-4 max-h-[calc(100vh_-_4rem)] overflow-auto"
 			closeButton={ModalCloseButton}
 		/>
@@ -80,7 +80,7 @@
 		<!-- Normally done on sidebar, but sidebar is removed from flow on small screens -->
 		<div class="h-screen lg:hidden" />
 
-		<div class="flex flex-col flex-grow bg-[#fafafa] dark:bg-[#212224]">
+		<div class="flex flex-col flex-grow bg-primary-50 dark:bg-dark-700">
 			<Header />
 
 			<div class="flex-grow">

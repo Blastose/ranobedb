@@ -67,7 +67,7 @@
 					<button
 						type="submit"
 						disabled={loading}
-						class="w-full flex justify-center text-white bg-[#73739C] hover:bg-[#474963] rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-[#6b6e92]"
+						class="w-full flex justify-center text-white bg-primary-500 hover:bg-primary-800 rounded-md py-2 px-4 cursor-pointer drop-shadow-sm focus:outline-none focus:ring focus:ring-primary-600"
 					>
 						{#if !loading}
 							Sign up

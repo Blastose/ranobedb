@@ -10,11 +10,11 @@
 </script>
 
 <div
-	class="rounded-sm
+	class="rounded-sm duration-75
   {$page.url.searchParams.get(queryName) === queryValue ||
 	(queryValue === '' && !$page.url.searchParams.get(queryName))
-		? 'text-white bg-[#73739C]'
-		: 'bg-[#cdcedd] hover:bg-[#bbbcce]  dark:text-white dark:bg-[#505152] dark:hover:bg-[#434446]'}"
+		? 'text-white bg-primary-500'
+		: 'bg-primary-300 hover:bg-primary-400  dark:text-white dark:bg-dark-300 dark:hover:bg-dark-400'}"
 >
 	<a sveltekit:prefetch href="{newUrl.pathname}{newUrl.search}">
 		<div class="px-4 py-1">
