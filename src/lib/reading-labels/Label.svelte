@@ -10,7 +10,7 @@
 </script>
 
 <div
-	class="rounded-sm
+	class="rounded-sm duration-75
   {$page.url.searchParams.get(queryName) === queryValue ||
 	(queryValue === '' && !$page.url.searchParams.get(queryName))
 		? 'text-white bg-primary-500'
