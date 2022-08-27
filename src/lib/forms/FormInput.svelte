@@ -17,7 +17,7 @@
 	<label for={id}>
 		<span class="dark:text-white">{labelName}</span>
 		{#if required}
-			<span class="text-red-600">*</span>
+			<span class="text-red-600 dark:text-red-400">*</span>
 		{/if}
 	</label>
 	<input
@@ -28,12 +28,12 @@
 		{id}
 		{placeholder}
 		class="
-			{error ? 'ring-2 ring-red-600' : ''}
+			{error ? 'ring-2 ring-red-600 dark:ring-red-400' : ''}
 		bg-gray-200 dark:bg-dark-500 dark:text-white px-3 py-2 rounded-md focus:outline-none focus:ring focus:ring-primary-600
 		"
 		bind:value
 	/>
 	{#if error}
-		<span class="text-red-600">{error}</span>
+		<span class="text-red-600 dark:text-red-400">{error}</span>
 	{/if}
 </div>

@@ -24,7 +24,7 @@
 		<form action="/signup" method="POST" use:enhance={[setErrors, setLoading]}>
 			<div class="flex flex-col gap-4">
 				{#if errors.requests}
-					<div class="text-red-600">
+					<div class="text-red-600 dark:text-red-400">
 						<span>Too many requests. Please wait 1 minute before trying to sign up again.</span>
 					</div>
 				{/if}

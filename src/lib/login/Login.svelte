@@ -12,7 +12,7 @@
 		<form action="/login" method="POST">
 			<div class="flex flex-col gap-3">
 				{#if error}
-					<div class="text-red-600">
+					<div class="text-red-600 dark:text-red-400">
 						<span>{error}</span>
 					</div>
 				{/if}
