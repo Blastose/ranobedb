@@ -4,8 +4,8 @@ import type { RequestHandler } from '@sveltejs/kit';
 import type BookInfo from '$lib/models/bookInfo';
 import type Release from '$lib/models/release';
 
-export const GET: RequestHandler = async ({ params, locals, request }) => {
-	const { data, error, status } = await supabaseServerClient(request)
+export const GET: RequestHandler = async ({ params, locals }) => {
+	const { data, error, status } = await supabaseServerClient(locals.accessToken)
 		.from<BookInfo>('book_info')
 		.select('*')
 		.eq('id', params.id);
@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 		};
 	}
 
-	const { data: releases, error: relError } = await supabaseServerClient(request)
+	const { data: releases, error: relError } = await supabaseServerClient(locals.accessToken)
 		.from<Release>('book_releases')
 		.select('*')
 		.eq('book_id', params.id);
@@ -29,7 +29,7 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 		};
 	}
 
-	const { data: seriesBooks, error: sError } = await supabaseServerClient(request).rpc(
+	const { data: seriesBooks, error: sError } = await supabaseServerClient(locals.accessToken).rpc(
 		'get_books_same_series',
 		{
 			f_book_id: params.id
@@ -47,7 +47,7 @@ export const GET: RequestHandler = async ({ params, locals, request }) => {
 
 	let readingStatus: string | null = null;
 	if (locals.user) {
-		const { data: readData, error } = await supabaseServerClient(request)
+		const { data: readData, error } = await supabaseServerClient(locals.accessToken)
 			.from('reads')
 			.select(
 				`

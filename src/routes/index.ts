@@ -2,20 +2,20 @@ import { supabaseServerClient } from '@supabase/auth-helpers-sveltekit';
 import type { RequestHandler } from '@sveltejs/kit';
 import type BookInfo from '$lib/models/bookInfo';
 
-export const GET: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ locals }) => {
 	const date = new Date();
 
 	const {
 		data: dataThisMonth,
 		error: errorThisMonth,
 		status: statusThisMonth
-	} = await supabaseServerClient(request)
+	} = await supabaseServerClient(locals.accessToken)
 		.from<BookInfo>('book_info')
 		.select('*')
 		.gte('release_date', `${date.getFullYear()}-${date.getMonth() + 1}-01`)
 		.order('title_romaji', { ascending: true });
 
-	const { data: dataRecent, error: errorRecent } = await supabaseServerClient(request)
+	const { data: dataRecent, error: errorRecent } = await supabaseServerClient(locals.accessToken)
 		.from<BookInfo>('book_info')
 		.select('*')
 		.limit(10)
