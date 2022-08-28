@@ -5,9 +5,9 @@ import type Reader from '$lib/models/reader';
 import type Reads from '$lib/models/reads';
 import type ReaderLabels from '$lib/models/readerLabels';
 
-export const GET: RequestHandler = async ({ url, locals, request }) =>
+export const GET: RequestHandler = async ({ url, locals }) =>
 	withApiAuth({ redirectTo: '/', user: locals.user }, async () => {
-		const query = supabaseServerClient(request)
+		const query = supabaseServerClient(locals.accessToken)
 			.from<BookInfo & Reader & Reads & ReaderLabels>('reader_list')
 			.select('*')
 			.eq('auth_id', locals.user.id)
