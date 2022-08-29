@@ -190,9 +190,11 @@
 					{#if status !== 'N/A' && !loading}
 						<button
 							on:click={async () => {
-								await removeBook();
-								await invalidate($page.url.href);
-								close();
+								if (confirm('Are you sure you want to remove this book from your list?')) {
+									await removeBook();
+									await invalidate($page.url.href);
+									close();
+								}
 							}}
 							class="
 							px-8 py-1 rounded-md text-white duration-150
