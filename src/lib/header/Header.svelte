@@ -23,8 +23,8 @@
 						</span>
 					</button>
 				{/if}
-				<span class="text-2xl font-bold dark:text-white full">Light Novel DB</span>
-				<span class="text-2xl font-bold dark:text-white short">LNDB</span>
+				<span class="text-2xl font-bold dark:text-white full">RanobeDB</span>
+				<span class="text-2xl font-bold dark:text-white short">RNDB</span>
 			</div>
 			<div class="flex gap-4">
 				<ThemeToggle />

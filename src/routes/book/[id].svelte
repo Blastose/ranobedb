@@ -32,7 +32,7 @@
 </script>
 
 <svelte:head>
-	<title>{book.title} - Light Novel DB</title>
+	<title>{book.title} - RanobeDB</title>
 </svelte:head>
 
 <main>
