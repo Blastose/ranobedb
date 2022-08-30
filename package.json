@@ -1,5 +1,5 @@
 {
-	"name": "light-novel-db",
+	"name": "ranobedb",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",

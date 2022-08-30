@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>Login - Light Novel DB</title>
+	<title>Login - RanobeDB</title>
 </svelte:head>
 
 <main class="container mx-auto px-8 pt-4 pb-8 duration-150">

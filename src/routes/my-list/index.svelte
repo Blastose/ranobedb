@@ -7,7 +7,7 @@
 	export let books: BookInfo[];
 </script>
 
-<svelte:head><title>My List - Light Novel DB</title></svelte:head>
+<svelte:head><title>My List - RanobeDB</title></svelte:head>
 
 <main class="container mx-auto px-8 pt-4 pb-8 duration-150">
 	<div class="flex flex-col gap-2">
