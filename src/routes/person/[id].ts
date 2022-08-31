@@ -21,7 +21,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 	const { data: books, error: errorBooks } = await supabaseServerClient(locals.accessToken)
 		.from('book_info')
 		.select('*')
-		.or(`authors.cs.[{"id":${person.person_id}}],artists.cs.[{"id":${person.person_id}}]`);
+		.or(`authors.cs.[{"id":${person.person_id}}],artists.cs.[{"id":${person.person_id}}]`)
+		.order('title_romaji', { ascending: true });
 
 	if (errorBooks) {
 		return { status: 404 };
