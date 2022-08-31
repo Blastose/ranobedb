@@ -5,7 +5,8 @@ import type { RequestHandler } from '@sveltejs/kit';
 export const GET: RequestHandler = async ({ locals }) => {
 	const { data, error, status } = await supabaseServerClient(locals.accessToken)
 		.from<Person>('person')
-		.select('*');
+		.select('*')
+		.order('person_id', { ascending: true });
 
 	if (error) {
 		console.error(error);
