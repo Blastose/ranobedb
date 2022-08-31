@@ -1,5 +1,4 @@
 <script lang="ts">
-	import BookView from '$lib/book/BookView.svelte';
 	import type SeriesInfo from '$lib/models/seriesInfo';
 	import SeriesCardContainer from '$lib/series/SeriesCardContainer.svelte';
 	export let series: SeriesInfo[];

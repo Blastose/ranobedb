@@ -1,5 +1,4 @@
 <script lang="ts">
-	import PersonBox from '$lib/book/PersonBox.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import type SeriesInfo from '$lib/models/seriesInfo';
 	import Box from './Box.svelte';
