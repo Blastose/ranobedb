@@ -17,7 +17,7 @@
 		<a href="/book/{book.id}" sveltekit:prefetch>
 			<span class="font-bold md:text-xl dark:text-white">{book.title}</span>
 		</a>
-		<div class="flex flex-wrap gap-4">
+		<div class="flex flex-wrap gap-2">
 			{#each book.authors as author (author.id)}
 				<PersonBox person={author} type="author" />
 			{/each}
