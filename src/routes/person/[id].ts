@@ -19,12 +19,10 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 		return { status };
 	}
 
-	const { data: books, error: errorBooks } = await supabaseServerClient(locals.accessToken).rpc(
-		'get_books_worked_on',
-		{
-			person_array: `[{"id":${person.person_id},"name":"${person.person_name}"}]`
-		}
-	);
+	const { data: books, error: errorBooks } = await supabaseServerClient(locals.accessToken)
+		.from('book_info')
+		.select('*')
+		.or(`authors.cs.[{"id":${person.person_id}}],artists.cs.[{"id":${person.person_id}}]`);
 
 	if (errorBooks) {
 		return { status: 404 };
