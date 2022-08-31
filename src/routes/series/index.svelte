@@ -1,6 +1,7 @@
 <script lang="ts">
 	import BookView from '$lib/book/BookView.svelte';
 	import type SeriesInfo from '$lib/models/seriesInfo';
+	import SeriesCardContainer from '$lib/series/SeriesCardContainer.svelte';
 	export let series: SeriesInfo[];
 </script>
 
@@ -12,13 +13,8 @@
 			<span class="font-bold text-2xl">Series</span>
 		</div>
 		<div class="flex flex-col gap-2">
-			{#each series as s (s.id)}
-				<div>
-					<a href="/series/{s.id}" sveltekit:prefetch>
-						<span>{s.title}</span>
-					</a>
-				</div>
-			{/each}
+			<span>{series.length} series</span>
+			<SeriesCardContainer {series} />
 		</div>
 	</div>
 </main>
