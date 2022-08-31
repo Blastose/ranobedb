@@ -3,6 +3,10 @@
 	export let people: Person[];
 </script>
 
+<svelte:head>
+	<title>People - RanobeDB</title>
+</svelte:head>
+
 <main class="container mx-auto px-8 pt-4 pb-8 duration-150">
 	<div class="flex flex-col gap-2">
 		<span class="font-bold text-2xl">People</span>
