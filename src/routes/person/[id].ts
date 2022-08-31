@@ -15,8 +15,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 		.single();
 
 	if (error) {
-		console.error(error);
-		return { status };
+		return { status: 404 };
 	}
 
 	const { data: books, error: errorBooks } = await supabaseServerClient(locals.accessToken)
