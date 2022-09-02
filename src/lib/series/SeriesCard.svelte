@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '$lib/components/Icon.svelte';
 	import type SeriesInfo from '$lib/models/seriesInfo';
-	import Box from './Box.svelte';
+	import Box from '$lib/components/Box.svelte';
 	export let series: SeriesInfo;
 	export let coverUrl: string;
 </script>
