@@ -12,7 +12,16 @@
 				src={coverUrl}
 				alt="Cover image for {book.title}"
 			/>
-			<span class="dark:text-white">{book.title}</span>
+			<span class="dark:text-white clamp">{book.title}</span>
 		</div>
 	</a>
 </div>
+
+<style>
+	.clamp {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+</style>
