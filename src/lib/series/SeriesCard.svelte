@@ -23,10 +23,10 @@
 		</a>
 		<div class="flex flex-wrap gap-2">
 			<Box text={series.latest_release} title="Latest release date">
-				<Icon height="24" width="24" name="calendarRange" />
+				<Icon height="20" width="20" name="calendarRange" />
 			</Box>
 			<Box text={series.volumes} title="Number of volumes">
-				<Icon height="24" width="24" name="bookOpenPage" />
+				<Icon height="20" width="20" name="bookOpenPage" />
 			</Box>
 		</div>
 		<div
