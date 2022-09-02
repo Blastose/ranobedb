@@ -69,7 +69,7 @@
 						{#if $session.user}
 							<button
 								on:click={showModal}
-								class="duration-150 text-center rounded-md bg-primary-500 hover:bg-primary-800 text-lg px-12 py-2 text-white shadow-sm"
+								class="duration-150 text-center rounded-md bg-primary-500 hover:bg-primary-800 text-lg px-2 py-2 text-white shadow-sm"
 							>
 								{#if readingStatus}
 									{readingStatus}
@@ -80,7 +80,7 @@
 						{:else}
 							<a
 								href="/login?redirect={$page.url.pathname}"
-								class="duration-150 text-center rounded-md bg-primary-500 hover:bg-primary-800 text-lg px-12 py-2 text-white shadow-sm"
+								class="duration-150 text-center rounded-md bg-primary-500 hover:bg-primary-800 text-lg px-2 py-2 text-white shadow-sm"
 								>Add</a
 							>
 						{/if}
