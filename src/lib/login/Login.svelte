@@ -1,5 +1,6 @@
 <script lang="ts">
 	import FormInput from '$lib/forms/FormInput.svelte';
+	import { page } from '$app/stores';
 	export let error: string;
 	let email = '';
 	let password = '';
@@ -9,7 +10,7 @@
 <div class="max-w-xl mx-auto">
 	<div class="flex flex-col gap-4">
 		<h1 class="text-2xl font-bold dark:text-white">Log In</h1>
-		<form action="/login" method="POST">
+		<form action="/login?{$page.url.searchParams}" method="POST">
 			<div class="flex flex-col gap-3">
 				{#if error}
 					<div class="text-red-600 dark:text-red-400">
