@@ -7,7 +7,8 @@ export const POST = async ({ request, url }: { request: Request; url: URL }) => 
 	const password = data.get('password') as string;
 	const remember = data.get('remember') as string;
 
-	const headers = { location: '/' };
+	const redirect = url.searchParams.get('redirect');
+	const headers = { location: redirect ? redirect : '/' };
 
 	const { session, error } = await supabaseClient.auth.signIn({ email, password });
 

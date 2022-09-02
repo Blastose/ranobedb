@@ -9,6 +9,7 @@
 	import { page } from '$app/stores';
 	import Icon from '$lib/components/Icon.svelte';
 
+	// @ts-ignore
 	const { close } = getContext('simple-modal');
 
 	export let book: Book;

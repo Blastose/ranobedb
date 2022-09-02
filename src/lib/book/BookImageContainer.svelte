@@ -14,7 +14,7 @@
 	};
 </script>
 
-<div class="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8 gap-2">
+<div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 gap-2">
 	{#each books as book (book.id)}
 		<BookImage {book} coverUrl={getCover(book)} />
 	{/each}
