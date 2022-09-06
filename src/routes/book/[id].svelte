@@ -55,65 +55,63 @@
 
 	<div class="container mx-auto px-8 pt-4 pb-8 duration-150">
 		<div class="flex flex-col gap-6">
-			<div class="flex flex-col md:flex-row gap-4">
-				<div class="grid grid-cols-[33%,_1fr] md:grid-cols-[240px] gap-x-2 gap-y-4">
-					<img
-						src={image}
-						alt="Cover image for {book.title}"
-						class="h-fit shadow-md rounded-sm"
-						width="240"
-						height="340"
-					/>
+			<div class="book-layout gap-4">
+				<img
+					src={image}
+					alt="Cover image for {book.title}"
+					class="h-fit shadow-md rounded-sm cover"
+					width="240"
+					height="340"
+				/>
 
-					<div class="flex flex-col gap-2 md:gap-2">
-						{#if $session.user}
-							<button
-								on:click={showModal}
-								class="duration-150 text-center rounded-md bg-primary-500 hover:bg-primary-800 text-lg px-2 py-2 text-white shadow-sm"
-							>
-								{#if readingStatus}
-									{readingStatus}
-								{:else}
-									Add
-								{/if}
-							</button>
-						{:else}
-							<a
-								href="/login?redirect={$page.url.pathname}"
-								class="duration-150 text-center rounded-md bg-primary-500 hover:bg-primary-800 text-lg px-2 py-2 text-white shadow-sm"
-								>Add</a
-							>
-						{/if}
+				<div class="flex flex-col gap-2 md:gap-2 info">
+					{#if $session.user}
+						<button
+							on:click={showModal}
+							class="duration-150 md:w-64 text-center rounded-md bg-primary-500 hover:bg-primary-800 text-lg px-2 py-2 text-white shadow-sm"
+						>
+							{#if readingStatus}
+								{readingStatus}
+							{:else}
+								Add
+							{/if}
+						</button>
+					{:else}
+						<a
+							href="/login?redirect={$page.url.pathname}"
+							class="duration-150 md:w-64 text-center rounded-md bg-primary-500 hover:bg-primary-800 text-lg px-2 py-2 text-white shadow-sm"
+							>Add</a
+						>
+					{/if}
 
-						<div class="flex flex-wrap gap-2">
-							{#each book.authors as author (author.id)}
-								<PersonBox person={author} type="author" />
-							{/each}
-							{#each book.artists as artist (artist.id)}
-								<PersonBox person={artist} type="artist" />
-							{/each}
-						</div>
+					<div class="flex flex-wrap gap-2">
+						{#each book.authors as author (author.id)}
+							<PersonBox person={author} type="author" />
+						{/each}
+						{#each book.artists as artist (artist.id)}
+							<PersonBox person={artist} type="artist" />
+						{/each}
+					</div>
 
-						<div class="flex flex-wrap gap-2">
-							{#each book.publisher as pub}
-								<Box text={pub} title="Publisher">
-									<Icon height="20" width="20" name="homeCity" />
-								</Box>
-							{/each}
-						</div>
-
-						<div class="flex flex-wrap gap-2">
-							<Box text={book.release_date} title="Release date">
-								<Icon height="20" width="20" name="calendarRange" />
+					<div class="flex flex-wrap gap-2">
+						{#each book.publisher as pub}
+							<Box text={pub} title="Publisher">
+								<Icon height="20" width="20" name="homeCity" />
 							</Box>
-							<Box text={book.volume} title="Volume">
-								<Icon height="20" width="20" name="bookOpenPage" />
-							</Box>
-						</div>
+						{/each}
+					</div>
+
+					<div class="flex flex-wrap gap-2">
+						<Box text={book.release_date} title="Release date">
+							<Icon height="20" width="20" name="calendarRange" />
+						</Box>
+						<Box text={book.volume} title="Volume">
+							<Icon height="20" width="20" name="bookOpenPage" />
+						</Box>
 					</div>
 				</div>
 
-				<div class="flex flex-col gap-2">
+				<div class="flex flex-col gap-2 description">
 					<span class="font-bold dark:text-white">Description:</span>
 					<p class="max-w-3xl dark:text-white">{@html book.description}</p>
 				</div>
@@ -139,5 +137,34 @@
 		background-repeat: no-repeat;
 		background-size: cover;
 		background-position: 20% 20%;
+	}
+
+	.book-layout {
+		display: grid;
+		grid-template-areas:
+			'cover info'
+			'description description';
+		grid-template-columns: 33% 1fr;
+	}
+
+	.cover {
+		grid-area: cover;
+	}
+
+	.info {
+		grid-area: info;
+	}
+
+	.description {
+		grid-area: description;
+	}
+
+	@media (min-width: 768px) {
+		.book-layout {
+			grid-template-areas:
+				'cover info'
+				'cover description';
+			grid-template-columns: 240px 1fr;
+		}
 	}
 </style>
