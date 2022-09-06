@@ -10,6 +10,8 @@
 				loading="lazy"
 				class="shadow-md rounded-sm"
 				src={coverUrl}
+				width="240px"
+				height="343px"
 				alt="Cover image for {book.title}"
 			/>
 			<span class="dark:text-white clamp">{book.title}</span>

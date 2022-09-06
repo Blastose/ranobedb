@@ -11,7 +11,14 @@
 	class="bg-primary-100 dark:bg-dark-500 p-2 rounded-sm grid grid-cols-[1fr_75%] md:grid-cols-[150px_1fr] gap-x-2 shadow-sm"
 >
 	<a class="h-min" href="/book/{book.id}" sveltekit:prefetch>
-		<img loading="lazy" class="shadow-sm rounded-sm" src={coverUrl} alt="Cover for {book.title}" />
+		<img
+			loading="lazy"
+			class="shadow-sm rounded-sm"
+			src={coverUrl}
+			width="240px"
+			height="343px"
+			alt="Cover for {book.title}"
+		/>
 	</a>
 	<div class="flex flex-col gap-2">
 		<a href="/book/{book.id}" sveltekit:prefetch>
