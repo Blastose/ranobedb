@@ -8,6 +8,8 @@
 	import { invalidate } from '$app/navigation';
 	import { page } from '$app/stores';
 	import Icon from '$lib/components/Icon.svelte';
+	import toast from 'svelte-french-toast';
+	import { theme } from '$lib/stores/themeStore';
 
 	// @ts-ignore
 	const { close } = getContext('simple-modal');
@@ -119,6 +121,8 @@
 			close();
 		}
 	}
+
+	let toastStyle = $theme === 'dark' ? 'background: #545555; color: #fff;' : '';
 </script>
 
 <div class="flex flex-col gap-2">
@@ -176,12 +180,19 @@
 				<div class="flex flex-col gap-2">
 					<button
 						on:click={async () => {
+							let toastText = '';
 							if (status === 'N/A') {
+								toastText = 'Added!';
 								await addBook();
 							} else {
+								toastText = 'Updated!';
 								await updateBook();
 							}
 							await invalidate($page.url.href);
+							toast.success(`${toastText}`, {
+								style: toastStyle,
+								position: 'bottom-center'
+							});
 							close();
 						}}
 						class="px-8 py-1 rounded-md text-white duration-150 bg-primary-500 hover:bg-primary-800"
@@ -194,6 +205,10 @@
 								if (confirm('Are you sure you want to remove this book from your list?')) {
 									await removeBook();
 									await invalidate($page.url.href);
+									toast.success('Removed!', {
+										style: toastStyle,
+										position: 'bottom-center'
+									});
 									close();
 								}
 							}}

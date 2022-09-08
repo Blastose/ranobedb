@@ -11,6 +11,7 @@
 	import ModalCloseButton from '$lib/components/ModalCloseButton.svelte';
 	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
+	import toast, { Toaster } from 'svelte-french-toast';
 
 	$: {
 		if (browser) {
@@ -65,6 +66,7 @@
 
 <SupaAuthHelper {supabaseClient} {session} autoRefreshToken={true}>
 	<div class="flex">
+		<Toaster />
 		<Modal
 			show={$modal}
 			unstyled={true}
