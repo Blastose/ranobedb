@@ -95,7 +95,7 @@
 
 					<div class="flex flex-wrap gap-2">
 						{#each book.publisher as pub}
-							<Box text={pub} title="Publisher">
+							<Box text={pub.name} title="Publisher" url="/publisher/{pub.id}">
 								<Icon height="20" width="20" name="homeCity" />
 							</Box>
 						{/each}

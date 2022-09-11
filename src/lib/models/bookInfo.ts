@@ -6,7 +6,7 @@ type BookInfo = {
 	release_date: Date;
 	volume: string;
 	cover_image_file_name: string;
-	publisher: string[];
+	publisher: { id: number; name: string }[];
 	artists: { id: number; name: string }[];
 	authors: { id: number; name: string }[];
 };

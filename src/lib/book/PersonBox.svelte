@@ -10,7 +10,7 @@
 	<div
 		class="bg-[#cfd7e7] hover:bg-[#697596] dark:text-white dark:bg-dark-200 dark:hover:bg-dark-400 duration-75 hover:text-white rounded-sm shadow-sm text-sm"
 	>
-		<a href="/person/{person.id}">
+		<a href="/person/{person.id}" sveltekit:prefetch>
 			<div class="px-2 py-1 flex gap-1 items-center justify-center">
 				{#if type === 'artist'}
 					<span><Icon height="20" width="20" name="palette" /></span>
