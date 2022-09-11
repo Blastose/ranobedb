@@ -13,8 +13,8 @@
 <main class="container mx-auto px-8 pt-4 pb-8 duration-150">
 	<div class="flex flex-col gap-2">
 		<div class="flex flex-col">
-			<span class="font-bold text-2xl">{series.title}</span>
-			<span>Series</span>
+			<span class="font-bold text-2xl dark:text-white">{series.title}</span>
+			<span class="dark:text-white">Series</span>
 		</div>
 		<div class="flex flex-col gap-2">
 			<BookView {books} />
