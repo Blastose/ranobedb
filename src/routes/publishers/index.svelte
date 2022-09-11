@@ -9,12 +9,12 @@
 
 <main class="container mx-auto px-8 pt-4 pb-8 duration-150">
 	<div class="flex flex-col gap-2">
-		<span class="font-bold text-2xl">Publishers</span>
+		<span class="font-bold text-2xl dark:text-white">Publishers</span>
 		<div class="grid grid-cols-2 md:grid-cols-3 gap-2">
 			{#each publishers as publisher (publisher.id)}
 				<div>
 					<a href="/publisher/{publisher.id}" sveltekit:prefetch>
-						<span>{publisher.name}</span>
+						<span class="dark:text-white">{publisher.name}</span>
 					</a>
 				</div>
 			{/each}

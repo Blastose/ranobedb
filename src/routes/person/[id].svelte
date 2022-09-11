@@ -14,9 +14,9 @@
 <main class="container mx-auto px-8 pt-4 pb-8 duration-150">
 	<div class="flex flex-col gap-2">
 		<div class="flex flex-col">
-			<span class="font-bold text-2xl">{person.person_name}</span>
+			<span class="font-bold text-2xl dark:text-white">{person.person_name}</span>
 			{#if person.person_name_romaji}
-				<span class="font-semibold">{person.person_name_romaji}</span>
+				<span class="font-semibold dark:text-white">{person.person_name_romaji}</span>
 			{/if}
 		</div>
 		<div class="flex flex-col gap-2">
