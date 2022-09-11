@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
 	const { data: books, error: errorBooks } = await supabaseServerClient(locals.accessToken)
 		.from('book_info')
 		.select('*')
-		.contains('publisher', `{${publisher.name}}`)
+		.contains('publisher', `[{"id":${publisher.id}}]`)
 		.order('title_romaji', { ascending: true });
 
 	if (errorBooks) {
