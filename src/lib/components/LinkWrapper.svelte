@@ -3,7 +3,7 @@
 </script>
 
 {#if url}
-	<a href={url}><slot /></a>
+	<a href={url} sveltekit:prefetch><slot /></a>
 {:else}
 	<slot />
 {/if}
