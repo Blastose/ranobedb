@@ -50,6 +50,16 @@ test.describe('navigation', () => {
 		expect(await page.textContent('main > div > div > span')).toBe('KADOKAWA');
 	});
 
+	test('login page has expected h1', async ({ page }) => {
+		await page.goto('/login');
+		expect(await page.textContent('main > div > div > h1')).toBe('Log In');
+	});
+
+	test('signup page has expected h1', async ({ page }) => {
+		await page.goto('/signup');
+		expect(await page.textContent('main > div > div > h1')).toBe('Sign up');
+	});
+
 	test('my-list page redirects for users not logged in', async ({ page }) => {
 		const response = await page.goto('/my-list');
 		expect(response?.status() === 301);
