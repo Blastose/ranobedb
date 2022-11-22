@@ -36,6 +36,8 @@
 	.header {
 		grid-area: header;
 		background-color: blue;
+		position: sticky;
+		top: 0;
 	}
 
 	.content {
