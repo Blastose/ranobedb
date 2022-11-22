@@ -1,19 +1,18 @@
 <script lang="ts">
 	import Header from '$lib/components/header/Header.svelte';
-	import Content from '$lib/components/layout/Content.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import sidebar from '$lib/stores/sidebar';
 </script>
 
 <div class="main">
-	<div class="{$sidebar ? '' : '-m-[200px]'} duration-150 ease-in-out sidebar">
+	<div class="{$sidebar ? '' : '-ml-[200px]'} duration-150 ease-in-out sidebar">
 		<Sidebar />
 	</div>
 	<div class="header">
 		<Header />
 	</div>
 	<div class="content">
-		<Content />
+		<slot />
 	</div>
 </div>
 
@@ -42,6 +41,7 @@
 	.content {
 		grid-area: content;
 		background-color: green;
+		padding-bottom: 20px;
 	}
 
 	@media (min-width: 640px) {

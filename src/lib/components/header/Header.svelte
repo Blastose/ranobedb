@@ -3,7 +3,7 @@
 </script>
 
 <header>
-	<div class="flex gap-2">
+	<div class="flex gap-2 max-w-7xl px-8 py-2 mx-auto duration-150">
 		<button
 			class="rounded-md bg-sky-300"
 			on:click={() => {
