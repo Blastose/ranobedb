@@ -1,13 +1,19 @@
 <script lang="ts">
 	import Header from '$lib/components/header/Header.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
+	import Drawer from '$lib/components/drawer/Drawer.svelte';
 	import sidebar from '$lib/stores/sidebar';
 </script>
 
+<!-- 
+<Drawer>
+	<Sidebar />
+</Drawer> -->
 <div class="main">
 	<div class="{$sidebar ? '' : '-ml-[200px]'} duration-150 ease-in-out sidebar">
 		<Sidebar />
 	</div>
+	<div class="filler h-screen lg:hidden" />
 	<div class="header">
 		<Header />
 	</div>
@@ -21,10 +27,10 @@
 		display: grid;
 		height: 100%;
 		grid-template-areas:
-			'header'
-			'content';
+			'filler header'
+			'filler content';
 		grid-template-rows: min-content 1fr;
-		grid-template-columns: 1fr;
+		grid-template-columns: 0px 1fr;
 	}
 
 	.sidebar {
@@ -46,8 +52,13 @@
 		padding-bottom: 20px;
 	}
 
+	.filler {
+		grid-area: filler;
+	}
+
 	@media (min-width: 640px) {
 		.main {
+			height: 100%;
 			grid-template-areas:
 				'sidebar header'
 				'sidebar content';
