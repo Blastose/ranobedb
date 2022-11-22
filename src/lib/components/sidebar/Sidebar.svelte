@@ -22,4 +22,8 @@
 		overflow-x: auto;
 		top: 0;
 	}
+
+	:global(.dark .sidebar) {
+		background-color: gray;
+	}
 </style>

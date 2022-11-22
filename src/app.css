@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.dark {
+	color-scheme: dark;
+	background: #1b1b1b;
+	color: white;
+	scrollbar-color: #ffffff50 transparent;
+}
