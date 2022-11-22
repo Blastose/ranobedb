@@ -15,6 +15,7 @@
 
 <style>
 	.sidebar {
+		background-color: aqua;
 		width: 200px;
 		height: 100vh;
 		position: sticky;

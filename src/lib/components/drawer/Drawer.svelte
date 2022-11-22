@@ -1,10 +1,21 @@
 <script lang="ts">
-	export let open: boolean;
+	import sidebar from '$lib/stores/sidebar';
+	import { fade, fly } from 'svelte/transition';
+	import { cubicInOut } from 'svelte/easing';
 </script>
 
-<div class="drawer md:hidden">
-	{#if open}
-		<slot />
+<div class="sm:hidden">
+	{#if !$sidebar}
+		<button
+			class="overlay"
+			on:click={() => {
+				sidebar.set(!$sidebar);
+			}}
+			transition:fade={{ duration: 150 }}
+		/>
+		<div class="drawer" transition:fly={{ x: -200, duration: 150, easing: cubicInOut, opacity: 1 }}>
+			<slot />
+		</div>
 	{/if}
 </div>
 
@@ -12,5 +23,13 @@
 	.drawer {
 		position: fixed;
 		z-index: 50;
+	}
+
+	.overlay {
+		z-index: 50;
+		width: 100%;
+		height: 100vh;
+		position: fixed;
+		background-color: rgba(0, 0, 0, 0.473);
 	}
 </style>

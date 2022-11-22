@@ -5,15 +5,14 @@
 	import sidebar from '$lib/stores/sidebar';
 </script>
 
-<!-- 
 <Drawer>
 	<Sidebar />
-</Drawer> -->
+</Drawer>
 <div class="main">
 	<div class="{$sidebar ? '' : '-ml-[200px]'} duration-150 ease-in-out sidebar">
 		<Sidebar />
 	</div>
-	<div class="filler h-screen lg:hidden" />
+	<div class="filler h-screen sm:hidden" />
 	<div class="header">
 		<Header />
 	</div>
