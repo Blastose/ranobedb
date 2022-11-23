@@ -9,7 +9,7 @@
 		<button
 			class="overlay"
 			on:click={() => {
-				drawer.set(!$drawer);
+				drawer.set(false);
 			}}
 			transition:fade={{ duration: 150 }}
 		/>

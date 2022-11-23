@@ -9,6 +9,7 @@
 			sidebar.set(true);
 		} else {
 			drawer.set(true);
+			sidebar.set(true);
 		}
 	};
 </script>

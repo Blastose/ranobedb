@@ -4,6 +4,28 @@
 	import { onMount } from 'svelte';
 	import { theme } from '$lib/stores/theme';
 	import Layout from '$lib/components/layout/Layout.svelte';
+	import largeScreen from '$lib/stores/largeScreen';
+	import drawer from '$lib/stores/drawer';
+
+	const monitorScreenSize = (node: Window) => {
+		const windowQuery = node.matchMedia('(min-width: 1024px)');
+		const match = (e: MediaQueryListEvent) => {
+			if (e.matches) {
+				largeScreen.set(true);
+				drawer.set(false);
+			} else {
+				largeScreen.set(false);
+			}
+		};
+
+		windowQuery.addEventListener('change', match);
+
+		return {
+			destroy() {
+				windowQuery.removeEventListener('change', match);
+			}
+		};
+	};
 
 	$: {
 		if (browser) {
@@ -45,6 +67,8 @@
 		}
 	</script>
 </svelte:head>
+
+<svelte:window use:monitorScreenSize />
 
 <Layout>
 	<slot />
