@@ -1,15 +1,15 @@
 <script lang="ts">
-	import sidebar from '$lib/stores/sidebar';
+	import drawer from '$lib/stores/drawer';
 	import { fade, fly } from 'svelte/transition';
 	import { cubicInOut } from 'svelte/easing';
 </script>
 
 <div class="sm:hidden">
-	{#if !$sidebar}
+	{#if $drawer}
 		<button
 			class="overlay"
 			on:click={() => {
-				sidebar.set(!$sidebar);
+				drawer.set(!$drawer);
 			}}
 			transition:fade={{ duration: 150 }}
 		/>
