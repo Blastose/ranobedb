@@ -4,7 +4,7 @@
 	import { cubicInOut } from 'svelte/easing';
 </script>
 
-<div class="sm:hidden">
+<div class="lg:hidden">
 	{#if $drawer}
 		<button
 			class="overlay"

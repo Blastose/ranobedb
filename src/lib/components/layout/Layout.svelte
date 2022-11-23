@@ -13,7 +13,7 @@
 	<div class="{$sidebar ? '' : '-ml-64'} duration-150 ease-in-out sidebar">
 		<Sidebar />
 	</div>
-	<div class="h-screen filler sm:hidden" />
+	<div class="h-screen filler lg:hidden" />
 	<div class="header">
 		<Header />
 	</div>
@@ -58,7 +58,7 @@
 		grid-area: filler;
 	}
 
-	@media (min-width: 640px) {
+	@media (min-width: 1024px) {
 		.main {
 			height: 100%;
 			grid-template-areas:

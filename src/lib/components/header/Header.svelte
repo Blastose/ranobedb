@@ -10,14 +10,14 @@
 		<div class="flex items-center justify-center gap-2">
 			<div>
 				<button
-					class="hidden px-2 rounded-md sm:block bg-sky-300 dark:bg-slate-500"
+					class="hidden px-2 rounded-md lg:block bg-sky-300 dark:bg-slate-500"
 					on:click={() => {
 						sidebar.set(!$sidebar);
 					}}
 					>sidebar
 				</button>
 				<button
-					class="px-2 rounded-md sm:hidden bg-sky-300 dark:bg-slate-500"
+					class="px-2 rounded-md lg:hidden bg-sky-300 dark:bg-slate-500"
 					on:click={() => {
 						drawer.set(!$drawer);
 						console.log($drawer);
