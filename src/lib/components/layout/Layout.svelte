@@ -13,7 +13,7 @@
 	<div class="{$sidebar ? '' : '-ml-64'} duration-150 ease-in-out sidebar">
 		<Sidebar />
 	</div>
-	<div class="filler h-screen sm:hidden" />
+	<div class="h-screen filler sm:hidden" />
 	<div class="header">
 		<Header />
 	</div>
@@ -50,7 +50,7 @@
 		background-color: var(--primary-50);
 	}
 
-	:global(.dark .content) {
+	:global(.dark) .content {
 		background-color: var(--dark-700);
 	}
 
