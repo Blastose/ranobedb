@@ -1,3 +1,7 @@
+<svelte:head>
+	<title>RanobeDB</title>
+</svelte:head>
+
 <div class="w-full">
 	<div class="px-8 py-2 mx-auto max-w-7xl">
 		<h1>Welcome to SvelteKit</h1>
