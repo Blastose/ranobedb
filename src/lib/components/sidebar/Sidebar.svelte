@@ -1,10 +1,14 @@
 <script lang="ts">
 	import SidebarItem from '$lib/components/sidebar/SidebarItem.svelte';
 	import SidebarHeading from '$lib/components/sidebar/SidebarHeading.svelte';
+	import SidebarCloseButton from '$lib/components/sidebar/SidebarCloseButton.svelte';
 </script>
 
 <div class="sidebar">
 	<div class="flex flex-col gap-2 px-4 py-4">
+		<div class="flex justify-end">
+			<SidebarCloseButton />
+		</div>
 		<div>
 			<SidebarItem text={'Home'} href={'/'} heading={true} icon={'home'} />
 		</div>

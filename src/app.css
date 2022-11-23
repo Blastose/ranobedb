@@ -31,3 +31,12 @@ html {
 	color: white;
 	scrollbar-color: #ffffff50 transparent;
 }
+
+.btn {
+	transition-duration: 75ms;
+}
+
+.btn:hover {
+	color: black;
+	background-color: var(--primary-300);
+}

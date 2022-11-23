@@ -1,37 +1,38 @@
 <script lang="ts">
 	import sidebar from '$lib/stores/sidebar';
 	import drawer from '$lib/stores/drawer';
-	import { toggleTheme } from '$lib/stores/theme';
+	import { theme, toggleTheme } from '$lib/stores/theme';
+	import Icon from '$lib/components/icon/Icon.svelte';
+
+	const openSidebar = () => {
+		if (window.matchMedia('(min-width: 1024px)').matches) {
+			sidebar.set(true);
+		} else {
+			drawer.set(true);
+		}
+	};
 </script>
 
 <header class="header border-b border-[#4b4b4b15] dark:border-[#ffffff1a]">
 	<div class="flex justify-between gap-2 px-8 py-2 mx-auto duration-150 max-w-7xl">
-		<p class="text-2xl font-bold">RanobeDB</p>
 		<div class="flex items-center justify-center gap-2">
-			<div>
-				<button
-					class="hidden px-2 rounded-md lg:block bg-sky-300 dark:bg-slate-500"
-					on:click={() => {
-						sidebar.set(!$sidebar);
-					}}
-					>sidebar
+			{#if !$sidebar}
+				<button class="p-1 rounded-lg btn" aria-label="open sidebar" on:click={openSidebar}>
+					<Icon height="24" width="24" name="menu" />
 				</button>
-				<button
-					class="px-2 rounded-md lg:hidden bg-sky-300 dark:bg-slate-500"
-					on:click={() => {
-						drawer.set(!$drawer);
-						console.log($drawer);
-					}}
-					>drawer
-				</button>
-			</div>
+			{/if}
+			<p class="text-2xl font-bold">RanobeDB</p>
+		</div>
+		<div class="flex items-center justify-center gap-2">
 			<button
-				class="px-2 rounded-md bg-sky-300 dark:bg-slate-500"
-				on:click={() => {
-					toggleTheme();
-				}}
+				aria-label={$theme === 'dark' ? 'switch theme to light' : 'switch theme to dark'}
+				on:click={toggleTheme}
 			>
-				theme
+				{#if $theme === 'dark'}
+					<Icon height="24" width="24" name={'sun'} />
+				{:else}
+					<Icon height="24" width="24" name={'moon'} />
+				{/if}
 			</button>
 		</div>
 	</div>
