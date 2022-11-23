@@ -17,10 +17,17 @@
 	<div class="flex justify-between gap-2 px-8 py-2 mx-auto duration-150 max-w-7xl">
 		<div class="flex items-center justify-center gap-2">
 			{#if !$sidebar}
-				<button class="p-1 rounded-lg btn" aria-label="open sidebar" on:click={openSidebar}>
+				<button
+					class="hidden p-1 rounded-lg btn lg:block"
+					aria-label="open sidebar"
+					on:click={openSidebar}
+				>
 					<Icon height="24" width="24" name="menu" />
 				</button>
 			{/if}
+			<button class="p-1 rounded-lg btn lg:hidden" aria-label="open sidebar" on:click={openSidebar}>
+				<Icon height="24" width="24" name="menu" />
+			</button>
 			<p class="text-2xl font-bold">RanobeDB</p>
 		</div>
 		<div class="flex items-center justify-center gap-2">
