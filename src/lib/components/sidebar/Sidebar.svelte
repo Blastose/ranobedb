@@ -15,8 +15,8 @@
 
 <style>
 	.sidebar {
-		background-color: aqua;
-		width: 200px;
+		background-color: var(--primary-100);
+		width: 16rem;
 		height: 100vh;
 		position: sticky;
 		overflow-x: auto;
@@ -24,6 +24,6 @@
 	}
 
 	:global(.dark .sidebar) {
-		background-color: gray;
+		background-color: var(--dark-600);
 	}
 </style>

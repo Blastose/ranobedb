@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+	--primary-50: #fafafa;
+	--primary-100: #e4e7ee;
+	--primary-200: #d9dbe6;
+	--primary-300: #cdcedd;
+	--primary-400: #bbbcce;
+	--primary-500: #73739c;
+	--primary-600: #696987;
+	--primary-700: #585975;
+	--primary-800: #474963;
+
+	--dark-200: #545555;
+	--dark-300: #505152;
+	--dark-400: #434446;
+	--dark-500: #38393a;
+	--dark-600: #272829;
+	--dark-700: #212224;
+}
+
+html {
+	background: var(--primary-50);
+}
+
 .dark {
 	color-scheme: dark;
 	background: #1b1b1b;

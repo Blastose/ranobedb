@@ -8,8 +8,9 @@
 <Drawer>
 	<Sidebar />
 </Drawer>
+
 <div class="main">
-	<div class="{$sidebar ? '' : '-ml-[200px]'} duration-150 ease-in-out sidebar">
+	<div class="{$sidebar ? '' : '-ml-64'} duration-150 ease-in-out sidebar">
 		<Sidebar />
 	</div>
 	<div class="filler h-screen sm:hidden" />
@@ -35,20 +36,22 @@
 	.sidebar {
 		display: none;
 		grid-area: sidebar;
-		background-color: red;
 	}
 
 	.header {
 		grid-area: header;
-		background-color: blue;
 		position: sticky;
 		top: 0;
 	}
 
 	.content {
 		grid-area: content;
-		background-color: green;
 		padding-bottom: 20px;
+		background-color: var(--primary-50);
+	}
+
+	:global(.dark .content) {
+		background-color: var(--dark-700);
 	}
 
 	.filler {
