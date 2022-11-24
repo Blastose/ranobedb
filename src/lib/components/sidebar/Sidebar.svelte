@@ -5,25 +5,25 @@
 </script>
 
 <div class="sidebar">
-	<div class="flex flex-col gap-2 px-4 py-4">
+	<nav class="flex flex-col gap-2 px-4 py-4">
 		<div class="flex justify-end">
 			<SidebarCloseButton />
 		</div>
-		<div>
+		<ul>
 			<SidebarItem text={'Home'} href={'/'} heading={true} icon={'home'} />
-		</div>
-		<div>
+		</ul>
+		<ul>
 			<SidebarHeading text={'Blastose'} icon={'profile'} />
 			<SidebarItem text={'My List'} href={'my-list'} />
 			<SidebarItem text={'My Profile'} href={'profile'} />
 			<SidebarItem text={'Sign out'} href={'signout'} />
-		</div>
-		<div>
+		</ul>
+		<ul>
 			<SidebarHeading text={'Database'} icon={'database'} />
 			<SidebarItem text={'Books'} href={'books'} />
 			<SidebarItem text={'Series'} href={'series'} />
-		</div>
-	</div>
+		</ul>
+	</nav>
 </div>
 
 <style>

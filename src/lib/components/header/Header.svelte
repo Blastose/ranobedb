@@ -3,6 +3,7 @@
 	import drawer from '$lib/stores/drawer';
 	import { theme, toggleTheme } from '$lib/stores/theme';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import ProfileCircle from '$lib/components/profile/ProfileCircle.svelte';
 
 	const openSidebar = () => {
 		if (window.matchMedia('(min-width: 1024px)').matches) {
@@ -31,7 +32,7 @@
 			</button>
 			<p class="text-2xl font-bold">RanobeDB</p>
 		</div>
-		<div class="flex items-center justify-center gap-2">
+		<div class="flex items-center justify-center gap-4">
 			<button
 				aria-label={$theme === 'dark' ? 'switch theme to light' : 'switch theme to dark'}
 				on:click={toggleTheme}
@@ -42,6 +43,8 @@
 					<Icon height="24" width="24" name={'moon'} />
 				{/if}
 			</button>
+
+			<ProfileCircle />
 		</div>
 	</div>
 </header>

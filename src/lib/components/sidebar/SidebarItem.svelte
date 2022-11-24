@@ -10,7 +10,7 @@
 	export let icon: IconType = 'close';
 </script>
 
-<div class="sidebar-item {$page.url.pathname === href ? 'current' : ''}">
+<li class="sidebar-item {$page.url.pathname === href ? 'current' : ''}">
 	<a {href}>
 		{#if heading}
 			<SidebarHeading {text} {icon} />
@@ -20,4 +20,4 @@
 			</p>
 		{/if}
 	</a>
-</div>
+</li>
