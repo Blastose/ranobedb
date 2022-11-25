@@ -18,6 +18,10 @@
 			}
 		};
 
+		if (!windowQuery.matches) {
+			largeScreen.set(false);
+		}
+
 		windowQuery.addEventListener('change', match);
 
 		return {

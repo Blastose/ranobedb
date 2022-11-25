@@ -8,6 +8,7 @@
 	{#if $drawer}
 		<button
 			class="overlay"
+			tabindex="-1"
 			on:click={() => {
 				drawer.set(false);
 			}}

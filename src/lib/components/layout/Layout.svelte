@@ -3,10 +3,12 @@
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Drawer from '$lib/components/drawer/Drawer.svelte';
 	import sidebar from '$lib/stores/sidebar';
+	import drawer from '$lib/stores/drawer';
+	import largeScreen from '$lib/stores/largeScreen';
 </script>
 
 <Drawer>
-	<Sidebar />
+	<Sidebar tabindex={$drawer} />
 </Drawer>
 
 <div class="main">
@@ -14,7 +16,7 @@
 		class="hide-sidebar {$sidebar ? '' : 'hide-sidebar-only'}
 		 duration-150 ease-in-out sidebar"
 	>
-		<Sidebar />
+		<Sidebar tabindex={$sidebar && $largeScreen} />
 	</div>
 	<div class="header">
 		<Header />

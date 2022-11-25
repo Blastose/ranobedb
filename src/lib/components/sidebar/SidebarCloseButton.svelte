@@ -3,6 +3,8 @@
 	import sidebar from '$lib/stores/sidebar';
 	import drawer from '$lib/stores/drawer';
 
+	export let tabindex: boolean;
+
 	const closeSidebar = () => {
 		if (window.matchMedia('(min-width: 1024px)').matches) {
 			sidebar.set(false);
@@ -12,6 +14,11 @@
 	};
 </script>
 
-<button class="btn rounded-lg p-1" aria-label="close sidebar" on:click={closeSidebar}>
+<button
+	class="btn rounded-lg p-1"
+	aria-label="close sidebar"
+	on:click={closeSidebar}
+	tabindex={tabindex ? 0 : -1}
+>
 	<Icon height="24" width="24" name="close" />
 </button>
