@@ -2,6 +2,7 @@
 	import ProfileMenuItem from '$lib/components/profile/ProfileMenuItem.svelte';
 	import { clickOutside } from '$lib/util/clickOutside';
 	import profileMenu from '$lib/stores/profileMenu';
+	import { fly } from 'svelte/transition';
 
 	export let toggleButton: Node | null = null;
 </script>
@@ -12,6 +13,7 @@
 	on:outclick={() => {
 		profileMenu.set(false);
 	}}
+	transition:fly={{ y: -10, duration: 100 }}
 >
 	<ul>
 		{#if true}
