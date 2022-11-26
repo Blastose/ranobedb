@@ -33,9 +33,16 @@
 		background-color: var(--primary-100);
 		width: 16rem;
 		height: 100vh;
-		position: sticky;
+		position: fixed;
+		z-index: 50;
 		overflow-x: auto;
-		top: 0;
+	}
+
+	@media (min-width: 1024px) {
+		.sidebar {
+			position: sticky;
+			top: 0;
+		}
 	}
 
 	:global(.dark) .sidebar {

@@ -7,17 +7,17 @@
 	import largeScreen from '$lib/stores/largeScreen';
 </script>
 
-<Drawer>
-	<Sidebar tabindex={$drawer} />
-</Drawer>
+<Drawer />
 
 <div class="main">
 	<div
-		class="hide-sidebar {$sidebar ? '' : 'hide-sidebar-only'}
-		 duration-150 ease-in-out sidebar"
+		class="sidebar duration-150 ease-in-out
+		{$sidebar ? '' : 'hide-sidebar'}
+		{$drawer ? 'show-drawer' : ''}"
 	>
-		<Sidebar tabindex={$sidebar && $largeScreen} />
+		<Sidebar tabindex={($sidebar && $largeScreen) || $drawer} />
 	</div>
+	<div class="filler" />
 	<div class="header">
 		<Header />
 	</div>
@@ -31,14 +31,20 @@
 		display: grid;
 		height: 100%;
 		grid-template-areas:
-			'sidebar header'
-			'sidebar content';
+			'filler sidebar header'
+			'filler sidebar content';
 		grid-template-rows: min-content 1fr;
-		grid-template-columns: min-content 1fr;
+		grid-template-columns: 0px min-content 1fr;
+	}
+
+	.filler {
+		grid-area: filler;
+		height: 100vh;
 	}
 
 	.sidebar {
 		grid-area: sidebar;
+		margin-left: -16rem;
 	}
 
 	.header {
@@ -57,17 +63,17 @@
 		background-color: var(--dark-700);
 	}
 
-	.hide-sidebar {
-		margin-left: -16rem;
-	}
-
 	@media (min-width: 1024px) {
-		.hide-sidebar {
+		.sidebar {
 			margin-left: 0;
 		}
 	}
 
-	.hide-sidebar-only {
+	.hide-sidebar {
 		margin-left: -16rem;
+	}
+
+	.show-drawer {
+		margin-left: 0;
 	}
 </style>

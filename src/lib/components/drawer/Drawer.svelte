@@ -1,31 +1,21 @@
 <script lang="ts">
 	import drawer from '$lib/stores/drawer';
-	import { fade, fly } from 'svelte/transition';
-	import { cubicInOut } from 'svelte/easing';
+	import { fade } from 'svelte/transition';
+	import largeScreen from '$lib/stores/largeScreen';
 </script>
 
-<div class="lg:hidden">
-	{#if $drawer}
-		<button
-			class="overlay"
-			tabindex="-1"
-			on:click={() => {
-				drawer.set(false);
-			}}
-			transition:fade={{ duration: 150 }}
-		/>
-		<div class="drawer" transition:fly={{ x: -200, duration: 150, easing: cubicInOut, opacity: 1 }}>
-			<slot />
-		</div>
-	{/if}
-</div>
+{#if $drawer && !$largeScreen}
+	<button
+		class="overlay"
+		aria-label="close sidebar"
+		on:click={() => {
+			drawer.set(false);
+		}}
+		transition:fade={{ duration: 150 }}
+	/>
+{/if}
 
 <style>
-	.drawer {
-		position: fixed;
-		z-index: 50;
-	}
-
 	.overlay {
 		z-index: 50;
 		width: 100%;
