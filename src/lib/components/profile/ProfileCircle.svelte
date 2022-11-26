@@ -9,6 +9,7 @@
 <div class="relative">
 	<button
 		bind:this={toggleButton}
+		aria-label="open profile menu"
 		class="profile {true ? 'profile-logged-in' : ''}"
 		on:click={() => {
 			profileMenu.set(!$profileMenu);
