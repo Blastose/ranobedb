@@ -1,6 +1,7 @@
 <script lang="ts">
 	import sidebar from '$lib/stores/sidebar';
 	import drawer from '$lib/stores/drawer';
+	import focusSidebar from '$lib/stores/focusSidebar';
 	import { theme, toggleTheme } from '$lib/stores/theme';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import ProfileCircle from '$lib/components/profile/ProfileCircle.svelte';
@@ -10,8 +11,8 @@
 			sidebar.set(true);
 		} else {
 			drawer.set(true);
-			sidebar.set(true);
 		}
+		focusSidebar.set(true);
 	};
 </script>
 

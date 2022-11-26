@@ -12,6 +12,11 @@
 			drawer.set(false);
 		}
 	};
+
+	let btn: HTMLButtonElement;
+	export const focus = () => {
+		btn.focus();
+	};
 </script>
 
 <button
@@ -19,6 +24,7 @@
 	aria-label="close sidebar"
 	on:click={closeSidebar}
 	tabindex={tabindex ? 0 : -1}
+	bind:this={btn}
 >
 	<Icon height="24" width="24" name="close" />
 </button>

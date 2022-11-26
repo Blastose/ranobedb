@@ -2,14 +2,32 @@
 	import SidebarItem from '$lib/components/sidebar/SidebarItem.svelte';
 	import SidebarHeading from '$lib/components/sidebar/SidebarHeading.svelte';
 	import SidebarCloseButton from '$lib/components/sidebar/SidebarCloseButton.svelte';
+	import { onMount } from 'svelte';
+	import focusSidebar from '$lib/stores/focusSidebar';
 
 	export let tabindex: boolean;
+	let closeBtn: SidebarCloseButton;
+
+	onMount(() => {
+		const focusSidebarCloseButton = (e: KeyboardEvent) => {
+			if (e.key === 'Tab' && $focusSidebar) {
+				e.preventDefault();
+				closeBtn.focus();
+				focusSidebar.set(false);
+			}
+		};
+		document.addEventListener('keydown', focusSidebarCloseButton);
+
+		return () => {
+			document.removeEventListener('keydown', focusSidebarCloseButton);
+		};
+	});
 </script>
 
 <div class="sidebar">
 	<nav class="flex flex-col gap-2 px-4 py-4">
 		<div class="flex justify-end">
-			<SidebarCloseButton {tabindex} />
+			<SidebarCloseButton {tabindex} bind:this={closeBtn} />
 		</div>
 		<ul>
 			<SidebarItem text={'Home'} href={'/'} heading={true} icon={'home'} {tabindex} />
