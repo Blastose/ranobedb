@@ -4,9 +4,11 @@
 	import SidebarCloseButton from '$lib/components/sidebar/SidebarCloseButton.svelte';
 	import { onMount } from 'svelte';
 	import focusSidebar from '$lib/stores/focusSidebar';
+	import { getUser } from '@lucia-auth/sveltekit/client';
 
 	export let tabindex: boolean;
 	let closeBtn: SidebarCloseButton;
+	const user = getUser();
 
 	onMount(() => {
 		const focusSidebarCloseButton = (e: KeyboardEvent) => {
@@ -32,16 +34,24 @@
 		<ul>
 			<SidebarItem text={'Home'} href={'/'} heading={true} icon={'home'} {tabindex} />
 		</ul>
-		<ul>
-			<SidebarHeading text={'Blastose'} icon={'profile'} />
-			<SidebarItem text={'My List'} href={'my-list'} {tabindex} />
-			<SidebarItem text={'My Profile'} href={'profile'} {tabindex} />
-			<SidebarItem text={'Sign out'} href={'signout'} {tabindex} />
-		</ul>
+		{#if $user}
+			<ul>
+				<SidebarHeading text={$user.username} icon={'profile'} />
+				<SidebarItem text={'My List'} href={'/my-list'} {tabindex} />
+				<SidebarItem text={'My Profile'} href={'/profile'} {tabindex} />
+				<SidebarItem text={'Sign out'} href={'/signout'} {tabindex} />
+			</ul>
+		{:else}
+			<ul>
+				<SidebarHeading text={'User'} icon={'profile'} />
+				<SidebarItem text={'Log In'} href={'/login'} {tabindex} />
+				<SidebarItem text={'Sign Up'} href={'/signup'} {tabindex} />
+			</ul>
+		{/if}
 		<ul>
 			<SidebarHeading text={'Database'} icon={'database'} />
-			<SidebarItem text={'Books'} href={'books'} {tabindex} />
-			<SidebarItem text={'Series'} href={'series'} {tabindex} />
+			<SidebarItem text={'Books'} href={'/books'} {tabindex} />
+			<SidebarItem text={'Series'} href={'/series'} {tabindex} />
 		</ul>
 	</nav>
 </div>

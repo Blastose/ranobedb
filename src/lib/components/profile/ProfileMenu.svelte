@@ -3,7 +3,9 @@
 	import { clickOutside } from '$lib/util/clickOutside';
 	import profileMenu from '$lib/stores/profileMenu';
 	import { fly } from 'svelte/transition';
+	import { getUser } from '@lucia-auth/sveltekit/client';
 
+	const user = getUser();
 	export let toggleButton: Node | null = null;
 </script>
 
@@ -16,19 +18,19 @@
 	transition:fly={{ y: -10, duration: 100 }}
 >
 	<ul>
-		{#if true}
+		{#if $user}
 			<li class="py-2 text-center">
 				<a href="profile">
-					<p class="text-lg font-bold">Blastose</p>
+					<p class="text-lg font-bold">{$user.username}</p>
 				</a>
 			</li>
-			<ProfileMenuItem text={'Profile'} href={'profile'} />
-			<ProfileMenuItem text={'My List'} href={'my-list'} />
-			<ProfileMenuItem text={'Dummy'} href={'dummy'} />
-			<ProfileMenuItem text={'Sign out'} href={'signout'} />
+			<ProfileMenuItem text={'Profile'} href={'/profile'} />
+			<ProfileMenuItem text={'My List'} href={'/my-list'} />
+			<ProfileMenuItem text={'Dummy'} href={'/dummy'} />
+			<ProfileMenuItem text={'Sign out'} href={'/signout'} />
 		{:else}
-			<ProfileMenuItem text={'Log in'} href={'login'} />
-			<ProfileMenuItem text={'Sign up'} href={'signup'} />
+			<ProfileMenuItem text={'Log In'} href={'/login'} />
+			<ProfileMenuItem text={'Sign Up'} href={'/signup'} />
 		{/if}
 	</ul>
 </nav>
@@ -38,7 +40,7 @@
 		position: absolute;
 		left: auto;
 		right: 0;
-		min-width: 15rem;
+		min-width: 16rem;
 		border-radius: 0.375rem;
 		padding: 0.5rem;
 		margin-top: 0.2rem;
