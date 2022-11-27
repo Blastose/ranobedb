@@ -33,5 +33,13 @@
 		"typescript": "^4.9.3",
 		"vite": "^3.2.4"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@lucia-auth/adapter-kysely": "^0.1.0",
+		"@lucia-auth/sveltekit": "^0.3.0",
+		"@types/pg": "^8.6.5",
+		"kysely": "^0.22.0",
+		"lucia-auth": "^0.2.0",
+		"pg": "^8.8.0"
+	}
 }

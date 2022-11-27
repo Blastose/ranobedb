@@ -1,11 +1,18 @@
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
-// and what to do when importing types
+/// <reference types="lucia-auth" />
+declare namespace Lucia {
+	type Auth = import('$lib/server/lucia.js').Auth;
+	type UserAttributes = {
+		username: string;
+	};
+}
+
+/// <reference types="@sveltejs/kit" />
 declare namespace App {
-	// interface Locals {}
-	// interface PageData {}
-	// interface Error {}
-	// interface Platform {}
+	interface Locals {
+		getSession: import('@lucia-auth/sveltekit').GetSession;
+		setSession: import('@lucia-auth/sveltekit').SetSession;
+		getSessionUser: import('@lucia-auth/sveltekit').GetSessionUser;
+	}
 }
 
 declare namespace svelte.JSX {

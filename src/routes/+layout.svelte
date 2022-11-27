@@ -2,6 +2,8 @@
 	import '../app.css';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { handleSession } from '@lucia-auth/sveltekit/client';
 	import { theme } from '$lib/stores/theme';
 	import Layout from '$lib/components/layout/Layout.svelte';
 	import largeScreen from '$lib/stores/largeScreen';
@@ -56,6 +58,8 @@
 			}
 		}
 	});
+
+	handleSession(page);
 </script>
 
 <svelte:head>
