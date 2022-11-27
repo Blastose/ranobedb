@@ -1,5 +1,4 @@
 <script lang="ts">
-	import './sidebar.css';
 	import Icon, { type IconType } from '../icon/Icon.svelte';
 
 	export let text: string = '';

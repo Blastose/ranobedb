@@ -27,7 +27,13 @@
 			<ProfileMenuItem text={'Profile'} href={'/profile'} />
 			<ProfileMenuItem text={'My List'} href={'/my-list'} />
 			<ProfileMenuItem text={'Dummy'} href={'/dummy'} />
-			<ProfileMenuItem text={'Sign out'} href={'/signout'} />
+			<li class="sidebar-item">
+				<form method="POST" action="/signout">
+					<button class="w-full" type="submit">
+						<p class="text-left px-4 py-1">Sign Out</p>
+					</button>
+				</form>
+			</li>
 		{:else}
 			<ProfileMenuItem text={'Log In'} href={'/login'} />
 			<ProfileMenuItem text={'Sign Up'} href={'/signup'} />

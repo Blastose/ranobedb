@@ -1,5 +1,4 @@
 <script lang="ts">
-	import './sidebar.css';
 	import { page } from '$app/stores';
 	import type { IconType } from '$lib/components/icon/Icon.svelte';
 	import SidebarHeading from '$lib/components/sidebar/SidebarHeading.svelte';

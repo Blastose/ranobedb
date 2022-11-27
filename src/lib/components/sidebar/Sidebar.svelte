@@ -1,4 +1,5 @@
 <script lang="ts">
+	import './sidebar.css';
 	import SidebarItem from '$lib/components/sidebar/SidebarItem.svelte';
 	import SidebarHeading from '$lib/components/sidebar/SidebarHeading.svelte';
 	import SidebarCloseButton from '$lib/components/sidebar/SidebarCloseButton.svelte';
@@ -39,7 +40,13 @@
 				<SidebarHeading text={$user.username} icon={'profile'} />
 				<SidebarItem text={'My List'} href={'/my-list'} {tabindex} />
 				<SidebarItem text={'My Profile'} href={'/profile'} {tabindex} />
-				<SidebarItem text={'Sign out'} href={'/signout'} {tabindex} />
+				<li class="sidebar-item">
+					<form method="POST" action="/signout">
+						<button class="w-full" type="submit">
+							<p class="text-left px-4 py-1">Sign Out</p>
+						</button>
+					</form>
+				</li>
 			</ul>
 		{:else}
 			<ul>

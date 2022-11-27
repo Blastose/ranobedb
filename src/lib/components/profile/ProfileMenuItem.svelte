@@ -1,5 +1,4 @@
 <script lang="ts">
-	import '$lib/components/sidebar/sidebar.css';
 	import profileMenu from '$lib/stores/profileMenu';
 
 	export let text: string = '';
