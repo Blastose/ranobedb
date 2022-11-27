@@ -4,6 +4,7 @@
 	import focusSidebar from '$lib/stores/focusSidebar';
 	import { theme, toggleTheme } from '$lib/stores/theme';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import Logo from '$lib/components/icon/Logo.svelte';
 	import ProfileCircle from '$lib/components/profile/ProfileCircle.svelte';
 
 	const openSidebar = () => {
@@ -31,6 +32,7 @@
 			<button class="p-1 rounded-lg btn lg:hidden" aria-label="open sidebar" on:click={openSidebar}>
 				<Icon height="24" width="24" name="menu" />
 			</button>
+			<Logo height="36" width="36" name="logo" />
 			<p class="text-2xl font-bold">RanobeDB</p>
 		</div>
 		<div class="flex items-center justify-center gap-4">
