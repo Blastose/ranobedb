@@ -3,7 +3,7 @@
 	import Form from '$lib/components/form/Form.svelte';
 	import FormInput from '$lib/components/form/FormInput.svelte';
 	import Alert from '$lib/components/alert/Alert.svelte';
-	import Icon from '$lib/components/icon/Icon.svelte';
+	import FormSubmitButton from '$lib/components/form/FormSubmitButton.svelte';
 
 	export let form: ActionData;
 	let username: string = form?.username ?? '';
@@ -46,22 +46,13 @@
 		</div>
 
 		<div slot="form-submit">
-			<button
-				disabled={loading}
-				type="submit"
-				class="duration-150 w-full flex justify-center text-white bg-primary-500 hover:bg-primary-800 
-				{loading
-					? 'bg-primary-800'
-					: ''} rounded-md py-2 px-4 focus:outline-none focus:ring focus:ring-primary-600"
-				>{#if !loading}
-					Log In
-				{:else}
-					<Icon class="animate-spin" height="24" width="24" name="loading" />
-				{/if}
-			</button>
+			<FormSubmitButton {loading} text={'Log In'} />
 		</div>
 	</Form>
 	<p>
-		Don't have an account yet? <a href="/signup" class="text-blue-400 hover:underline">Sign up</a> now!
+		Don't have an account yet? <a
+			href="/signup"
+			class="text-blue-600 dark:text-blue-400 hover:underline">Sign up</a
+		> now!
 	</p>
 </main>
