@@ -13,12 +13,10 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const form = await request.formData();
-		const username = form.get('username');
-		const password = form.get('password');
-		if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
-			return invalid(400, {
-				message: 'Invalid input'
-			});
+		const username = form.get('username')?.toString();
+		const password = form.get('password')?.toString();
+		if (!username || !password || password?.length > 255) {
+			return invalid(400, { username, password, error: true });
 		}
 
 		try {

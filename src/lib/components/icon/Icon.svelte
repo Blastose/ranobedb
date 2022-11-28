@@ -89,16 +89,12 @@
 	export let width: string;
 	export let height: string;
 	export let hidden: boolean = true;
+	let className: string = '';
+	export { className as class };
 
 	const icon = icons[name];
 </script>
 
-<svg
-	aria-hidden={hidden}
-	class={$$props.class}
-	{width}
-	{height}
-	viewBox="0 0 {icon.box} {icon.box}"
->
+<svg aria-hidden={hidden} class={className} {width} {height} viewBox="0 0 {icon.box} {icon.box}">
 	{@html icon.svg}
 </svg>
