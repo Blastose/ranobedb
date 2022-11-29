@@ -83,7 +83,7 @@ test.describe('auth', () => {
 	test('user cannot create an account with same email', async ({ page }) => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill('fake@email');
-		await page.getByLabel('username').fill('username');
+		await page.getByLabel('username').fill('username123');
 		await page.getByLabel('password').fill('aejdjsldjlsee');
 		await page.locator('main form button[type="submit"]').click();
 

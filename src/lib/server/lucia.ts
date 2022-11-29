@@ -21,7 +21,8 @@ export const auth = lucia({
 	transformUserData: (userData) => {
 		return {
 			userId: userData.id,
-			username: userData.username
+			username: userData.username,
+			readerId: userData.reader_id
 		};
 	}
 });

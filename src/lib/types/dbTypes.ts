@@ -18,6 +18,7 @@ export interface User {
 	id: Generated<string>;
 	provider_id: string;
 	username: string;
+	reader_id: Generated<number>;
 }
 
 export interface DB {
