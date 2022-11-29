@@ -43,6 +43,8 @@ test.describe('auth', () => {
 		await page.locator('main form button[type="submit"]').click();
 
 		await expect(page).toHaveURL('/');
+		await page.goto('/my-list');
+		await expect(page).toHaveURL('/my-list');
 
 		await page.locator('form[action="/signout"] > button[type="submit"]').click();
 		await expect(page).toHaveURL('/login');
@@ -102,5 +104,10 @@ test.describe('auth', () => {
 		await expect(locator).toContainText(
 			'Username is already in use. Please use a different username'
 		);
+	});
+
+	test('user cannot access login only pages', async ({ page }) => {
+		await page.goto('/my-list');
+		await expect(page).not.toHaveURL('/my-list');
 	});
 });
