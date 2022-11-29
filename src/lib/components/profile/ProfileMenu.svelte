@@ -19,9 +19,9 @@
 >
 	<ul>
 		{#if $user}
-			<li class="py-2 text-center">
+			<li class="text-center sidebar-item">
 				<a href="profile">
-					<p class="text-lg font-bold">{$user.username}</p>
+					<p class="py-2 text-lg font-bold">{$user.username}</p>
 				</a>
 			</li>
 			<ProfileMenuItem text={'Profile'} href={'/profile'} />
