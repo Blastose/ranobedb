@@ -43,11 +43,7 @@
 				labelName="Email"
 				required={true}
 				placeholder="example@example.com"
-				error={form?.emailTaken
-					? 'Email is already in use. Please use a different email'
-					: form?.emailInvalid
-					? 'Email is required'
-					: ''}
+				error={form?.emailError?.message ?? ''}
 			/>
 
 			<FormInput
@@ -58,11 +54,7 @@
 				labelName="Username"
 				required={true}
 				placeholder="Username"
-				error={form?.usernameTaken
-					? 'Username is already in use. Please use a different username'
-					: form?.usernameInvalid
-					? 'Username is required'
-					: ''}
+				error={form?.usernameError?.message ?? ''}
 			/>
 
 			<FormInput
@@ -73,7 +65,7 @@
 				labelName={'Password (6+ characters)'}
 				required={true}
 				placeholder="Password"
-				error={form?.passwordInvalid ? 'Password must be between 6 and 255 characters' : ''}
+				error={form?.passwordError?.message ?? ''}
 			/>
 		</div>
 

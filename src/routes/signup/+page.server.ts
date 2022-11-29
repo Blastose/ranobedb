@@ -4,14 +4,17 @@ import type { PageServerLoad, Actions } from './$types';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 
-type FormData = {
+type FormError = {
+	name: string;
+	message: string | null;
+};
+
+type FormResult = {
 	username?: string;
 	email?: string;
-	usernameInvalid?: boolean;
-	usernameTaken?: boolean;
-	emailInvalid?: boolean;
-	emailTaken?: boolean;
-	passwordInvalid?: boolean;
+	usernameError?: FormError;
+	emailError?: FormError;
+	passwordError?: FormError;
 };
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -30,18 +33,30 @@ export const actions: Actions = {
 		let email = form.get('email')?.toString();
 		const password = form.get('password')?.toString();
 
-		let formData: FormData = { username };
+		let formData: FormResult = { username };
 		let invalidForm = false;
 		if (!username) {
-			formData = { ...formData, usernameInvalid: true };
+			formData = {
+				...formData,
+				usernameError: { name: 'usernameInvalid', message: 'Username is required' }
+			};
 			invalidForm = true;
 		}
 		if (!email) {
-			formData = { ...formData, emailInvalid: true };
+			formData = {
+				...formData,
+				emailError: { name: 'emailInvalid', message: 'Email is required' }
+			};
 			invalidForm = true;
 		}
 		if (!password || password.length < 6 || password.length > 255) {
-			formData = { ...formData, passwordInvalid: true };
+			formData = {
+				...formData,
+				passwordError: {
+					name: 'passwordInvalid',
+					message: 'Password must be between 6 and 255 characters'
+				}
+			};
 			invalidForm = true;
 		}
 		if (invalidForm) {
@@ -62,11 +77,23 @@ export const actions: Actions = {
 		} catch (e) {
 			const error = e as Error;
 			if (error.message === 'AUTH_DUPLICATE_PROVIDER_ID') {
-				return invalid(400, { ...formData, emailTaken: true });
+				return invalid(400, {
+					...formData,
+					emailError: {
+						name: 'emailInvalid',
+						message: 'Email is already in use. Please use a different email'
+					}
+				});
 			}
 			if (error instanceof DatabaseError) {
 				if (error.code === '23505' && error.detail?.includes('Key (username)')) {
-					return invalid(400, { ...formData, usernameTaken: true });
+					return invalid(400, {
+						...formData,
+						usernameError: {
+							name: 'usernameInvalid',
+							message: 'Username is already in use. Please use a different username'
+						}
+					});
 				}
 			}
 			console.error(error);
