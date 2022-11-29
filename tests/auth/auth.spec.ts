@@ -69,7 +69,38 @@ test.describe('auth', () => {
 		await expect(page).toHaveURL('/login');
 	});
 
-	test('user cannot create account with same username', async ({ page }) => {
-		await expect(page).toHaveURL('fakeurl');
+	test('user cannot create an account with invalid password', async ({ page }) => {
+		await page.goto('/signup');
+		await page.getByLabel('email').fill('email@email');
+		await page.getByLabel('username').fill('username');
+		await page.getByLabel('password').fill('1');
+		await page.locator('main form button[type="submit"]').click();
+
+		const locator = page.locator('div > label + input#password + span');
+		await expect(locator).toContainText('Password must be between 6 and 255 characters');
+	});
+
+	test('user cannot create an account with same email', async ({ page }) => {
+		await page.goto('/signup');
+		await page.getByLabel('email').fill('fake@email');
+		await page.getByLabel('username').fill('username');
+		await page.getByLabel('password').fill('aejdjsldjlsee');
+		await page.locator('main form button[type="submit"]').click();
+
+		const locator = page.locator('div > label + input#email + span');
+		await expect(locator).toContainText('Email is already in use. Please use a different email');
+	});
+
+	test('user cannot create an account with same username', async ({ page }) => {
+		await page.goto('/signup');
+		await page.getByLabel('email').fill('not@email');
+		await page.getByLabel('username').fill('username');
+		await page.getByLabel('password').fill('aejdjsldjlsee');
+		await page.locator('main form button[type="submit"]').click();
+
+		const locator = page.locator('div > label + input#username + span');
+		await expect(locator).toContainText(
+			'Username is already in use. Please use a different username'
+		);
 	});
 });
