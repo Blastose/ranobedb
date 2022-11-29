@@ -6,6 +6,7 @@
 	import FormSubmitButton from '$lib/components/form/FormSubmitButton.svelte';
 
 	export let form: ActionData;
+	let email: string = form?.email ?? '';
 	let username: string = form?.username ?? '';
 	let password: string;
 	let loading: boolean = false;
@@ -34,6 +35,21 @@
 
 	<Form bind:loading>
 		<div slot="form-input" class="flex flex-col gap-2">
+			<FormInput
+				bind:value={email}
+				name="email"
+				id="email"
+				type="email"
+				labelName="Email"
+				required={true}
+				placeholder="example@example.com"
+				error={form?.emailTaken
+					? 'Email is already in use. Please use a different email'
+					: form?.emailInvalid
+					? 'Email is required'
+					: ''}
+			/>
+
 			<FormInput
 				bind:value={username}
 				name="username"

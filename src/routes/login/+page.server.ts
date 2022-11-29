@@ -13,14 +13,14 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const form = await request.formData();
-		const username = form.get('username')?.toString();
+		const email = form.get('email')?.toString();
 		const password = form.get('password')?.toString();
-		if (!username || !password || password?.length > 255) {
-			return invalid(400, { username, password, error: true });
+		if (!email || !password || password?.length > 255) {
+			return invalid(400, { email, password, error: true });
 		}
 
 		try {
-			const user = await auth.authenticateUser('username', username, password);
+			const user = await auth.authenticateUser('email', email, password);
 			const session = await auth.createSession(user.userId);
 			locals.setSession(session);
 		} catch (e) {
@@ -30,14 +30,14 @@ export const actions: Actions = {
 				error.message === 'AUTH_INVALID_PASSWORD'
 			) {
 				return invalid(400, {
-					username,
+					email,
 					password,
 					message: 'Invalid login credentials',
 					error: true
 				});
 			}
 			return invalid(500, {
-				username,
+				email,
 				password,
 				message: 'An unknown error has occurred',
 				error: true
