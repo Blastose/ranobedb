@@ -83,6 +83,6 @@
 	}
 
 	:global(.dark) .sidebar {
-		background-color: var(--dark-600);
+		background-color: var(--dark-550);
 	}
 </style>
