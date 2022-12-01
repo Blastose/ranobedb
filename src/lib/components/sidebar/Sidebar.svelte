@@ -15,7 +15,9 @@
 		const focusSidebarCloseButton = (e: KeyboardEvent) => {
 			if (e.key === 'Tab' && $focusSidebar) {
 				e.preventDefault();
-				closeBtn.focus();
+				if (closeBtn.focus) {
+					closeBtn.focus();
+				}
 				focusSidebar.set(false);
 			}
 		};
