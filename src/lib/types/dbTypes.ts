@@ -44,9 +44,23 @@ export interface Book {
 	volume: string | null;
 }
 
+export interface BookInfo {
+	id: number;
+	title: string;
+	title_romaji: string | null;
+	volume: string | null;
+	description: string | null;
+	cover_image_file_name: string | null;
+	release_date: Date | null;
+	publisher: { id: number; name: string }[];
+	authors: { id: number; name: string }[];
+	artists: { id: number; name: string }[];
+}
+
 export interface DB {
 	session: Session;
 	user: User;
 	reads: Reads;
 	book: Book;
+	book_info: BookInfo;
 }
