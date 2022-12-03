@@ -80,6 +80,14 @@
 		homeCity: {
 			box: 24,
 			svg: `<path fill="currentColor" d="M0,21V10L7.5,5L15,10V21H10V14H5V21H0M24,2V21H17V8.93L16,8.27V6H14V6.93L10,4.27V2H24M21,14H19V16H21V14M21,10H19V12H21V10M21,6H19V8H21V6Z" />`
+		},
+		chevronLeft: {
+			box: 24,
+			svg: `<path fill="currentColor" d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />`
+		},
+		chevronRight: {
+			box: 24,
+			svg: `<path fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />`
 		}
 	};
 </script>
