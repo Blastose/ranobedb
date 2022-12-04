@@ -58,11 +58,11 @@
 
 	.banner-container {
 		display: grid;
-		padding: 1.5rem;
+		padding: 0.75rem;
 		column-gap: 0.75rem;
 		grid-template-columns: 110px 1fr;
 		backdrop-filter: blur(16px);
-		height: 13rem;
+		height: 12rem;
 		transition-duration: 150ms;
 	}
 
@@ -84,6 +84,7 @@
 		.banner-container {
 			grid-template-columns: 125px 1fr;
 			height: 15rem;
+			padding: 1rem;
 		}
 
 		.description {
@@ -95,6 +96,7 @@
 		.banner-container {
 			grid-template-columns: 175px 1fr;
 			height: 20rem;
+			padding: 1.5rem;
 		}
 
 		.description {
