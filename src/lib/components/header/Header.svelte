@@ -18,7 +18,7 @@
 </script>
 
 <header class="header border-b border-[#4b4b4b15] dark:border-[#ffffff1a]">
-	<div class="flex justify-between gap-2 px-8 py-2 mx-auto duration-150 max-w-7xl">
+	<div class="flex justify-between gap-2 px-8 py-2 mx-auto duration-150 max-w-[1536px]">
 		<div class="flex items-center justify-center gap-2">
 			{#if !$sidebar}
 				<button
