@@ -14,7 +14,7 @@
 			src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg"
 			width="128px"
 			height="182px"
-			alt="Cover for {book.title}"
+			alt={book.title}
 		/>
 	</a>
 	<div class="flex flex-col gap-2">

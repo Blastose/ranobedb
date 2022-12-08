@@ -15,7 +15,7 @@
 					src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg"
 					width="240px"
 					height="343px"
-					alt="Cover for {book.title}"
+					alt=""
 				/>
 			</div>
 			<p class="title">{book.title}</p>
