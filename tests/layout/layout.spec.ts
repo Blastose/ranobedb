@@ -21,7 +21,7 @@ test.describe('layout large screen', () => {
 	});
 
 	test('menu button opens sidebar', async ({ page }) => {
-		await page.locator('[aria-label="close sidebar"]').click();
+		await page.locator('button:visible[aria-label="close sidebar"]').click();
 		const locator = page.locator('.main > .sidebar');
 		await expect(locator).toHaveCSS('margin-left', '-256px');
 

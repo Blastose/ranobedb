@@ -1,5 +1,5 @@
 import { auth } from '$lib/server/lucia';
-import { invalid, redirect, type Actions } from '@sveltejs/kit';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -16,7 +16,7 @@ export const actions: Actions = {
 		const email = form.get('email')?.toString();
 		const password = form.get('password')?.toString();
 		if (!email || !password || password?.length > 255) {
-			return invalid(400, { email, password, error: true });
+			return fail(400, { email, password, error: true });
 		}
 
 		try {
@@ -29,14 +29,14 @@ export const actions: Actions = {
 				error.message === 'AUTH_INVALID_PROVIDER_ID' ||
 				error.message === 'AUTH_INVALID_PASSWORD'
 			) {
-				return invalid(400, {
+				return fail(400, {
 					email,
 					password,
 					message: 'Invalid login credentials',
 					error: true
 				});
 			}
-			return invalid(500, {
+			return fail(500, {
 				email,
 				password,
 				message: 'An unknown error has occurred',

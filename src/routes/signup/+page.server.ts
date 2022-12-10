@@ -1,4 +1,4 @@
-import { invalid, redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/lucia';
 import type { PageServerLoad, Actions } from './$types';
 import pkg from 'pg';
@@ -60,7 +60,7 @@ export const actions: Actions = {
 			invalidForm = true;
 		}
 		if (invalidForm) {
-			return invalid(400, { ...formData });
+			return fail(400, { ...formData });
 		}
 
 		// username/email cannot be undefined because of the if (!username) check and the return
@@ -77,7 +77,7 @@ export const actions: Actions = {
 		} catch (e) {
 			const error = e as Error;
 			if (error.message === 'AUTH_DUPLICATE_PROVIDER_ID') {
-				return invalid(400, {
+				return fail(400, {
 					...formData,
 					emailError: {
 						name: 'emailInvalid',
@@ -87,7 +87,7 @@ export const actions: Actions = {
 			}
 			if (error instanceof DatabaseError) {
 				if (error.code === '23505' && error.detail?.includes('Key (username)')) {
-					return invalid(400, {
+					return fail(400, {
 						...formData,
 						usernameError: {
 							name: 'usernameInvalid',
@@ -97,7 +97,7 @@ export const actions: Actions = {
 				}
 			}
 			console.error(error);
-			return invalid(500, { error: true });
+			return fail(500, { error: true });
 		}
 		return { success: true };
 	}
