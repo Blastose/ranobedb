@@ -40,7 +40,7 @@ test.describe('layout large screen', () => {
 		const locator = page.locator('.header nav.menu');
 		await expect(locator).toBeVisible();
 
-		await page.locator('body').click();
+		await page.locator('.main > .sidebar').click();
 		await expect(locator).toBeHidden();
 	});
 });
