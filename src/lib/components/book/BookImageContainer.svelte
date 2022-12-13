@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { BookInfo } from '$lib/types/dbTypes';
-	import BookImage from '$lib/components/book/BookImage.svelte';
+	import BookImageOver from '$lib/components/book/BookImageOver.svelte';
 
 	export let books: BookInfo[];
 </script>
 
 <div class="book-image-container">
 	{#each books as book (book.id)}
-		<BookImage {book} />
+		<BookImageOver {book} />
 	{/each}
 </div>
 
