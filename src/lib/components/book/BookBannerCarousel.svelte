@@ -5,7 +5,6 @@
 	export let books: BookInfo[];
 	export let title: string;
 
-	books = books.slice(40, 50);
 	let max: number = books.length;
 	let pos: number = 0;
 
@@ -91,8 +90,7 @@
 </script>
 
 <div class="flex flex-col gap-2 overflow-hidden">
-	<p class="font-bold text-xl">{title}</p>
-	<p>#{pos + 1}/{max}</p>
+	<p class="font-bold text-2xl">{title}</p>
 	<div
 		use:useSwipe
 		class:swiper={ease}
