@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import BookCardSimpleContainer from '$lib/components/book/BookCardSimpleContainer.svelte';
 	import BookBannerCarousel from '$lib/components/book/BookBannerCarousel.svelte';
+	import BookImageSwiper from '$lib/components/book/BookImageSwiper.svelte';
 
 	export let data: PageData;
 </script>
@@ -17,6 +18,11 @@
 		<div class="flex flex-col gap-2">
 			<p class="text-2xl font-bold">Recently Added</p>
 			<BookCardSimpleContainer books={data.recentlyAddedBooks} />
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<p class="text-2xl font-bold">Recently Released</p>
+			<BookImageSwiper books={data.recentlyReleasedBooks} />
 		</div>
 	</div>
 </main>

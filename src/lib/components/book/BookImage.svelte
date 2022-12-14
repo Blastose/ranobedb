@@ -3,15 +3,19 @@
 	import type { BookInfo } from '$lib/types/dbTypes';
 
 	export let book: BookInfo;
+	export let hover = true;
+	export let drag = true;
+	export let scroll = false;
 </script>
 
 <div class="book-image">
-	<a class="h-min" href="/book/{book.id}">
+	<a class="h-min {scroll ? 'pointer-events-none' : ''}" href="/book/{book.id}" draggable={drag}>
 		<div class="flex flex-col gap-1">
 			<div class="image-container">
 				<img
 					loading="lazy"
-					class="image rounded-sm"
+					draggable={drag}
+					class="{hover ? 'image' : ''} rounded-sm"
 					src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg"
 					width="240px"
 					height="343px"

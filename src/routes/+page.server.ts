@@ -10,13 +10,20 @@ export const load: PageServerLoad = async () => {
 		.orderBy('id', 'desc')
 		.limit(16)
 		.execute();
+	const recentlyReleasedBooksPromise = db
+		.selectFrom('book_info')
+		.selectAll()
+		.orderBy('release_date', 'desc')
+		.limit(16)
+		.execute();
 
 	try {
-		const [allBooks, recentlyAddedBooks] = await Promise.all([
+		const [allBooks, recentlyAddedBooks, recentlyReleasedBooks] = await Promise.all([
 			allBooksPromise,
-			recentlyAddedBooksPromise
+			recentlyAddedBooksPromise,
+			recentlyReleasedBooksPromise
 		]);
-		return { allBooks, recentlyAddedBooks };
+		return { allBooks, recentlyAddedBooks, recentlyReleasedBooks };
 	} catch {
 		throw error(500);
 	}
