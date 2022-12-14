@@ -20,13 +20,12 @@
 	<ul>
 		{#if $user}
 			<li class="text-center sidebar-item">
-				<a href="profile">
+				<a href="/profile">
 					<p class="py-2 text-lg font-bold">{$user.username}</p>
 				</a>
 			</li>
 			<ProfileMenuItem text={'Profile'} href={'/profile'} />
 			<ProfileMenuItem text={'My List'} href={'/my-list'} />
-			<ProfileMenuItem text={'Dummy'} href={'/dummy'} />
 			<li class="sidebar-item">
 				<form method="POST" action="/signout">
 					<button class="w-full" type="submit">
