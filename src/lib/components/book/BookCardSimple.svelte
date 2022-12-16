@@ -23,14 +23,14 @@
 		</a>
 		<div class="detail text-sm md:text-base">
 			<div class="title col-span-2">
-				<p class="flex items-center gap-1">
+				<p class="grid grid-cols-[min-content_1fr] items-center gap-1">
 					<Icon height="20" width="20" name="people" />
 					<span class="flex gap-2">
 						{#each book.authors as author}
-							<a href="/person/{author.id}">{author.name}</a>
+							<a class="title" href="/person/{author.id}">{author.name}</a>
 						{/each}
 						{#each book.artists as artist}
-							<a href="/person/{artist.id}">{artist.name}</a>
+							<a class="title" href="/person/{artist.id}">{artist.name}</a>
 						{/each}
 					</span>
 				</p>
