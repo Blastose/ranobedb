@@ -33,7 +33,7 @@
 				<Icon height="24" width="24" name="menu" />
 			</button>
 			<Logo height="36" width="36" name="logo" />
-			<p class="text-2xl font-bold">RanobeDB</p>
+			<p class="title text-2xl font-bold">RanobeDB</p>
 		</div>
 		<div class="flex items-center justify-center gap-4">
 			<button
@@ -59,5 +59,15 @@
 
 	:global(.dark) .header {
 		background-color: var(--dark-700);
+	}
+
+	.title {
+		display: none;
+	}
+
+	@media (min-width: 375px) {
+		.title {
+			display: block;
+		}
 	}
 </style>
