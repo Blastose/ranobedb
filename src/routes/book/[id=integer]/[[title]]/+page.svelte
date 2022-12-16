@@ -18,7 +18,7 @@
 	>
 		<div class="blur-image" />
 	</div>
-	<div class="book-container">
+	<div class="container book-container">
 		<div class="grid-container">
 			<img
 				class="image shadow-md"
@@ -89,7 +89,6 @@
 	}
 
 	.book-container {
-		max-width: 1536px;
 		padding: 0rem 2rem;
 		margin-left: auto;
 		margin-right: auto;

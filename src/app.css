@@ -43,8 +43,38 @@ html {
 }
 
 .main-container {
-	max-width: 1536px;
+	width: 100%;
 	padding: 1rem 2rem;
 	margin-left: auto;
 	margin-right: auto;
+}
+
+@media (min-width: 640px) {
+	.main-container {
+		max-width: 640px;
+	}
+}
+
+@media (min-width: 768px) {
+	.main-container {
+		max-width: 768px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.main-container {
+		max-width: 1024px;
+	}
+}
+
+@media (min-width: 1280px) {
+	.main-container {
+		max-width: 1280px;
+	}
+}
+
+@media (min-width: 1536px) {
+	.main-container {
+		max-width: 1536px;
+	}
 }
