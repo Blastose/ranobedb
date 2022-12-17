@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { BookInfo } from '$lib/types/dbTypes';
-	import Box from '$lib/components/book/Box.svelte';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import Box from '$lib/components/box/Box.svelte';
 
 	export let book: BookInfo;
 </script>
@@ -23,10 +23,10 @@
 		</a>
 		<div class="flex flex-wrap gap-2">
 			{#each book.authors as author (author.id)}
-				<Box person={author} type="author" />
+				<Box text={author.name} href={`/person/${author.id}`} icon={'pencil'} />
 			{/each}
 			{#each book.artists as artist (artist.id)}
-				<Box person={artist} type="artist" />
+				<Box text={artist.name} href={`/person/${artist.id}`} icon={'palette'} />
 			{/each}
 		</div>
 		<div class="description-container">
