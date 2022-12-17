@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
-	import type { BookInfo } from '$lib/types/dbTypes';
+	import type { BookImageType } from '$lib/components/book/BookImageContainer.svelte';
 
-	export let book: BookInfo;
+	export let book: BookImageType;
 </script>
 
 <div class="book-image">

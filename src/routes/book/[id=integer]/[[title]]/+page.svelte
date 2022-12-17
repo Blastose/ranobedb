@@ -1,7 +1,10 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import { convertDate } from '$lib/util/convertDate';
 	import Box from '$lib/components/box/Box.svelte';
+	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
+	import BookImageContainer from '$lib/components/book/BookImageContainer.svelte';
 
 	export let data: PageData;
 </script>
@@ -42,11 +45,33 @@
 					{#each data.book.publisher as publisher}
 						<Box text={publisher.name} href={`/publisher/${publisher.id}`} icon={'homeCity'} />
 					{/each}
+					<Box text={convertDate(data.book.release_date)} href={null} icon={'calendarRange'} />
+					<Box text={String(data.book.volume)} href={null} icon={'bookOpenPage'} />
 				</div>
 				<p class="max-w-3xl">
 					{@html data.book.description}
 				</p>
 			</div>
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<p class="font-bold">Releases:</p>
+			{#each data.releases as release}
+				<ReleaseCard bookRelease={release} />
+			{/each}
+		</div>
+
+		<div class="flex flex-col gap-2">
+			<p class="font-bold">Other Books in Same Series:</p>
+			<BookImageContainer
+				books={data.sameSeries.map((book) => {
+					return {
+						id: book.book_id,
+						title: book.title,
+						cover_image_file_name: book.cover_image_file_name
+					};
+				})}
+			/>
 		</div>
 	</div>
 </main>
@@ -95,6 +120,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
+		transition-duration: 150ms;
 	}
 
 	.grid-container {

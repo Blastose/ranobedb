@@ -1,8 +1,12 @@
-<script lang="ts">
+<script lang="ts" context="module">
 	import type { BookInfo } from '$lib/types/dbTypes';
+	export type BookImageType = Pick<BookInfo, 'title' | 'id' | 'cover_image_file_name'>;
+</script>
+
+<script lang="ts">
 	import BookImageOver from '$lib/components/book/BookImageOver.svelte';
 
-	export let books: BookInfo[];
+	export let books: BookImageType[];
 </script>
 
 <div class="book-image-container">

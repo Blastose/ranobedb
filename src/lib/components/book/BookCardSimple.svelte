@@ -2,6 +2,7 @@
 	import type { BookInfo } from '$lib/types/dbTypes';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import { convertDate } from '$lib/util/convertDate';
 
 	export let book: BookInfo;
 </script>
@@ -36,7 +37,7 @@
 				</p>
 			</div>
 			<div class="icon-text">
-				<Icon height="20" width="20" name="book" />
+				<Icon height="20" width="20" name="bookOpenPage" />
 				<p>
 					{book.volume}
 				</p>
@@ -44,7 +45,7 @@
 			<div class="icon-text justify-end">
 				<Icon height="20" width="20" name="calendarRange" />
 				<p>
-					{book.release_date?.toLocaleDateString().replace(/\//g, '-')}
+					{convertDate(book.release_date)}
 				</p>
 			</div>
 		</div>

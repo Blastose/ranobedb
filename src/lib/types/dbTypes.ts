@@ -8,6 +8,10 @@ export type Int8 = ColumnType<string, string | number | bigint, string | number 
 
 export type Timestamp = ColumnType<Date, Date | string | RawBuilder, Date | string | RawBuilder>;
 
+export type BookFormat = 'digital' | 'print';
+
+export type Language = 'en' | 'jp';
+
 export interface Session {
 	expires: Int8;
 	id: string;
@@ -57,10 +61,32 @@ export interface BookInfo {
 	artists: { id: number; name: string }[];
 }
 
+export interface BookRelease {
+	name: string;
+	id: number;
+	book_id: number;
+	lang: Language;
+	release_date: Date | null;
+	format: BookFormat;
+	isbn13: string | null;
+	publisher: string[];
+}
+
+export interface BookSameSeries {
+	series_id: number;
+	series_title: string;
+	book_id: number;
+	orig_book_id: number;
+	title: string;
+	cover_image_file_name: string | null;
+}
+
 export interface DB {
 	session: Session;
 	user: User;
 	reads: Reads;
 	book: Book;
 	book_info: BookInfo;
+	book_release: BookRelease;
+	book_same_series: BookSameSeries;
 }

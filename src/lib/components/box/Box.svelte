@@ -8,7 +8,7 @@
 	export let size: 'small' | 'normal' = 'normal';
 </script>
 
-<div class="box-container">
+<div class="box-container {href ? 'hover' : ''}">
 	{#if href}
 		<a {href}>
 			<BoxContent {icon} {size} {text} />
@@ -25,7 +25,7 @@
 		border-radius: 0.125rem;
 	}
 
-	.box-container:hover {
+	.box-container.hover:hover {
 		background-color: var(--primary-400);
 	}
 
@@ -33,7 +33,7 @@
 		background-color: var(--dark-200);
 	}
 
-	:global(.dark) .box-container:hover {
+	:global(.dark) .box-container.hover:hover {
 		background-color: var(--dark-400);
 	}
 </style>
