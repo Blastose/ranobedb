@@ -19,7 +19,7 @@
 		}}
 	>
 		{#if $user}
-			<span class="text-lg font-bold">B</span>
+			<span class="text-lg font-bold">{$user.username[0]}</span>
 		{:else}
 			<Icon height="24" width="24" name="profile" />
 		{/if}
