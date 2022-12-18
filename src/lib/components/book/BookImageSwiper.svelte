@@ -84,7 +84,6 @@
 		gap: 0.5rem;
 		user-select: none;
 		overflow-x: hidden;
-		grid-auto-flow: column;
 	}
 
 	.item {
