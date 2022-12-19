@@ -44,7 +44,7 @@
 				<SidebarItem text={'My Profile'} href={'/profile'} {tabindex} />
 				<li class="sidebar-item">
 					<form method="POST" action="/signout">
-						<button class="w-full" type="submit">
+						<button class="w-full" type="submit" tabindex={tabindex ? 0 : -1}>
 							<p class="text-left px-4 py-1">Sign Out</p>
 						</button>
 					</form>
