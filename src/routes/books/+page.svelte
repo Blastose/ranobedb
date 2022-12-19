@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import BookImageContainer from '$lib/components/book/BookImageContainer.svelte';
+	import BookView from '$lib/components/book/BookView.svelte';
 
 	export let data: PageData;
 </script>
@@ -11,7 +11,8 @@
 
 <main class="main-container">
 	<div class="flex flex-col gap-2">
-		<p class="font-bold text-2xl dark:text-white">Books</p>
-		<BookImageContainer books={data.books} />
+		<p class="font-bold text-2xl">Books</p>
+
+		<BookView books={data.books} />
 	</div>
 </main>
