@@ -81,10 +81,17 @@ export interface BookSameSeries {
 	cover_image_file_name: string | null;
 }
 
+export interface ReaderLabels {
+	book_id: number;
+	label_name: string;
+	reader_id: number;
+}
+
 export interface DB {
 	session: Session;
 	user: User;
 	reads: Reads;
+	reader_labels: ReaderLabels;
 	book: Book;
 	book_info: BookInfo;
 	book_release: BookRelease;

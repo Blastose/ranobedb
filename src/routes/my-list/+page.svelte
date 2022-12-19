@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { getUser } from '@lucia-auth/sveltekit/client';
 	import type { PageData } from './$types';
-	const user = getUser();
+	import BookLabelTabs from '$lib/components/book/BookLabelTabs.svelte';
+	import BookView from '$lib/components/book/BookView.svelte';
 
 	export let data: PageData;
 </script>
@@ -10,14 +10,12 @@
 	<title>My List - RanobeDB</title>
 </svelte:head>
 
-<main class="mx-auto max-w-xl pt-4 px-4 flex flex-col gap-4">
+<main class="mx-auto main-container flex flex-col gap-4">
+	<p class="font-bold text-2xl">My List</p>
+	<BookLabelTabs />
 	<div class="flex flex-col gap-2">
-		<p>Username: {$user?.username}</p>
-		<p>Reader ID: {$user?.readerId}</p>
 		<div>
-			{#each data.reads as r}
-				<p>{r.title}</p>
-			{/each}
+			<BookView books={data.reads} />
 		</div>
 	</div>
 </main>
