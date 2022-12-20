@@ -15,7 +15,7 @@
 	<BookLabelTabs />
 	<div class="flex flex-col gap-2">
 		<div>
-			<BookView books={data.reads} />
+			<BookView books={data.reads} extended={true} />
 		</div>
 	</div>
 </main>

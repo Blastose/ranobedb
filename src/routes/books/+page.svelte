@@ -13,6 +13,6 @@
 	<div class="flex flex-col gap-2">
 		<p class="font-bold text-2xl">Books</p>
 
-		<BookView books={data.books} />
+		<BookView books={data.books} extended={false} />
 	</div>
 </main>

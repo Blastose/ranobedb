@@ -5,8 +5,10 @@
 	import BookCardContainer from './BookCardContainer.svelte';
 	import BookImageContainer from './BookImageContainer.svelte';
 	import bookViewIndex from '$lib/stores/bookViewIndex';
+	import BookTable from './BookTable.svelte';
 
 	export let books: BookInfo[];
+	export let extended = false;
 
 	let tabs = [
 		{ name: 'table', icon: 'table' as IconType, ariaName: 'Switch to table view' },
@@ -42,6 +44,8 @@
 			<BookCardContainer {books} />
 		{:else if activeItem === 'image'}
 			<BookImageContainer {books} />
+		{:else if activeItem === 'table'}
+			<BookTable {books} {extended} />
 		{/if}
 	</div>
 </div>
