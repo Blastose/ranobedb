@@ -27,10 +27,10 @@
 				<p class="grid grid-cols-[min-content_1fr] items-center gap-1">
 					<Icon height="20" width="20" name="people" />
 					<span class="flex gap-2">
-						{#each book.authors as author}
+						{#each book.authors as author (author.id)}
 							<a class="title" href="/person/{author.id}">{author.name}</a>
 						{/each}
-						{#each book.artists as artist}
+						{#each book.artists as artist (artist.id)}
 							<a class="title" href="/person/{artist.id}">{artist.name}</a>
 						{/each}
 					</span>

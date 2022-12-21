@@ -70,7 +70,7 @@
 
 <div class="grid">
 	<div class="swipe-container" use:useSwipe>
-		{#each books as book}
+		{#each books as book (book.id)}
 			<div class="item">
 				<BookImage {book} hover={false} drag={false} {scroll} />
 			</div>

@@ -6,7 +6,7 @@
 </script>
 
 <div class="book-card-container">
-	{#each books as book}
+	{#each books as book (book.id)}
 		<BookCard {book} />
 	{/each}
 </div>

@@ -36,13 +36,13 @@
 			</p>
 			<div class="info">
 				<div class="flex flex-wrap gap-2">
-					{#each data.book.authors as author}
+					{#each data.book.authors as author (author.id)}
 						<Box text={author.name} href={`/person/${author.id}`} icon={'pencil'} />
 					{/each}
-					{#each data.book.artists as artist}
+					{#each data.book.artists as artist (artist.id)}
 						<Box text={artist.name} href={`/person/${artist.id}`} icon={'palette'} />
 					{/each}
-					{#each data.book.publisher as publisher}
+					{#each data.book.publisher as publisher (publisher.id)}
 						<Box text={publisher.name} href={`/publisher/${publisher.id}`} icon={'homeCity'} />
 					{/each}
 					<Box text={convertDate(data.book.release_date)} href={null} icon={'calendarRange'} />
@@ -56,7 +56,7 @@
 
 		<div class="flex flex-col gap-2">
 			<p class="font-bold">Releases:</p>
-			{#each data.releases as release}
+			{#each data.releases as release (release.id)}
 				<ReleaseCard bookRelease={release} />
 			{/each}
 		</div>
