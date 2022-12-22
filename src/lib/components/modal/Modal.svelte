@@ -25,12 +25,27 @@
 		window.scrollTo(0, scrollY);
 	};
 
+	const escapeClose = (e: KeyboardEvent) => {
+		if (e.key === 'Escape') {
+			modal.set(false);
+		}
+	};
+	const removeEscToClose = () => {
+		document.removeEventListener('keydown', escapeClose);
+	};
+
+	const escToCloseModal = () => {
+		document.addEventListener('keydown', escapeClose, { once: true });
+	};
+
 	$: {
 		if (browser) {
 			if ($modal === true) {
 				disableScroll();
+				escToCloseModal();
 			} else {
 				enableScroll();
+				removeEscToClose();
 			}
 		}
 	}
@@ -39,19 +54,33 @@
 		if ($navigating) {
 			modal.set(false);
 			enableScroll();
+			removeEscToClose();
 		}
 	}
 
-	let dialogContainer: HTMLDivElement;
+	let dialogContainer: HTMLButtonElement;
+	let dialog: HTMLDialogElement;
 
-	const focusTrap = (node: HTMLDivElement) => {
+	const closeOnDialogContainer = (e: Event) => {
+		if (e.target === dialogContainer) {
+			modal.set(false);
+		}
+	};
+
+	const focusTrap = (node: HTMLButtonElement) => {
 		const focusableElements = node.querySelectorAll('a');
 	};
 </script>
 
 {#if $modal}
-	<div class="dialog-container" use:focusTrap bind:this={dialogContainer} transition:fade>
-		<dialog aria-label="Add/Edit book to reading list" open={$modal}>
+	<button
+		class="dialog-container"
+		use:focusTrap
+		bind:this={dialogContainer}
+		on:click={closeOnDialogContainer}
+		transition:fade
+	>
+		<dialog aria-label="Add/Edit book to reading list" open={$modal} bind:this={dialog}>
 			<ModalCloseButton
 				onClose={() => {
 					modal.set(false);
@@ -67,7 +96,7 @@
 				finishDate={null}
 			/>
 		</dialog>
-	</div>
+	</button>
 {/if}
 
 <style>
@@ -76,6 +105,8 @@
 		display: flex;
 		place-items: center;
 		z-index: 51;
+		text-align: left;
+		cursor: default;
 		width: 100%;
 		height: 100vh;
 		background-color: rgba(0, 0, 0, 0.473);
