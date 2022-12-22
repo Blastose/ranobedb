@@ -5,8 +5,23 @@
 	import Box from '$lib/components/box/Box.svelte';
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
 	import BookImageContainer from '$lib/components/book/BookImageContainer.svelte';
+	import modalBook from '$lib/stores/modalBook';
+	import { modal } from '$lib/stores/modalStore';
 
 	export let data: PageData;
+
+	const setModalBook = () => {
+		modalBook.set({
+			book: {
+				id: data.book.id,
+				title: data.book.title,
+				cover_image_file_name: data.book.cover_image_file_name
+			},
+			startDate: convertDate(data.readingStatusResult.start_date, true),
+			finishDate: convertDate(data.readingStatusResult.finish_date, true),
+			status: data.readingStatusResult.label_name
+		});
+	};
 </script>
 
 <svelte:head>
@@ -30,7 +45,19 @@
 				width="240"
 				height="340"
 			/>
-			<button class="add-button"> Add </button>
+			<button
+				class="add-button"
+				on:click={() => {
+					setModalBook();
+					modal.set(true);
+				}}
+			>
+				{#if data.readingStatusResult.label_name}
+					{data.readingStatusResult.label_name}
+				{:else}
+					Add
+				{/if}
+			</button>
 			<p class="title text-lg sm:text-xl md:text-3xl">
 				{data.book.title}
 			</p>

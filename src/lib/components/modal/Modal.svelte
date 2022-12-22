@@ -5,6 +5,7 @@
 	import { navigating } from '$app/stores';
 	import AddBookModal from '$lib/components/book/AddBookModal.svelte';
 	import { browser } from '$app/environment';
+	import modalBook from '$lib/stores/modalBook';
 
 	let prevBodyOverflow: string;
 	let prevBodyPosition: string;
@@ -40,13 +41,11 @@
 	};
 
 	$: {
-		if (browser) {
+		if (browser && $modalBook) {
 			if ($modal === true) {
 				disableScroll();
 				escToCloseModal();
 			} else {
-				// TODO: This branch triggers on page load which sets scroll to
-				// top of page. Need to change condition
 				enableScroll();
 				removeEscToClose();
 			}
@@ -96,7 +95,7 @@
 	};
 </script>
 
-{#if $modal}
+{#if $modal && $modalBook}
 	<div
 		class="dialog-container"
 		use:focusTrap
@@ -116,13 +115,10 @@
 				}}
 			/>
 			<AddBookModal
-				book={{
-					title: 'あした、裸足でこい。',
-					cover_image_file_name: '00330198-bc5c-4762-943a-066a1ef647ae'
-				}}
-				status={null}
-				startDate={null}
-				finishDate={null}
+				book={$modalBook.book}
+				status={$modalBook.status}
+				startDate={$modalBook.startDate}
+				finishDate={$modalBook.finishDate}
 			/>
 		</dialog>
 	</div>
@@ -140,7 +136,7 @@
 	}
 
 	dialog {
-		position: relative;
+		border-radius: 0.1rem;
 		width: 100%;
 		height: 100%;
 		overflow-y: auto;
@@ -150,7 +146,7 @@
 		dialog {
 			border-radius: 0.375rem;
 			width: 640px;
-			height: min(100vh, 400px);
+			max-height: 445px;
 		}
 	}
 </style>

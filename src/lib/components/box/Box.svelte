@@ -2,7 +2,7 @@
 	import BoxContent from '$lib/components/box/BoxContent.svelte';
 	import type { IconType } from '$lib/components/icon/Icon.svelte';
 
-	export let text: string;
+	export let text: string | null;
 	export let icon: IconType | null;
 	export let href: string | null;
 	export let size: 'small' | 'normal' = 'normal';

@@ -2,7 +2,7 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import type { IconType } from '$lib/components/icon/Icon.svelte';
 
-	export let text: string;
+	export let text: string | null;
 	export let size: string;
 	export let icon: IconType | null;
 </script>
