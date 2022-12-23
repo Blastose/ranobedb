@@ -61,7 +61,6 @@
 			<SidebarHeading text={'Database'} icon={'database'} />
 			<SidebarItem text={'Books'} href={'/books'} {tabindex} />
 			<SidebarItem text={'Series'} href={'/series'} {tabindex} />
-			<SidebarItem text={'Modal'} href={'/modal'} {tabindex} />
 		</ul>
 	</nav>
 </div>
