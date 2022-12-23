@@ -106,7 +106,7 @@
 				e.preventDefault();
 			}
 		}}
-		transition:fade
+		transition:fade={{ duration: 300 }}
 	>
 		<dialog aria-label="Add/Edit book to reading list" open={$modal}>
 			<ModalCloseButton
