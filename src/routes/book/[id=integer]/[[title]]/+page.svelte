@@ -7,8 +7,11 @@
 	import BookImageContainer from '$lib/components/book/BookImageContainer.svelte';
 	import modalBook from '$lib/stores/modalBook';
 	import { modal } from '$lib/stores/modalStore';
+	import { getUser } from '@lucia-auth/sveltekit/client';
 
 	export let data: PageData;
+
+	const user = getUser();
 
 	const setModalBook = () => {
 		modalBook.set({
@@ -45,19 +48,23 @@
 				width="240"
 				height="340"
 			/>
-			<button
-				class="add-button"
-				on:click={() => {
-					setModalBook();
-					modal.set(true);
-				}}
-			>
-				{#if data.readingStatusResult.label_name}
-					{data.readingStatusResult.label_name}
-				{:else}
-					Add
-				{/if}
-			</button>
+			{#if $user}
+				<button
+					class="add-button"
+					on:click={() => {
+						setModalBook();
+						modal.set(true);
+					}}
+				>
+					{#if data.readingStatusResult.label_name}
+						{data.readingStatusResult.label_name}
+					{:else}
+						Add
+					{/if}
+				</button>
+			{:else}
+				<a class="add-button text-center" href="/login">Add</a>
+			{/if}
 			<p class="title text-lg sm:text-xl md:text-3xl">
 				{data.book.title}
 			</p>
