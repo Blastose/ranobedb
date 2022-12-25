@@ -28,7 +28,7 @@
 		<form
 			class="form"
 			method="POST"
-			action="/api/book/{book.id}/add"
+			action="/api/user/book/{book.id}"
 			use:enhance={() => {
 				return async () => {
 					modal.set(false);

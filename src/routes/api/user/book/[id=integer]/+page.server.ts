@@ -26,13 +26,6 @@ export const actions: Actions = {
 		const finishDate = String(form.get('finishDate')) || null;
 		const status = String(form.get('label'));
 
-		console.log(startDate);
-		console.log(finishDate);
-		console.log(status);
-		console.log(type);
-		console.log(readerId);
-		console.log(bookId);
-
 		try {
 			if (type === 'add') {
 				await db
