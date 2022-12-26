@@ -88,6 +88,13 @@ export interface Person {
 	person_name_romaji: string | null;
 }
 
+export interface Publisher {
+	description: string | null;
+	id: Generated<number>;
+	name: string;
+	name_romaji: string | null;
+}
+
 export interface ReaderLabels {
 	book_id: number;
 	label_name: string;
@@ -100,6 +107,7 @@ export interface DB {
 	reads: Reads;
 	reader_labels: ReaderLabels;
 	person: Person;
+	publisher: Publisher;
 	book: Book;
 	book_info: BookInfo;
 	book_release: BookRelease;
