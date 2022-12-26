@@ -1,62 +1,30 @@
 <script lang="ts">
-	import { modal } from '$lib/stores/modalStore';
 	import ModalCloseButton from '$lib/components/modal/ModalCloseButton.svelte';
-	import { fade } from 'svelte/transition';
+	import { fly } from 'svelte/transition';
 	import { navigating } from '$app/stores';
 	import AddBookModal from '$lib/components/book/AddBookModal.svelte';
-	import { browser } from '$app/environment';
 	import modalBook from '$lib/stores/modalBook';
-
-	let prevBodyOverflow: string;
-	let prevBodyPosition: string;
-	let prevBodyWidth: string;
-	let scrollY: number;
-
-	const disableScroll = () => {
-		scrollY = window.scrollY;
-		prevBodyPosition = document.body.style.position;
-		prevBodyOverflow = document.body.style.overflow;
-		prevBodyWidth = document.body.style.width;
-		document.body.style.overflow = 'hidden';
-	};
-	const enableScroll = () => {
-		document.body.style.position = prevBodyPosition || '';
-		document.body.style.overflow = prevBodyOverflow || '';
-		document.body.style.width = prevBodyWidth || '';
-		window.scrollTo(0, scrollY);
-	};
 
 	const escapeClose = (e: KeyboardEvent) => {
 		if (e.key === 'Escape') {
-			modal.set(false);
+			modalBook.set(null);
 			document.removeEventListener('keydown', escapeClose);
 		}
 	};
-	const removeEscToClose = () => {
-		document.removeEventListener('keydown', escapeClose);
-	};
 
-	const escToCloseModal = () => {
+	const useEscToClose = (node: HTMLDivElement) => {
 		document.addEventListener('keydown', escapeClose);
+
+		return {
+			destroy() {
+				document.removeEventListener('keydown', escapeClose);
+			}
+		};
 	};
 
 	$: {
-		if (browser && $modalBook) {
-			if ($modal === true) {
-				disableScroll();
-				escToCloseModal();
-			} else {
-				enableScroll();
-				removeEscToClose();
-			}
-		}
-	}
-
-	$: {
-		if ($navigating && $modal) {
-			modal.set(false);
-			enableScroll();
-			removeEscToClose();
+		if ($navigating && $modalBook) {
+			modalBook.set(null);
 		}
 	}
 
@@ -66,7 +34,7 @@
 
 	const closeOnDialogContainer = (e: Event) => {
 		if (e.target === dialogContainer) {
-			modal.set(false);
+			modalBook.set(null);
 		}
 	};
 
@@ -95,10 +63,11 @@
 	};
 </script>
 
-{#if $modal && $modalBook}
+{#if $modalBook}
 	<div
 		class="dialog-container"
 		use:focusTrap
+		use:useEscToClose
 		bind:this={dialogContainer}
 		on:click={closeOnDialogContainer}
 		on:keydown={(e) => {
@@ -106,12 +75,12 @@
 				e.preventDefault();
 			}
 		}}
-		transition:fade={{ duration: 300 }}
+		transition:fly={{ y: -10, duration: 150 }}
 	>
-		<dialog aria-label="Add/Edit book to reading list" open={$modal}>
+		<dialog aria-label="Add/Edit book to reading list" open={Boolean($modalBook)}>
 			<ModalCloseButton
 				onClose={() => {
-					modal.set(false);
+					modalBook.set(null);
 				}}
 			/>
 			<AddBookModal

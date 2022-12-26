@@ -6,7 +6,6 @@
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
 	import BookImageContainer from '$lib/components/book/BookImageContainer.svelte';
 	import modalBook from '$lib/stores/modalBook';
-	import { modal } from '$lib/stores/modalStore';
 	import { getUser } from '@lucia-auth/sveltekit/client';
 
 	export let data: PageData;
@@ -53,7 +52,6 @@
 					class="add-button"
 					on:click={() => {
 						setModalBook();
-						modal.set(true);
 					}}
 				>
 					{#if data.readingStatusResult.label_name}

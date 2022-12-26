@@ -2,8 +2,8 @@
 	import type { BookInfo } from '$lib/types/dbTypes';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import { enhance } from '$app/forms';
-	import { modal } from '$lib/stores/modalStore';
 	import { invalidateAll } from '$app/navigation';
+	import modalBook from '$lib/stores/modalBook';
 
 	export let book: Pick<BookInfo, 'id' | 'title' | 'cover_image_file_name'>;
 	export let status: string | null;
@@ -31,7 +31,7 @@
 			action="/api/user/book/{book.id}"
 			use:enhance={() => {
 				return async () => {
-					modal.set(false);
+					modalBook.set(null);
 					invalidateAll();
 				};
 			}}
