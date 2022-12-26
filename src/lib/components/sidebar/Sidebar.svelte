@@ -61,6 +61,7 @@
 			<SidebarHeading text={'Database'} icon={'database'} />
 			<SidebarItem text={'Books'} href={'/books'} {tabindex} />
 			<SidebarItem text={'Series'} href={'/series'} {tabindex} />
+			<SidebarItem text={'Releases'} href={'/releases'} {tabindex} />
 			<SidebarItem text={'People'} href={'/people'} {tabindex} />
 			<SidebarItem text={'Publishers'} href={'/publishers'} {tabindex} />
 		</ul>

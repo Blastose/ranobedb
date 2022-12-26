@@ -81,6 +81,17 @@ export interface BookSameSeries {
 	cover_image_file_name: string | null;
 }
 
+export interface BookSeries {
+	id: number;
+	title: string;
+	title_romaji: string | null;
+}
+
+export interface PartOf {
+	book_id: number;
+	series_id: number;
+}
+
 export interface Person {
 	person_description: string | null;
 	person_id: Generated<number>;
@@ -112,4 +123,6 @@ export interface DB {
 	book_info: BookInfo;
 	book_release: BookRelease;
 	book_same_series: BookSameSeries;
+	book_series: BookSeries;
+	part_of: PartOf;
 }
