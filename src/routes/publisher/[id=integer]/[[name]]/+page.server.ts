@@ -5,17 +5,13 @@ import { sql } from 'kysely';
 
 export const load: PageServerLoad = async ({ params }) => {
 	const id = Number(params.id);
-	const publisher = await db
+	const publisherPromise = await db
 		.selectFrom('publisher')
 		.selectAll()
 		.where('id', '=', id)
 		.executeTakeFirst();
 
-	if (!publisher) {
-		throw error(500);
-	}
-
-	const books = await db
+	const booksPromise = await db
 		.selectFrom('book_info')
 		.selectAll()
 		.where(
@@ -25,6 +21,12 @@ export const load: PageServerLoad = async ({ params }) => {
 		)
 		.orderBy('title_romaji')
 		.execute();
+
+	const [publisher, books] = await Promise.all([publisherPromise, booksPromise]);
+
+	if (!publisher) {
+		throw error(500);
+	}
 
 	return { publisher, books };
 };
