@@ -18,9 +18,11 @@
 			/>
 		</div>
 		<div class="tint" />
-		<p class="title">
-			{book.title}
-		</p>
+		<div class="p-1">
+			<p class="title">
+				{book.title}
+			</p>
+		</div>
 	</a>
 </div>
 
@@ -61,7 +63,6 @@
 		-webkit-box-orient: vertical;
 		transition-duration: 150ms;
 		position: absolute;
-		padding: 0.25rem;
 		bottom: 0;
 	}
 
