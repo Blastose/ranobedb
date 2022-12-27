@@ -106,10 +106,31 @@ export interface Publisher {
 	name_romaji: string | null;
 }
 
+export interface PublisherReleaseRel {
+	publisher_id: number;
+	release_id: number;
+}
+
 export interface ReaderLabels {
 	book_id: number;
 	label_name: string;
 	reader_id: number;
+}
+
+export interface Release {
+	description: string | null;
+	format: BookFormat;
+	id: Generated<number>;
+	isbn13: string | null;
+	lang: Language;
+	name: string;
+	name_romaji: string | null;
+	release_date: Timestamp | null;
+}
+
+export interface BookReleaseRel {
+	book_id: number;
+	release_id: number;
 }
 
 export interface DB {
@@ -119,10 +140,13 @@ export interface DB {
 	reader_labels: ReaderLabels;
 	person: Person;
 	publisher: Publisher;
+	publisher_release_rel: PublisherReleaseRel;
 	book: Book;
 	book_info: BookInfo;
 	book_release: BookRelease;
 	book_same_series: BookSameSeries;
 	book_series: BookSeries;
 	part_of: PartOf;
+	release: Release;
+	book_release_rel: BookReleaseRel;
 }
