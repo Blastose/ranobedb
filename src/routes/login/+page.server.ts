@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals, url }) => {
 		const form = await request.formData();
 		const email = form.get('email')?.toString();
 		const password = form.get('password')?.toString();
@@ -44,6 +44,10 @@ export const actions: Actions = {
 			});
 		}
 
+		const redirectUrl = url.searchParams.get('redirect');
+		if (redirectUrl) {
+			throw redirect(303, redirectUrl);
+		}
 		throw redirect(303, '/');
 	}
 };

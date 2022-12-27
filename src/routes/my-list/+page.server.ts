@@ -1,11 +1,12 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { createRedirectUrl } from '$lib/util/createRedirectUrl';
 import { db } from '$lib/server/lucia';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const session = await locals.validate();
 	if (!session) {
-		throw redirect(303, '/login');
+		throw redirect(303, createRedirectUrl('login', url));
 	}
 
 	const labelParamFilter = url.searchParams.get('q');

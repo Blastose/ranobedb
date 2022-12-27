@@ -47,6 +47,7 @@ html {
 	padding: 1rem 2rem;
 	margin-left: auto;
 	margin-right: auto;
+	transition-duration: 150ms;
 }
 
 @media (min-width: 640px) {

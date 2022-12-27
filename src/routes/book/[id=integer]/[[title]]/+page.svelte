@@ -7,6 +7,8 @@
 	import BookImageContainer from '$lib/components/book/BookImageContainer.svelte';
 	import modalBook from '$lib/stores/modalBook';
 	import { getUser } from '@lucia-auth/sveltekit/client';
+	import { createRedirectUrl } from '$lib/util/createRedirectUrl';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
 
@@ -61,7 +63,7 @@
 					{/if}
 				</button>
 			{:else}
-				<a class="add-button text-center" href="/login">Add</a>
+				<a class="add-button text-center" href={createRedirectUrl('login', $page.url)}>Add</a>
 			{/if}
 			<p class="title text-lg sm:text-xl md:text-3xl">
 				{data.book.title}

@@ -20,12 +20,17 @@
 	<ul>
 		{#if $user}
 			<li class="text-center sidebar-item">
-				<a href="/profile">
+				<a
+					href="/profile"
+					on:click={() => {
+						profileMenu.set(false);
+					}}
+				>
 					<p class="py-2 text-lg font-bold">{$user.username}</p>
 				</a>
 			</li>
-			<ProfileMenuItem text={'Profile'} href={'/profile'} />
 			<ProfileMenuItem text={'My List'} href={'/my-list'} />
+			<ProfileMenuItem text={'Profile'} href={'/profile'} />
 			<li class="sidebar-item">
 				<form method="POST" action="/signout">
 					<button class="w-full" type="submit">
