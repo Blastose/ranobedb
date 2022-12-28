@@ -96,7 +96,9 @@
 		</div>
 
 		<div class="flex flex-col gap-2">
-			<p class="font-bold">Other Books in Same Series:</p>
+			<p class="font-bold">
+				Other Books in <a href="/series/{data.sameSeries[0].series_id}">Same Series:</a>
+			</p>
 			<BookImageContainer
 				books={data.sameSeries.map((book) => {
 					return {
