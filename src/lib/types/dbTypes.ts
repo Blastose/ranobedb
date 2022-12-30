@@ -4,7 +4,7 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 	? ColumnType<S, I | undefined, U>
 	: ColumnType<T, T | undefined, T>;
 
-export type Int8 = ColumnType<string, string | number | bigint, string | number | bigint>;
+export type BigIntColumnType = ColumnType<bigint | number>;
 
 export type Timestamp = ColumnType<Date, Date | string | RawBuilder, Date | string | RawBuilder>;
 
@@ -13,9 +13,9 @@ export type BookFormat = 'digital' | 'print';
 export type Language = 'en' | 'jp';
 
 export interface Session {
-	expires: Int8;
+	expires: BigIntColumnType;
 	id: string;
-	idle_expires: Int8;
+	idle_expires: BigIntColumnType;
 	user_id: string;
 }
 

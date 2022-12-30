@@ -16,7 +16,7 @@ export const db = new Kysely<DB>({
 });
 
 export const auth = lucia({
-	adapter: kysely(db),
+	adapter: kysely(db, 'pg'),
 	env: dev ? 'DEV' : 'PROD',
 	transformUserData: (userData) => {
 		return {
