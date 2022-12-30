@@ -2,14 +2,15 @@
 	import Header from '$lib/components/header/Header.svelte';
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Drawer from '$lib/components/drawer/Drawer.svelte';
-	import Modal from '../modal/Modal.svelte';
+	import Toast from '$lib/components/toast/Toast.svelte';
+	import Modal from '$lib/components/modal/Modal.svelte';
 	import sidebar from '$lib/stores/sidebar';
 	import drawer from '$lib/stores/drawer';
 	import largeScreen from '$lib/stores/largeScreen';
 </script>
 
+<Toast />
 <Modal />
-
 <Drawer />
 
 <div class="main">

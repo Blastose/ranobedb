@@ -4,6 +4,7 @@
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 	import modalBook from '$lib/stores/modalBook';
+	import toast from '$lib/stores/toast';
 
 	export let book: Pick<BookInfo, 'id' | 'title' | 'cover_image_file_name'>;
 	export let status: string | null;
@@ -30,9 +31,18 @@
 			method="POST"
 			action="/api/user/book/{book.id}"
 			use:enhance={() => {
-				return async () => {
-					modalBook.set(null);
-					invalidateAll();
+				return async ({ result }) => {
+					if (result.type === 'success') {
+						modalBook.set(null);
+						toast.set({
+							message: result.data?.message ?? 'Sucess',
+							closeButton: false,
+							icon: 'checkCircle'
+						});
+						invalidateAll();
+					} else {
+						toast.set({ message: 'An unknown error has occurred.', closeButton: false });
+					}
 				};
 			}}
 		>

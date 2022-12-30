@@ -9,6 +9,7 @@
 	import { getUser } from '@lucia-auth/sveltekit/client';
 	import { createRedirectUrl } from '$lib/util/createRedirectUrl';
 	import { page } from '$app/stores';
+	import toast from '$lib/stores/toast';
 
 	export let data: PageData;
 
@@ -54,6 +55,7 @@
 					class="add-button"
 					on:click={() => {
 						setModalBook();
+						toast.set(null);
 					}}
 				>
 					{#if data.readingStatusResult.label_name}

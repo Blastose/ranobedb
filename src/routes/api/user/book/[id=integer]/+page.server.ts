@@ -46,6 +46,7 @@ export const actions: Actions = {
 						label_name: status
 					})
 					.execute();
+				return { success: true, message: 'Added!' };
 			} else if (type === 'update') {
 				await db
 					.updateTable('reads')
@@ -64,6 +65,7 @@ export const actions: Actions = {
 					.where('reader_id', '=', readerId)
 					.where('book_id', '=', bookId)
 					.execute();
+				return { success: true, message: 'Updated!' };
 			} else if (type === 'remove') {
 				await db
 					.deleteFrom('reads')
@@ -75,8 +77,10 @@ export const actions: Actions = {
 					.where('reader_id', '=', readerId)
 					.where('book_id', '=', bookId)
 					.execute();
+				return { success: true, message: 'Removed!' };
+			} else {
+				return fail(400);
 			}
-			return { success: true };
 		} catch {
 			return fail(400);
 		}
