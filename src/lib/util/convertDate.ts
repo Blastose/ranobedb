@@ -9,7 +9,7 @@ export function convertDate(date: Date | null | undefined, returnNull?: boolean)
 		}
 		return 'N/A';
 	}
-	return `${date.getUTCFullYear()}-${padStartNumber(date.getUTCMonth() + 1)}-${padStartNumber(
-		date.getUTCDate()
+	return `${date.getFullYear()}-${padStartNumber(date.getMonth() + 1)}-${padStartNumber(
+		date.getDate()
 	)}`;
 }
