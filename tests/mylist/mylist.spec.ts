@@ -1,0 +1,52 @@
+import { expect, test } from '@playwright/test';
+test.describe('add/edit/remove books from my list', () => {
+	test.beforeEach(async ({ page }) => {
+		await page.goto('/login');
+		await page.getByLabel('email').fill('aa@aa');
+		await page.getByLabel('password').fill('aaaaaa');
+		await page.locator('main form button[type="submit"]').click();
+
+		await expect(page).toHaveURL('/');
+	});
+
+	test.afterEach(async ({ page }) => {
+		await page.locator('form[action="/signout"] > button[type="submit"]').click();
+		await expect(page).toHaveURL('/login');
+	});
+
+	test('user can update books from reading list', async ({ page }) => {
+		await page.goto('/my-list');
+		await expect(page).toHaveURL('/my-list');
+
+		await page.goto('/book/1031');
+		await page.locator('main button.add-button').click();
+
+		await page.getByLabel('Start date').fill('2020-11-12');
+		await page.getByLabel('Finish date').fill('2020-12-12');
+		await page.getByLabel('Status').selectOption('Plan to read');
+		await page.locator('button[type="submit"][value="update"]').click();
+
+		await expect(page.locator('main button.add-button')).toHaveText('Plan to read');
+	});
+
+	test('user can add and remove books from reading list', async ({ page }) => {
+		await page.goto('/my-list');
+		await expect(page).toHaveURL('/my-list');
+
+		await page.goto('/book/1032');
+		await page.locator('main button.add-button').click();
+
+		await page.getByLabel('Start date').fill('2020-11-12');
+		await page.getByLabel('Finish date').fill('2020-12-12');
+		await page.getByLabel('Status').selectOption('Finished');
+		await page.locator('button[type="submit"][value="add"]').click();
+
+		await expect(page.locator('main button.add-button')).toHaveText('Finished');
+
+		await page.locator('main button.add-button').click();
+		page.on('dialog', (dialog) => dialog.accept());
+		await page.locator('button[type="submit"][value="remove"]').click();
+
+		await expect(page.locator('main button.add-button')).toHaveText('Add');
+	});
+});

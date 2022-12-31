@@ -1,20 +1,24 @@
+/// <reference types="lucia-auth" />
+declare namespace Lucia {
+	type Auth = import('$lib/server/lucia.js').Auth;
+	type UserAttributes = {
+		username: string;
+		reader_id?: number;
+	};
+}
+
 /// <reference types="@sveltejs/kit" />
-
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
-// and what to do when importing types
 declare namespace App {
-	interface UserSession {
-		user: import('@supabase/supabase-js').User;
-		accessToken?: string;
+	interface Locals {
+		validate: import('@lucia-auth/sveltekit').Validate;
+		validateUser: import('@lucia-auth/sveltekit').ValidateUser;
+		setSession: import('@lucia-auth/sveltekit').SetSession;
 	}
+}
 
-	interface Locals extends UserSession {
-		error: import('@supabase/supabase-js').ApiError;
+declare namespace svelte.JSX {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	interface HTMLAttributes<T> {
+		onoutclick?: () => void;
 	}
-
-	// eslint-disable-next-line @typescript-eslint/no-empty-interface
-	interface Session extends UserSession {}
-	// interface Platform {}
-	// interface Stuff {}
 }

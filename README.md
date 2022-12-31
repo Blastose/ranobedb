@@ -1,38 +1,19 @@
-# create-svelte
+# RanobdDB
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+RanobeDB is a [light novel](https://en.wikipedia.org/wiki/Light_novel) database website.
 
-## Creating a project
+## Features
 
-If you're seeing this, you've probably already done this step. Congrats!
+- Add/edit books, releases, authors, etc. to the database
+- Keep track of books you read, want to read, finished, etc.
+- Light and dark theme
 
-```bash
-# create a new project in the current directory
-npm init svelte
+## Contributing
 
-# create a new project in my-app
-npm init svelte my-app
-```
+This project requires the use of [pnpm](https://pnpm.io/).
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+Install dependencies with `pnpm install` and start a development server with:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm run dev
 ```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
