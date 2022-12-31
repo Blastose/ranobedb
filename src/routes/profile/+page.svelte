@@ -42,15 +42,9 @@
 				y: {
 					suggestedMin: 0,
 					ticks: {
-						precision: 0,
-						color: 'red'
+						precision: 0
 					},
 					beginAtZero: true
-				},
-				x: {
-					ticks: {
-						color: 'red'
-					}
 				}
 			}
 		}

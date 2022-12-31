@@ -1,5 +1,4 @@
 <script lang="ts">
-	import './sidebar.css';
 	import SidebarItem from '$lib/components/sidebar/SidebarItem.svelte';
 	import SidebarHeading from '$lib/components/sidebar/SidebarHeading.svelte';
 	import SidebarCloseButton from '$lib/components/sidebar/SidebarCloseButton.svelte';

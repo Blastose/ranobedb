@@ -1,5 +1,4 @@
 <script lang="ts">
-	import '$lib/components/sidebar/sidebar.css';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import ProfileMenu from '$lib/components/profile/ProfileMenu.svelte';
 	import profileMenu from '$lib/stores/profileMenu';
