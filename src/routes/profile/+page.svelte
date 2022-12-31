@@ -1,12 +1,38 @@
 <script lang="ts">
 	import { convertDate } from '$lib/util/convertDate';
 	import type { PageData } from './$types';
-	import Chart from 'chart.js/auto';
+	import {
+		Chart,
+		LineController,
+		LineElement,
+		PointElement,
+		CategoryScale,
+		LinearScale,
+		PieController,
+		ArcElement,
+		Tooltip,
+		Legend,
+		Colors
+	} from 'chart.js';
 	import type { ChartConfiguration } from 'chart.js';
 	import { browser } from '$app/environment';
 	import { theme } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
 	import { getUser } from '@lucia-auth/sveltekit/client';
+
+	Chart.register(
+		LineController,
+		LineElement,
+		PointElement,
+		CategoryScale,
+		LinearScale,
+		PieController,
+		ArcElement,
+		Tooltip,
+		Legend
+	);
+	// @ts-ignore
+	Chart.register(Colors);
 
 	const user = getUser();
 
@@ -45,6 +71,11 @@
 						precision: 0
 					},
 					beginAtZero: true
+				}
+			},
+			plugins: {
+				legend: {
+					onClick: () => {}
 				}
 			}
 		}
