@@ -1,7 +1,6 @@
 <script lang="ts">
 	import '../app.css';
 	import '$lib/components/sidebar/sidebar.css';
-	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { handleSession } from '@lucia-auth/sveltekit/client';
@@ -33,16 +32,6 @@
 			}
 		};
 	};
-
-	$: {
-		if (browser) {
-			if ($theme === 'dark') {
-				document.documentElement.classList.add('dark');
-			} else if ($theme === 'light') {
-				document.documentElement.classList.remove('dark');
-			}
-		}
-	}
 
 	onMount(() => {
 		if (!('theme' in localStorage)) {
