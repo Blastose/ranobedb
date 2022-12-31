@@ -4,7 +4,7 @@
 </script>
 
 <script lang="ts">
-	import BookImageOver from '$lib/components/book/BookImageOver.svelte';
+	import BookImageOver from '$lib/components/book/book-image/BookImageOver.svelte';
 
 	export let books: BookImageType[];
 </script>

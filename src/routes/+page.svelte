@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import BookCardSimpleContainer from '$lib/components/book/BookCardSimpleContainer.svelte';
-	import BookBannerCarousel from '$lib/components/book/BookBannerCarousel.svelte';
-	import BookImageSwiper from '$lib/components/book/BookImageSwiper.svelte';
+	import BookCardSimpleContainer from '$lib/components/book/book-card/BookCardSimpleContainer.svelte';
+	import BookBannerCarousel from '$lib/components/book/book-banner/BookBannerCarousel.svelte';
+	import BookImageSwiper from '$lib/components/book/book-image/BookImageSwiper.svelte';
 
 	export let data: PageData;
 </script>

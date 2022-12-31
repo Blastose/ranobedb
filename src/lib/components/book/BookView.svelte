@@ -2,8 +2,8 @@
 	import type { BookInfo } from '$lib/types/dbTypes';
 	import Icon, { type IconType } from '$lib/components/icon/Icon.svelte';
 
-	import BookCardContainer from './BookCardContainer.svelte';
-	import BookImageContainer from './BookImageContainer.svelte';
+	import BookCardContainer from '$lib/components/book/book-card/BookCardContainer.svelte';
+	import BookImageContainer from '$lib/components/book/book-image/BookImageContainer.svelte';
 	import bookViewIndex from '$lib/stores/bookViewIndex';
 	import BookTable from './BookTable.svelte';
 

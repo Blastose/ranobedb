@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { BookInfo } from '$lib/types/dbTypes';
-	import BookCardSimple from '$lib/components/book/BookCardSimple.svelte';
+	import BookCardSimple from '$lib/components/book/book-card/BookCardSimple.svelte';
 
 	export let books: BookInfo[];
 </script>

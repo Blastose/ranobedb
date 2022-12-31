@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BookCard from '$lib/components/book/BookCard.svelte';
+	import BookCard from '$lib/components/book/book-card/BookCard.svelte';
 	import type { BookInfo } from '$lib/types/dbTypes';
 
 	export let books: BookInfo[];

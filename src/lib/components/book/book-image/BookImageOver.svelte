@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
-	import type { BookImageType } from '$lib/components/book/BookImageContainer.svelte';
+	import type { BookImageType } from '$lib/components/book/book-image/BookImageContainer.svelte';
 
 	export let book: BookImageType;
 </script>

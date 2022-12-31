@@ -4,7 +4,7 @@
 	import { convertDate } from '$lib/util/convertDate';
 	import Box from '$lib/components/box/Box.svelte';
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
-	import BookImageContainer from '$lib/components/book/BookImageContainer.svelte';
+	import BookImageContainer from '$lib/components/book/book-image/BookImageContainer.svelte';
 	import modalBook from '$lib/stores/modalBook';
 	import { getUser } from '@lucia-auth/sveltekit/client';
 	import { createRedirectUrl } from '$lib/util/createRedirectUrl';

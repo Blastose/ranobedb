@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { BookInfo } from '$lib/types/dbTypes';
-	import BookImage from '$lib/components/book/BookImage.svelte';
+	import BookImage from '$lib/components/book/book-image/BookImage.svelte';
 
 	export let books: BookInfo[];
 	let scroll = false;
