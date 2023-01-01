@@ -1,4 +1,4 @@
-# RanobdDB
+# ![Alt text](./static/rndb_logo.png) RanobeDB
 
 RanobeDB is a [light novel](https://en.wikipedia.org/wiki/Light_novel) database website.
 
