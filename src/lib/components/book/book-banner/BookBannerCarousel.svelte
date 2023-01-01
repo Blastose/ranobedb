@@ -70,8 +70,8 @@
 		};
 
 		node.addEventListener('pointerdown', pointerStart);
-		node.addEventListener('pointerup', pointerEnd);
-		node.addEventListener('pointermove', pointerMove);
+		window.addEventListener('pointerup', pointerEnd);
+		window.addEventListener('pointermove', pointerMove);
 		node.addEventListener('transitionend', clearEase);
 		node.addEventListener('animationend', clearAnimation);
 		node.addEventListener('animationcancel', clearAnimation);
@@ -79,8 +79,8 @@
 		return {
 			destroy() {
 				node.removeEventListener('pointerdown', pointerStart);
-				node.removeEventListener('pointerup', pointerEnd);
-				node.removeEventListener('pointermove', pointerMove);
+				window.removeEventListener('pointerup', pointerEnd);
+				window.removeEventListener('pointermove', pointerMove);
 				node.removeEventListener('transitionend', clearEase);
 				node.removeEventListener('animationend', clearAnimation);
 				node.removeEventListener('animationcancel', clearAnimation);

@@ -55,14 +55,14 @@
 		};
 
 		node.addEventListener('pointerdown', pointerStart);
-		node.addEventListener('pointerup', pointerEnd);
-		node.addEventListener('pointermove', pointerMove);
+		window.addEventListener('pointerup', pointerEnd);
+		window.addEventListener('pointermove', pointerMove);
 
 		return {
 			destroy() {
 				node.removeEventListener('pointerdown', pointerStart);
-				node.removeEventListener('pointerup', pointerEnd);
-				node.removeEventListener('pointermove', pointerMove);
+				window.removeEventListener('pointerup', pointerEnd);
+				window.removeEventListener('pointermove', pointerMove);
 			}
 		};
 	};
