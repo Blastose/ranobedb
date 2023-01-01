@@ -11,7 +11,7 @@
 	<a class="h-min" href="/book/{book.id}">
 		<img
 			loading="lazy"
-			class="shadow-sm rounded-sm"
+			class="shadow-sm rounded-sm overflow-hidden"
 			src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg"
 			width="64px"
 			height="91px"
@@ -58,6 +58,7 @@
 		padding: 0.5rem;
 		display: grid;
 		grid-template-columns: 64px 1fr;
+		grid-template-rows: 91px;
 		column-gap: 0.5rem;
 	}
 
