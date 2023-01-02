@@ -9,7 +9,8 @@
 		{ name: 'Reading', width: 83.16667175292969 },
 		{ name: 'Plan to read', width: 111.51666259765625 },
 		{ name: 'Finished', width: 84.08332824707031 },
-		{ name: 'Dropped', width: 88.2166748046875 }
+		{ name: 'Dropped', width: 88.2166748046875 },
+		{ name: 'On hold', width: 82.51666259765625 }
 	];
 
 	$: activeItem = $page.url.searchParams.get('q') ?? 'All';
