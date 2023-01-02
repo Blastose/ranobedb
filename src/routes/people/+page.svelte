@@ -5,6 +5,10 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>People - RanobeDB</title>
+</svelte:head>
+
 <main class="main-container">
 	<div class="flex flex-col gap-4">
 		<p class="font-bold text-2xl">People</p>

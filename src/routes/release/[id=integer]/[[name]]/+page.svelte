@@ -6,6 +6,10 @@
 	export let data: PageData;
 </script>
 
+<svelte:head>
+	<title>{data.release.name}:release - RanobeDB</title>
+</svelte:head>
+
 <main class="main-container">
 	<div class="flex flex-col gap-4">
 		<div class="flex flex-col gap-2">
