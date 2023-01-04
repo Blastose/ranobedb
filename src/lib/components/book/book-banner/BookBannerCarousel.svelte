@@ -44,10 +44,12 @@
 		};
 
 		const pointerEnd = (e: PointerEvent) => {
-			pointerEndX = e.x;
-			moving = false;
-			ease = true;
-			handleSwipe();
+			if (moving) {
+				pointerEndX = e.x;
+				moving = false;
+				ease = true;
+				handleSwipe();
+			}
 		};
 
 		const pointerMove = (e: PointerEvent) => {
