@@ -84,6 +84,7 @@
 		gap: 0.5rem;
 		user-select: none;
 		overflow-x: hidden;
+		touch-action: none;
 	}
 
 	.item {

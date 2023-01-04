@@ -96,7 +96,7 @@
 		class:swiper={ease}
 		class:swipe-left={animateSwipeLeft}
 		class:swipe-right={animateSwipeRight}
-		class="select-none"
+		class="select-none touch-none"
 		aria-live="polite"
 		aria-atomic="true"
 	>
