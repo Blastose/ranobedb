@@ -55,6 +55,7 @@
 		align-items: flex-end;
 		justify-content: center;
 		height: 100vh;
+		height: 100dvh;
 		width: 100%;
 		z-index: 1000;
 		pointer-events: none;
