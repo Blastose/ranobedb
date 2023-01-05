@@ -2,6 +2,20 @@ import { expect, test } from '@playwright/test';
 
 test.describe('layout large screen', () => {
 	test.beforeEach(async ({ page }) => {
+		await page.addStyleTag({
+			content: `
+			*,
+			*::after,
+			*::before {
+					transition-delay: 0s !important;
+					transition-duration: 0s !important;
+					animation-delay: -0.0001s !important;
+					animation-duration: 0s !important;
+					animation-play-state: paused !important;
+					caret-color: transparent !important;
+			}
+		`
+		});
 		await page.goto('/');
 	});
 
@@ -50,6 +64,20 @@ test.describe('layout small screen', () => {
 		await page.setViewportSize({
 			width: 640,
 			height: 480
+		});
+		await page.addStyleTag({
+			content: `
+			*,
+			*::after,
+			*::before {
+					transition-delay: 0s !important;
+					transition-duration: 0s !important;
+					animation-delay: -0.0001s !important;
+					animation-duration: 0s !important;
+					animation-play-state: paused !important;
+					caret-color: transparent !important;
+			}
+		`
 		});
 		await page.goto('/');
 	});

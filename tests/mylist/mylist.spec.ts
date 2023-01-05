@@ -1,18 +1,7 @@
 import { expect, test } from '@playwright/test';
+
 test.describe('add/edit/remove books from my list', () => {
-	test.beforeEach(async ({ page }) => {
-		await page.goto('/login');
-		await page.getByLabel('email').fill('aa@aa');
-		await page.getByLabel('password').fill('aaaaaa');
-		await page.locator('main form button[type="submit"]').click();
-
-		await expect(page).toHaveURL('/');
-	});
-
-	test.afterEach(async ({ page }) => {
-		await page.locator('form[action="/signout"] > button[type="submit"]').click();
-		await expect(page).toHaveURL('/login');
-	});
+	test.use({ storageState: 'storageState.json' });
 
 	test('user can update books from reading list', async ({ page }) => {
 		await page.goto('/my-list');
