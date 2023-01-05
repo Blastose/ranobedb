@@ -1,6 +1,6 @@
 <script lang="ts">
 	import ModalCloseButton from '$lib/components/modal/ModalCloseButton.svelte';
-	import { fly } from 'svelte/transition';
+	import { fly, fade } from 'svelte/transition';
 	import { navigating } from '$app/stores';
 	import AddBookModal from '$lib/components/book/AddBookModal.svelte';
 	import modalBook from '$lib/stores/modalBook';
@@ -75,9 +75,13 @@
 				e.preventDefault();
 			}
 		}}
-		transition:fly={{ y: -10, duration: 150 }}
+		transition:fade={{ duration: 150 }}
 	>
-		<dialog aria-label="Add/Edit book to reading list" open={Boolean($modalBook)}>
+		<dialog
+			aria-label="Add/Edit book to reading list"
+			open={Boolean($modalBook)}
+			transition:fly={{ y: -10, duration: 150 }}
+		>
 			<ModalCloseButton
 				onClose={() => {
 					modalBook.set(null);
