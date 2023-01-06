@@ -8,6 +8,8 @@ export type BigIntColumnType = ColumnType<bigint | number>;
 
 export type Timestamp = ColumnType<Date, Date | string | RawBuilder, Date | string | RawBuilder>;
 
+export type DateString = ColumnType<string, Date | string | RawBuilder, Date | string | RawBuilder>;
+
 export type BookFormat = 'digital' | 'print';
 
 export type Language = 'en' | 'jp';
@@ -30,9 +32,9 @@ export interface User {
 export interface Reads {
 	added_date: Timestamp | null;
 	book_id: number;
-	finish_date: Timestamp | null;
+	finish_date: DateString | null;
 	reader_id: number;
-	start_date: Timestamp | null;
+	start_date: DateString | null;
 }
 
 export interface Book {
@@ -42,7 +44,7 @@ export interface Book {
 	cover_image_file_name: string | null;
 	description: string | null;
 	id: number;
-	release_date: Timestamp | null;
+	release_date: DateString | null;
 	title: string;
 	title_romaji: string | null;
 	volume: string | null;
@@ -55,7 +57,7 @@ export interface BookInfo {
 	volume: string | null;
 	description: string | null;
 	cover_image_file_name: string | null;
-	release_date: Date | null;
+	release_date: string | null;
 	publisher: { id: number; name: string }[];
 	authors: { id: number; name: string }[];
 	artists: { id: number; name: string }[];
@@ -125,7 +127,7 @@ export interface Release {
 	lang: Language;
 	name: string;
 	name_romaji: string | null;
-	release_date: Timestamp | null;
+	release_date: DateString | null;
 }
 
 export interface BookReleaseRel {
