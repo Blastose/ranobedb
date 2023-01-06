@@ -37,33 +37,39 @@
 			<SidebarItem text={'Home'} href={'/'} heading={true} icon={'home'} {tabindex} />
 		</ul>
 		{#if $user}
-			<ul>
+			<div>
 				<SidebarHeading text={$user.username} icon={'profile'} />
-				<SidebarItem text={'My List'} href={'/my-list'} {tabindex} />
-				<SidebarItem text={'My Profile'} href={'/profile'} {tabindex} />
-				<li class="sidebar-item">
-					<form method="POST" action="/signout">
-						<button class="w-full" type="submit" tabindex={tabindex ? 0 : -1}>
-							<p class="text-left px-4 py-1">Sign Out</p>
-						</button>
-					</form>
-				</li>
-			</ul>
+				<ul>
+					<SidebarItem text={'My List'} href={'/my-list'} {tabindex} />
+					<SidebarItem text={'My Profile'} href={'/profile'} {tabindex} />
+					<li class="sidebar-item">
+						<form method="POST" action="/signout">
+							<button class="w-full" type="submit" tabindex={tabindex ? 0 : -1}>
+								<p class="text-left px-4 py-1">Sign Out</p>
+							</button>
+						</form>
+					</li>
+				</ul>
+			</div>
 		{:else}
-			<ul>
+			<div>
 				<SidebarHeading text={'User'} icon={'profile'} />
-				<SidebarItem text={'Log In'} href={'/login'} {tabindex} />
-				<SidebarItem text={'Sign Up'} href={'/signup'} {tabindex} />
-			</ul>
+				<ul>
+					<SidebarItem text={'Log In'} href={'/login'} {tabindex} />
+					<SidebarItem text={'Sign Up'} href={'/signup'} {tabindex} />
+				</ul>
+			</div>
 		{/if}
-		<ul>
+		<div>
 			<SidebarHeading text={'Database'} icon={'database'} />
-			<SidebarItem text={'Books'} href={'/books'} {tabindex} />
-			<SidebarItem text={'Series'} href={'/series'} {tabindex} />
-			<SidebarItem text={'Releases'} href={'/releases'} {tabindex} />
-			<SidebarItem text={'People'} href={'/people'} {tabindex} />
-			<SidebarItem text={'Publishers'} href={'/publishers'} {tabindex} />
-		</ul>
+			<ul>
+				<SidebarItem text={'Books'} href={'/books'} {tabindex} />
+				<SidebarItem text={'Series'} href={'/series'} {tabindex} />
+				<SidebarItem text={'Releases'} href={'/releases'} {tabindex} />
+				<SidebarItem text={'People'} href={'/people'} {tabindex} />
+				<SidebarItem text={'Publishers'} href={'/publishers'} {tabindex} />
+			</ul>
+		</div>
 	</nav>
 </div>
 
