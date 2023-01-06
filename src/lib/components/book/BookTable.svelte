@@ -4,8 +4,8 @@
 
 	interface BookTableType extends BookInfo {
 		added_date?: Date;
-		finish_date?: Date;
-		start_date?: Date;
+		finish_date?: string;
+		start_date?: string;
 		label_name?: string;
 	}
 	export let books: BookTableType[];
@@ -35,10 +35,10 @@
 					{#if extended}
 						<td>{book.label_name ?? 'N/A'}</td>
 						<td>{convertDate(book.added_date)}</td>
-						<td>{convertDate(book.start_date)}</td>
-						<td>{convertDate(book.finish_date)}</td>
+						<td>{book.start_date}</td>
+						<td>{book.finish_date}</td>
 					{:else}
-						<td>{convertDate(book.release_date)}</td>
+						<td>{book.release_date}</td>
 					{/if}
 				</tr>
 			{/each}

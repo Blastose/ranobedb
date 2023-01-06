@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
-	import { convertDate } from '$lib/util/convertDate';
 	import Box from '$lib/components/box/Box.svelte';
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
 	import BookImageContainer from '$lib/components/book/book-image/BookImageContainer.svelte';
@@ -22,8 +21,8 @@
 				title: data.book.title,
 				cover_image_file_name: data.book.cover_image_file_name
 			},
-			startDate: convertDate(data.readingStatusResult.start_date, true),
-			finishDate: convertDate(data.readingStatusResult.finish_date, true),
+			startDate: data.readingStatusResult.start_date,
+			finishDate: data.readingStatusResult.finish_date,
 			status: data.readingStatusResult.label_name
 		});
 	};
@@ -81,8 +80,9 @@
 					{#each data.book.publisher as publisher (publisher.id)}
 						<Box text={publisher.name} href={`/publisher/${publisher.id}`} icon={'homeCity'} />
 					{/each}
-					<Box text={convertDate(data.book.release_date)} href={null} icon={'calendarRange'} />
+					<Box text={data.book.release_date} href={null} icon={'calendarRange'} />
 					<Box text={String(data.book.volume)} href={null} icon={'bookOpenPage'} />
+					<Box text={'Edit'} href={`/book/${$page.params.id}/edit`} icon={'pencil'} />
 				</div>
 				<p class="max-w-3xl">
 					{@html data.book.description}

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { convertDate } from '$lib/util/convertDate';
 	import type { PageData } from './$types';
 	import {
 		Chart,
@@ -47,7 +46,7 @@
 	};
 
 	const readPerMonth = data.readPerMonth.map((row) => {
-		const [year, month] = convertDate(row.date)!.split('-');
+		const [year, month] = row.date.split('-');
 		return { date: `${year}-${month}`, count: Number(row.count) };
 	});
 

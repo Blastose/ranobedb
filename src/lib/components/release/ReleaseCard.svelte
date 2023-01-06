@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { BookRelease } from '$lib/types/dbTypes';
 	import Icon from '$lib/components/icon/Icon.svelte';
-	import { convertDate } from '$lib/util/convertDate';
 
 	export let bookRelease: BookRelease;
 </script>
@@ -19,7 +18,7 @@
 		</div>
 		<div class="card-item">
 			<Icon height="24" width="24" name="calendarRange" />
-			<p title="Release date">{convertDate(bookRelease.release_date)}</p>
+			<p title="Release date">{bookRelease.release_date}</p>
 		</div>
 		<div class="card-item">
 			<Icon height="24" width="24" name="bookOpen" />

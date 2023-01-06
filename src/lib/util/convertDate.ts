@@ -1,7 +1,3 @@
-function padStartNumber(num: number) {
-	return String(num).padStart(2, '0');
-}
-
 export function convertDate(date: Date | null | undefined, returnNull?: boolean) {
 	if (!date) {
 		if (returnNull) {
@@ -9,7 +5,5 @@ export function convertDate(date: Date | null | undefined, returnNull?: boolean)
 		}
 		return 'N/A';
 	}
-	return `${date.getFullYear()}-${padStartNumber(date.getMonth() + 1)}-${padStartNumber(
-		date.getDate()
-	)}`;
+	return date.toISOString().substring(0, 10);
 }

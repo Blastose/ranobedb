@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	const { count } = db.fn;
 
-	const readPerMonthPromise = sql<{ date: Date; count: string }>`
+	const readPerMonthPromise = sql<{ date: string; count: string }>`
 	SELECT date_trunc('month', gs)::date AS date, COALESCE(COUNT(book_id), 0) AS count FROM
 		generate_series(date_trunc('month', 'now'::date)::date - '11 month'::interval, date_trunc('month', 'now'::date)::date, interval '1 month') AS gs
 		LEFT JOIN

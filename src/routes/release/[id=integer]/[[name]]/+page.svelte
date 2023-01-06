@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { convertDate } from '$lib/util/convertDate';
 	import BookView from '$lib/components/book/BookView.svelte';
 	import type { PageData } from './$types';
 
@@ -23,7 +22,7 @@
 				<p>Description: {data.release.description ?? 'N/A'}</p>
 				<p>Language: {data.release.lang}</p>
 				<p>ISBN13: {data.release.isbn13 ?? 'N/A'}</p>
-				<p>Release Date: {convertDate(data.release.release_date)}</p>
+				<p>Release Date: {data.release.release_date}</p>
 				<p>Format: {data.release.format}</p>
 				<p>
 					Publishers:
