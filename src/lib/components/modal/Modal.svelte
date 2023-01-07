@@ -4,6 +4,7 @@
 	import { navigating } from '$app/stores';
 	import AddBookModal from '$lib/components/book/AddBookModal.svelte';
 	import modalBook from '$lib/stores/modalBook';
+	import { beforeNavigate } from '$app/navigation';
 
 	const escapeClose = (e: KeyboardEvent) => {
 		if (e.key === 'Escape') {
@@ -61,6 +62,13 @@
 			}
 		};
 	};
+
+	beforeNavigate((navigation) => {
+		if ($modalBook) {
+			navigation.cancel();
+			modalBook.set(null);
+		}
+	});
 </script>
 
 {#if $modalBook}

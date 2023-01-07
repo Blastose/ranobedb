@@ -7,10 +7,13 @@
 	import sidebar from '$lib/stores/sidebar';
 	import drawer from '$lib/stores/drawer';
 	import largeScreen from '$lib/stores/largeScreen';
+	import modalBook from '$lib/stores/modalBook';
 </script>
 
 <Toast />
-<Modal />
+{#if $modalBook}
+	<Modal />
+{/if}
 <Drawer />
 
 <div class="main">
