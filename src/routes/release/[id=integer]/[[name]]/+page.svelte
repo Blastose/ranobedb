@@ -6,7 +6,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.release.name}:release - RanobeDB</title>
+	<title>{data.release.name} - RanobeDB</title>
 </svelte:head>
 
 <main class="main-container">
