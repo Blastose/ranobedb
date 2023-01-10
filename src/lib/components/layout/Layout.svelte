@@ -8,6 +8,12 @@
 	import drawer from '$lib/stores/drawer';
 	import largeScreen from '$lib/stores/largeScreen';
 	import modalBook from '$lib/stores/modalBook';
+
+	import { fade } from 'svelte/transition';
+
+	export let pathname: string;
+
+	const transitionDuration = 150;
 </script>
 
 <Toast />
@@ -28,9 +34,15 @@
 	<div class="header">
 		<Header />
 	</div>
-	<div class="content">
-		<slot />
-	</div>
+	{#key pathname}
+		<div
+			class="content"
+			in:fade={{ duration: transitionDuration, delay: transitionDuration }}
+			out:fade={{ duration: transitionDuration }}
+		>
+			<slot />
+		</div>
+	{/key}
 </div>
 
 <style>

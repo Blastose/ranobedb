@@ -8,6 +8,7 @@
 	import Layout from '$lib/components/layout/Layout.svelte';
 	import largeScreen from '$lib/stores/largeScreen';
 	import drawer from '$lib/stores/drawer';
+	import type { PageData } from './$types';
 
 	const monitorScreenSize = (node: Window) => {
 		const windowQuery = node.matchMedia('(min-width: 1024px)');
@@ -50,6 +51,7 @@
 	});
 
 	handleSession(page);
+	export let data: PageData;
 </script>
 
 <svelte:head>
@@ -68,6 +70,6 @@
 
 <svelte:window use:monitorScreenSize />
 
-<Layout>
+<Layout pathname={data.pathname}>
 	<slot />
 </Layout>
