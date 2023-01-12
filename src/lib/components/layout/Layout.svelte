@@ -8,6 +8,24 @@
 	import drawer from '$lib/stores/drawer';
 	import largeScreen from '$lib/stores/largeScreen';
 	import modalBook from '$lib/stores/modalBook';
+
+	import { fly } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
+	import { beforeNavigate } from '$app/navigation';
+
+	export let pathname: string;
+
+	beforeNavigate((beforeNavigate) => {
+		if (beforeNavigate.delta && beforeNavigate.delta < 0) {
+			flyDirection = -1;
+		} else {
+			flyDirection = 1;
+		}
+		console.log(flyXOffset);
+	});
+
+	let flyDirection = 1;
+	$: flyXOffset = $largeScreen ? 20 : 12;
 </script>
 
 <Toast />
@@ -18,7 +36,7 @@
 
 <div class="main">
 	<div
-		class="sidebar duration-150 ease-in-out
+		class="sidebar
 		{$sidebar ? '' : 'hide-sidebar'}
 		{$drawer ? 'show-drawer' : ''}"
 	>
@@ -29,7 +47,11 @@
 		<Header />
 	</div>
 	<div class="content">
-		<slot />
+		{#key pathname}
+			<div in:fly={{ x: flyXOffset * flyDirection, duration: 250, easing: cubicOut }}>
+				<slot />
+			</div>
+		{/key}
 	</div>
 </div>
 
@@ -52,6 +74,8 @@
 	.sidebar {
 		grid-area: sidebar;
 		margin-left: -16rem;
+		transition-duration: 150ms;
+		transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
 	}
 
 	.header {
@@ -65,6 +89,7 @@
 		grid-area: content;
 		padding-bottom: 20px;
 		background-color: var(--primary-50);
+		overflow: hidden;
 	}
 
 	:global(.dark) .content {
