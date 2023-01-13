@@ -32,8 +32,11 @@
 			<button class="p-1 rounded-lg btn lg:hidden" aria-label="open sidebar" on:click={openSidebar}>
 				<Icon height="24" width="24" name="menu" />
 			</button>
-			<Logo height="36" width="36" name="logo" />
-			<a href="/" class="title text-2xl font-bold">RanobeDB</a>
+
+			<a href="/" class="flex gap-2">
+				<Logo height="36" width="36" name="logo" />
+				<p class="title text-2xl font-bold">RanobeDB</p>
+			</a>
 		</div>
 		<div class="flex items-center justify-center gap-4">
 			<button
@@ -54,11 +57,12 @@
 
 <style>
 	.header {
-		background-color: var(--primary-50);
+		background-color: #fafafa9f;
+		backdrop-filter: blur(12px);
 	}
 
 	:global(.dark) .header {
-		background-color: var(--dark-700);
+		background-color: #212224c2;
 	}
 
 	.title {

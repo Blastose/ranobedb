@@ -26,9 +26,12 @@ html {
 	background: var(--primary-50);
 }
 
+html.dark {
+	background: #212224;
+}
+
 .dark {
 	color-scheme: dark;
-	background: #1b1b1b;
 	color: white;
 	scrollbar-color: #ffffff50 transparent;
 }
