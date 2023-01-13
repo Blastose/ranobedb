@@ -54,11 +54,12 @@
 
 <style>
 	.header {
-		background-color: var(--primary-50);
+		background-color: #fafafa9f;
+		backdrop-filter: blur(12px);
 	}
 
 	:global(.dark) .header {
-		background-color: var(--dark-700);
+		background-color: #212224c2;
 	}
 
 	.title {
