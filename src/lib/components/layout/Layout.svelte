@@ -20,8 +20,7 @@
 			flyDirection = -1;
 		} else {
 			flyDirection = 1;
-		}
-		console.log(flyXOffset);
+		} 
 	});
 
 	let flyDirection = 1;
