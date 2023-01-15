@@ -25,7 +25,6 @@
 				scroll = false;
 			}
 			beginDeceleration();
-			e.preventDefault();
 		};
 
 		const pointerMove = (e: PointerEvent) => {
