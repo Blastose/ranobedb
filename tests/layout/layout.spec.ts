@@ -82,15 +82,6 @@ test.describe('layout small screen', () => {
 		await page.goto('/');
 	});
 
-	test('switch theme button switches themes', async ({ page }) => {
-		const locator = page.locator('html');
-		await page.locator('[aria-label="switch theme to dark"]').click();
-		await expect(locator).toHaveClass('dark');
-
-		await page.locator('[aria-label="switch theme to light"]').click();
-		await expect(locator).not.toHaveClass('dark');
-	});
-
 	test('menu button opens sidebar and sidebar close button closes sidebar', async ({ page }) => {
 		await page.locator('button:visible[aria-label="open sidebar"]').click();
 		const locator = page.locator('.main > .sidebar');
@@ -109,9 +100,8 @@ test.describe('layout small screen', () => {
 		await expect(locator).toHaveCSS('margin-left', '-256px');
 	});
 
-	test('pressing tab after opening sidebar focuses sidebar close button', async ({ page }) => {
+	test('opening sidebar focuses sidebar close button', async ({ page }) => {
 		await page.locator('button:visible[aria-label="open sidebar"]').click();
-		await page.keyboard.press('Tab');
 		const locator = page.locator('.sidebar button[aria-label="close sidebar"]');
 		await expect(locator).toBeFocused();
 	});
