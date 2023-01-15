@@ -2,30 +2,18 @@
 	import SidebarItem from '$lib/components/sidebar/SidebarItem.svelte';
 	import SidebarHeading from '$lib/components/sidebar/SidebarHeading.svelte';
 	import SidebarCloseButton from '$lib/components/sidebar/SidebarCloseButton.svelte';
-	import { onMount } from 'svelte';
 	import focusSidebar from '$lib/stores/focusSidebar';
 	import { getUser } from '@lucia-auth/sveltekit/client';
+	import { browser } from '$app/environment';
 
 	export let tabindex: boolean;
 	let closeBtn: SidebarCloseButton;
 	const user = getUser();
 
-	onMount(() => {
-		const focusSidebarCloseButton = (e: KeyboardEvent) => {
-			if (e.key === 'Tab' && $focusSidebar) {
-				e.preventDefault();
-				if (closeBtn.focus) {
-					closeBtn.focus();
-				}
-				focusSidebar.set(false);
-			}
-		};
-		document.addEventListener('keydown', focusSidebarCloseButton);
-
-		return () => {
-			document.removeEventListener('keydown', focusSidebarCloseButton);
-		};
-	});
+	$: if (browser && $focusSidebar) {
+		closeBtn.focus();
+		focusSidebar.set(false);
+	}
 </script>
 
 <div class="sidebar">
