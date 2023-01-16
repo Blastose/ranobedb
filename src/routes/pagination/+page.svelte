@@ -4,17 +4,18 @@
 	import BookView from '$lib/components/book/BookView.svelte';
 	export let data: PageData;
 
-	const pageSize = 5;
+	const pageSize = 8;
 	const totalPages = Math.ceil(Number(data.count) / pageSize);
 </script>
 
+<svelte:head><title>Pagination Test - RanobeDB</title></svelte:head>
+
 <div class="main-container">
 	<p class="font-bold text-lg">{data.count} total books</p>
-	<div>
+	<div class="flex flex-col gap-4">
 		<BookView books={data.books} />
+		<Pagination {totalPages} />
 	</div>
-
-	<Pagination {totalPages} />
 </div>
 
 <style>

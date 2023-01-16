@@ -4,7 +4,7 @@ import { db } from '$lib/server/lucia';
 import { sql } from 'kysely';
 
 export const load: PageServerLoad = async ({ url }) => {
-	const limit = 5;
+	const limit = 8;
 	let page = Number(url.searchParams.get('page') ?? '1');
 	if (page < 1) {
 		page = 1;
