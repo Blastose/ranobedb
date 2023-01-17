@@ -6,8 +6,8 @@
 
 	$: currentPage = Number($page.url.searchParams.get('page') ?? '1');
 
-	const createPaginationUrl = (pageNumber: number) => {
-		const newUrl = new URL($page.url);
+	const createPaginationUrl = (pageNumber: number, url: URL) => {
+		const newUrl = new URL(url);
 		if (pageNumber < 1) {
 			pageNumber = 1;
 		} else if (pageNumber > totalPages) {
@@ -27,54 +27,52 @@
 	const MAX_BUTTONS_LEFT_RIGHT = 2;
 </script>
 
-{#key $page.url}
-	<nav class="pagination-container">
-		<a
-			aria-label="Pagination back"
-			class="arrow-button"
-			class:disabled={currentPage === 1}
-			href={createPaginationUrl(currentPage - 1)}
-		>
-			<Icon height="24" width="24" name="chevronLeft" />
+<nav class="pagination-container">
+	<a
+		aria-label="Pagination back"
+		class="arrow-button"
+		class:disabled={currentPage === 1}
+		href={createPaginationUrl(currentPage - 1, $page.url)}
+	>
+		<Icon height="24" width="24" name="chevronLeft" />
+	</a>
+	{#if !inRange(1, currentPage)}
+		<a class="pagination-button" href={createPaginationUrl(1, $page.url)}>
+			{1}
 		</a>
-		{#if !inRange(1, currentPage)}
-			<a class="pagination-button" href={createPaginationUrl(1)}>
-				{1}
-			</a>
-			{#if currentPage - MAX_BUTTONS_LEFT_RIGHT - 1 !== 1}
-				<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
-			{/if}
+		{#if currentPage - MAX_BUTTONS_LEFT_RIGHT - 1 !== 1}
+			<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
 		{/if}
-		{#each { length: totalPages } as _, p}
-			{#if inRange(p + 1, currentPage)}
-				<a
-					class="pagination-button"
-					class:active={currentPage === p + 1}
-					href={createPaginationUrl(p + 1)}
-				>
-					{p + 1}
-				</a>
-			{/if}
-		{/each}
-		{#if !inRange(totalPages, currentPage)}
-			{#if currentPage + MAX_BUTTONS_LEFT_RIGHT + 1 !== totalPages}
-				<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
-			{/if}
-			<a class="pagination-button" href={createPaginationUrl(totalPages)}>
-				{totalPages}
+	{/if}
+	{#each { length: totalPages } as _, p}
+		{#if inRange(p + 1, currentPage)}
+			<a
+				class="pagination-button"
+				class:active={currentPage === p + 1}
+				href={createPaginationUrl(p + 1, $page.url)}
+			>
+				{p + 1}
 			</a>
 		{/if}
+	{/each}
+	{#if !inRange(totalPages, currentPage)}
+		{#if currentPage + MAX_BUTTONS_LEFT_RIGHT + 1 !== totalPages}
+			<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
+		{/if}
+		<a class="pagination-button" href={createPaginationUrl(totalPages, $page.url)}>
+			{totalPages}
+		</a>
+	{/if}
 
-		<a
-			aria-label="Pagination forward"
-			class="arrow-button"
-			class:disabled={currentPage === totalPages || totalPages === 0}
-			href={createPaginationUrl(currentPage + 1)}
-		>
-			<Icon height="24" width="24" name="chevronRight" />
-		</a>
-	</nav>
-{/key}
+	<a
+		aria-label="Pagination forward"
+		class="arrow-button"
+		class:disabled={currentPage === totalPages || totalPages === 0}
+		href={createPaginationUrl(currentPage + 1, $page.url)}
+	>
+		<Icon height="24" width="24" name="chevronRight" />
+	</a>
+</nav>
 
 <style>
 	.pagination-container {
@@ -93,6 +91,11 @@
 		transition-duration: 300ms;
 	}
 
+	:global(.dark) .pagination-button {
+		color: white;
+		background-color: var(--dark-200);
+	}
+
 	.arrow-button {
 		color: black;
 		padding: 0.5rem;
@@ -100,6 +103,12 @@
 		transition-duration: 300ms;
 		background-color: var(--primary-300);
 	}
+
+	:global(.dark) .arrow-button {
+		color: white;
+		background-color: var(--dark-200);
+	}
+
 	.arrow-button.disabled {
 		color: rgb(192, 192, 192);
 		cursor: default;
@@ -108,8 +117,8 @@
 	}
 
 	:global(.dark) .arrow-button.disabled {
-		color: gray;
-		background-color: rgb(75, 74, 77);
+		color: rgb(71, 70, 71);
+		background-color: rgb(53, 52, 54);
 	}
 
 	.pagination-button.active {
@@ -121,5 +130,10 @@
 	.pagination-button:hover {
 		color: white;
 		background-color: var(--primary-600);
+	}
+
+	:global(.dark) .arrow-button:hover,
+	:global(.dark) .pagination-button:hover:not(.active) {
+		background-color: var(--dark-400);
 	}
 </style>
