@@ -3,6 +3,7 @@
 
 	export let action: string | null = null;
 	export let loading: boolean;
+	export let reset: boolean = true;
 </script>
 
 <form
@@ -16,7 +17,7 @@
 				return;
 			}
 			loading = false;
-			update();
+			update({ reset });
 		};
 	}}
 >

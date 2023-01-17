@@ -43,6 +43,7 @@ export interface Book {
 	bookbookwalkerlink: string | null;
 	cover_image_file_name: string | null;
 	description: string | null;
+	description_markdown: string | null;
 	id: number;
 	release_date: DateString | null;
 	title: string;
