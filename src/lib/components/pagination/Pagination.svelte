@@ -27,52 +27,54 @@
 	const MAX_BUTTONS_LEFT_RIGHT = 2;
 </script>
 
-<nav class="pagination-container">
-	<a
-		aria-label="Pagination back"
-		class="arrow-button"
-		class:disabled={currentPage === 1}
-		href={createPaginationUrl(currentPage - 1)}
-	>
-		<Icon height="24" width="24" name="chevronLeft" />
-	</a>
-	{#if !inRange(1, currentPage)}
-		<a class="pagination-button" href={createPaginationUrl(1)}>
-			{1}
+{#key $page.url}
+	<nav class="pagination-container">
+		<a
+			aria-label="Pagination back"
+			class="arrow-button"
+			class:disabled={currentPage === 1}
+			href={createPaginationUrl(currentPage - 1)}
+		>
+			<Icon height="24" width="24" name="chevronLeft" />
 		</a>
-		{#if currentPage - MAX_BUTTONS_LEFT_RIGHT - 1 !== 1}
-			<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
+		{#if !inRange(1, currentPage)}
+			<a class="pagination-button" href={createPaginationUrl(1)}>
+				{1}
+			</a>
+			{#if currentPage - MAX_BUTTONS_LEFT_RIGHT - 1 !== 1}
+				<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
+			{/if}
 		{/if}
-	{/if}
-	{#each { length: totalPages } as _, p}
-		{#if inRange(p + 1, currentPage)}
-			<a
-				class="pagination-button"
-				class:active={currentPage === p + 1}
-				href={createPaginationUrl(p + 1)}
-			>
-				{p + 1}
+		{#each { length: totalPages } as _, p}
+			{#if inRange(p + 1, currentPage)}
+				<a
+					class="pagination-button"
+					class:active={currentPage === p + 1}
+					href={createPaginationUrl(p + 1)}
+				>
+					{p + 1}
+				</a>
+			{/if}
+		{/each}
+		{#if !inRange(totalPages, currentPage)}
+			{#if currentPage + MAX_BUTTONS_LEFT_RIGHT + 1 !== totalPages}
+				<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
+			{/if}
+			<a class="pagination-button" href={createPaginationUrl(totalPages)}>
+				{totalPages}
 			</a>
 		{/if}
-	{/each}
-	{#if !inRange(totalPages, currentPage)}
-		{#if currentPage + MAX_BUTTONS_LEFT_RIGHT + 1 !== totalPages}
-			<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
-		{/if}
-		<a class="pagination-button" href={createPaginationUrl(totalPages)}>
-			{totalPages}
-		</a>
-	{/if}
 
-	<a
-		aria-label="Pagination forward"
-		class="arrow-button"
-		class:disabled={currentPage === totalPages}
-		href={createPaginationUrl(currentPage + 1)}
-	>
-		<Icon height="24" width="24" name="chevronRight" />
-	</a>
-</nav>
+		<a
+			aria-label="Pagination forward"
+			class="arrow-button"
+			class:disabled={currentPage === totalPages || totalPages === 0}
+			href={createPaginationUrl(currentPage + 1)}
+		>
+			<Icon height="24" width="24" name="chevronRight" />
+		</a>
+	</nav>
+{/key}
 
 <style>
 	.pagination-container {
@@ -88,14 +90,14 @@
 		background-color: var(--primary-300);
 		padding: 0.5rem 1rem;
 		border-radius: 0.375rem;
-		transition-duration: 150ms;
+		transition-duration: 300ms;
 	}
 
 	.arrow-button {
 		color: black;
 		padding: 0.5rem;
 		border-radius: 0.375rem;
-		transition-duration: 150ms;
+		transition-duration: 300ms;
 		background-color: var(--primary-300);
 	}
 	.arrow-button.disabled {

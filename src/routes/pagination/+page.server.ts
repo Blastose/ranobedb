@@ -24,11 +24,10 @@ export const load: PageServerLoad = async ({ url }) => {
 		throw error(400);
 	}
 
-	const count = books[0].count;
+	const count = Number(books[0].count);
 	return {
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		books: books.map(({ count, ...book }) => book),
-		count: Number(count),
-		totalPages: Math.ceil(Number(count) / limit)
+		books: books,
+		count: count,
+		totalPages: Math.ceil(count / limit)
 	};
 };

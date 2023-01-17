@@ -1,5 +1,6 @@
 <script lang="ts">
 	import BoxLarge from '$lib/components/box/BoxLarge.svelte';
+	import Pagination from '$lib/components/pagination/Pagination.svelte';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -18,6 +19,8 @@
 				<BoxLarge name={publisher.name} href={`/publisher/${publisher.id}`} />
 			{/each}
 		</div>
+
+		<Pagination totalPages={data.totalPages} />
 	</div>
 </main>
 

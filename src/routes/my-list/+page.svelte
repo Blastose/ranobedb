@@ -2,6 +2,7 @@
 	import type { PageData } from './$types';
 	import BookLabelTabs from '$lib/components/book/BookLabelTabs.svelte';
 	import BookView from '$lib/components/book/BookView.svelte';
+	import Pagination from '$lib/components/pagination/Pagination.svelte';
 
 	export let data: PageData;
 </script>
@@ -14,8 +15,9 @@
 	<p class="font-bold text-2xl">My List</p>
 	<BookLabelTabs />
 	<div class="flex flex-col gap-2">
-		<div>
-			<BookView books={data.reads} extended={true} />
+		<div class="flex flex-col gap-4">
+			<BookView books={data.reads} extended={true} numberOfBooks={data.count} />
+			<Pagination totalPages={data.totalPages} />
 		</div>
 	</div>
 </main>
