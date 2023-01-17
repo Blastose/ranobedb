@@ -17,10 +17,17 @@
 		return `${newUrl.pathname}${newUrl.search}`;
 	};
 
+	const inRange = (number: number, currentPage: number) => {
+		return (
+			number <= currentPage + MAX_BUTTONS_LEFT_RIGHT &&
+			number >= currentPage - MAX_BUTTONS_LEFT_RIGHT
+		);
+	};
+
 	const MAX_BUTTONS_LEFT_RIGHT = 2;
 </script>
 
-<div class="pagination-container">
+<nav class="pagination-container">
 	<a
 		aria-label="Pagination back"
 		class="arrow-button"
@@ -29,16 +36,16 @@
 	>
 		<Icon height="24" width="24" name="chevronLeft" />
 	</a>
-	{#if !(1 <= currentPage + MAX_BUTTONS_LEFT_RIGHT && 1 >= currentPage - MAX_BUTTONS_LEFT_RIGHT)}
+	{#if !inRange(1, currentPage)}
 		<a class="pagination-button" href={createPaginationUrl(1)}>
 			{1}
 		</a>
-		{#if !(currentPage - MAX_BUTTONS_LEFT_RIGHT - 1 === 1)}
+		{#if currentPage - MAX_BUTTONS_LEFT_RIGHT - 1 !== 1}
 			<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
 		{/if}
 	{/if}
 	{#each { length: totalPages } as _, p}
-		{#if p + 1 <= currentPage + MAX_BUTTONS_LEFT_RIGHT && p + 1 >= currentPage - MAX_BUTTONS_LEFT_RIGHT}
+		{#if inRange(p + 1, currentPage)}
 			<a
 				class="pagination-button"
 				class:active={currentPage === p + 1}
@@ -48,8 +55,8 @@
 			</a>
 		{/if}
 	{/each}
-	{#if !(totalPages <= currentPage + MAX_BUTTONS_LEFT_RIGHT && totalPages >= currentPage - MAX_BUTTONS_LEFT_RIGHT)}
-		{#if !(currentPage + MAX_BUTTONS_LEFT_RIGHT + 1 === totalPages)}
+	{#if !inRange(totalPages, currentPage)}
+		{#if currentPage + MAX_BUTTONS_LEFT_RIGHT + 1 !== totalPages}
 			<div><Icon height="24" width="24" name="dotsHorizontal" /></div>
 		{/if}
 		<a class="pagination-button" href={createPaginationUrl(totalPages)}>
@@ -65,7 +72,7 @@
 	>
 		<Icon height="24" width="24" name="chevronRight" />
 	</a>
-</div>
+</nav>
 
 <style>
 	.pagination-container {
@@ -92,13 +99,14 @@
 		background-color: var(--primary-300);
 	}
 	.arrow-button.disabled {
-		color: gray;
+		color: rgb(192, 192, 192);
 		cursor: default;
 		pointer-events: none;
-		background-color: rgb(198, 197, 199);
+		background-color: #e6e7eb;
 	}
 
 	:global(.dark) .arrow-button.disabled {
+		color: gray;
 		background-color: rgb(75, 74, 77);
 	}
 

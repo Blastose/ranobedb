@@ -2,14 +2,10 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/lucia';
 import { sql } from 'kysely';
+import { getPaginationFromUrl } from '$lib/util/getPaginationFromUrl';
 
 export const load: PageServerLoad = async ({ url }) => {
-	const limit = 8;
-	let page = Number(url.searchParams.get('page') ?? '1');
-	if (page < 1) {
-		page = 1;
-	}
-	console.log(page);
+	const { limit, page } = getPaginationFromUrl(url);
 
 	const books = await db
 		.selectFrom('book_info')
@@ -29,6 +25,10 @@ export const load: PageServerLoad = async ({ url }) => {
 	}
 
 	const count = books[0].count;
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	return { books: books.map(({ count, ...s }) => s), count };
+	return {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		books: books.map(({ count, ...book }) => book),
+		count: Number(count),
+		totalPages: Math.ceil(Number(count) / limit)
+	};
 };

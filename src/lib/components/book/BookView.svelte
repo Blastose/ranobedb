@@ -9,6 +9,7 @@
 
 	export let books: BookInfo[];
 	export let extended = false;
+	export let numberOfBooks = books.length;
 
 	let tabs = [
 		{ name: 'table', icon: 'table' as IconType, ariaName: 'Switch to table view' },
@@ -21,7 +22,7 @@
 
 <div class="flex flex-col gap-4">
 	<div class="flex justify-between items-center">
-		<p class="font-semibold">{books.length} Books</p>
+		<p class="font-semibold">{numberOfBooks} Books</p>
 		<div class="tab-container">
 			<div class="highlight" style="left: {40 * $bookViewIndex}px;" />
 
