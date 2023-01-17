@@ -20,6 +20,10 @@
 				<p>{data.series.title_romaji}</p>
 			{/if}
 		</div>
+		<div>
+			<p>Publication Status: Unknown</p>
+			<p>Latest Volume Release Date: {data.books[data.books.length - 1].release_date}</p>
+		</div>
 		<BookView books={data.books} />
 	</div>
 </main>

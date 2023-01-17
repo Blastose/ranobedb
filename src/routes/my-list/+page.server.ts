@@ -2,6 +2,8 @@ import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
 import { db } from '$lib/server/lucia';
+import { sql } from 'kysely';
+import { getPaginationFromUrl } from '$lib/util/getPaginationFromUrl';
 
 export const load: PageServerLoad = async ({ locals, url }) => {
 	const session = await locals.validate();
@@ -14,6 +16,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	if (!(labelParamFilter === 'All' || labelParamFilter === null)) {
 		labelFilter = labelParamFilter;
 	}
+	const { limit, page } = getPaginationFromUrl(url);
 
 	const reads = await db
 		.selectFrom('user')
@@ -25,14 +28,23 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 				.onRef('reads.book_id', '=', 'reader_labels.book_id')
 		)
 		.selectAll('book_info')
+		.select(sql<string>`count(*) over()`.as('count'))
 		.select(['added_date', 'start_date', 'finish_date', 'label_name'])
 		.where('user.id', '=', session.userId)
 		.if(Boolean(labelFilter), (qb) => qb.where('reader_labels.label_name', '=', labelFilter))
 		.orderBy('reads.finish_date')
+		.limit(limit)
+		.offset(limit * (page - 1))
 		.execute();
 
 	if (!reads) {
 		throw error(500);
 	}
-	return { reads };
+
+	let count = 0;
+	if (reads.length > 0) {
+		count = Number(reads[0].count);
+	}
+
+	return { reads, count, totalPages: Math.ceil(count / limit) };
 };

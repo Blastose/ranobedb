@@ -33,7 +33,7 @@
 				<Icon height="24" width="24" name="menu" />
 			</button>
 
-			<a href="/" class="flex gap-2">
+			<a href="/" class="flex gap-2" aria-label="RanobeDB">
 				<Logo height="36" width="36" name="logo" />
 				<p class="title text-2xl font-bold">RanobeDB</p>
 			</a>
