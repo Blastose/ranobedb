@@ -24,7 +24,7 @@ test.describe('user is redirected after logging in', () => {
 		page
 	}) => {
 		await page.goto('/login?redirect=/book/1031');
-		await page.getByLabel('email').fill('aa@aa');
+		await page.getByLabel('email').fill('aa@aa.com');
 		await page.getByLabel('password').fill('aaaaaa');
 		await page.locator('main form button[type="submit"]').click();
 

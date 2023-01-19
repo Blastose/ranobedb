@@ -1,5 +1,6 @@
 import { auth } from '$lib/server/lucia';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
+import { loginSchema } from '$lib/zod/schemas';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals }) => {
@@ -13,11 +14,18 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
 	default: async ({ request, locals, url }) => {
 		const form = await request.formData();
-		const email = form.get('email')?.toString();
-		const password = form.get('password')?.toString();
-		if (!email || !password || password?.length > 255) {
-			return fail(400, { email, password, error: true });
+
+		const parsedForm = loginSchema.safeParse(form);
+		if (!parsedForm.success) {
+			return fail(400, {
+				email: form.get('email')?.toString(),
+				password: form.get('password')?.toString(),
+				error: true
+			});
 		}
+
+		const email = parsedForm.data.email;
+		const password = parsedForm.data.password;
 
 		try {
 			const user = await auth.authenticateUser('email', email, password);
