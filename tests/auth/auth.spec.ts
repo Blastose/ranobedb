@@ -22,7 +22,7 @@ test.describe('auth', () => {
 			.insertInto('user')
 			.values({
 				username: 'username',
-				provider_id: 'email:fake@email',
+				provider_id: 'email:fake@email.com',
 				hashed_password:
 					'Sy7AupawzmlZTlnB:4a2ffaf661cc8d9e4df423b19add3c84c241bffa23e9d7162fc4d6959248dc15b16f0aee40304481a137c031c2147a727fb8d8f5d380743bc7ffc0df9d201fdc'
 			})
@@ -38,7 +38,7 @@ test.describe('auth', () => {
 
 	test('user can login and logout', async ({ page }) => {
 		await page.goto('/login');
-		await page.getByLabel('email').fill('fake@email');
+		await page.getByLabel('email').fill('fake@email.com');
 		await page.getByLabel('password').fill('password');
 		await page.locator('main form button[type="submit"]').click();
 
@@ -52,7 +52,7 @@ test.describe('auth', () => {
 
 	test('user can create an account', async ({ page }) => {
 		await page.goto('/signup');
-		await page.getByLabel('email').fill('email@DelAfter');
+		await page.getByLabel('email').fill('email@DelAfter.com');
 		await page.getByLabel('username').fill('usernameDelAfter');
 		await page.getByLabel('password').fill('passwordDelAfter');
 		await page.locator('main form button[type="submit"]').click();
@@ -73,7 +73,7 @@ test.describe('auth', () => {
 
 	test('user cannot create an account with invalid password', async ({ page }) => {
 		await page.goto('/signup');
-		await page.getByLabel('email').fill('email@email');
+		await page.getByLabel('email').fill('email@email.com');
 		await page.getByLabel('username').fill('username');
 		await page.getByLabel('password').fill('1');
 		await page.locator('main form button[type="submit"]').click();
@@ -84,7 +84,7 @@ test.describe('auth', () => {
 
 	test('user cannot create an account with same email', async ({ page }) => {
 		await page.goto('/signup');
-		await page.getByLabel('email').fill('fake@email');
+		await page.getByLabel('email').fill('fake@email.com');
 		await page.getByLabel('username').fill('username123');
 		await page.getByLabel('password').fill('aejdjsldjlsee');
 		await page.locator('main form button[type="submit"]').click();
@@ -95,7 +95,7 @@ test.describe('auth', () => {
 
 	test('user cannot create an account with same username', async ({ page }) => {
 		await page.goto('/signup');
-		await page.getByLabel('email').fill('not@email');
+		await page.getByLabel('email').fill('not@email.com');
 		await page.getByLabel('username').fill('username');
 		await page.getByLabel('password').fill('aejdjsldjlsee');
 		await page.locator('main form button[type="submit"]').click();
