@@ -18,6 +18,7 @@
 		"@sveltejs/adapter-auto": "^1.0.0",
 		"@sveltejs/adapter-node": "^1.0.0",
 		"@sveltejs/kit": "^1.0.1",
+		"@types/marked": "^4.0.8",
 		"@typescript-eslint/eslint-plugin": "^5.47.1",
 		"@typescript-eslint/parser": "^5.47.1",
 		"autoprefixer": "^10.4.13",
@@ -43,8 +44,10 @@
 		"@lucia-auth/sveltekit": "^0.5.2",
 		"@types/pg": "^8.6.6",
 		"chart.js": "^4.1.1",
+		"isomorphic-dompurify": "^0.26.0",
 		"kysely": "^0.22.0",
 		"lucia-auth": "^0.4.1",
+		"marked": "^4.2.12",
 		"pg": "^8.8.0",
 		"zod": "^3.20.2",
 		"zod-form-data": "^1.2.4"

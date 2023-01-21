@@ -6,11 +6,12 @@
 	export let icon: IconType | null;
 	export let href: string | null;
 	export let size: 'small' | 'normal' = 'normal';
+	export let preload = true;
 </script>
 
 <div class="box-container {href ? 'hover' : ''}">
 	{#if href}
-		<a {href}>
+		<a {href} data-sveltekit-preload-data={!preload ? 'off' : ''}>
 			<BoxContent {icon} {size} {text} />
 		</a>
 	{:else}

@@ -30,9 +30,9 @@
 			{/each}
 		</div>
 		<div class="description-container">
-			<p class="description">
+			<div class="markdown-text description">
 				{@html book.description}
-			</p>
+			</div>
 		</div>
 	</div>
 </div>

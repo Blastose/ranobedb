@@ -10,12 +10,14 @@
 </script>
 
 <div class="flex flex-col gap-1">
-	<label for={id}>
-		<span class="dark:text-white">{labelName}</span>
-		{#if required}
-			<span class="text-red-600 dark:text-red-400">*</span>
-		{/if}
-	</label>
+	{#if labelName}
+		<label for={id}>
+			<span class="dark:text-white">{labelName}</span>
+			{#if required}
+				<span class="text-red-600 dark:text-red-400">*</span>
+			{/if}
+		</label>
+	{/if}
 	<textarea
 		on:input={() => (error = '')}
 		{name}

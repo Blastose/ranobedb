@@ -1,18 +1,18 @@
 <script lang="ts">
 	import type { ActionData, PageData } from './$types';
-
 	import Form from '$lib/components/form/Form.svelte';
 	import FormInput from '$lib/components/form/FormInput.svelte';
-	import FormTextArea from '$lib/components/form/FormTextArea.svelte';
+	import FormMarkdownEditor from '$lib/components/form/FormMarkdownEditor.svelte';
 	import FormSubmitButton from '$lib/components/form/FormSubmitButton.svelte';
 	import Alert from '$lib/components/alert/Alert.svelte';
+	import BackButton from '$lib/components/back-button/BackButton.svelte';
 
 	export let form: ActionData;
 	export let data: PageData;
 	let loading: boolean;
-	let title = data.book.title;
-	let titleRomaji = data.book.title_romaji;
-	let description = data.book.description_markdown;
+	let title = data.book.title ?? '';
+	let titleRomaji = data.book.title_romaji ?? '';
+	let description = data.book.description_markdown ?? '';
 	let volume = data.book.volume;
 </script>
 
@@ -21,14 +21,10 @@
 </svelte:head>
 
 <main class="main-container flex flex-col gap-4">
-	<div class="flex">
-		<button
-			on:click={() => {
-				history.back();
-			}}>Back</button
-		>
+	<div class="flex items-center gap-2">
+		<BackButton />
+		<h1 class="font-bold text-2xl">Edit</h1>
 	</div>
-	<h1 class="font-bold text-2xl">Edit</h1>
 
 	{#if form?.success && !loading}
 		<Alert type="success">Edited entry successfully!</Alert>
@@ -60,13 +56,10 @@
 				placeholder="Title Romaji"
 			/>
 
-			<FormTextArea
-				bind:value={description}
-				name="description"
-				id="description"
-				labelName="Description"
-				required={false}
-				rows={12}
+			<FormMarkdownEditor
+				bind:text={description}
+				formIdName="description"
+				formLabel="Description"
 			/>
 
 			<FormInput

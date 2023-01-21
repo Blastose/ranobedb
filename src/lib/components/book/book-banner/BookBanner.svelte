@@ -33,9 +33,9 @@
 				{/each}
 			</div>
 			<div class="hidden sm:block">
-				<p class="description text-sm md:text-base">
+				<div class="description markdown-text text-sm md:text-base">
 					{@html book.description}
-				</p>
+				</div>
 			</div>
 		</div>
 	</div>

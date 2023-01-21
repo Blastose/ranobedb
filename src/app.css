@@ -30,6 +30,68 @@ html.dark {
 	background: #212224;
 }
 
+.markdown-text > p:not(:last-child) {
+	margin-bottom: 1rem;
+}
+.markdown-text h1 {
+	font-weight: bold;
+	margin: 0.67rem 0;
+	font-size: 2rem;
+}
+.markdown-text h2 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 1.5rem;
+}
+.markdown-text h3 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 1.125rem;
+}
+.markdown-text h4 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 1rem;
+}
+.markdown-text h5 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 0.83rem;
+}
+.markdown-text h6 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 0.67rem;
+}
+.markdown-text a {
+	color: rgb(92, 92, 226);
+	text-decoration: underline;
+}
+.dark .markdown-text a {
+	color: rgb(150, 150, 255);
+}
+.markdown-text li {
+	display: list-item;
+}
+.markdown-text ol {
+	display: block;
+	list-style-type: decimal;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 40px;
+}
+.markdown-text ul {
+	display: block;
+	list-style-type: disc;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 40px;
+}
+
 .dark {
 	color-scheme: dark;
 	color: white;
