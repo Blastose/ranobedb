@@ -25,11 +25,8 @@
 		{id}
 		{placeholder}
 		{rows}
-		class="
-		input
-		focus:outline-none focus:ring focus:ring-primary-600
-		{error ? 'ring-2 ring-red-600 focus:ring focus:ring-red-600 dark:ring-red-400' : ''}
-		"
+		class="input"
+		class:error
 		bind:value
 	/>
 	{#if error}
