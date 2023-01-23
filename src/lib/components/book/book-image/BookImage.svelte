@@ -17,8 +17,8 @@
 					draggable={drag}
 					class="{hover ? 'image' : ''} rounded-sm"
 					src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg"
-					width="240px"
-					height="343px"
+					width="240"
+					height="343"
 					alt=""
 				/>
 			</div>

@@ -8,6 +8,7 @@
 	export let text: string;
 	export let formIdName: string;
 	export let formLabel: string;
+	export let error = '';
 
 	let md: string = DOMPurify.sanitize(marked.parse(text));
 	const setView = (viewType: ViewType) => {
@@ -17,7 +18,12 @@
 </script>
 
 <div class="flex flex-col gap-2">
-	<label for={formIdName}>{formLabel}</label>
+	<div class="flex flex-col gap-1">
+		<label for={formIdName}>{formLabel}</label>
+		{#if error}
+			<span class="text-red-600 dark:text-red-400">{error}</span>
+		{/if}
+	</div>
 	<div>
 		<div class="flex ml-2">
 			<button

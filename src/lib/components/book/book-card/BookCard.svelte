@@ -12,8 +12,8 @@
 			loading="lazy"
 			class="shadow-sm rounded-sm"
 			src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg"
-			width="128px"
-			height="182px"
+			width="128"
+			height="182"
 			alt={book.title}
 		/>
 	</a>
