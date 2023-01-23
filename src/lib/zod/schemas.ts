@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
+import { PersonRoles } from '$lib/types/dbTypes';
 
 export const loginSchema = zfd.formData({
 	email: zfd.text(
@@ -20,6 +21,24 @@ export const signupSchema = zfd.formData({
 			.string({ required_error: 'Password is required' })
 			.min(6, { message: 'Password must be between 6 and 255 characters' })
 			.max(255, { message: 'Password must be between 6 and 255 characters' })
+	)
+});
+
+export const editBookSchema = zfd.formData({
+	title: zfd.text(z.string({ required_error: 'Title is required' })),
+	titleRomaji: zfd.text(),
+	description: zfd.text(),
+	volume: zfd.text(),
+	person: zfd.repeatable(
+		z.array(
+			zfd.json(
+				z.object({
+					id: z.number(),
+					name: z.string(),
+					role: z.enum(PersonRoles)
+				})
+			)
+		)
 	)
 });
 

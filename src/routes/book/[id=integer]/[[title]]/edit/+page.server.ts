@@ -4,6 +4,10 @@ import { createRedirectUrl } from '$lib/util/createRedirectUrl';
 import { db } from '$lib/server/lucia';
 import marked from '$lib/marked/marked';
 import DOMPurify from 'isomorphic-dompurify';
+import { sql } from 'kysely';
+import { editBookSchema } from '$lib/zod/schemas';
+import pkg from 'pg';
+const { DatabaseError } = pkg;
 
 export const load: PageServerLoad = async ({ locals, url, params }) => {
 	const session = await locals.validate();
@@ -12,7 +16,29 @@ export const load: PageServerLoad = async ({ locals, url, params }) => {
 	}
 
 	const id = Number(params.id);
-	const book = await db.selectFrom('book').selectAll().where('id', '=', id).executeTakeFirst();
+	const book = await db
+		.selectFrom('book')
+		.selectAll('book')
+		.select(
+			sql<{ id: number; name: string; role: string }[]>`
+			COALESCE(
+				JSONB_AGG(
+					DISTINCT JSONB_BUILD_OBJECT(
+						'name', person.person_name,
+						'id', person.person_id,
+						'role', person_book_rel.role
+					)
+				) FILTER (WHERE person.person_name IS NOT NULL),
+				'[]'::JSONB
+			)
+		`.as('people')
+		)
+		.leftJoin('person_book_rel', 'book.id', 'person_book_rel.book_id')
+		.leftJoin('person', 'person_book_rel.person_id', 'person.person_id')
+		.where('id', '=', id)
+		.groupBy('book.id')
+		.executeTakeFirst();
+
 	if (!book) {
 		throw error(404);
 	}
@@ -23,35 +49,73 @@ export const load: PageServerLoad = async ({ locals, url, params }) => {
 export const actions: Actions = {
 	default: async ({ request, params, locals }) => {
 		const { session, user } = await locals.validateUser();
+		if (!session) {
+			return { error: true, errorMessage: 'Insufficient permission. Unable to edit.' };
+		}
+		if (user.role !== 'admin') {
+			return { error: true, errorMessage: 'Insufficient permission. Unable to edit.' };
+		}
 
 		const id = Number(params.id);
 		const form = await request.formData();
 
-		const title = String(form.get('title'));
-		const titleRomaji = String(form.get('titleRomaji'));
-		const descriptionMD = String(form.get('description'));
-		const volume = String(form.get('volume'));
-
-		console.log(Object.fromEntries(form));
-		const description = DOMPurify.sanitize(marked.parse(descriptionMD));
-
-		try {
-			await db
-				.updateTable('book')
-				.set({
-					title: title,
-					title_romaji: titleRomaji,
-					description: description,
-					description_markdown: descriptionMD,
-					volume: volume
-				})
-				.where('id', '=', id)
-				.executeTakeFirstOrThrow();
-		} catch (e) {
-			console.log(e);
-			return fail(400, { error: true });
+		const parsedForm = editBookSchema.safeParse(form);
+		if (!parsedForm.success) {
+			console.log(parsedForm.error.flatten());
+			return { error: true };
 		}
 
+		console.log(parsedForm.data.person);
+
+		const description = DOMPurify.sanitize(marked.parse(parsedForm.data.description));
+
+		try {
+			await db.transaction().execute(async (trx) => {
+				await trx
+					.updateTable('book')
+					.set({
+						title: parsedForm.data.title,
+						title_romaji: parsedForm.data.titleRomaji,
+						description: description,
+						description_markdown: parsedForm.data.description,
+						volume: parsedForm.data.volume
+					})
+					.where('id', '=', id)
+					.executeTakeFirstOrThrow();
+
+				await trx.deleteFrom('person_book_rel').where('book_id', '=', id).execute();
+
+				// Using a for let instead of forEach since catching any throws
+				// does not work properly in the callback to the forEach
+				for (let i = 0; i < parsedForm.data.person.length; i++) {
+					await trx
+						.insertInto('person_book_rel')
+						.values({
+							book_id: id,
+							person_id: parsedForm.data.person[i].id,
+							role: parsedForm.data.person[i].role
+						})
+						.execute();
+				}
+			});
+		} catch (e) {
+			console.error(e);
+			if (e instanceof DatabaseError) {
+				if (e.code === '23505' && e.table === 'person_book_rel') {
+					return fail(400, {
+						error: true,
+						errorMessage: 'Invalid form entries. Unable to edit!',
+						duplicatePersonsError:
+							'Duplicate people with same roles in form. Remove duplicates and try again.'
+					});
+				}
+			}
+			return fail(400, {
+				error: true,
+				errorMessage: 'Invalid form entries. Unable to edit!',
+				duplicatePersonsError: ''
+			});
+		}
 		return { success: true };
 	}
 };

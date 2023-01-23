@@ -14,6 +14,12 @@ export type BookFormat = 'digital' | 'print';
 
 export type Language = 'en' | 'jp';
 
+export const PersonRoles = ['artist', 'author'] as const;
+
+export type RoleType = typeof PersonRoles[number];
+
+export type UserRole = 'admin' | 'moderator' | 'user';
+
 export interface Session {
 	expires: BigIntColumnType;
 	id: string;
@@ -27,6 +33,7 @@ export interface User {
 	provider_id: string;
 	username: string;
 	reader_id: Generated<number>;
+	role: Generated<UserRole>;
 }
 
 export interface Reads {
@@ -102,6 +109,12 @@ export interface Person {
 	person_name_romaji: string | null;
 }
 
+export interface PersonBookRel {
+	person_id: number;
+	book_id: number;
+	role: RoleType;
+}
+
 export interface Publisher {
 	description: string | null;
 	id: Generated<number>;
@@ -142,6 +155,7 @@ export interface DB {
 	reads: Reads;
 	reader_labels: ReaderLabels;
 	person: Person;
+	person_book_rel: PersonBookRel;
 	publisher: Publisher;
 	publisher_release_rel: PublisherReleaseRel;
 	book: Book;
