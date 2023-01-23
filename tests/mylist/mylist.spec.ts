@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 test.describe('add/edit/remove books from my list', () => {
-	test.use({ storageState: 'storageState.json' });
+	test.use({ storageState: 'storage-state/storageStateAA.json' });
 
 	test('user can update books from reading list', async ({ page }) => {
 		await page.goto('/my-list');
