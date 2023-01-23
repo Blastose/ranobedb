@@ -26,9 +26,9 @@ export const signupSchema = zfd.formData({
 
 export const editBookSchema = zfd.formData({
 	title: zfd.text(z.string({ required_error: 'Title is required' })),
-	titleRomaji: zfd.text(),
-	description: zfd.text(),
-	volume: zfd.text(),
+	titleRomaji: zfd.text(z.string({ required_error: 'Title romaji is required' })),
+	description: z.string(),
+	volume: zfd.text(z.string({ required_error: 'Volume is required' })),
 	person: zfd.repeatable(
 		z.array(
 			zfd.json(

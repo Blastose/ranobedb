@@ -7,7 +7,7 @@
 	import FormSearchList from '$lib/components/form/FormSearchList.svelte';
 	import Alert from '$lib/components/alert/Alert.svelte';
 	import BackButton from '$lib/components/back-button/BackButton.svelte';
- 	import type { RoleType } from '$lib/types/dbTypes';
+	import type { RoleType } from '$lib/types/dbTypes';
 	import { PersonRoles } from '$lib/types/dbTypes';
 
 	type Person = {
@@ -44,7 +44,7 @@
 	{#if form?.success && !loading}
 		<Alert type="success">Edited entry successfully!</Alert>
 	{:else if form?.error && !loading}
-		<Alert type="error">{form?.errorMessage ?? 'An error has occurred.'}</Alert>
+		<Alert type="error">{form?.error.message ?? 'An error has occurred.'}</Alert>
 	{/if}
 
 	<Form bind:loading reset={false} scrollToTop={true}>
@@ -59,6 +59,7 @@
 				labelName="Title"
 				required={true}
 				placeholder="Title"
+				error={form?.titleError?.message ?? ''}
 			/>
 
 			<FormInput
@@ -69,12 +70,14 @@
 				labelName="Title Romaji"
 				required={true}
 				placeholder="Title Romaji"
+				error={form?.titleRomajiError?.message ?? ''}
 			/>
 
 			<FormMarkdownEditor
 				bind:text={description}
 				formIdName="description"
 				formLabel="Description"
+				error={form?.description?.message ?? ''}
 			/>
 
 			<FormInput
@@ -85,6 +88,7 @@
 				labelName="Volume"
 				required={true}
 				placeholder="Volume"
+				error={form?.volumeError?.message ?? ''}
 			/>
 
 			<div class="flex flex-col gap-2">
@@ -98,7 +102,7 @@
 					headerName="People"
 					onSearchItemClick={addPersonToArray}
 					searchPlaceholder="Search people..."
-					error={form?.duplicatePersonsError ?? ''}
+					error={form?.duplicatePersonsError?.message ?? ''}
 				/>
 			</div>
 		</div>
