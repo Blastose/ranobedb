@@ -9,6 +9,7 @@
 	import BackButton from '$lib/components/back-button/BackButton.svelte';
 	import type { RoleType } from '$lib/types/dbTypes';
 	import { PersonRoles } from '$lib/types/dbTypes';
+	import { page } from '$app/stores';
 
 	type Person = {
 		id: number;
@@ -49,7 +50,9 @@
 
 	<Form bind:loading reset={false} scrollToTop={true}>
 		<div slot="form-input" class="flex flex-col gap-2">
-			<h2 class="font-bold text-xl">Book</h2>
+			<h2 class="font-bold text-xl">
+				Book <span class="text-sm text-gray-500 dark:text-gray-400">id{$page.params.id}</span>
+			</h2>
 
 			<FormInput
 				bind:value={title}
