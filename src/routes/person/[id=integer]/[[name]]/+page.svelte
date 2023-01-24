@@ -1,6 +1,7 @@
 <script lang="ts">
 	import BookView from '$lib/components/book/BookView.svelte';
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
 </script>
@@ -16,10 +17,13 @@
 			{#if data.person.person_name_romaji}
 				<p>{data.person.person_name_romaji}</p>
 			{/if}
+			<a class="underline" href="/person/{$page.params.id}/edit">Edit</a>
 		</div>
 		<div>
 			<p class="font-bold">Biography</p>
-			<p>{data.person.person_description ?? 'N/A'}</p>
+			<div class="markdown-text">
+				{@html data.person.person_description ?? 'N/A'}
+			</div>
 		</div>
 		<BookView books={data.books} />
 	</div>

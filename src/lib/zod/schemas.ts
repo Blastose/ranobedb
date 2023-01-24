@@ -42,6 +42,12 @@ export const editBookSchema = zfd.formData({
 	)
 });
 
+export const editPersonSchema = zfd.formData({
+	name: zfd.text(z.string({ required_error: 'Name is required' })),
+	nameRomaji: z.string(),
+	description: z.string().max(1000, { message: 'Description must be less than 1000 characters' })
+});
+
 export const joinErrors = (errors: string[] | undefined) => {
 	if (errors) return errors.join('. ');
 	return undefined;

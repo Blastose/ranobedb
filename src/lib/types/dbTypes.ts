@@ -104,6 +104,7 @@ export interface PartOf {
 
 export interface Person {
 	person_description: string | null;
+	person_description_markdown: string | null;
 	person_id: Generated<number>;
 	person_name: string;
 	person_name_romaji: string | null;
