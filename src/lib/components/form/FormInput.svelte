@@ -29,11 +29,8 @@
 		{required}
 		{id}
 		{placeholder}
-		class="
-		input
-		focus:outline-none focus:ring focus:ring-primary-600
-		{error ? 'ring-2 ring-red-600 focus:ring focus:ring-red-600 dark:ring-red-400' : ''}
-		"
+		class="input"
+		class:error
 		bind:value
 	/>
 	{#if error}
@@ -42,13 +39,32 @@
 </div>
 
 <style>
-	.input {
+	:global(.input) {
 		background-color: rgb(229 231 235);
 		padding: 0.5rem 0.75rem;
 		border-radius: 0.375rem;
 	}
 
-	:global(.dark) .input {
+	:global(.input:focus) {
+		outline: 2px solid transparent;
+		outline-offset: 2px;
+
+		box-shadow: 0 0 0 2px var(--primary-600);
+	}
+
+	:global(.input.error) {
+		box-shadow: 0 0 0 2px rgb(238, 82, 82);
+	}
+
+	:global(.input:focus.error) {
+		box-shadow: 0 0 0 2px rgb(238, 82, 82);
+	}
+
+	:global(.dark .input.error) {
+		box-shadow: 0 0 0 2px rgb(248 113 113);
+	}
+
+	:global(.dark .input) {
 		background-color: var(--dark-500);
 		color: white;
 	}

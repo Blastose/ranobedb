@@ -82,11 +82,16 @@
 					{/each}
 					<Box text={data.book.release_date} href={null} icon={'calendarRange'} />
 					<Box text={String(data.book.volume)} href={null} icon={'bookOpenPage'} />
-					<Box text={'Edit'} href={`/book/${$page.params.id}/edit`} icon={'pencil'} />
+					<Box
+						text={'Edit'}
+						href={`/book/${$page.params.id}/edit`}
+						icon={'pencil'}
+						preload={false}
+					/>
 				</div>
-				<p class="max-w-3xl">
+				<div class="max-w-3xl markdown-text">
 					{@html data.book.description}
-				</p>
+				</div>
 			</div>
 		</div>
 

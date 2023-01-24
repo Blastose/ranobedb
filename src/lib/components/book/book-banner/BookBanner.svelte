@@ -15,8 +15,8 @@
 				loading="lazy"
 				class="rounded-sm"
 				src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg"
-				width="240px"
-				height="343px"
+				width="240"
+				height="343"
 				alt={book.title}
 			/>
 		</a>
@@ -33,9 +33,9 @@
 				{/each}
 			</div>
 			<div class="hidden sm:block">
-				<p class="description text-sm md:text-base">
+				<div class="description markdown-text text-sm md:text-base">
 					{@html book.description}
-				</p>
+				</div>
 			</div>
 		</div>
 	</div>

@@ -3,6 +3,8 @@
 
 	export let action: string | null = null;
 	export let loading: boolean;
+	export let reset: boolean = true;
+	export let scrollToTop = false;
 </script>
 
 <form
@@ -16,7 +18,8 @@
 				return;
 			}
 			loading = false;
-			update();
+			update({ reset });
+			if (scrollToTop) window.scrollTo(0, 0);
 		};
 	}}
 >
