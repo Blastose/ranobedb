@@ -4,7 +4,7 @@ import { getPaginationFromUrl } from '$lib/util/getPaginationFromUrl';
 import { sql } from 'kysely';
 import { error } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load = (async ({ url }) => {
 	const { limit, page } = getPaginationFromUrl(url);
 
 	const series = await db
@@ -26,4 +26,4 @@ export const load: PageServerLoad = async ({ url }) => {
 	}
 
 	return { series, count: count, totalPages: Math.ceil(count / limit) };
-};
+}) satisfies PageServerLoad;

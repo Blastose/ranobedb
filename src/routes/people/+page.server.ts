@@ -4,7 +4,7 @@ import { db } from '$lib/server/lucia';
 import { getPaginationFromUrl } from '$lib/util/getPaginationFromUrl';
 import { sql } from 'kysely';
 
-export const load: PageServerLoad = async ({ url }) => {
+export const load = (async ({ url }) => {
 	const { limit, page } = getPaginationFromUrl(url);
 
 	const people = await db
@@ -26,4 +26,4 @@ export const load: PageServerLoad = async ({ url }) => {
 	}
 
 	return { people, count: count, totalPages: Math.ceil(count / limit) };
-};
+}) satisfies PageServerLoad;

@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/lucia';
 
-export const load: PageServerLoad = async () => {
+export const load = (async () => {
 	const allBooksPromise = db.selectFrom('book_info').selectAll().orderBy('title_romaji').execute();
 	const recentlyAddedBooksPromise = db
 		.selectFrom('book_info')
@@ -27,4 +27,4 @@ export const load: PageServerLoad = async () => {
 	} catch {
 		throw error(500);
 	}
-};
+}) satisfies PageServerLoad;
