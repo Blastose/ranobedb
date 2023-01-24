@@ -24,12 +24,18 @@
 				<button
 					class="hidden p-1 rounded-lg btn lg:block"
 					aria-label="open sidebar"
+					type="button"
 					on:click={openSidebar}
 				>
 					<Icon height="24" width="24" name="menu" />
 				</button>
 			{/if}
-			<button class="p-1 rounded-lg btn lg:hidden" aria-label="open sidebar" on:click={openSidebar}>
+			<button
+				class="p-1 rounded-lg btn lg:hidden"
+				aria-label="open sidebar"
+				type="button"
+				on:click={openSidebar}
+			>
 				<Icon height="24" width="24" name="menu" />
 			</button>
 
@@ -41,6 +47,7 @@
 		<div class="flex items-center justify-center gap-4">
 			<button
 				aria-label={$theme === 'dark' ? 'switch theme to light' : 'switch theme to dark'}
+				type="button"
 				on:click={toggleTheme}
 			>
 				{#if $theme === 'dark'}

@@ -4,7 +4,7 @@
 	export let onClose: () => void;
 </script>
 
-<button class="btn close-button" on:click={onClose} aria-label="Close modal">
+<button class="btn close-button" on:click={onClose} aria-label="Close modal" type="button">
 	<Icon height="24" width="24" name="close" />
 </button>
 

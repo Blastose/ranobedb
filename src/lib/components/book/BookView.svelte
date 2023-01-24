@@ -30,6 +30,7 @@
 				<button
 					aria-label={tab.ariaName}
 					class="tab {$bookViewIndex === i ? 'active' : ''}"
+					type="button"
 					on:click={() => {
 						bookViewIndex.set(i);
 					}}

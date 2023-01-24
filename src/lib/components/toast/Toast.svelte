@@ -37,6 +37,7 @@
 			<p>{$toast.message}</p>
 			{#if $toast.closeButton}
 				<button
+					type="button"
 					on:click={() => {
 						toast.set(null);
 					}}

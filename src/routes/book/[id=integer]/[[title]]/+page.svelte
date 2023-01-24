@@ -52,6 +52,7 @@
 			{#if $user}
 				<button
 					class="add-button"
+					type="button"
 					on:click={() => {
 						setModalBook();
 						toast.set(null);

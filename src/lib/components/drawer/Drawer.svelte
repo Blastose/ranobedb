@@ -8,6 +8,7 @@
 	<button
 		class="overlay"
 		aria-label="close sidebar"
+		type="button"
 		on:click={() => {
 			drawer.set(false);
 		}}

@@ -113,6 +113,7 @@
 				<button
 					class="carousel-button {pos === i ? 'active' : ''}"
 					aria-label={`jump to carousel #${i}`}
+					type="button"
 					on:click={() => {
 						if (i < pos) {
 							animateSwipeLeft = true;
@@ -130,6 +131,7 @@
 				class="button"
 				disabled={animateSwipeLeft || animateSwipeRight}
 				aria-label="carousel left"
+				type="button"
 				on:click={() => {
 					decPos();
 					animateSwipeLeft = true;
@@ -141,6 +143,7 @@
 				class="button"
 				disabled={animateSwipeLeft || animateSwipeRight}
 				aria-label="carousel right"
+				type="button"
 				on:click={() => {
 					incPos();
 					animateSwipeRight = true;
