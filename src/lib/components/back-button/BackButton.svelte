@@ -5,6 +5,7 @@
 <button
 	class="btn p-1 rounded-full"
 	aria-label="Go back one page"
+	type="button"
 	on:click={() => {
 		history.back();
 	}}

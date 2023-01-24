@@ -13,6 +13,7 @@
 		bind:this={toggleButton}
 		aria-label="open profile menu"
 		class="profile {$user ? 'profile-logged-in' : ''}"
+		type="button"
 		on:click={() => {
 			profileMenu.set(!$profileMenu);
 		}}

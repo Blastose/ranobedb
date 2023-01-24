@@ -22,6 +22,7 @@
 <button
 	class="btn rounded-lg p-1"
 	aria-label="close sidebar"
+	type="button"
 	on:click={closeSidebar}
 	tabindex={tabindex ? 0 : -1}
 	bind:this={btn}
