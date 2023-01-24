@@ -5,7 +5,7 @@ import { sql } from 'kysely';
 
 type publisher = { id: number; name: string }[];
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load = (async ({ params }) => {
 	const id = Number(params.id);
 	const releasePromise = db
 		.selectFrom('release')
@@ -37,4 +37,4 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	return { release, books };
-};
+}) satisfies PageServerLoad;

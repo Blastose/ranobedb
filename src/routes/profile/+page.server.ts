@@ -4,7 +4,7 @@ import { createRedirectUrl } from '$lib/util/createRedirectUrl';
 import { db } from '$lib/server/lucia';
 import { sql } from 'kysely';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load = (async ({ locals, url }) => {
 	const session = await locals.validate();
 	if (!session) {
 		throw redirect(303, createRedirectUrl('login', url));
@@ -40,4 +40,4 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 
 	const [readPerMonth, readLabels] = await Promise.all([readPerMonthPromise, readLabelsPromise]);
 	return { readPerMonth: readPerMonth.rows, readLabels };
-};
+}) satisfies PageServerLoad;

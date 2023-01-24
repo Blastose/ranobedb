@@ -2,7 +2,7 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/lucia';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load = (async ({ params }) => {
 	const id = Number(params.id);
 
 	const seriesPromise = db
@@ -27,4 +27,4 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	return { series, books };
-};
+}) satisfies PageServerLoad;

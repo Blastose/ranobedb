@@ -3,7 +3,7 @@ import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/lucia';
 import { sql } from 'kysely';
 
-export const load: PageServerLoad = async ({ params }) => {
+export const load = (async ({ params }) => {
 	const id = Number(params.id);
 	const personPromise = await db
 		.selectFrom('person')
@@ -31,4 +31,4 @@ export const load: PageServerLoad = async ({ params }) => {
 	}
 
 	return { person, books };
-};
+}) satisfies PageServerLoad;

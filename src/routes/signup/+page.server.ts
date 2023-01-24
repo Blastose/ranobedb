@@ -5,15 +5,15 @@ import { signupSchema, joinErrors } from '$lib/zod/schemas';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = (async ({ locals }) => {
 	const session = await locals.validate();
 	if (session) {
 		throw redirect(303, '/');
 	}
 	return {};
-};
+}) satisfies PageServerLoad;
 
-export const actions: Actions = {
+export const actions = {
 	default: async ({ request }) => {
 		const form = await request.formData();
 
@@ -49,7 +49,6 @@ export const actions: Actions = {
 					username,
 					password,
 					emailError: {
-						name: 'emailInvalid',
 						message: 'Email is already in use. Please use a different email'
 					}
 				});
@@ -61,7 +60,6 @@ export const actions: Actions = {
 						username,
 						password,
 						usernameError: {
-							name: 'usernameInvalid',
 							message: 'Username is already in use. Please use a different username'
 						}
 					});
@@ -72,4 +70,4 @@ export const actions: Actions = {
 		}
 		return { success: true };
 	}
-};
+} satisfies Actions;

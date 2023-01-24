@@ -1,7 +1,7 @@
 import { fail, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/server/lucia';
 
-export const actions: Actions = {
+export const actions = {
 	default: async ({ params, request, locals }) => {
 		const session = await locals.validate();
 		if (!session) {
@@ -85,4 +85,4 @@ export const actions: Actions = {
 			return fail(400);
 		}
 	}
-};
+} satisfies Actions;

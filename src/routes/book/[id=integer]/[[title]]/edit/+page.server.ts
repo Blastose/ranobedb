@@ -9,7 +9,7 @@ import { editBookSchema, joinErrors } from '$lib/zod/schemas';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 
-export const load: PageServerLoad = async ({ locals, url, params }) => {
+export const load = (async ({ locals, url, params }) => {
 	const session = await locals.validate();
 	if (!session) {
 		throw redirect(303, createRedirectUrl('login', url));
@@ -44,7 +44,7 @@ export const load: PageServerLoad = async ({ locals, url, params }) => {
 	}
 
 	return { book };
-};
+}) satisfies PageServerLoad;
 
 type EditBookErrorType = {
 	titleError?: { message: string };
@@ -55,7 +55,7 @@ type EditBookErrorType = {
 	error?: { message: string };
 };
 
-export const actions: Actions = {
+export const actions = {
 	default: async ({ request, params, locals }) => {
 		const { session, user } = await locals.validateUser();
 		if (!session) {
@@ -132,4 +132,4 @@ export const actions: Actions = {
 		}
 		return { success: true };
 	}
-};
+} satisfies Actions;

@@ -5,7 +5,7 @@ import { db } from '$lib/server/lucia';
 import { sql } from 'kysely';
 import { getPaginationFromUrl } from '$lib/util/getPaginationFromUrl';
 
-export const load: PageServerLoad = async ({ locals, url }) => {
+export const load = (async ({ locals, url }) => {
 	const session = await locals.validate();
 	if (!session) {
 		throw redirect(303, createRedirectUrl('login', url));
@@ -47,4 +47,4 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	}
 
 	return { reads, count, totalPages: Math.ceil(count / limit) };
-};
+}) satisfies PageServerLoad;

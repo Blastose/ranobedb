@@ -3,15 +3,15 @@ import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { loginSchema } from '$lib/zod/schemas';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ locals }) => {
+export const load = (async ({ locals }) => {
 	const session = await locals.validate();
 	if (session) {
 		throw redirect(303, '/');
 	}
 	return {};
-};
+}) satisfies PageServerLoad;
 
-export const actions: Actions = {
+export const actions = {
 	default: async ({ request, locals, url }) => {
 		const form = await request.formData();
 
@@ -58,4 +58,4 @@ export const actions: Actions = {
 		}
 		throw redirect(303, '/');
 	}
-};
+} satisfies Actions;
