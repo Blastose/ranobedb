@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { PersonRoles } from '$lib/types/dbTypes';
+import { PersonRoles, PublisherRelations } from '$lib/types/dbTypes';
 
 export const loginSchema = zfd.formData({
 	email: zfd.text(
@@ -46,6 +46,23 @@ export const editPersonSchema = zfd.formData({
 	name: zfd.text(z.string({ required_error: 'Name is required' })),
 	nameRomaji: z.string(),
 	description: z.string().max(1000, { message: 'Description must be less than 1000 characters' })
+});
+
+export const editPublisherSchema = zfd.formData({
+	name: zfd.text(z.string({ required_error: 'Name is required' })),
+	nameRomaji: z.string(),
+	description: z.string().max(1000, { message: 'Description must be less than 1000 characters' }),
+	publisher_rel: zfd.repeatable(
+		z.array(
+			zfd.json(
+				z.object({
+					id: z.number(),
+					name: z.string(),
+					type: z.enum(PublisherRelations)
+				})
+			)
+		)
+	)
 });
 
 export const joinErrors = (errors: string[] | undefined) => {
