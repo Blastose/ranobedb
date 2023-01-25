@@ -10,6 +10,7 @@
 	export let formLabel: string;
 	export let error = '';
 	export let rows = 12;
+	export let placeholder = '';
 
 	let md: string = DOMPurify.sanitize(marked.parse(text));
 	const setView = (viewType: ViewType) => {
@@ -45,7 +46,14 @@
 			>
 		</div>
 		<div class={view === 'markdown' ? '' : 'hidden'}>
-			<FormTextArea bind:value={text} name={formIdName} id={formIdName} required={false} {rows} />
+			<FormTextArea
+				bind:value={text}
+				{placeholder}
+				name={formIdName}
+				id={formIdName}
+				required={false}
+				{rows}
+			/>
 		</div>
 		<div class="preview-area {view === 'markdown' ? 'hidden' : ''}">
 			<div class="markdown-text">
