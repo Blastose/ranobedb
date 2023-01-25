@@ -86,7 +86,7 @@
 		color: white;
 		height: 6rem;
 		width: 6rem;
-		border-radius: 9999px;
+		border-radius: 0.5rem;
 		align-self: flex-end;
 		margin-bottom: 0.5rem;
 		transition-duration: 150ms;
