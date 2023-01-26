@@ -74,10 +74,10 @@
 			<FormMarkdownEditor
 				bind:text={description}
 				formIdName="description"
-				formLabel="Biography"
+				formLabel="About"
 				rows={6}
 				error={form?.descriptionError?.message}
-				placeholder="Add biography..."
+				placeholder="Add about text..."
 			/>
 
 			<div class="flex flex-col gap-2">
