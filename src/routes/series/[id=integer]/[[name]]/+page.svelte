@@ -1,5 +1,7 @@
 <script lang="ts">
+	import Box from '$lib/components/box/Box.svelte';
 	import BookView from '$lib/components/book/BookView.svelte';
+	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -14,15 +16,18 @@
 		<div>
 			<div>
 				<p class="font-bold text-2xl">{data.series.title}</p>
+				{#if data.series.title_romaji}
+					<p>{data.series.title_romaji}</p>
+				{/if}
 				<p>Series</p>
 			</div>
-			{#if data.series.title_romaji}
-				<p>{data.series.title_romaji}</p>
-			{/if}
 		</div>
 		<div>
 			<p>Publication Status: Unknown</p>
-			<p>Latest Volume Release Date: {data.books[data.books.length - 1].release_date}</p>
+			<p>Latest Volume Release Date: {data.books[data.books.length - 1]?.release_date ?? 'N/A'}</p>
+		</div>
+		<div class="w-min">
+			<Box text={'Edit'} href={`/series/${$page.params.id}/edit`} icon={'pencil'} preload={false} />
 		</div>
 		<BookView books={data.books} />
 	</div>
