@@ -65,6 +65,21 @@ export const editPublisherSchema = zfd.formData({
 	)
 });
 
+export const editSeriesSchema = zfd.formData({
+	title: zfd.text(z.string({ required_error: 'Title is required' })),
+	titleRomaji: z.string({ required_error: 'Title romaji is required' }),
+	booksInSeries: zfd.repeatable(
+		z.array(
+			zfd.json(
+				z.object({
+					id: z.number(),
+					name: z.string()
+				})
+			)
+		)
+	)
+});
+
 export const joinErrors = (errors: string[] | undefined) => {
 	if (errors) return errors.join('. ');
 	return undefined;
