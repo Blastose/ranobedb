@@ -64,6 +64,7 @@
 				formIdName="description"
 				formLabel="Biography"
 				rows={6}
+				placeholder="Add biography..."
 				error={form?.descriptionError?.message}
 			/>
 		</div>

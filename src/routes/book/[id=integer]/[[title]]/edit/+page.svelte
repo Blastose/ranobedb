@@ -80,6 +80,7 @@
 				bind:text={description}
 				formIdName="description"
 				formLabel="Description"
+				placeholder="Add description..."
 				error={form?.description?.message ?? ''}
 			/>
 
