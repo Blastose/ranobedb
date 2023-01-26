@@ -13,7 +13,7 @@ test.describe('edit publisher', () => {
 	test('User can add and remove publisher relations to publisher', async ({ page }) => {
 		await page.goto('/publisher/52/edit');
 
-		await page.locator('input#search-people-edit-book').fill('m');
+		await page.locator('input#search-publisher-edit-publisher').fill('m');
 		await page.getByRole('button', { name: 'MF文庫J' }).click();
 		await page.locator('select#type13label').selectOption({ label: 'subsidiary' });
 		await page.locator('main form button[type="submit"]').click();
@@ -34,7 +34,7 @@ test.describe('edit publisher', () => {
 	test('User cannot have duplicate publisher in DB relations', async ({ page }) => {
 		await page.goto('/publisher/1/edit');
 
-		await page.locator('input#search-people-edit-book').fill('k');
+		await page.locator('input#search-publisher-edit-publisher').fill('k');
 		await page.getByRole('button', { name: '角川書店' }).click();
 		await page.locator('main form button[type="submit"]').click();
 
