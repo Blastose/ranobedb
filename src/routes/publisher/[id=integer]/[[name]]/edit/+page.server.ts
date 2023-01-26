@@ -91,8 +91,8 @@ export const actions = {
 					.updateTable('publisher')
 					.set({
 						name: parsedForm.data.name,
-						name_romaji: parsedForm.data.nameRomaji ?? null,
-						description: description ?? null,
+						name_romaji: parsedForm.data.nameRomaji || null,
+						description: description || null,
 						description_markdown: parsedForm.data.description
 					})
 					.where('id', '=', id)

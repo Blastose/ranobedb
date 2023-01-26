@@ -68,9 +68,9 @@ export const actions = {
 					.updateTable('person')
 					.set({
 						person_name: parsedForm.data.name,
-						person_name_romaji: parsedForm.data.nameRomaji,
-						person_description: description,
-						person_description_markdown: parsedForm.data.description
+						person_name_romaji: parsedForm.data.nameRomaji || null,
+						person_description: description || null,
+						person_description_markdown: parsedForm.data.description || null
 					})
 					.where('person_id', '=', id)
 					.executeTakeFirstOrThrow();
