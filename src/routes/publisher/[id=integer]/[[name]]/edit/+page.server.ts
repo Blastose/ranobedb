@@ -4,8 +4,9 @@ import { createRedirectUrl } from '$lib/util/createRedirectUrl';
 import { db } from '$lib/server/lucia';
 import marked from '$lib/marked/marked';
 import DOMPurify from 'isomorphic-dompurify';
+import { editPublisherSchema, joinErrors } from '$lib/zod/schemas';
 import { sql } from 'kysely';
-import { editBookSchema, joinErrors } from '$lib/zod/schemas';
+import type { PublisherRelType } from '$lib/types/dbTypes';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 
@@ -16,43 +17,41 @@ export const load = (async ({ locals, url, params }) => {
 	}
 
 	const id = Number(params.id);
-	const book = await db
-		.selectFrom('book')
-		.selectAll('book')
+	const publisher = await db
+		.selectFrom('publisher')
+		.selectAll('publisher')
 		.select(
-			sql<{ id: number; name: string; role: string }[]>`
+			sql<{ id: number; name: string; type: PublisherRelType }[]>`
 			COALESCE(
 				JSONB_AGG(
-					DISTINCT JSONB_BUILD_OBJECT(
-						'name', person.person_name,
-						'id', person.person_id,
-						'role', person_book_rel.role
+					JSONB_BUILD_OBJECT(
+						'id', publisher_child.id,
+						'name', publisher_child.name,
+						'type', publisher_rel.type
 					)
-				) FILTER (WHERE person.person_name IS NOT NULL),
+				) FILTER (WHERE publisher_child.id IS NOT NULL),
 				'[]'::JSONB
 			)
-		`.as('people')
+		`.as('publisher_rels')
 		)
-		.leftJoin('person_book_rel', 'book.id', 'person_book_rel.book_id')
-		.leftJoin('person', 'person_book_rel.person_id', 'person.person_id')
-		.where('id', '=', id)
-		.groupBy('book.id')
+		.leftJoin('publisher_rel', 'publisher_rel.id_parent', 'publisher.id')
+		.leftJoin('publisher as publisher_child', 'publisher_rel.id_child', 'publisher_child.id')
+		.groupBy('publisher.id')
+		.where('publisher.id', '=', id)
 		.executeTakeFirst();
 
-	if (!book) {
+	if (!publisher) {
 		throw error(404);
 	}
-
-	return { book };
+	return { publisher };
 }) satisfies PageServerLoad;
 
-type EditBookErrorType = {
-	titleError?: { message: string };
-	titleRomajiError?: { message: string };
-	description?: { message: string };
-	volumeError?: { message: string };
-	duplicatePersonsError?: { message: string };
+type EditPublisherErrorType = {
 	error?: { message: string };
+	nameError?: { message: string };
+	nameRomajiError?: { message: string };
+	descriptionError?: { message: string };
+	duplicatePublisherError?: { message: string };
 };
 
 export const actions = {
@@ -61,75 +60,74 @@ export const actions = {
 		if (!session) {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to edit.' }
-			} as EditBookErrorType);
+			} as EditPublisherErrorType);
 		}
 		if (user.role !== 'admin') {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to edit.' }
-			} as EditBookErrorType);
+			} as EditPublisherErrorType);
 		}
 
 		const id = Number(params.id);
 		const form = await request.formData();
 
-		const parsedForm = editBookSchema.safeParse(form);
+		const parsedForm = editPublisherSchema.safeParse(form);
 		if (!parsedForm.success) {
 			const flattenedErrors = parsedForm.error.flatten();
 			return fail(400, {
-				titleError: { message: joinErrors(flattenedErrors.fieldErrors.title) },
-				titleRomajiError: { message: joinErrors(flattenedErrors.fieldErrors.titleRomaji) },
-				description: { message: joinErrors(flattenedErrors.fieldErrors.description) },
-				volumeError: { message: joinErrors(flattenedErrors.fieldErrors.volume) },
+				nameError: { message: joinErrors(flattenedErrors.fieldErrors.name) },
+				nameRomajiError: { message: joinErrors(flattenedErrors.fieldErrors.nameRomaji) },
+				descriptionError: { message: joinErrors(flattenedErrors.fieldErrors.description) },
 				error: { message: 'Invalid form entries. Unable to edit!' }
-			} as EditBookErrorType);
+			} as EditPublisherErrorType);
 		}
-
 		const description = DOMPurify.sanitize(marked.parse(parsedForm.data.description));
 
 		try {
 			await db.transaction().execute(async (trx) => {
 				await trx
-					.updateTable('book')
+					.updateTable('publisher')
 					.set({
-						title: parsedForm.data.title,
-						title_romaji: parsedForm.data.titleRomaji || null,
+						name: parsedForm.data.name,
+						name_romaji: parsedForm.data.nameRomaji || null,
 						description: description || null,
-						description_markdown: parsedForm.data.description || null,
-						volume: parsedForm.data.volume
+						description_markdown: parsedForm.data.description
 					})
 					.where('id', '=', id)
 					.executeTakeFirstOrThrow();
 
-				await trx.deleteFrom('person_book_rel').where('book_id', '=', id).execute();
+				await trx.deleteFrom('publisher_rel').where('publisher_rel.id_parent', '=', id).execute();
 
 				// Using a for let instead of forEach since catching any throws
 				// does not work properly in the callback to the forEach
-				for (let i = 0; i < parsedForm.data.person.length; i++) {
+				for (let i = 0; i < parsedForm.data.publisher_rel.length; i++) {
 					await trx
-						.insertInto('person_book_rel')
+						.insertInto('publisher_rel')
 						.values({
-							book_id: id,
-							person_id: parsedForm.data.person[i].id,
-							role: parsedForm.data.person[i].role
+							id_parent: id,
+							id_child: parsedForm.data.publisher_rel[i].id,
+							type: parsedForm.data.publisher_rel[i].type
 						})
 						.execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'person_book_rel') {
+				if (e.code === '23505' && e.table === 'publisher_rel') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to edit!' },
-						duplicatePersonsError: {
-							message: 'Duplicate people with same roles in form. Remove duplicates and try again.'
+						duplicatePublisherError: {
+							message: 'Duplicate publishers in form. Remove duplicates and try again.'
 						}
-					} as EditBookErrorType);
+					} as EditPublisherErrorType);
 				}
 			}
+
 			return fail(400, {
 				error: { message: 'Invalid form entries. Unable to edit!' }
-			} as EditBookErrorType);
+			} as EditPublisherErrorType);
 		}
+
 		return { success: true };
 	}
 } satisfies Actions;

@@ -23,8 +23,8 @@
 			</div>
 
 			<div class="name">
-				<p class="text-3xl font-bold">{data.person.person_name}</p>
-				<p class="text-xl font-semibold">{data.person.person_name_romaji ?? ''}</p>
+				<p class="text-xl sm:text-3xl font-bold">{data.person.person_name}</p>
+				<p class="text-lg sm:text-xl font-semibold">{data.person.person_name_romaji ?? ''}</p>
 			</div>
 		</div>
 		<div class="flex flex-col gap-4">

@@ -20,6 +20,10 @@ export type RoleType = typeof PersonRoles[number];
 
 export type UserRole = 'admin' | 'moderator' | 'user';
 
+export const PublisherRelations = ['imprint', 'label', 'subsidiary'] as const;
+
+export type PublisherRelType = typeof PublisherRelations[number];
+
 export interface Session {
 	expires: BigIntColumnType;
 	id: string;
@@ -118,9 +122,16 @@ export interface PersonBookRel {
 
 export interface Publisher {
 	description: string | null;
+	description_markdown: string | null;
 	id: Generated<number>;
 	name: string;
 	name_romaji: string | null;
+}
+
+export interface PublisherRel {
+	id_parent: number;
+	id_child: number;
+	type: PublisherRelType | null;
 }
 
 export interface PublisherReleaseRel {
@@ -158,6 +169,7 @@ export interface DB {
 	person: Person;
 	person_book_rel: PersonBookRel;
 	publisher: Publisher;
+	publisher_rel: PublisherRel;
 	publisher_release_rel: PublisherReleaseRel;
 	book: Book;
 	book_info: BookInfo;

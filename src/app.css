@@ -67,7 +67,14 @@ html.dark {
 	color: rgb(92, 92, 226);
 	text-decoration: underline;
 }
-.dark .markdown-text a {
+a.link {
+	color: rgb(92, 92, 226);
+}
+a.link:hover {
+	text-decoration: underline;
+}
+.dark .markdown-text a,
+.dark a.link {
 	color: rgb(150, 150, 255);
 }
 .markdown-text li {

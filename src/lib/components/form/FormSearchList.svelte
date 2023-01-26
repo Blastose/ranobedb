@@ -7,7 +7,7 @@
 	export let fetchUrl: string;
 	export let searchPlaceholder: string;
 	export let formItemName: string;
-	export let error: string;
+	export let error = '';
 	export let searchId: string;
 
 	export let dropdown: { itemAttribute: string; dropdownValues: readonly string[] } | null = null;
