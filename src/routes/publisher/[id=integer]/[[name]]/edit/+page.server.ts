@@ -83,8 +83,6 @@ export const actions = {
 		}
 		const description = DOMPurify.sanitize(marked.parse(parsedForm.data.description));
 
-		console.log(parsedForm.data.publisher_rel);
-
 		try {
 			await db.transaction().execute(async (trx) => {
 				await trx
