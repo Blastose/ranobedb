@@ -114,6 +114,13 @@ a.link:hover {
 	background-color: var(--primary-300);
 }
 
+.focus-outline:focus {
+	outline: 2px solid transparent;
+	outline-offset: 2px;
+	transition: box-shadow 0;
+	box-shadow: 0 0 0 2px var(--primary-600);
+}
+
 .main-container {
 	width: 100%;
 	padding: 1rem 2rem;

@@ -1,6 +1,10 @@
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { PersonRoles, PublisherRelations } from '$lib/types/dbTypes';
+import { PersonRoles, PublisherRelations, BookFormatArray } from '$lib/types/dbTypes';
+
+const ISODateRegex = /\d{4}-[01]\d-[0-3]\d/;
+
+export const ISODate = z.string().regex(ISODateRegex, 'Date must be a valid ISO date');
 
 export const loginSchema = zfd.formData({
 	email: zfd.text(
@@ -69,6 +73,41 @@ export const editSeriesSchema = zfd.formData({
 	title: zfd.text(z.string({ required_error: 'Title is required' })),
 	titleRomaji: z.string({ required_error: 'Title romaji is required' }),
 	booksInSeries: zfd.repeatable(
+		z.array(
+			zfd.json(
+				z.object({
+					id: z.number(),
+					name: z.string()
+				})
+			)
+		)
+	)
+});
+
+export const editReleaseSchema = zfd.formData({
+	name: zfd.text(z.string({ required_error: 'Name is required' })),
+	nameRomaji: z.string(),
+	format: z.enum(BookFormatArray),
+	lang: z.enum(['jp', 'en']),
+	description: z.string().max(1000, { message: 'Description must be less than 1000 characters' }),
+	isbn13: z
+		.string()
+		.min(13, { message: 'ISBN must be 13 characters or omitted' })
+		.max(13, { message: 'ISBN must be 13 characters or omitted' })
+		.optional()
+		.or(z.literal('')),
+	releaseDate: ISODate,
+	publisherRel: zfd.repeatable(
+		z.array(
+			zfd.json(
+				z.object({
+					id: z.number(),
+					name: z.string()
+				})
+			)
+		)
+	),
+	bookRel: zfd.repeatable(
 		z.array(
 			zfd.json(
 				z.object({

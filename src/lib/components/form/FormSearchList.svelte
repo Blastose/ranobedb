@@ -29,36 +29,38 @@
 </script>
 
 <div class="form-search-list-container">
-	<h3 class="font-semibold text-lg">{headerName}</h3>
-	{#if error}
-		<span class="text-red-600 dark:text-red-400">{error}</span>
-	{/if}
-	<div class="list-container">
-		{#each items as item, index (index)}
-			<div class="list-item">
-				<p>
-					<span class="text-sm text-gray-500 dark:text-gray-400">id{item.id}</span>: {item.name}
-				</p>
+	<div>
+		<h3 class="font-semibold text-lg">{headerName}</h3>
+		{#if error}
+			<span class="text-red-600 dark:text-red-400">{error}</span>
+		{/if}
+		<div class="list-container">
+			{#each items as item, index (index)}
+				<div class="list-item">
+					<p>
+						<span class="text-sm text-gray-500 dark:text-gray-400">id{item.id}</span>: {item.name}
+					</p>
 
-				{#if dropdown}
-					<FormSearchListDropdown
-						{updateItems}
-						{item}
-						itemAttribute={dropdown.itemAttribute}
-						dropdownValues={dropdown.dropdownValues}
-					/>
-				{/if}
+					{#if dropdown}
+						<FormSearchListDropdown
+							{updateItems}
+							{item}
+							itemAttribute={dropdown.itemAttribute}
+							dropdownValues={dropdown.dropdownValues}
+						/>
+					{/if}
 
-				<input class="hidden" type="text" name={formItemName} value={JSON.stringify(item)} />
-				<button
-					class="remove-button"
-					on:click={() => {
-						removeFromItems(index);
-					}}
-					type="button">Remove</button
-				>
-			</div>
-		{/each}
+					<input class="hidden" type="text" name={formItemName} value={JSON.stringify(item)} />
+					<button
+						class="remove-button"
+						on:click={() => {
+							removeFromItems(index);
+						}}
+						type="button">Remove</button
+					>
+				</div>
+			{/each}
+		</div>
 	</div>
 	<SearchDropdown
 		{searchId}

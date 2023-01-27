@@ -3,7 +3,7 @@
 </script>
 
 <button
-	class="btn p-1 rounded-full"
+	class="btn p-1 rounded-full focus-outline"
 	aria-label="Go back one page"
 	type="button"
 	on:click={() => {
