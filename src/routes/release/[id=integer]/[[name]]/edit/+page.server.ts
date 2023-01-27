@@ -121,7 +121,9 @@ export const actions = {
 				const bookRelInsert = parsedForm.data.bookRel.map((item) => {
 					return { book_id: item.id, release_id: id };
 				});
-				await trx.insertInto('book_release_rel').values(bookRelInsert).execute();
+				if (bookRelInsert.length > 0) {
+					await trx.insertInto('book_release_rel').values(bookRelInsert).execute();
+				}
 
 				// Update release-publisher relations
 				await trx
@@ -131,7 +133,9 @@ export const actions = {
 				const publisherRelInsert = parsedForm.data.publisherRel.map((item) => {
 					return { publisher_id: item.id, release_id: id };
 				});
-				await trx.insertInto('publisher_release_rel').values(publisherRelInsert).execute();
+				if (publisherRelInsert.length > 0) {
+					await trx.insertInto('publisher_release_rel').values(publisherRelInsert).execute();
+				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
