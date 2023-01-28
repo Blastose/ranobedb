@@ -40,7 +40,8 @@
 				<div class="list-item">
 					<p>
 						<a class="link" href="/{baseUrl}/{item.id}" target="_blank" rel="noopener noreferrer">
-							<span class="text-sm text-gray-500 dark:text-gray-400">id{item.id}</span>: {item.name}
+							<span class="text-sm text-gray-500 dark:text-gray-400">id{item.id}:</span>
+							{item.name}
 						</a>
 					</p>
 

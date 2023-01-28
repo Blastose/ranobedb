@@ -13,6 +13,7 @@
 				}}
 				class="dropdown-item"
 			>
+				<span class="text-sm text-gray-500 dark:text-gray-400">id{item.id}:</span>
 				{item.name}
 			</button>
 		{/each}
@@ -22,7 +23,7 @@
 <style>
 	.dropdown-container {
 		background-color: var(--primary-200);
-		padding: 0.5rem;
+		padding: 0.5rem 0.25rem;
 		max-height: 12rem;
 		width: 100%;
 		overflow-y: auto;
