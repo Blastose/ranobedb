@@ -9,6 +9,7 @@
 	export let formItemName: string;
 	export let error = '';
 	export let searchId: string;
+	export let baseUrl: string;
 
 	export let dropdown: { itemAttribute: string; dropdownValues: readonly string[] } | null = null;
 
@@ -38,7 +39,9 @@
 			{#each items as item, index (index)}
 				<div class="list-item">
 					<p>
-						<span class="text-sm text-gray-500 dark:text-gray-400">id{item.id}</span>: {item.name}
+						<a class="link" href="/{baseUrl}/{item.id}" target="_blank" rel="noopener noreferrer">
+							<span class="text-sm text-gray-500 dark:text-gray-400">id{item.id}</span>: {item.name}
+						</a>
 					</p>
 
 					{#if dropdown}

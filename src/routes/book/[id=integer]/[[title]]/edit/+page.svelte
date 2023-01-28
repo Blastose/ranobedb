@@ -106,6 +106,7 @@
 					headerName="People"
 					onSearchItemClick={addPersonToArray}
 					searchPlaceholder="Search people..."
+					baseUrl="person"
 					error={form?.duplicatePersonsError?.message ?? ''}
 				/>
 			</div>

@@ -73,6 +73,7 @@
 					headerName="Books in series"
 					onSearchItemClick={addBookToArray}
 					searchPlaceholder="Search books..."
+					baseUrl="book"
 					error={''}
 				/>
 			</div>

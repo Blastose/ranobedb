@@ -91,6 +91,7 @@
 					headerName="Publishers"
 					onSearchItemClick={addPublisherToArray}
 					searchPlaceholder="Search publishers..."
+					baseUrl="publisher"
 					error={form?.duplicatePublisherError?.message}
 				/>
 			</div>

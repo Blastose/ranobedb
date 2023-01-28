@@ -142,6 +142,7 @@
 					headerName="Publishers"
 					onSearchItemClick={addPublisherToArray}
 					searchPlaceholder="Search publishers..."
+					baseUrl="publisher"
 					error={form?.duplicatePublisherError?.message}
 				/>
 
@@ -153,6 +154,7 @@
 					headerName="Books"
 					onSearchItemClick={addBookToArray}
 					searchPlaceholder="Search books..."
+					baseUrl="book"
 					error={form?.duplicateBookError?.message}
 				/>
 			</div>
