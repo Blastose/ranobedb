@@ -5,7 +5,7 @@
 	import FormMarkdownEditor from '$lib/components/form/FormMarkdownEditor.svelte';
 	import FormSubmitButton from '$lib/components/form/FormSubmitButton.svelte';
 	import FormSearchList from '$lib/components/form/FormSearchList.svelte';
-	import { PublisherRelations } from '$lib/types/dbTypes';
+	import { PublisherRelTypeArray } from '$lib/types/dbTypes';
 	import Alert from '$lib/components/alert/Alert.svelte';
 	import BackButton from '$lib/components/back-button/BackButton.svelte';
 	import { page } from '$app/stores';
@@ -84,13 +84,14 @@
 				<h2 class="font-bold text-xl">Database Relations</h2>
 				<FormSearchList
 					searchId="search-publisher-edit-publisher"
-					dropdown={{ itemAttribute: 'type', dropdownValues: PublisherRelations }}
+					dropdown={{ itemAttribute: 'type', dropdownValues: PublisherRelTypeArray }}
 					fetchUrl="/api/publisher?name="
 					formItemName="publisher_rel"
 					items={publishers}
 					headerName="Publishers"
 					onSearchItemClick={addPublisherToArray}
 					searchPlaceholder="Search publishers..."
+					baseUrl="publisher"
 					error={form?.duplicatePublisherError?.message}
 				/>
 			</div>

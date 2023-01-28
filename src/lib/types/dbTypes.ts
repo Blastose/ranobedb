@@ -16,15 +16,15 @@ export type BookFormat = typeof BookFormatArray[number];
 
 export type Language = 'en' | 'jp';
 
-export const PersonRoles = ['artist', 'author'] as const;
+export const PersonRolesArray = ['artist', 'author'] as const;
 
-export type RoleType = typeof PersonRoles[number];
+export type RoleType = typeof PersonRolesArray[number];
 
 export type UserRole = 'admin' | 'moderator' | 'user';
 
-export const PublisherRelations = ['imprint', 'label', 'subsidiary'] as const;
+export const PublisherRelTypeArray = ['imprint', 'label', 'subsidiary'] as const;
 
-export type PublisherRelType = typeof PublisherRelations[number];
+export type PublisherRelType = typeof PublisherRelTypeArray[number];
 
 export interface Session {
 	expires: BigIntColumnType;

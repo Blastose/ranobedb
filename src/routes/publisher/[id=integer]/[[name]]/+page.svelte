@@ -1,6 +1,7 @@
 <script lang="ts">
 	import BookView from '$lib/components/book/BookView.svelte';
 	import Box from '$lib/components/box/Box.svelte';
+	import TopBottomLayout from '$lib/components/layout/TopBottomLayout.svelte';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 
@@ -11,15 +12,14 @@
 	<title>{data.publisher.name} - RanobeDB</title>
 </svelte:head>
 
-<main class="publisher-container">
-	<div class="highlight">
-		<div class="main-container">
-			<p class="text-xl sm:text-3xl font-bold">{data.publisher.name}</p>
-			<p class="text-lg sm:text-xl font-semibold">{data.publisher.name_romaji ?? ''}</p>
-		</div>
-	</div>
+<TopBottomLayout backgroundCover={null}>
+	<svelte:fragment slot="top">
+		<p class="text-xl sm:text-3xl font-bold">{data.publisher.name}</p>
+		<p class="text-lg sm:text-xl font-semibold">{data.publisher.name_romaji ?? ''}</p>
+		<p class="text-sm sm:text-base font-semibold">Publisher</p>
+	</svelte:fragment>
 
-	<div class="main-container content">
+	<svelte:fragment slot="content">
 		<div>
 			<p class="font-bold">About</p>
 			<div class="markdown-text">
@@ -67,42 +67,5 @@
 		</div>
 
 		<BookView books={data.books} />
-	</div>
-</main>
-
-<style>
-	.publisher-container {
-		display: grid;
-		grid-template-areas:
-			'highlight'
-			'content';
-		grid-template-rows: 10rem 1fr;
-	}
-
-	.highlight {
-		background: linear-gradient(var(--primary-500), #2b2c3d);
-		display: flex;
-		align-items: flex-end;
-		color: white;
-	}
-
-	.content {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-
-	.publisher-rel-container {
-		display: grid;
-		grid-template-columns: 1fr;
-		row-gap: 1rem;
-		column-gap: 0.5rem;
-	}
-
-	@media (min-width: 640px) {
-		.publisher-rel-container {
-			grid-auto-flow: column;
-			grid-template-columns: 1fr 1fr;
-		}
-	}
-</style>
+	</svelte:fragment>
+</TopBottomLayout>

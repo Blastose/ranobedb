@@ -14,7 +14,7 @@ test.describe('edit release', () => {
 		await page.goto('/release/1/edit');
 
 		await page.locator('input#search-publisher-edit-release').fill('SQEXノベル');
-		await page.getByRole('button', { name: 'SQEXノベル', exact: true }).click();
+		await page.getByRole('button', { name: 'id26: SQEXノベル' }).click();
 		await page.locator('main form button[type="submit"]').click();
 		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
 
@@ -38,7 +38,7 @@ test.describe('edit release', () => {
 		await page.goto('/release/1/edit');
 
 		await page.locator('input#search-book-edit-release').fill('asahina');
-		await page.getByRole('button', { name: '朝比奈若葉と○○な彼氏', exact: true }).click();
+		await page.getByRole('button', { name: 'id1037: 朝比奈若葉と○○な彼氏' }).click();
 		await page.locator('main form button[type="submit"]').click();
 		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
 

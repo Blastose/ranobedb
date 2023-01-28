@@ -3,7 +3,7 @@
 	import Box from '$lib/components/box/Box.svelte';
 	import { page } from '$app/stores';
 	import type { PageData } from './$types';
-	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import TopBottomLayout from '$lib/components/layout/TopBottomLayout.svelte';
 
 	export let data: PageData;
 	let bookCover = data.books[0]?.cover_image_file_name;
@@ -13,24 +13,14 @@
 	<title>{data.release.name} - RanobeDB</title>
 </svelte:head>
 
-<main class="release-container">
-	<div
-		class="highlight bg"
-		class:bg-image={bookCover}
-		style={bookCover
-			? `background-image: linear-gradient(rgba(27, 27, 27, 0.4), rgba(33, 34, 36, 0.9)), url(${PUBLIC_IMAGE_URL}/${bookCover}.jpg);`
-			: ''}
-	>
-		<div class="blur-image">
-			<div class="main-container">
-				<p class="text-xl sm:text-3xl font-bold">{data.release.name}</p>
-				<p class="text-lg sm:text-xl font-semibold">{data.release.name_romaji ?? ''}</p>
-				<p class="text-sm sm:text-base font-semibold">Release</p>
-			</div>
-		</div>
-	</div>
+<TopBottomLayout backgroundCover={bookCover}>
+	<svelte:fragment slot="top">
+		<p class="text-xl sm:text-3xl font-bold">{data.release.name}</p>
+		<p class="text-lg sm:text-xl font-semibold">{data.release.name_romaji ?? ''}</p>
+		<p class="text-sm sm:text-base font-semibold">Release</p>
+	</svelte:fragment>
 
-	<div class="main-container content">
+	<svelte:fragment slot="content">
 		<div class="flex flex-col gap-1">
 			<p>Description: {data.release.description ?? 'None'}</p>
 			<p>Language: {data.release.lang}</p>
@@ -60,46 +50,5 @@
 			<p class="font-bold">Books that this release belongs to</p>
 			<BookView books={data.books} />
 		</div>
-	</div>
-</main>
-
-<style>
-	.release-container {
-		display: grid;
-		grid-template-areas:
-			'highlight'
-			'content';
-		grid-template-rows: min-content 1fr;
-	}
-
-	.bg {
-		min-height: 10rem;
-	}
-
-	.bg-image {
-		overflow: hidden;
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: 20% 20%;
-	}
-
-	.blur-image {
-		height: 100%;
-		width: 100%;
-		backdrop-filter: blur(10px);
-		display: flex;
-		flex-direction: column;
-		justify-content: flex-end;
-		color: white;
-	}
-
-	.highlight:not(.bg-image) {
-		background: linear-gradient(var(--primary-500), #2b2c3d);
-	}
-
-	.content {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-</style>
+	</svelte:fragment>
+</TopBottomLayout>
