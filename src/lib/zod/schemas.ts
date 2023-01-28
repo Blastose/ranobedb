@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { PersonRoles, PublisherRelations, BookFormatArray } from '$lib/types/dbTypes';
+import { PersonRolesArray, PublisherRelTypeArray, BookFormatArray } from '$lib/types/dbTypes';
 
 const ISODateRegex = /\d{4}-[01]\d-[0-3]\d/;
 
@@ -39,7 +39,7 @@ export const editBookSchema = zfd.formData({
 				z.object({
 					id: z.number(),
 					name: z.string(),
-					role: z.enum(PersonRoles)
+					role: z.enum(PersonRolesArray)
 				})
 			)
 		)
@@ -62,7 +62,7 @@ export const editPublisherSchema = zfd.formData({
 				z.object({
 					id: z.number(),
 					name: z.string(),
-					type: z.enum(PublisherRelations)
+					type: z.enum(PublisherRelTypeArray)
 				})
 			)
 		)

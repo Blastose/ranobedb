@@ -8,7 +8,7 @@
 	import Alert from '$lib/components/alert/Alert.svelte';
 	import BackButton from '$lib/components/back-button/BackButton.svelte';
 	import type { RoleType } from '$lib/types/dbTypes';
-	import { PersonRoles } from '$lib/types/dbTypes';
+	import { PersonRolesArray } from '$lib/types/dbTypes';
 	import { page } from '$app/stores';
 
 	type Person = {
@@ -99,7 +99,7 @@
 				<h2 class="font-bold text-xl">Database Relations</h2>
 				<FormSearchList
 					searchId="search-people-edit-book"
-					dropdown={{ itemAttribute: 'role', dropdownValues: PersonRoles }}
+					dropdown={{ itemAttribute: 'role', dropdownValues: PersonRolesArray }}
 					fetchUrl="/api/person?name="
 					formItemName="person"
 					items={people}
