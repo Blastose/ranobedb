@@ -14,7 +14,7 @@ test.describe('edit series', () => {
 		await page.goto('/series/3/edit');
 
 		await page.locator('input#search-book-edit-series').fill('b');
-		await page.getByRole('button', { name: '朝比奈若葉と○○な彼氏', exact: true }).click();
+		await page.getByRole('button', { name: 'id1037: 朝比奈若葉と○○な彼氏' }).click();
 		await page.locator('main form button[type="submit"]').click();
 		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
 
