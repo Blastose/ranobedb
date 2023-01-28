@@ -117,7 +117,7 @@ a.link:hover {
 .focus-outline:focus {
 	outline: 2px solid transparent;
 	outline-offset: 2px;
-	transition: box-shadow 0;
+	transition: box-shadow 0ms;
 	box-shadow: 0 0 0 2px var(--primary-600);
 }
 
