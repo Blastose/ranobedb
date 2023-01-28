@@ -88,17 +88,11 @@ export const actions = {
 					.executeTakeFirstOrThrow();
 
 				await trx.deleteFrom('part_of').where('part_of.series_id', '=', id).execute();
-
-				// Using a for let instead of forEach since catching any throws
-				// does not work properly in the callback to the forEach
-				for (let i = 0; i < parsedForm.data.booksInSeries.length; i++) {
-					await trx
-						.insertInto('part_of')
-						.values({
-							series_id: id,
-							book_id: parsedForm.data.booksInSeries[i].id
-						})
-						.execute();
+				const bookRelInsert = parsedForm.data.booksInSeries.map((item) => {
+					return { series_id: id, book_id: item.id };
+				});
+				if (bookRelInsert.length > 0) {
+					await trx.insertInto('part_of').values(bookRelInsert).execute();
 				}
 			});
 		} catch (e) {

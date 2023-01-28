@@ -97,18 +97,11 @@ export const actions = {
 					.executeTakeFirstOrThrow();
 
 				await trx.deleteFrom('publisher_rel').where('publisher_rel.id_parent', '=', id).execute();
-
-				// Using a for let instead of forEach since catching any throws
-				// does not work properly in the callback to the forEach
-				for (let i = 0; i < parsedForm.data.publisherRel.length; i++) {
-					await trx
-						.insertInto('publisher_rel')
-						.values({
-							id_parent: id,
-							id_child: parsedForm.data.publisherRel[i].id,
-							type: parsedForm.data.publisherRel[i].type
-						})
-						.execute();
+				const publisherRelInsert = parsedForm.data.publisherRel.map((item) => {
+					return { id_parent: id, id_child: item.id, type: item.type };
+				});
+				if (publisherRelInsert.length > 0) {
+					await trx.insertInto('publisher_rel').values(publisherRelInsert).execute();
 				}
 			});
 		} catch (e) {
