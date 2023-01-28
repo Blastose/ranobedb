@@ -100,13 +100,13 @@ export const actions = {
 
 				// Using a for let instead of forEach since catching any throws
 				// does not work properly in the callback to the forEach
-				for (let i = 0; i < parsedForm.data.publisher_rel.length; i++) {
+				for (let i = 0; i < parsedForm.data.publisherRel.length; i++) {
 					await trx
 						.insertInto('publisher_rel')
 						.values({
 							id_parent: id,
-							id_child: parsedForm.data.publisher_rel[i].id,
-							type: parsedForm.data.publisher_rel[i].type
+							id_child: parsedForm.data.publisherRel[i].id,
+							type: parsedForm.data.publisherRel[i].type
 						})
 						.execute();
 				}

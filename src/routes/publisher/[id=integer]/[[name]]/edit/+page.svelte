@@ -86,7 +86,7 @@
 					searchId="search-publisher-edit-publisher"
 					dropdown={{ itemAttribute: 'type', dropdownValues: PublisherRelTypeArray }}
 					fetchUrl="/api/publisher?name="
-					formItemName="publisher_rel"
+					formItemName="publisherRel"
 					items={publishers}
 					headerName="Publishers"
 					onSearchItemClick={addPublisherToArray}
