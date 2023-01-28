@@ -101,22 +101,16 @@ export const actions = {
 					.executeTakeFirstOrThrow();
 
 				await trx.deleteFrom('person_book_rel').where('book_id', '=', id).execute();
-
-				// Using a for let instead of forEach since catching any throws
-				// does not work properly in the callback to the forEach
-				for (let i = 0; i < parsedForm.data.person.length; i++) {
-					await trx
-						.insertInto('person_book_rel')
-						.values({
-							book_id: id,
-							person_id: parsedForm.data.person[i].id,
-							role: parsedForm.data.person[i].role
-						})
-						.execute();
+				const personRelInsert = parsedForm.data.person.map((item) => {
+					return { book_id: id, person_id: item.id, role: item.role };
+				});
+				if (personRelInsert.length > 0) {
+					await trx.insertInto('person_book_rel').values(personRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
+				console.log(e);
 				if (e.code === '23505' && e.table === 'person_book_rel') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to edit!' },

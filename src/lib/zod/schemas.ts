@@ -56,7 +56,7 @@ export const editPublisherSchema = zfd.formData({
 	name: zfd.text(z.string({ required_error: 'Name is required' })),
 	nameRomaji: z.string(),
 	description: z.string().max(1000, { message: 'Description must be less than 1000 characters' }),
-	publisher_rel: zfd.repeatable(
+	publisherRel: zfd.repeatable(
 		z.array(
 			zfd.json(
 				z.object({

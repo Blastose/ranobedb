@@ -1,6 +1,5 @@
 <script lang="ts">
 	import BookView from '$lib/components/book/BookView.svelte';
-	import Icon from '$lib/components/icon/Icon.svelte';
 	import Box from '$lib/components/box/Box.svelte';
 	import TopBottomLayout from '$lib/components/layout/TopBottomLayout.svelte';
 	import type { PageData } from './$types';
