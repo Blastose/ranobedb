@@ -31,7 +31,7 @@ export const load = (async ({ locals, url }) => {
 		.select(sql<string>`count(*) over()`.as('count'))
 		.select(['added_date', 'start_date', 'finish_date', 'label_name'])
 		.where('user.id', '=', session.userId)
-		.if(Boolean(labelFilter), (qb) => qb.where('reader_labels.label_name', '=', labelFilter))
+		.$if(Boolean(labelFilter), (qb) => qb.where('reader_labels.label_name', '=', labelFilter))
 		.orderBy('reads.finish_date')
 		.limit(limit)
 		.offset(limit * (page - 1))

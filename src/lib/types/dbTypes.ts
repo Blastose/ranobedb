@@ -1,4 +1,4 @@
-import type { ColumnType, RawBuilder } from 'kysely';
+import type { ColumnType } from 'kysely';
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 	? ColumnType<S, I | undefined, U>
@@ -6,9 +6,9 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 
 export type BigIntColumnType = ColumnType<bigint | number>;
 
-export type Timestamp = ColumnType<Date, Date | string | RawBuilder, Date | string | RawBuilder>;
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type DateString = ColumnType<string, Date | string | RawBuilder, Date | string | RawBuilder>;
+export type DateString = ColumnType<string, Date | string, Date | string>;
 
 export const BookFormatArray = ['digital', 'print'] as const;
 

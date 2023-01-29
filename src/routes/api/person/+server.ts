@@ -13,7 +13,7 @@ export const GET = (async ({ url }) => {
 		.select(['person_id as id', 'person_name as name', 'person_name_romaji as name_romaji'])
 		.where('person_name', 'ilike', name)
 		.orWhere('person_name_romaji', 'ilike', name)
-		.if(!isNaN(nameAsNumber), (qb) => qb.orWhere('person_id', '=', nameAsNumber))
+		.$if(!isNaN(nameAsNumber), (qb) => qb.orWhere('person_id', '=', nameAsNumber))
 		.limit(16)
 		.execute();
 
