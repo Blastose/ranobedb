@@ -13,7 +13,7 @@ export const GET = (async ({ url }) => {
 		.select(['id', 'title as name'])
 		.where('title', 'ilike', name)
 		.orWhere('title_romaji', 'ilike', name)
-		.if(!isNaN(nameAsNumber), (qb) => qb.orWhere('id', '=', nameAsNumber))
+		.$if(!isNaN(nameAsNumber), (qb) => qb.orWhere('id', '=', nameAsNumber))
 		.limit(16)
 		.orderBy('title_romaji')
 		.execute();
