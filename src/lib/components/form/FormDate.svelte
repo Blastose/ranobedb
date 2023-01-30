@@ -16,7 +16,8 @@
 		background-color: rgb(229 231 235);
 		padding: 0.25rem 0.5rem;
 	}
-	input {
+
+	:global(.dark) input {
 		background-color: var(--dark-500);
 	}
 </style>
