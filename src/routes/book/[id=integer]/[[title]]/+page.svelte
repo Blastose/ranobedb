@@ -42,7 +42,9 @@
 			<div class="main-container title-container">
 				<div />
 				<div class="titles">
-					<p class="font-bold text-xl md:text-2xl lg:text-3xl">{data.book.title}</p>
+					<p>
+						{data.book.title}
+					</p>
 				</div>
 			</div>
 		</div>
@@ -96,7 +98,7 @@
 		</div>
 	</div>
 
-	<div class="main-container">
+	<div class="main-container flex flex-col gap-4">
 		<div class="flex flex-col gap-2">
 			<p class="font-bold">Releases:</p>
 			{#each data.releases as release (release.id)}
@@ -106,7 +108,7 @@
 
 		<div class="flex flex-col gap-2">
 			<p class="font-bold">
-				Other Books in <a href="/series/{data.sameSeries[0].series_id}">Same Series:</a>
+				<a href="/series/{data.sameSeries[0].series_id}">Other Books in Same Series:</a>
 			</p>
 			<BookImageContainer
 				books={data.sameSeries.map((book) => {
@@ -131,7 +133,7 @@
 	}
 
 	.bg-image {
-		min-height: 10rem;
+		min-height: 8rem;
 		overflow: hidden;
 		background-repeat: no-repeat;
 		background-size: cover;
@@ -151,10 +153,11 @@
 	.title-container {
 		display: grid;
 		grid-template-areas: 'dummy-image title';
-		grid-template-columns: 110px 1fr;
+		grid-template-columns: 80px 1fr;
 		margin-top: 2rem;
 		padding-top: 0rem;
-		column-gap: 1rem;
+		padding-bottom: 0.2rem;
+		column-gap: 0.5rem;
 	}
 
 	.titles {
@@ -169,9 +172,9 @@
 		padding-bottom: 0rem;
 		position: relative;
 		display: grid;
-		column-gap: 1rem;
+		column-gap: 0.5rem;
 		row-gap: 0.75rem;
-		grid-template-columns: 110px 1fr;
+		grid-template-columns: 80px 1fr;
 		grid-template-rows: min-content 1fr;
 		transition-duration: 150ms;
 
@@ -204,10 +207,50 @@
 
 	.cover-image {
 		grid-area: img;
-		margin-top: -7.25rem;
+		margin-top: -4.5rem;
+	}
+
+	.titles > p {
+		font-size: 1rem;
+		line-height: 1.5rem;
+		font-weight: 700;
+	}
+
+	@media (min-width: 480px) {
+		.titles > p {
+			font-size: 1.125rem;
+			line-height: 1.75rem;
+		}
+
+		.cover-image {
+			margin-top: -7.25rem;
+		}
+
+		.bg-image {
+			min-height: 10rem;
+		}
+
+		.title-container {
+			grid-template-columns: 110px 1fr;
+			column-gap: 1rem;
+		}
+
+		.grid-container {
+			grid-template-columns: 110px 1fr;
+			column-gap: 1rem;
+		}
 	}
 
 	@media (min-width: 640px) {
+		.titles > p {
+			font-size: 1.25rem;
+			line-height: 1.75rem;
+		}
+
+		.title-container {
+			padding-bottom: 0.5rem;
+		}
+
 		.bg-image {
 			min-height: 14rem;
 		}
@@ -229,6 +272,11 @@
 	}
 
 	@media (min-width: 768px) {
+		.titles > p {
+			font-size: 1.875rem;
+			line-height: 2.25rem;
+		}
+
 		.bg-image {
 			min-height: 16rem;
 		}
@@ -243,6 +291,11 @@
 	}
 
 	@media (min-width: 1024px) {
+		.titles > p {
+			font-size: 1.875rem;
+			line-height: 2.25rem;
+		}
+
 		.bg-image {
 			min-height: 16rem;
 		}
