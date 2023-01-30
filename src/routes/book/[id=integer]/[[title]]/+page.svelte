@@ -32,70 +32,71 @@
 	<title>{data.book.title} - RanobeDB</title>
 </svelte:head>
 
-<main>
+<main class="layout-container">
 	<div
 		class="bg-image"
 		style="background-image: linear-gradient(rgba(27, 27, 27, 0.1), rgba(33, 34, 36, 0.9)), url({PUBLIC_IMAGE_URL}/{data
 			.book.cover_image_file_name}.jpg);"
 	>
-		<div class="blur-image" />
-	</div>
-	<div class="container book-container">
-		<div class="grid-container">
-			<img
-				class="image shadow-md"
-				src="{PUBLIC_IMAGE_URL}/{data.book.cover_image_file_name}.jpg"
-				alt=""
-				width="240"
-				height="340"
-			/>
-			{#if $user}
-				<button
-					class="add-button"
-					type="button"
-					on:click={() => {
-						setModalBook();
-						toast.set(null);
-					}}
-				>
-					{#if data.readingStatusResult.label_name}
-						{data.readingStatusResult.label_name}
-					{:else}
-						Add
-					{/if}
-				</button>
-			{:else}
-				<a class="add-button text-center" href={createRedirectUrl('login', $page.url)}>Add</a>
-			{/if}
-			<p class="title text-lg sm:text-xl md:text-3xl">
-				{data.book.title}
-			</p>
-			<div class="info">
-				<div class="flex flex-wrap gap-2">
-					{#each data.book.authors as author (author.id)}
-						<Box text={author.name} href={`/person/${author.id}`} icon={'pencil'} />
-					{/each}
-					{#each data.book.artists as artist (artist.id)}
-						<Box text={artist.name} href={`/person/${artist.id}`} icon={'palette'} />
-					{/each}
-					{#each data.book.publisher as publisher (publisher.id)}
-						<Box text={publisher.name} href={`/publisher/${publisher.id}`} icon={'homeCity'} />
-					{/each}
-					<Box text={data.book.release_date} href={null} icon={'calendarRange'} />
-					<Box text={String(data.book.volume)} href={null} icon={'bookOpenPage'} />
-					<Box
-						text={'Edit'}
-						href={`/book/${$page.params.id}/edit`}
-						icon={'pencil'}
-						preload={false}
-					/>
-				</div>
-				<div class="max-w-3xl markdown-text">
-					{@html data.book.description}
+		<div class="blur-image">
+			<div class="main-container title-container">
+				<div />
+				<div class="titles">
+					<p class="font-bold text-xl md:text-2xl lg:text-3xl">{data.book.title}</p>
 				</div>
 			</div>
 		</div>
+	</div>
 
+	<div class="main-container grid-container">
+		<img
+			class="cover-image shadow-md rounded-sm"
+			src="{PUBLIC_IMAGE_URL}/{data.book.cover_image_file_name}.jpg"
+			alt=""
+			width="240"
+			height="340"
+		/>
+		{#if $user}
+			<button
+				class="add-button"
+				type="button"
+				on:click={() => {
+					setModalBook();
+					toast.set(null);
+				}}
+			>
+				{#if data.readingStatusResult.label_name}
+					{data.readingStatusResult.label_name}
+				{:else}
+					Add
+				{/if}
+			</button>
+		{:else}
+			<a class="add-button text-center" href={createRedirectUrl('login', $page.url)}>Add</a>
+		{/if}
+
+		<div class="info">
+			<div class="flex flex-wrap gap-2">
+				{#each data.book.authors as author (author.id)}
+					<Box text={author.name} href={`/person/${author.id}`} icon={'pencil'} />
+				{/each}
+				{#each data.book.artists as artist (artist.id)}
+					<Box text={artist.name} href={`/person/${artist.id}`} icon={'palette'} />
+				{/each}
+				{#each data.book.publisher as publisher (publisher.id)}
+					<Box text={publisher.name} href={`/publisher/${publisher.id}`} icon={'homeCity'} />
+				{/each}
+				<Box text={data.book.release_date} href={null} icon={'calendarRange'} />
+				<Box text={String(data.book.volume)} href={null} icon={'bookOpenPage'} />
+				<Box text={'Edit'} href={`/book/${$page.params.id}/edit`} icon={'pencil'} preload={false} />
+			</div>
+			<div class="max-w-3xl markdown-text">
+				{@html data.book.description}
+			</div>
+		</div>
+	</div>
+
+	<div class="main-container">
 		<div class="flex flex-col gap-2">
 			<p class="font-bold">Releases:</p>
 			{#each data.releases as release (release.id)}
@@ -121,8 +122,16 @@
 </main>
 
 <style>
+	.layout-container {
+		display: grid;
+		grid-template-areas:
+			'highlight'
+			'content';
+		grid-template-rows: min-content 1fr;
+	}
+
 	.bg-image {
-		height: 12rem;
+		min-height: 10rem;
 		overflow: hidden;
 		background-repeat: no-repeat;
 		background-size: cover;
@@ -132,19 +141,55 @@
 	.blur-image {
 		height: 100%;
 		width: 100%;
-		backdrop-filter: blur(8px);
+		backdrop-filter: blur(10px);
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		color: white;
 	}
 
-	.image {
-		grid-area: img;
-		align-self: flex-end;
-		border-radius: 0.125rem;
+	.title-container {
+		display: grid;
+		grid-template-areas: 'dummy-image title';
+		grid-template-columns: 110px 1fr;
+		margin-top: 2rem;
+		padding-top: 0rem;
+		column-gap: 1rem;
+	}
+
+	.titles {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		max-width: 56rem;
+	}
+
+	.grid-container {
+		padding-top: 0.75rem;
+		padding-bottom: 0rem;
+		position: relative;
+		display: grid;
+		column-gap: 1rem;
+		row-gap: 0.75rem;
+		grid-template-columns: 110px 1fr;
+		grid-template-rows: min-content 1fr;
+		transition-duration: 150ms;
+
+		grid-template-areas:
+			'img add-button'
+			'info info';
+	}
+
+	.info {
+		display: flex;
+		flex-direction: column;
+		grid-area: info;
+		gap: 1rem;
 	}
 
 	.add-button {
-		grid-area: btn;
+		grid-area: add-button;
 		height: min-content;
-		margin-top: 0.5rem;
 		border-radius: 0.375rem;
 		background-color: var(--primary-500);
 		color: white;
@@ -157,75 +202,57 @@
 		background-color: var(--primary-700);
 	}
 
-	.book-container {
-		padding: 0rem 2rem;
-		margin-left: auto;
-		margin-right: auto;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		transition-duration: 150ms;
-	}
-
-	.grid-container {
-		position: relative;
-		display: grid;
-		column-gap: 1rem;
-		grid-template-columns: 110px 1fr;
-		grid-template-rows: 8rem min-content 1fr;
-		margin-top: -8rem;
-		transition-duration: 150ms;
-
-		grid-template-areas:
-			'img title'
-			'img btn'
-			'info info';
-	}
-
-	.info {
-		display: flex;
-		flex-direction: column;
-		grid-area: info;
-		gap: 1rem;
-		margin-top: 0.75rem;
-	}
-
-	.title {
-		grid-area: title;
-		align-self: flex-end;
-		max-width: 56rem;
-		margin-bottom: 0.5rem;
-		color: white;
-		font-weight: bold;
+	.cover-image {
+		grid-area: img;
+		margin-top: -7.25rem;
 	}
 
 	@media (min-width: 640px) {
 		.bg-image {
-			height: 14rem;
+			min-height: 14rem;
 		}
 
-		.title {
-			margin-bottom: 1rem;
+		.cover-image {
+			margin-top: -10rem;
+		}
+
+		.title-container {
+			grid-template-columns: 170px 1fr;
 		}
 
 		.grid-container {
 			grid-template-columns: 170px 1fr;
-			grid-template-rows: 8rem min-content 1fr;
 			grid-template-areas:
-				'img title'
 				'img info'
-				'btn info';
+				'add-button info';
 		}
 	}
 
 	@media (min-width: 768px) {
 		.bg-image {
-			height: 16rem;
+			min-height: 16rem;
+		}
+
+		.title-container {
+			grid-template-columns: 190px 1fr;
+		}
+
+		.grid-container {
+			grid-template-columns: 190px 1fr;
+		}
+	}
+
+	@media (min-width: 1024px) {
+		.bg-image {
+			min-height: 16rem;
+		}
+
+		.title-container {
+			grid-template-columns: 220px 1fr;
 		}
 
 		.grid-container {
 			grid-template-columns: 220px 1fr;
-			grid-template-rows: 8rem min-content 1fr;
 		}
 	}
 </style>
