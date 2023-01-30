@@ -12,31 +12,36 @@ export type DateString = ColumnType<string, Date | string, Date | string>;
 
 export const BookFormatArray = ['digital', 'print'] as const;
 
-export type BookFormat = typeof BookFormatArray[number];
+export type BookFormat = (typeof BookFormatArray)[number];
 
 export type Language = 'en' | 'jp';
 
 export const PersonRolesArray = ['artist', 'author'] as const;
 
-export type RoleType = typeof PersonRolesArray[number];
+export type RoleType = (typeof PersonRolesArray)[number];
 
 export type UserRole = 'admin' | 'moderator' | 'user';
 
 export const PublisherRelTypeArray = ['imprint', 'label', 'subsidiary'] as const;
 
-export type PublisherRelType = typeof PublisherRelTypeArray[number];
+export type PublisherRelType = (typeof PublisherRelTypeArray)[number];
+
+export interface Key {
+	id: string;
+	user_id: string;
+	primary: boolean;
+	hashed_password: string | null;
+}
 
 export interface Session {
-	expires: BigIntColumnType;
 	id: string;
-	idle_expires: BigIntColumnType;
 	user_id: string;
+	active_expires: BigIntColumnType;
+	idle_expires: BigIntColumnType;
 }
 
 export interface User {
-	hashed_password: string | null;
 	id: Generated<string>;
-	provider_id: string;
 	username: string;
 	reader_id: Generated<number>;
 	role: Generated<UserRole>;
@@ -166,6 +171,7 @@ export interface BookReleaseRel {
 export interface DB {
 	session: Session;
 	user: User;
+	key: Key;
 	reads: Reads;
 	reader_labels: ReaderLabels;
 	person: Person;

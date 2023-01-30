@@ -2,6 +2,7 @@ import { auth } from '$lib/server/lucia';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { loginSchema } from '$lib/zod/schemas';
 import type { PageServerLoad } from './$types';
+import { LuciaError } from 'lucia-auth';
 
 export const load = (async ({ locals }) => {
 	const session = await locals.validate();
@@ -28,14 +29,14 @@ export const actions = {
 		const password = parsedForm.data.password;
 
 		try {
-			const user = await auth.authenticateUser('email', email, password);
-			const session = await auth.createSession(user.userId);
+			const key = await auth.validateKeyPassword('email', email, password);
+			const session = await auth.createSession(key.userId);
+
 			locals.setSession(session);
-		} catch (e) {
-			const error = e as Error;
+		} catch (error) {
 			if (
-				error.message === 'AUTH_INVALID_PROVIDER_ID' ||
-				error.message === 'AUTH_INVALID_PASSWORD'
+				error instanceof LuciaError &&
+				(error.message === 'AUTH_INVALID_KEY' || error.message === 'AUTH_INVALID_PASSWORD')
 			) {
 				return fail(400, {
 					email,

@@ -29,7 +29,8 @@ export const auth = lucia({
 			role: userData.role,
 			readerId: userData.reader_id
 		};
-	}
+	},
+	generateCustomUserId: () => null
 });
 
 export type Auth = typeof auth;
