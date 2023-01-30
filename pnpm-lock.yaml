@@ -1,8 +1,8 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@lucia-auth/adapter-kysely': ^0.3.1
-  '@lucia-auth/sveltekit': ^0.5.3
+  '@lucia-auth/adapter-kysely': ^0.4.0
+  '@lucia-auth/sveltekit': ^0.6.0
   '@playwright/test': ^1.30.0
   '@sveltejs/adapter-auto': ^1.0.2
   '@sveltejs/adapter-node': ^1.1.4
@@ -19,7 +19,7 @@ specifiers:
   eslint-plugin-svelte3: ^4.0.0
   isomorphic-dompurify: ^0.26.0
   kysely: ^0.23.4
-  lucia-auth: ^0.4.3
+  lucia-auth: ^0.5.0
   marked: ^4.2.12
   pg: ^8.9.0
   postcss: ^8.4.21
@@ -37,13 +37,13 @@ specifiers:
   zod-form-data: ^1.2.4
 
 dependencies:
-  '@lucia-auth/adapter-kysely': 0.3.1_lucia-auth@0.4.3
-  '@lucia-auth/sveltekit': 0.5.3_fec62evc6llxeegip47f74apjq
+  '@lucia-auth/adapter-kysely': 0.4.0_lucia-auth@0.5.0
+  '@lucia-auth/sveltekit': 0.6.0_fijhmujhdy34pkab2k6wm2jrs4
   '@types/pg': 8.6.6
   chart.js: 4.2.0
   isomorphic-dompurify: 0.26.0
   kysely: 0.23.4
-  lucia-auth: 0.4.3
+  lucia-auth: 0.5.0
   marked: 4.2.12
   pg: 8.9.0
   zod: 3.20.2
@@ -331,25 +331,25 @@ packages:
     resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
     dev: false
 
-  /@lucia-auth/adapter-kysely/0.3.1_lucia-auth@0.4.3:
-    resolution: {integrity: sha512-9s/ITQOtZBgca4fDOM40yH//GK3NUkCcOeLdipDOtAWLtCsk8xJzFeAm6ozxUpvmyrGVD8kOYnYQBra1sC95ag==}
+  /@lucia-auth/adapter-kysely/0.4.0_lucia-auth@0.5.0:
+    resolution: {integrity: sha512-ctkP8YneAAkZwAVjI7iBnjQFyp55YX0Kzos4tZO4ynlXDmjTcTy0Ld0IoPOPzz0DK5dQ/+bf0oJS/iak1wAhfA==}
     peerDependencies:
       lucia-auth: 0.4.x
     dependencies:
-      lucia-auth: 0.4.3
+      lucia-auth: 0.5.0
       pg: 8.9.0
     transitivePeerDependencies:
       - pg-native
     dev: false
 
-  /@lucia-auth/sveltekit/0.5.3_fec62evc6llxeegip47f74apjq:
-    resolution: {integrity: sha512-X6FtMBqNKuUzrqrR+LOcJVNdDcyZNlm7zSgYRl6s4Okab0HS05IAWwh3X5rVc6n3NPQDgbfR44FDc3ihN8oqGw==}
+  /@lucia-auth/sveltekit/0.6.0_fijhmujhdy34pkab2k6wm2jrs4:
+    resolution: {integrity: sha512-11M6iyf/yqa6czPEz+jxiiauRqrzz0ygVVLVAgmx+fISBAIhJiY5XWcGVqYrlG+YXXw7aaQsiHs7V5j/hLS79g==}
     peerDependencies:
-      lucia-auth: 0.3.x - 0.4.x
+      lucia-auth: 0.5.x
       svelte: 3.x
     dependencies:
       '@noble/hashes': 1.1.5
-      lucia-auth: 0.4.3
+      lucia-auth: 0.5.0
       svelte: 3.55.1
     dev: false
 
@@ -1790,8 +1790,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /lucia-auth/0.4.3:
-    resolution: {integrity: sha512-8rMIWivQ0BLpMjxzLh4GU4Dk83pRes+46QOnUB2GaF6mEDHmQkzUO8uWqBge57ke79aZq5T2NywQjtJJujly4g==}
+  /lucia-auth/0.5.0:
+    resolution: {integrity: sha512-5MggZumiekg4FjBAT30c1cJegcZc5FkDN/G+EWZ7NSAJ/wFe0AoxoRmTTjtOTtymaqBp/MvbA1WmwJ6pt1RaXw==}
     dependencies:
       '@noble/hashes': 1.1.5
       nanoid: 4.0.0

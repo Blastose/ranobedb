@@ -21,17 +21,27 @@ test.describe('auth', () => {
 		const user = await db
 			.insertInto('user')
 			.values({
-				username: 'username',
-				provider_id: 'email:fake@email.com',
-				hashed_password:
-					'Sy7AupawzmlZTlnB:4a2ffaf661cc8d9e4df423b19add3c84c241bffa23e9d7162fc4d6959248dc15b16f0aee40304481a137c031c2147a727fb8d8f5d380743bc7ffc0df9d201fdc'
+				username: 'username'
 			})
 			.returning('id')
 			.executeTakeFirstOrThrow();
+
+		await db
+			.insertInto('key')
+			.values({
+				id: 'email:fake@email.com',
+				primary: true,
+				user_id: user.id,
+				hashed_password:
+					'Sy7AupawzmlZTlnB:4a2ffaf661cc8d9e4df423b19add3c84c241bffa23e9d7162fc4d6959248dc15b16f0aee40304481a137c031c2147a727fb8d8f5d380743bc7ffc0df9d201fdc'
+			})
+			.executeTakeFirst();
 		id = user.id;
 	});
 	test.afterAll(async () => {
 		await db.deleteFrom('session').where('user_id', '=', id).execute();
+		await db.deleteFrom('key').where('id', '=', 'email:fake@email.com').execute();
+		await db.deleteFrom('key').where('id', '=', 'email:email@DelAfter.com').execute();
 		await db.deleteFrom('user').where('username', '=', 'username').execute();
 		await db.deleteFrom('user').where('username', '=', 'usernameDelAfter').execute();
 	});

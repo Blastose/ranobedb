@@ -1,13 +1,11 @@
 import type { RequestHandler } from './$types';
-import { dev } from '$app/environment';
 import { error, redirect } from '@sveltejs/kit';
+import { auth } from '$lib/server/lucia';
 
-export const POST = (async ({ fetch, cookies }) => {
-	const res = await fetch('/api/auth/logout', { method: 'POST' });
-	if (res.status === 200) {
-		cookies.set('auth_session', '', { httpOnly: true, maxAge: 0, secure: !dev, path: '/' });
-		throw redirect(303, '/login');
-	}
-	console.log(res.body);
-	throw error(500);
+export const POST = (async ({ locals }) => {
+	const session = await locals.validate();
+	if (!session) throw error(401);
+	await auth.invalidateSession(session.sessionId);
+	locals.setSession(null);
+	throw redirect(303, '/login');
 }) satisfies RequestHandler;
