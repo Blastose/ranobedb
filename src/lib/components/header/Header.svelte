@@ -18,7 +18,7 @@
 </script>
 
 <header class="header border-b border-[#4b4b4b15] dark:border-[#ffffff1a]">
-	<div class="flex justify-between gap-2 px-8 py-2 mx-auto duration-150 container">
+	<div class="main-container header-content duration-150">
 		<div class="flex items-center justify-center gap-2">
 			{#if !$sidebar}
 				<button
@@ -66,6 +66,14 @@
 	.header {
 		background-color: #fafafa9f;
 		backdrop-filter: blur(12px);
+	}
+
+	.header-content {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.5rem;
+		padding-top: 0.5rem;
+		padding-bottom: 0.5rem;
 	}
 
 	:global(.dark) .header {
