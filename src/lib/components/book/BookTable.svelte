@@ -13,7 +13,7 @@
 </script>
 
 <div class="grid grid-cols-1 overflow-x-auto">
-	<table class="whitespace-nowrap  overflow-hidden text-sm">
+	<table class="whitespace-nowrap overflow-hidden text-sm">
 		<thead>
 			<tr>
 				<th class="title-head">Title</th>
@@ -33,10 +33,10 @@
 				<tr>
 					<td class="title"><a href="/book/{book.id}">{book.title}</a></td>
 					{#if extended}
-						<td>{book.label_name ?? 'N/A'}</td>
+						<td>{book.label_name ?? '--'}</td>
 						<td>{convertDate(book.added_date)}</td>
-						<td>{book.start_date}</td>
-						<td>{book.finish_date}</td>
+						<td>{book.start_date ?? '--'}</td>
+						<td>{book.finish_date ?? '--'}</td>
 					{:else}
 						<td>{book.release_date}</td>
 					{/if}
@@ -47,6 +47,25 @@
 </div>
 
 <style>
+	table th {
+		background-color: var(--primary-200);
+		padding: 0.5rem;
+		font-size: 1rem;
+		line-height: 1.5rem;
+	}
+
+	:global(.dark) table th {
+		background-color: var(--dark-400);
+	}
+
+	table th:first-child {
+		border-radius: 5px 0 0 5px;
+	}
+
+	table th:last-child {
+		border-radius: 0 5px 5px 0;
+	}
+
 	td:not(.title) {
 		text-align: center;
 	}
@@ -57,5 +76,24 @@
 
 	td:not(.title) {
 		padding: 0 0.75rem;
+	}
+
+	td {
+		padding: 0.75rem 0.5rem;
+		border-bottom-width: 1px;
+		border-color: var(--primary-400);
+	}
+
+	tbody > tr:hover {
+		background-color: var(--primary-100);
+		transition-duration: 150ms;
+	}
+
+	:global(.dark) tbody > tr:hover {
+		background-color: var(--dark-500);
+	}
+
+	:global(.dark) td {
+		border-color: var(--dark-400);
 	}
 </style>
