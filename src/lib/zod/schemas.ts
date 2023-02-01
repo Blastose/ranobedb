@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { PersonRolesArray, PublisherRelTypeArray, BookFormatArray } from '$lib/types/dbTypes';
+import {
+	PersonRolesArray,
+	PublisherRelTypeArray,
+	BookFormatArray,
+	ReadingListLabelArray
+} from '$lib/types/dbTypes';
 
 const ISODateRegex = /\d{4}-[01]\d-[0-3]\d/;
 
@@ -117,6 +122,13 @@ export const editReleaseSchema = zfd.formData({
 			)
 		)
 	)
+});
+
+export const userBookSchema = zfd.formData({
+	startDate: ISODate.optional().or(z.literal('')),
+	finishDate: ISODate.optional().or(z.literal('')),
+	label: z.enum(ReadingListLabelArray),
+	type: z.enum(['add', 'remove', 'update'])
 });
 
 export const joinErrors = (errors: string[] | undefined) => {

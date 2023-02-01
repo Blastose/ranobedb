@@ -18,6 +18,7 @@
 		{ label_name: 'On hold', label_id: 5 }
 	];
 
+	let loading = false;
 	let statusOption = status ?? 'Reading';
 </script>
 
@@ -31,11 +32,13 @@
 			method="POST"
 			action="/api/user/book/{book.id}"
 			use:enhance={() => {
+				loading = true;
 				return async ({ result }) => {
+					loading = false;
 					if (result.type === 'success') {
 						modalBook.set(null);
 						toast.set({
-							message: result.data?.message ?? 'Sucess',
+							message: result.data?.message ?? 'Success',
 							closeButton: false,
 							icon: 'checkCircle'
 						});
@@ -71,7 +74,9 @@
 
 			<div class="flex flex-col gap-2">
 				{#if status}
-					<button type="submit" name="type" value="update" class="button">Update</button>
+					<button type="submit" name="type" value="update" class="button" disabled={loading}
+						>Update</button
+					>
 					<button
 						on:click={async (e) => {
 							if (!confirm('Are you sure you want to remove this book from your reading list?')) {
@@ -82,11 +87,14 @@
 						name="type"
 						value="remove"
 						class="button remove-book"
+						disabled={loading}
 					>
 						Remove
 					</button>
 				{:else}
-					<button type="submit" name="type" value="add" class="button">Add</button>
+					<button type="submit" name="type" value="add" class="button" disabled={loading}
+						>Add</button
+					>
 				{/if}
 			</div>
 		</form>

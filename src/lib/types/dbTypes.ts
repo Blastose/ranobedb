@@ -26,6 +26,16 @@ export const PublisherRelTypeArray = ['imprint', 'label', 'subsidiary'] as const
 
 export type PublisherRelType = (typeof PublisherRelTypeArray)[number];
 
+export const ReadingListLabelArray = [
+	'Reading',
+	'Finished',
+	'Plan to read',
+	'Dropped',
+	'On hold'
+] as const;
+
+export type ReadingListLabelType = (typeof ReadingListLabelArray)[number];
+
 export interface Key {
 	id: string;
 	user_id: string;
