@@ -3,7 +3,6 @@ import { auth } from '$lib/server/lucia';
 import type { PageServerLoad, Actions } from './$types';
 import { signupSchema, joinErrors } from '$lib/zod/schemas';
 import pkg from 'pg';
-import { db } from '$lib/server/lucia';
 import { LuciaError } from 'lucia-auth';
 const { DatabaseError } = pkg;
 
@@ -48,10 +47,7 @@ export const actions = {
 				}
 			});
 		} catch (error) {
-			if (error instanceof LuciaError && error.message === 'AUTH_DUPLICATE_KEY') {
-				// The throw from creating a user with a duplicate username occurs before creating a key
-				// with the same provider id so we can safely delete the created user since it is unique
-				await db.deleteFrom('user').where('username', '=', username).execute();
+			if (error instanceof LuciaError && error.message === 'AUTH_DUPLICATE_KEY_ID') {
 				return fail(400, {
 					email,
 					username,
