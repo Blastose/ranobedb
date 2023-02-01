@@ -30,7 +30,7 @@ export const auth = lucia({
 			readerId: userData.reader_id
 		};
 	},
-	generateCustomUserId: () => null
+	generateCustomUserId: () => crypto.randomUUID()
 });
 
 export type Auth = typeof auth;

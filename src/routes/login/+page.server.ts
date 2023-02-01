@@ -36,7 +36,7 @@ export const actions = {
 		} catch (error) {
 			if (
 				error instanceof LuciaError &&
-				(error.message === 'AUTH_INVALID_KEY' || error.message === 'AUTH_INVALID_PASSWORD')
+				(error.message === 'AUTH_INVALID_KEY_ID' || error.message === 'AUTH_INVALID_PASSWORD')
 			) {
 				return fail(400, {
 					email,
