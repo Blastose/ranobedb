@@ -2,7 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@lucia-auth/adapter-kysely': ^0.5.0
-  '@lucia-auth/sveltekit': ^0.6.1
+  '@lucia-auth/sveltekit': ^0.6.2
   '@playwright/test': ^1.30.0
   '@sveltejs/adapter-auto': ^1.0.2
   '@sveltejs/adapter-node': ^1.1.4
@@ -38,7 +38,7 @@ specifiers:
 
 dependencies:
   '@lucia-auth/adapter-kysely': 0.5.0_lucia-auth@0.6.0
-  '@lucia-auth/sveltekit': 0.6.1_iyasqsbplmktfcni36hpxhd3zi
+  '@lucia-auth/sveltekit': 0.6.2_iyasqsbplmktfcni36hpxhd3zi
   '@types/pg': 8.6.6
   chart.js: 4.2.0
   isomorphic-dompurify: 0.26.0
@@ -342,8 +342,8 @@ packages:
       - pg-native
     dev: false
 
-  /@lucia-auth/sveltekit/0.6.1_iyasqsbplmktfcni36hpxhd3zi:
-    resolution: {integrity: sha512-uKMeM0IbdviGJo1zT/LvW+SBKhLY6dsQ7R7xmvw52p1Y0EGnsYpAANDs3CIm3nr4B2Kr0VGT+tYxJ5ZxzWxe3w==}
+  /@lucia-auth/sveltekit/0.6.2_iyasqsbplmktfcni36hpxhd3zi:
+    resolution: {integrity: sha512-+lOhgctcdVkPRYtJegTaEZYLFhPJOHFjdAm9cBFFjpkV6cNGuHSTxobfOn7yRy3pGVhzGFM91uOfYrJxmECOBA==}
     peerDependencies:
       lucia-auth: 0.5.x - 0.6.x
       svelte: 3.x
