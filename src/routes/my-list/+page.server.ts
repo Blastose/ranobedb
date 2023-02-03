@@ -1,7 +1,7 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db } from '$lib/server/lucia';
+import { db } from '$lib/server/db';
 import { sql } from 'kysely';
 import { getPaginationFromUrl } from '$lib/util/getPaginationFromUrl';
 

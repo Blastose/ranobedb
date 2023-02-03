@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/lucia';
+import { db } from '$lib/server/db';
 import { error } from '@sveltejs/kit';
 import { sql } from 'kysely';
 

@@ -1,7 +1,7 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db } from '$lib/server/lucia';
+import { db } from '$lib/server/db';
 import marked from '$lib/marked/marked';
 import DOMPurify from 'isomorphic-dompurify';
 import { sql } from 'kysely';

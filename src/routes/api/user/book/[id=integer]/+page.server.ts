@@ -1,5 +1,5 @@
 import { fail, type Actions } from '@sveltejs/kit';
-import { db } from '$lib/server/lucia';
+import { db } from '$lib/server/db';
 import { userBookSchema } from '$lib/zod/schemas';
 
 export const actions = {

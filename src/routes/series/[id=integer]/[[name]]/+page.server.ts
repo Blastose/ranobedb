@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/lucia';
+import { db } from '$lib/server/db';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
