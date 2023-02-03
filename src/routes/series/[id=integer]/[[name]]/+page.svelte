@@ -2,11 +2,11 @@
 	import Box from '$lib/components/box/Box.svelte';
 	import BookView from '$lib/components/book/BookView.svelte';
 	import TopBottomLayout from '$lib/components/layout/TopBottomLayout.svelte';
- 	import { page } from '$app/stores';
+	import { page } from '$app/stores';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	let bookCover = data.books[0]?.cover_image_file_name;
+	let bookCover = data.series.books[0]?.cover_image_file_name;
 </script>
 
 <svelte:head>
@@ -24,7 +24,10 @@
 		<div>
 			<p class="font-bold">About</p>
 			<p>Publication Status: Unknown</p>
-			<p>Latest Volume Release Date: {data.books[data.books.length - 1]?.release_date ?? 'N/A'}</p>
+			<p>
+				Latest Volume Release Date: {data.series.books[data.series.books.length - 1]
+					?.release_date ?? 'N/A'}
+			</p>
 		</div>
 
 		<div class="w-min">
@@ -33,7 +36,7 @@
 
 		<div>
 			<p class="font-bold">Books in series</p>
-			<BookView books={data.books} />
+			<BookView books={data.series.books} />
 		</div>
 	</svelte:fragment>
 </TopBottomLayout>
