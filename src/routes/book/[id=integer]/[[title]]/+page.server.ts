@@ -4,12 +4,11 @@ import { db } from '$lib/server/db';
 
 export const load = (async ({ params, locals }) => {
 	const id = Number(params.id);
-	const session = await locals.validate();
+	const { session, user } = await locals.validateUser();
 	let readingStatusPromise;
 	if (session) {
 		readingStatusPromise = db
-			.selectFrom('user')
-			.leftJoin('reads', 'user.reader_id', 'reads.reader_id')
+			.selectFrom('reads')
 			.leftJoin('book_info', 'book_info.id', 'reads.book_id')
 			.leftJoin('reader_labels', (join) =>
 				join
@@ -17,7 +16,7 @@ export const load = (async ({ params, locals }) => {
 					.onRef('reads.book_id', '=', 'reader_labels.book_id')
 			)
 			.select(['added_date', 'start_date', 'finish_date', 'label_name'])
-			.where('user.id', '=', session.userId)
+			.where('reads.reader_id', '=', user.readerId)
 			.where('book_info.id', '=', id)
 			.executeTakeFirst();
 	}
