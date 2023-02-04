@@ -92,26 +92,6 @@ export interface BookInfo {
 	artists: { id: number; name: string }[];
 }
 
-export interface BookRelease {
-	name: string;
-	id: number;
-	book_id: number;
-	lang: Language;
-	release_date: Date | null;
-	format: BookFormat;
-	isbn13: string | null;
-	publisher: string[];
-}
-
-export interface BookSameSeries {
-	series_id: number;
-	series_title: string;
-	book_id: number;
-	orig_book_id: number;
-	title: string;
-	cover_image_file_name: string | null;
-}
-
 export interface BookSeries {
 	id: Generated<number>;
 	title: string;
@@ -191,8 +171,6 @@ export interface DB {
 	publisher_release_rel: PublisherReleaseRel;
 	book: Book;
 	book_info: BookInfo;
-	book_release: BookRelease;
-	book_same_series: BookSameSeries;
 	book_series: BookSeries;
 	part_of: PartOf;
 	release: Release;
