@@ -23,15 +23,14 @@
 	{#if showLoadingSpinner}
 		<Icon class="animate-spin absolute" height="24" width="24" name="loading" />
 	{/if}
-	<span class="w-full">{text}</span>
+	<span>{text}</span>
 </button>
 
 <style>
 	.button {
-		width: 100%;
 		transition-duration: 150ms;
 		border-radius: 0.375rem;
-		padding: 0.25rem 2rem;
+		padding: 0.25rem 1rem;
 		color: white;
 		background-color: var(--primary-500);
 		gap: 1rem;
