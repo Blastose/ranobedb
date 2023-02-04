@@ -1,5 +1,5 @@
 import { DATABASE_URL } from '$env/static/private';
-import { Kysely, PostgresDialect, SelectQueryBuilder, sql } from 'kysely';
+import { Kysely, PostgresDialect, type SelectQueryBuilder, sql } from 'kysely';
 import pkg from 'pg';
 const { types, Pool } = pkg;
 import type { DB } from '$lib/types/dbTypes';
