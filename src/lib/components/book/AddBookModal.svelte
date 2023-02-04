@@ -5,6 +5,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import modalBook from '$lib/stores/modalBook';
 	import toast from '$lib/stores/toast';
+	import FormButtonLoad from '$lib/components/form/FormButtonLoad.svelte';
 
 	export let book: Pick<BookInfo, 'id' | 'title' | 'cover_image_file_name'>;
 	export let status: string | null;
@@ -18,7 +19,8 @@
 		{ label_name: 'On hold', label_id: 5 }
 	];
 
-	let loading = false;
+	let newLoadingValue: 'add' | 'update' | 'remove' | null = null;
+	let loading: 'add' | 'update' | 'remove' | null = null;
 	let statusOption = status ?? 'Reading';
 </script>
 
@@ -32,20 +34,20 @@
 			method="POST"
 			action="/api/user/book/{book.id}"
 			use:enhance={() => {
-				loading = true;
+				loading = newLoadingValue;
 				return async ({ result }) => {
-					loading = false;
 					if (result.type === 'success') {
+						await invalidateAll();
 						modalBook.set(null);
 						toast.set({
 							message: result.data?.message ?? 'Success',
 							closeButton: false,
 							icon: 'checkCircle'
 						});
-						invalidateAll();
 					} else {
 						toast.set({ message: 'An unknown error has occurred.', closeButton: false });
 					}
+					loading = null;
 				};
 			}}
 		>
@@ -74,27 +76,42 @@
 
 			<div class="flex flex-col gap-2">
 				{#if status}
-					<button type="submit" name="type" value="update" class="button" disabled={loading}
-						>Update</button
-					>
-					<button
-						on:click={async (e) => {
+					<FormButtonLoad
+						name="type"
+						text="Update"
+						value="update"
+						onClick={() => {
+							newLoadingValue = 'update';
+						}}
+						loading={Boolean(loading)}
+						showLoadingSpinner={loading === 'update'}
+					/>
+					<FormButtonLoad
+						name="type"
+						text="Remove"
+						value="remove"
+						altColor={true}
+						onClick={(e) => {
 							if (!confirm('Are you sure you want to remove this book from your reading list?')) {
 								e.preventDefault();
+							} else {
+								newLoadingValue = 'remove';
 							}
 						}}
-						type="submit"
-						name="type"
-						value="remove"
-						class="button remove-book"
-						disabled={loading}
-					>
-						Remove
-					</button>
+						loading={Boolean(loading)}
+						showLoadingSpinner={loading === 'remove'}
+					/>
 				{:else}
-					<button type="submit" name="type" value="add" class="button" disabled={loading}
-						>Add</button
-					>
+					<FormButtonLoad
+						name="type"
+						text="Add"
+						value="add"
+						onClick={() => {
+							newLoadingValue = 'add';
+						}}
+						loading={Boolean(loading)}
+						showLoadingSpinner={loading === 'add'}
+					/>
 				{/if}
 			</div>
 		</form>
@@ -123,35 +140,6 @@
 		background-color: rgb(226 232 240);
 		border-radius: 0.375rem;
 		padding: 0.5rem;
-	}
-
-	.button {
-		width: 100%;
-		transition-duration: 150ms;
-		border-radius: 0.375rem;
-		padding: 0.25rem 2rem;
-		color: white;
-		background-color: var(--primary-500);
-	}
-
-	.button:hover {
-		background-color: var(--primary-800);
-	}
-
-	.button.remove-book {
-		background-color: #8585a1;
-	}
-
-	.button.remove-book:hover {
-		background-color: #5e5e72;
-	}
-
-	:global(.dark) .button.remove-book {
-		background-color: #737387;
-	}
-
-	:global(.dark) .button.remove-book:hover {
-		background-color: #5e5e72;
 	}
 
 	:global(.dark) .input {
