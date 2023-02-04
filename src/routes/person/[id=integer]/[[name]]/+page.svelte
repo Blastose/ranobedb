@@ -37,6 +37,6 @@
 			</div>
 		</div>
 
-		<BookView books={data.books} />
+		<BookView books={data.person.books} />
 	</svelte:fragment>
 </TopBottomLayout>
