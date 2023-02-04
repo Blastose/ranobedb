@@ -35,8 +35,9 @@
 <main class="layout-container">
 	<div
 		class="bg-image"
-		style="background-image: linear-gradient(rgba(27, 27, 27, 0.1), rgba(33, 34, 36, 0.9)), url({PUBLIC_IMAGE_URL}/{data
-			.book.cover_image_file_name}.jpg);"
+		style={data.book.cover_image_file_name
+			? `background-image: linear-gradient(rgba(27, 27, 27, 0.1), rgba(33, 34, 36, 0.9)), url(${PUBLIC_IMAGE_URL}/${data.book.cover_image_file_name}.jpg);`
+			: 'background: linear-gradient(var(--primary-500), #2b2c3d);'}
 	>
 		<div class="blur-image">
 			<div class="main-container title-container">
@@ -88,37 +89,33 @@
 				{#each data.book.publisher as publisher (publisher.id)}
 					<Box text={publisher.name} href={`/publisher/${publisher.id}`} icon={'homeCity'} />
 				{/each}
-				<Box text={data.book.release_date} href={null} icon={'calendarRange'} />
+				<Box text={data.book.release_date ?? 'Unknown'} href={null} icon={'calendarRange'} />
 				<Box text={String(data.book.volume)} href={null} icon={'bookOpenPage'} />
 				<Box text={'Edit'} href={`/book/${$page.params.id}/edit`} icon={'pencil'} preload={false} />
 			</div>
 			<div class="max-w-3xl markdown-text">
-				{@html data.book.description}
+				{@html data.book.description ?? ''}
 			</div>
 		</div>
 	</div>
 
 	<div class="main-container flex flex-col gap-4">
-		<div class="flex flex-col gap-2">
-			<p class="font-bold">Releases:</p>
-			{#each data.releases as release (release.id)}
-				<ReleaseCard bookRelease={release} />
-			{/each}
-		</div>
+		{#if data.book.releases.length > 0}
+			<div class="flex flex-col gap-2">
+				<p class="font-bold">Releases:</p>
+				{#each data.book.releases as release (release.id)}
+					<ReleaseCard {release} />
+				{/each}
+			</div>
+		{/if}
 
 		<div class="flex flex-col gap-2">
-			<p class="font-bold">
-				<a href="/series/{data.sameSeries[0].series_id}">Other Books in Same Series:</a>
-			</p>
-			<BookImageContainer
-				books={data.sameSeries.map((book) => {
-					return {
-						id: book.book_id,
-						title: book.title,
-						cover_image_file_name: book.cover_image_file_name
-					};
-				})}
-			/>
+			{#if data.book.same_series.length > 0}
+				<p class="font-bold">
+					<a href="/series/{data.book.same_series[0]?.series_id}">Other Books in Same Series:</a>
+				</p>
+				<BookImageContainer books={data.book.same_series} />
+			{/if}
 		</div>
 	</div>
 </main>

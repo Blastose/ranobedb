@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/db';
+import { db, jsonb_agg } from '$lib/server/db';
 
 export const load = (async ({ params, locals }) => {
 	const id = Number(params.id);
@@ -23,28 +23,33 @@ export const load = (async ({ params, locals }) => {
 
 	const bookPromise = db
 		.selectFrom('book_info')
-		.selectAll()
+		.selectAll('book_info')
+		.select([
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('part_of as p1')
+						.innerJoin('part_of as p2', 'p1.series_id', 'p2.series_id')
+						.innerJoin('book_series', 'p1.series_id', 'book_series.id')
+						.innerJoin('book_info as b_sub', 'b_sub.id', 'p1.book_id')
+						.select(['p1.series_id', 'book_series.title as series_title'])
+						.select(['b_sub.id', 'b_sub.title', 'b_sub.cover_image_file_name'])
+						.whereRef('p2.book_id', '=', 'book_info.id')
+						.orderBy('b_sub.release_date')
+				).as('same_series'),
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('release')
+						.innerJoin('book_release_rel', 'book_release_rel.release_id', 'release.id')
+						.selectAll('release')
+						.whereRef('book_release_rel.book_id', '=', 'book_info.id')
+				).as('releases')
+		])
 		.where('id', '=', id)
 		.executeTakeFirst();
 
-	const releasesPromise = db
-		.selectFrom('book_release')
-		.selectAll()
-		.where('book_id', '=', id)
-		.execute();
-
-	const sameSeriesPromise = db
-		.selectFrom('book_same_series')
-		.selectAll()
-		.where('orig_book_id', '=', id)
-		.execute();
-
-	const [book, releases, sameSeries, readingStatus] = await Promise.all([
-		bookPromise,
-		releasesPromise,
-		sameSeriesPromise,
-		readingStatusPromise
-	]);
+	const [book, readingStatus] = await Promise.all([bookPromise, readingStatusPromise]);
 
 	if (!book) {
 		throw error(404);
@@ -62,5 +67,5 @@ export const load = (async ({ params, locals }) => {
 		readingStatusResult = readingStatus;
 	}
 
-	return { book, releases, sameSeries, readingStatusResult };
+	return { book, readingStatusResult };
 }) satisfies PageServerLoad;
