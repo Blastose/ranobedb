@@ -1,12 +1,10 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db } from '$lib/server/db';
+import { db, jsonb_agg } from '$lib/server/db';
 import marked from '$lib/marked/marked';
 import DOMPurify from 'isomorphic-dompurify';
 import { editPublisherSchema, joinErrors } from '$lib/zod/schemas';
-import { sql } from 'kysely';
-import type { PublisherRelType } from '$lib/types/dbTypes';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 
@@ -20,23 +18,17 @@ export const load = (async ({ locals, url, params }) => {
 	const publisher = await db
 		.selectFrom('publisher')
 		.selectAll('publisher')
-		.select(
-			sql<{ id: number; name: string; type: PublisherRelType }[]>`
-			COALESCE(
-				JSONB_AGG(
-					JSONB_BUILD_OBJECT(
-						'id', publisher_child.id,
-						'name', publisher_child.name,
-						'type', publisher_rel.type
-					)
-				) FILTER (WHERE publisher_child.id IS NOT NULL),
-				'[]'::JSONB
-			)
-		`.as('publisher_rels')
-		)
-		.leftJoin('publisher_rel', 'publisher_rel.id_parent', 'publisher.id')
-		.leftJoin('publisher as publisher_child', 'publisher_rel.id_child', 'publisher_child.id')
-		.groupBy('publisher.id')
+		.select([
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('publisher as publisher_child')
+						.innerJoin('publisher_rel', 'publisher_rel.id_child', 'publisher_child.id')
+						.select(['publisher_child.id', 'publisher_child.name', 'publisher_rel.type'])
+						.distinct()
+						.whereRef('publisher_rel.id_parent', '=', 'publisher.id')
+				).as('publisher_rels')
+		])
 		.where('publisher.id', '=', id)
 		.executeTakeFirst();
 

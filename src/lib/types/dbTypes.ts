@@ -148,7 +148,7 @@ export interface Publisher {
 export interface PublisherRel {
 	id_parent: number;
 	id_child: number;
-	type: PublisherRelType | null;
+	type: PublisherRelType;
 }
 
 export interface PublisherReleaseRel {
