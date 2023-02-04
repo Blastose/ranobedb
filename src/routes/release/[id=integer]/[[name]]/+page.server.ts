@@ -1,40 +1,41 @@
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/lucia';
+import { db, jsonb_agg } from '$lib/server/db';
 import { error } from '@sveltejs/kit';
-import { sql } from 'kysely';
-
-type publisher = { id: number; name: string }[];
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
-	const releasePromise = db
+
+	const release = await db
 		.selectFrom('release')
-		.leftJoin('publisher_release_rel', 'publisher_release_rel.release_id', 'release.id')
-		.leftJoin('publisher', 'publisher.id', 'publisher_release_rel.publisher_id')
 		.selectAll('release')
 		.select([
-			sql<publisher>`
-      jsonb_agg(DISTINCT jsonb_build_object(
-        'name', publisher.name,
-        'id', publisher.id))`.as('publishers')
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('publisher')
+						.innerJoin(
+							'publisher_release_rel',
+							'publisher_release_rel.publisher_id',
+							'publisher.id'
+						)
+						.select(['publisher.id', 'publisher.name'])
+						.whereRef('publisher_release_rel.release_id', '=', 'release.id')
+				).as('publishers'),
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('book_info')
+						.innerJoin('book_release_rel', 'book_release_rel.book_id', 'book_info.id')
+						.selectAll('book_info')
+						.whereRef('book_release_rel.release_id', '=', 'release.id')
+				).as('books')
 		])
-		.groupBy('release.id')
-		.orderBy('release.release_date')
 		.where('release.id', '=', id)
 		.executeTakeFirst();
-
-	const booksPromise = db
-		.selectFrom('book_info')
-		.innerJoin('book_release_rel', 'book_info.id', 'book_release_rel.book_id')
-		.where('book_release_rel.release_id', '=', id)
-		.selectAll('book_info')
-		.execute();
-
-	const [release, books] = await Promise.all([releasePromise, booksPromise]);
 
 	if (!release) {
 		throw error(404);
 	}
 
-	return { release, books };
+	return { release };
 }) satisfies PageServerLoad;

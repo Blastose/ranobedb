@@ -72,7 +72,7 @@ export interface Book {
 	cover_image_file_name: string | null;
 	description: string | null;
 	description_markdown: string | null;
-	id: number;
+	id: Generated<number>;
 	release_date: DateString | null;
 	title: string;
 	title_romaji: string | null;
@@ -113,7 +113,7 @@ export interface BookSameSeries {
 }
 
 export interface BookSeries {
-	id: number;
+	id: Generated<number>;
 	title: string;
 	title_romaji: string | null;
 }
@@ -148,7 +148,7 @@ export interface Publisher {
 export interface PublisherRel {
 	id_parent: number;
 	id_child: number;
-	type: PublisherRelType | null;
+	type: PublisherRelType;
 }
 
 export interface PublisherReleaseRel {

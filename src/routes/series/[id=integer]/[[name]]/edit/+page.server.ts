@@ -1,9 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db } from '$lib/server/lucia';
+import { db, jsonb_agg } from '$lib/server/db';
 import { editSeriesSchema, joinErrors } from '$lib/zod/schemas';
-import { sql } from 'kysely';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 
@@ -17,23 +16,17 @@ export const load = (async ({ locals, url, params }) => {
 	const series = await db
 		.selectFrom('book_series')
 		.selectAll('book_series')
-		.select(
-			sql<{ id: number; name: string }[]>`
-			COALESCE(
-				JSONB_AGG(
-					JSONB_BUILD_OBJECT(
-						'id', book_info.id,
-						'name', book_info.title
-					) ORDER BY book_info.release_date
-				) FILTER (WHERE book_info.id IS NOT NULL),
-				'[]'::JSONB
-			)
-		`.as('books_in_series')
+		.select((qb) =>
+			jsonb_agg(
+				qb
+					.selectFrom('book_info')
+					.innerJoin('part_of', 'part_of.book_id', 'book_info.id')
+					.select(['book_info.id', 'book_info.title as name'])
+					.whereRef('part_of.series_id', '=', 'book_series.id')
+					.orderBy('book_info.release_date')
+			).as('books')
 		)
-		.leftJoin('part_of', 'part_of.series_id', 'book_series.id')
-		.leftJoin('book_info', 'book_info.id', 'part_of.book_id')
 		.where('book_series.id', '=', id)
-		.groupBy('book_series.id')
 		.executeTakeFirst();
 
 	if (!series) {

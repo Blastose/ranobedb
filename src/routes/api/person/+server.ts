@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/lucia';
+import { db } from '$lib/server/db';
 import { json } from '@sveltejs/kit';
 import { addCharacterBetweenString } from '$lib/util/addCharacterBetweenString';
 

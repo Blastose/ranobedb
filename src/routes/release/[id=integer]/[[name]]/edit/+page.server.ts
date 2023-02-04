@@ -1,9 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db } from '$lib/server/lucia';
+import { db, jsonb_agg } from '$lib/server/db';
 import { editReleaseSchema, joinErrors } from '$lib/zod/schemas';
-import { sql } from 'kysely';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 
@@ -14,38 +13,32 @@ export const load = (async ({ locals, url, params }) => {
 	}
 
 	const id = Number(params.id);
+
 	const release = await db
 		.selectFrom('release')
-		.leftJoin('publisher_release_rel', 'publisher_release_rel.release_id', 'release.id')
-		.leftJoin('publisher', 'publisher.id', 'publisher_release_rel.publisher_id')
-		.leftJoin('book_release_rel', 'book_release_rel.release_id', 'release.id')
-		.leftJoin('book', 'book.id', 'book_release_rel.book_id')
 		.selectAll('release')
-		.select(
-			sql<{ id: number; name: string }[]>`
-			COALESCE(
-				JSONB_AGG(
-					DISTINCT JSONB_BUILD_OBJECT(			
-						'id', publisher.id,	
-						'name', publisher.name
-					)
-				) FILTER (WHERE publisher.id IS NOT NULL),
-				'[]'::JSONB
-			)`.as('publishers')
-		)
-		.select(
-			sql<{ id: number; name: string }[]>`
-			COALESCE(
-				JSONB_AGG(
-					DISTINCT JSONB_BUILD_OBJECT(
-						'id', book.id,
-						'name', book.title
-					)
-				) FILTER (WHERE book.id IS NOT NULL),
-				'[]'::JSONB
-			)`.as('books')
-		)
-		.groupBy('release.id')
+		.select([
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('publisher')
+						.innerJoin(
+							'publisher_release_rel',
+							'publisher_release_rel.publisher_id',
+							'publisher.id'
+						)
+						.select(['publisher.id', 'publisher.name'])
+						.whereRef('publisher_release_rel.release_id', '=', 'release.id')
+				).as('publishers'),
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('book')
+						.innerJoin('book_release_rel', 'book_release_rel.book_id', 'book.id')
+						.select(['book.id', 'book.title as name'])
+						.whereRef('book_release_rel.release_id', '=', 'release.id')
+				).as('books')
+		])
 		.where('release.id', '=', id)
 		.executeTakeFirst();
 

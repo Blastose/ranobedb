@@ -1,34 +1,29 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/lucia';
-import { sql } from 'kysely';
+import { db, jsonb_agg } from '$lib/server/db';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
-	const personPromise = await db
+
+	const person = await db
 		.selectFrom('person')
-		.selectAll()
+		.selectAll('person')
+		.select([
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('book_info')
+						.selectAll('book_info')
+						.innerJoin('person_book_rel', 'person_book_rel.book_id', 'book_info.id')
+						.whereRef('person_book_rel.person_id', '=', 'person.person_id')
+				).as('books')
+		])
 		.where('person_id', '=', id)
 		.executeTakeFirst();
-
-	const booksPromise = await db
-		.selectFrom('book_info')
-		.selectAll()
-		.where(
-			sql`
-      book_info.artists @> '[{"id":${sql.literal(id)}}]'
-      OR 
-      book_info.authors @> '[{"id":${sql.literal(id)}}]'
-    `
-		)
-		.orderBy('title_romaji')
-		.execute();
-
-	const [person, books] = await Promise.all([personPromise, booksPromise]);
 
 	if (!person) {
 		throw error(500);
 	}
 
-	return { person, books };
+	return { person };
 }) satisfies PageServerLoad;

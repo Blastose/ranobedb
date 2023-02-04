@@ -13,7 +13,7 @@
 	let loading: boolean;
 	let title = data.series.title ?? '';
 	let titleRomaji = data.series.title_romaji ?? '';
-	let books = data.series.books_in_series;
+	let books = data.series.books;
 
 	const addBookToArray = (book: { id: number; name: string }) => {
 		if (books.map((b) => b.id).indexOf(book.id) !== -1) return;

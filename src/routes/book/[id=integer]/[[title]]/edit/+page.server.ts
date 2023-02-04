@@ -1,10 +1,9 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db } from '$lib/server/lucia';
+import { db, jsonb_agg } from '$lib/server/db';
 import marked from '$lib/marked/marked';
 import DOMPurify from 'isomorphic-dompurify';
-import { sql } from 'kysely';
 import { editBookSchema, joinErrors } from '$lib/zod/schemas';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
@@ -19,22 +18,21 @@ export const load = (async ({ locals, url, params }) => {
 	const book = await db
 		.selectFrom('book')
 		.selectAll('book')
-		.select(
-			sql<{ id: number; name: string; role: string }[]>`
-			COALESCE(
-				JSONB_AGG(
-					DISTINCT JSONB_BUILD_OBJECT(
-						'name', person.person_name,
-						'id', person.person_id,
-						'role', person_book_rel.role
-					)
-				) FILTER (WHERE person.person_name IS NOT NULL),
-				'[]'::JSONB
-			)
-		`.as('people')
-		)
-		.leftJoin('person_book_rel', 'book.id', 'person_book_rel.book_id')
-		.leftJoin('person', 'person_book_rel.person_id', 'person.person_id')
+		.select([
+			(qb) =>
+				jsonb_agg(
+					qb
+						.selectFrom('person')
+						.leftJoin('person_book_rel', 'person_book_rel.person_id', 'person.person_id')
+						.select([
+							'person.person_id as id',
+							'person.person_name as name',
+							'person_book_rel.role'
+						])
+						.select('person_book_rel.role')
+						.whereRef('person_book_rel.book_id', '=', 'book.id')
+				).as('people')
+		])
 		.where('id', '=', id)
 		.groupBy('book.id')
 		.executeTakeFirst();

@@ -6,7 +6,7 @@
 	import TopBottomLayout from '$lib/components/layout/TopBottomLayout.svelte';
 
 	export let data: PageData;
-	let bookCover = data.books[0]?.cover_image_file_name;
+	let bookCover = data.release.books[0]?.cover_image_file_name;
 </script>
 
 <svelte:head>
@@ -48,7 +48,7 @@
 
 		<div>
 			<p class="font-bold">Books that this release belongs to</p>
-			<BookView books={data.books} />
+			<BookView books={data.release.books} />
 		</div>
 	</svelte:fragment>
 </TopBottomLayout>

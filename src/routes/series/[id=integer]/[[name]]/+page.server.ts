@@ -1,30 +1,29 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/lucia';
+import { db, jsonb_agg } from '$lib/server/db';
 
 export const load = (async ({ params }) => {
 	const id = Number(params.id);
 
-	const seriesPromise = db
+	const series = await db
 		.selectFrom('book_series')
-		.selectAll()
+		.selectAll('book_series')
+		.select((qb) =>
+			jsonb_agg(
+				qb
+					.selectFrom('book_info')
+					.innerJoin('part_of', 'part_of.book_id', 'book_info.id')
+					.selectAll('book_info')
+					.whereRef('part_of.series_id', '=', 'book_series.id')
+					.orderBy('book_info.release_date')
+			).as('books')
+		)
 		.where('book_series.id', '=', id)
 		.executeTakeFirst();
 
-	const booksPromise = db
-		.selectFrom('book_series')
-		.innerJoin('part_of', 'book_series.id', 'part_of.series_id')
-		.innerJoin('book_info', 'book_info.id', 'part_of.book_id')
-		.where('series_id', '=', id)
-		.selectAll('book_info')
-		.orderBy('book_info.release_date')
-		.execute();
-
-	const [series, books] = await Promise.all([seriesPromise, booksPromise]);
-
-	if (!books || !series) {
+	if (!series) {
 		throw error(500);
 	}
 
-	return { series, books };
+	return { series };
 }) satisfies PageServerLoad;

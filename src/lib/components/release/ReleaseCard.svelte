@@ -1,32 +1,33 @@
 <script lang="ts">
-	import type { BookRelease } from '$lib/types/dbTypes';
+	import type { Release } from '$lib/types/dbTypes';
+	import type { Selectable } from 'kysely';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let bookRelease: BookRelease;
+	export let release: Selectable<Release>;
 </script>
 
 <div class="release-container shadow-sm">
-	<a href="/release/{bookRelease.id}" class="w-fit">
+	<a href="/release/{release.id}" class="w-fit">
 		<p title="Title" class="font-semibold">
-			{bookRelease.name}
+			{release.name}
 		</p>
 	</a>
 	<div class="grid-layout">
 		<div class="card-item">
 			<Icon height="24" width="24" name="language" />
-			<p title="Language">{bookRelease.lang}</p>
+			<p title="Language">{release.lang}</p>
 		</div>
 		<div class="card-item">
 			<Icon height="24" width="24" name="calendarRange" />
-			<p title="Release date">{bookRelease.release_date}</p>
+			<p title="Release date">{release.release_date}</p>
 		</div>
 		<div class="card-item">
 			<Icon height="24" width="24" name="bookOpen" />
-			<p title="Format">{bookRelease.format}</p>
+			<p title="Format">{release.format}</p>
 		</div>
 		<div class="card-item">
 			<Icon height="24" width="24" name="barcode" />
-			<p title="ISBN13">{bookRelease.isbn13 ?? 'N/A'}</p>
+			<p title="ISBN13">{release.isbn13 ?? 'N/A'}</p>
 		</div>
 	</div>
 </div>
