@@ -34,6 +34,7 @@ export const load = (async ({ params, locals }) => {
 						.innerJoin('book_info as b_sub', 'b_sub.id', 'p1.book_id')
 						.select(['p1.series_id', 'book_series.title as series_title'])
 						.select(['b_sub.id', 'b_sub.title', 'b_sub.cover_image_file_name'])
+						.distinctOn(['b_sub.id', 'b_sub.release_date'])
 						.whereRef('p2.book_id', '=', 'book_info.id')
 						.orderBy('b_sub.release_date')
 				).as('same_series'),
