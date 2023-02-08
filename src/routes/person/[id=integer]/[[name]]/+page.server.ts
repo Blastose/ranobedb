@@ -16,6 +16,7 @@ export const load = (async ({ params }) => {
 						.selectAll('book_info')
 						.innerJoin('person_book_rel', 'person_book_rel.book_id', 'book_info.id')
 						.whereRef('person_book_rel.person_id', '=', 'person.person_id')
+						.distinct()
 				).as('books')
 		])
 		.where('person_id', '=', id)
