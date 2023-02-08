@@ -31,7 +31,7 @@
 		</div>
 		<div class="description-container">
 			<div class="markdown-text description">
-				{@html book.description}
+				{@html book.description ?? ''}
 			</div>
 		</div>
 	</div>
