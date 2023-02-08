@@ -39,7 +39,7 @@
 	</div>
 
 	{#if form?.success && !loading}
-		<Alert type="success">Edited entry successfully!</Alert>
+		<Alert type="success">Edited publisher successfully!</Alert>
 	{:else if form?.error && !loading}
 		<Alert type="error">{form?.error.message ?? 'An error has occurred.'}</Alert>
 	{/if}

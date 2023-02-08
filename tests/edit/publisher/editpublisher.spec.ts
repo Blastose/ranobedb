@@ -7,7 +7,7 @@ test.describe('edit publisher', () => {
 		await page.goto('/publisher/1/edit');
 		await page.locator('main form button[type="submit"]').click();
 
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited publisher successfully!');
 	});
 
 	test('User can add and remove publisher relations to publisher', async ({ page }) => {
@@ -17,7 +17,7 @@ test.describe('edit publisher', () => {
 		await page.getByRole('button', { name: 'MF文庫J' }).click();
 		await page.locator('select#type13label').selectOption({ label: 'subsidiary' });
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited publisher successfully!');
 
 		await page.goto('/publisher/52');
 		await expect(page.getByText('MF文庫J')).toBeVisible();
@@ -25,7 +25,7 @@ test.describe('edit publisher', () => {
 		await page.goto('/publisher/52/edit');
 		await page.locator('label[for="type13subsidiary"] ~ button.remove-button').click();
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited publisher successfully!');
 
 		await page.goto('/publisher/52');
 		await expect(page.getByText('MF文庫J')).not.toBeVisible();

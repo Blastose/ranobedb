@@ -7,7 +7,7 @@ test.describe('edit series', () => {
 		await page.goto('/series/3/edit');
 		await page.locator('main form button[type="submit"]').click();
 
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited series successfully!');
 	});
 
 	test('User can add and remove book relations to series', async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe('edit series', () => {
 		await page.locator('input#search-book-edit-series').fill('b');
 		await page.getByRole('button', { name: 'id1037: 朝比奈若葉と○○な彼氏' }).click();
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited series successfully!');
 
 		await page.goto('/series/3');
 		await expect(page.getByText('朝比奈若葉と○○な彼氏')).toBeVisible();
@@ -26,7 +26,7 @@ test.describe('edit series', () => {
 		// Might be a better way by matching the string an finding the sibling button
 		await page.locator('div.list-item > p + input + button.remove-button').first().click();
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited series successfully!');
 
 		await page.goto('/series/3');
 		await expect(page.getByText('朝比奈若葉と○○な彼氏')).not.toBeVisible();

@@ -7,7 +7,7 @@ test.describe('edit book', () => {
 		await page.goto('/book/2/edit');
 		await page.locator('main form button[type="submit"]').click();
 
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited book successfully!');
 	});
 
 	test('User can add and remove people relations to book', async ({ page }) => {
@@ -17,7 +17,7 @@ test.describe('edit book', () => {
 		await page.getByRole('button', { name: '語部マサユキ' }).click();
 		await page.locator('select#role3002artist').selectOption({ label: 'author' });
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited book successfully!');
 
 		await page.goto('/book/5059');
 		await expect(page.getByText('語部マサユキ')).toBeVisible();
@@ -25,7 +25,7 @@ test.describe('edit book', () => {
 		await page.goto('/book/5059/edit');
 		await page.locator('label[for="role3002author"] ~ button.remove-button').click();
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited book successfully!');
 
 		await page.goto('/book/5059');
 		await expect(page.getByText('語部マサユキ')).not.toBeVisible();
