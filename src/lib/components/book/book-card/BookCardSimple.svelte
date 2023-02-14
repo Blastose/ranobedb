@@ -38,13 +38,13 @@
 			<div class="icon-text">
 				<Icon height="20" width="20" name="bookOpenPage" />
 				<p>
-					{book.volume}
+					{book.volume ?? 'Unknown'}
 				</p>
 			</div>
 			<div class="icon-text justify-end">
 				<Icon height="20" width="20" name="calendarRange" />
 				<p>
-					{book.release_date}
+					{book.release_date ?? 'Unknown'}
 				</p>
 			</div>
 		</div>

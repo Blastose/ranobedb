@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData, PageData } from './$types';
+	import type { ActionData } from './$types';
 	import Form from '$lib/components/form/Form.svelte';
 	import FormInput from '$lib/components/form/FormInput.svelte';
 	import FormMarkdownEditor from '$lib/components/form/FormMarkdownEditor.svelte';
@@ -9,7 +9,6 @@
 	import BackButton from '$lib/components/back-button/BackButton.svelte';
 	import type { RoleType } from '$lib/types/dbTypes';
 	import { PersonRolesArray } from '$lib/types/dbTypes';
-	import { page } from '$app/stores';
 
 	type Person = {
 		id: number;
@@ -18,13 +17,12 @@
 	};
 
 	export let form: ActionData;
-	export let data: PageData;
 	let loading: boolean;
-	let title = data.book.title ?? '';
-	let titleRomaji = data.book.title_romaji ?? '';
-	let description = data.book.description_markdown ?? '';
-	let volume = data.book.volume;
-	let people = data.book.people;
+	let title = '';
+	let titleRomaji = '';
+	let description = '';
+	let volume = '';
+	let people: Person[] = [];
 
 	const addPersonToArray = (person: Omit<Person, 'role'>) => {
 		people.push({ ...person, role: 'artist' });
@@ -33,26 +31,31 @@
 </script>
 
 <svelte:head>
-	<title>Edit {data.book.title} - RanobeDB</title>
+	<title>Add Book - RanobeDB</title>
 </svelte:head>
 
 <main class="main-container flex flex-col gap-4">
 	<div class="flex items-center gap-2">
 		<BackButton />
-		<h1 class="font-bold text-2xl">Edit</h1>
+		<h1 class="font-bold text-2xl">Add book</h1>
 	</div>
 
 	{#if form?.success && !loading}
-		<Alert type="success">Edited book successfully!</Alert>
+		<Alert type="success">
+			<p>
+				Added book successfully! <a
+					href="/book/{form?.addedBookId}"
+					class="text-blue-800 hover:underline">Find the book at /book/{form?.addedBookId}.</a
+				>
+			</p>
+		</Alert>
 	{:else if form?.error && !loading}
 		<Alert type="error">{form?.error.message ?? 'An error has occurred.'}</Alert>
 	{/if}
 
 	<Form bind:loading reset={false} scrollToTop={true}>
 		<div slot="form-input" class="flex flex-col gap-2">
-			<h2 class="font-bold text-xl">
-				Book <span class="text-sm text-gray-500 dark:text-gray-400">id{$page.params.id}</span>
-			</h2>
+			<h2 class="font-bold text-xl">Book</h2>
 
 			<FormInput
 				bind:value={title}
@@ -98,7 +101,7 @@
 			<div class="flex flex-col gap-2">
 				<h2 class="font-bold text-xl">Database Relations</h2>
 				<FormSearchList
-					searchId="search-people-edit-book"
+					searchId="search-people-add-book"
 					dropdown={{ itemAttribute: 'role', dropdownValues: PersonRolesArray }}
 					fetchUrl="/api/person?name="
 					formItemName="person"
@@ -113,7 +116,7 @@
 		</div>
 
 		<div slot="form-submit">
-			<FormSubmitButton {loading} text={'Submit Edit'} />
+			<FormSubmitButton {loading} text={'Submit'} />
 		</div>
 	</Form>
 </main>

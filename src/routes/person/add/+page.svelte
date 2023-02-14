@@ -6,37 +6,39 @@
 	import FormSubmitButton from '$lib/components/form/FormSubmitButton.svelte';
 	import Alert from '$lib/components/alert/Alert.svelte';
 	import BackButton from '$lib/components/back-button/BackButton.svelte';
-	import { page } from '$app/stores';
 
 	export let form: ActionData;
-	export let data: PageData;
+
 	let loading: boolean;
-	let name = data.person.person_name ?? '';
-	let nameRomaji = data.person.person_name_romaji ?? '';
-	let description = data.person.person_description_markdown ?? '';
+	let name = '';
+	let nameRomaji = '';
+	let description = '';
 </script>
 
 <svelte:head>
-	<title>Edit {data.person.person_name} - RanobeDB</title>
+	<title>Add Person - RanobeDB</title>
 </svelte:head>
 
 <main class="main-container flex flex-col gap-4">
 	<div class="flex items-center gap-2">
 		<BackButton />
-		<h1 class="font-bold text-2xl">Edit {data.person.person_name}</h1>
+		<h1 class="font-bold text-2xl">Add Person</h1>
 	</div>
 
 	{#if form?.success && !loading}
-		<Alert type="success">Edited person successfully!</Alert>
+		<Alert type="success"
+			>Added person successfully! <a
+				href="/person/{form?.addedPersonId}"
+				class="text-blue-800 hover:underline">Find the person at /person/{form?.addedPersonId}.</a
+			></Alert
+		>
 	{:else if form?.error && !loading}
 		<Alert type="error">{form?.error.message ?? 'An error has occurred.'}</Alert>
 	{/if}
 
 	<Form bind:loading reset={false} scrollToTop={true}>
 		<div slot="form-input" class="flex flex-col gap-2">
-			<h2 class="font-bold text-xl">
-				Person <span class="text-sm text-gray-500 dark:text-gray-400">id{$page.params.id}</span>
-			</h2>
+			<h2 class="font-bold text-xl">Person</h2>
 
 			<FormInput
 				bind:value={name}
@@ -70,7 +72,7 @@
 		</div>
 
 		<div slot="form-submit">
-			<FormSubmitButton {loading} text={'Submit Edit'} />
+			<FormSubmitButton {loading} text={'Submit'} />
 		</div>
 	</Form>
 </main>

@@ -9,7 +9,7 @@ test.describe('edit person', () => {
 		await page.locator('input#nameRomaji').fill('Amamiya Mugi');
 		await page.locator('main form button[type="submit"]').click();
 
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited person successfully!');
 	});
 });
 

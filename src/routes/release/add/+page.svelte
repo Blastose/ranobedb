@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ActionData, PageData } from './$types';
+	import type { ActionData } from './$types';
 	import Form from '$lib/components/form/Form.svelte';
 	import FormInput from '$lib/components/form/FormInput.svelte';
 	import FormSubmitButton from '$lib/components/form/FormSubmitButton.svelte';
@@ -9,23 +9,23 @@
 	import FormDate from '$lib/components/form/FormDate.svelte';
 	import Alert from '$lib/components/alert/Alert.svelte';
 	import BackButton from '$lib/components/back-button/BackButton.svelte';
-	import { page } from '$app/stores';
 	import { BookFormatArray } from '$lib/types/dbTypes';
 
 	export let form: ActionData;
-	export let data: PageData;
+
+	type ReleaseRelation = { id: number; name: string };
 	let loading: boolean;
 
-	let name = data.release.name;
-	let nameRomaji = data.release.name_romaji;
-	let isbn13 = data.release.isbn13;
-	let format = data.release.format;
-	let description = data.release.description;
-	let releaseDate = data.release.release_date;
-	let lang = data.release.lang;
+	let name = '';
+	let nameRomaji = '';
+	let isbn13 = '';
+	let format = '';
+	let description = '';
+	let releaseDate = '';
+	let lang = '';
 
-	let publishers = data.release.publishers;
-	let books = data.release.books;
+	let publishers: ReleaseRelation[] = [];
+	let books: ReleaseRelation[] = [];
 
 	const formBookFormat = BookFormatArray.map((item) => {
 		return { value: item, name: item };
@@ -45,26 +45,30 @@
 </script>
 
 <svelte:head>
-	<title>Edit {data.release.name} - RanobeDB</title>
+	<title>Add Release- RanobeDB</title>
 </svelte:head>
 
 <main class="main-container flex flex-col gap-4">
 	<div class="flex items-center gap-2">
 		<BackButton />
-		<h1 class="font-bold text-2xl">Edit {data.release.name}</h1>
+		<h1 class="font-bold text-2xl">Add release</h1>
 	</div>
 
 	{#if form?.success && !loading}
-		<Alert type="success">Edited release successfully!</Alert>
+		<Alert type="success"
+			>Added release successfully! <a
+				href="/release/{form?.addedReleaseId}"
+				class="text-blue-800 hover:underline"
+				>Find the release at /release/{form?.addedReleaseId}.</a
+			></Alert
+		>
 	{:else if form?.error && !loading}
 		<Alert type="error">{form?.error.message ?? 'An error has occurred.'}</Alert>
 	{/if}
 
 	<Form bind:loading reset={false} scrollToTop={true}>
 		<div slot="form-input" class="flex flex-col gap-2">
-			<h2 class="font-bold text-xl">
-				Release <span class="text-sm text-gray-500 dark:text-gray-400">id{$page.params.id}</span>
-			</h2>
+			<h2 class="font-bold text-xl">Release</h2>
 
 			<FormInput
 				bind:value={name}
@@ -135,7 +139,7 @@
 			<div class="flex flex-col gap-2">
 				<h2 class="font-bold text-xl">Database Relations</h2>
 				<FormSearchList
-					searchId="search-publisher-edit-release"
+					searchId="search-publisher-add-release"
 					fetchUrl="/api/publisher?name="
 					formItemName="publisherRel"
 					items={publishers}
@@ -147,7 +151,7 @@
 				/>
 
 				<FormSearchList
-					searchId="search-book-edit-release"
+					searchId="search-book-add-release"
 					fetchUrl="/api/book?name="
 					formItemName="bookRel"
 					items={books}
@@ -161,7 +165,7 @@
 		</div>
 
 		<div slot="form-submit">
-			<FormSubmitButton {loading} text={'Submit Edit'} />
+			<FormSubmitButton {loading} text={'Submit'} />
 		</div>
 	</Form>
 </main>

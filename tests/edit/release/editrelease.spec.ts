@@ -7,7 +7,7 @@ test.describe('edit release', () => {
 		await page.goto('/release/1/edit');
 		await page.locator('main form button[type="submit"]').click();
 
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited release successfully!');
 	});
 
 	test('User can add and remove publisher relations to release', async ({ page }) => {
@@ -16,7 +16,7 @@ test.describe('edit release', () => {
 		await page.locator('input#search-publisher-edit-release').fill('SQEXノベル');
 		await page.getByRole('button', { name: 'id26: SQEXノベル' }).click();
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited release successfully!');
 
 		await page.goto('/release/1');
 		await expect(page.getByText('SQEXノベル')).toBeVisible();
@@ -28,7 +28,7 @@ test.describe('edit release', () => {
 			.last()
 			.click();
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited release successfully!');
 
 		await page.goto('/release/1');
 		await expect(page.getByText('SQEXノベル')).not.toBeVisible();
@@ -40,7 +40,7 @@ test.describe('edit release', () => {
 		await page.locator('input#search-book-edit-release').fill('asahina');
 		await page.getByRole('button', { name: 'id1037: 朝比奈若葉と○○な彼氏' }).click();
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited release successfully!');
 
 		await page.goto('/release/1');
 		await expect(page.getByText('朝比奈若葉と○○な彼氏')).toBeVisible();
@@ -52,7 +52,7 @@ test.describe('edit release', () => {
 			.last()
 			.click();
 		await page.locator('main form button[type="submit"]').click();
-		await expect(page.locator('div.alert.success')).toHaveText('Edited entry successfully!');
+		await expect(page.locator('div.alert.success')).toHaveText('Edited release successfully!');
 
 		await page.goto('/release/1');
 		await expect(page.getByText('朝比奈若葉と○○な彼氏')).not.toBeVisible();

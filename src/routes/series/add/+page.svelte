@@ -6,16 +6,17 @@
 	import FormSearchList from '$lib/components/form/FormSearchList.svelte';
 	import Alert from '$lib/components/alert/Alert.svelte';
 	import BackButton from '$lib/components/back-button/BackButton.svelte';
-	import { page } from '$app/stores';
 
 	export let form: ActionData;
-	export let data: PageData;
-	let loading: boolean;
-	let title = data.series.title ?? '';
-	let titleRomaji = data.series.title_romaji ?? '';
-	let books = data.series.books;
 
-	const addBookToArray = (book: { id: number; name: string }) => {
+	let loading: boolean;
+	let title = '';
+	let titleRomaji = '';
+	let books: Book[] = [];
+
+	type Book = { id: number; name: string };
+
+	const addBookToArray = (book: Book) => {
 		if (books.map((b) => b.id).indexOf(book.id) !== -1) return;
 		books.push(book);
 		books = books;
@@ -23,26 +24,29 @@
 </script>
 
 <svelte:head>
-	<title>Edit {data.series.title} - RanobeDB</title>
+	<title>Add Series - RanobeDB</title>
 </svelte:head>
 
 <main class="main-container flex flex-col gap-4">
 	<div class="flex items-start gap-2">
 		<BackButton />
-		<h1 class="font-bold text-2xl">Edit {data.series.title}</h1>
+		<h1 class="font-bold text-2xl">Add Series</h1>
 	</div>
 
 	{#if form?.success && !loading}
-		<Alert type="success">Edited series successfully!</Alert>
+		<Alert type="success"
+			>Added series successfully! <a
+				href="/series/{form?.addedSeriesId}"
+				class="text-blue-800 hover:underline">Find the series at /series/{form?.addedSeriesId}.</a
+			></Alert
+		>
 	{:else if form?.error && !loading}
 		<Alert type="error">{form?.error.message ?? 'An error has occurred.'}</Alert>
 	{/if}
 
 	<Form bind:loading reset={false} scrollToTop={true}>
 		<div slot="form-input" class="flex flex-col gap-2">
-			<h2 class="font-bold text-xl">
-				Series <span class="text-sm text-gray-500 dark:text-gray-400">id{$page.params.id}</span>
-			</h2>
+			<h2 class="font-bold text-xl">Series</h2>
 
 			<FormInput
 				bind:value={title}
@@ -66,7 +70,7 @@
 			<div class="flex flex-col gap-2">
 				<h2 class="font-bold text-xl">Database Relations</h2>
 				<FormSearchList
-					searchId="search-book-edit-series"
+					searchId="search-book-add-series"
 					fetchUrl="/api/book?name="
 					formItemName="booksInSeries"
 					items={books}
@@ -80,7 +84,7 @@
 		</div>
 
 		<div slot="form-submit">
-			<FormSubmitButton {loading} text={'Submit Edit'} />
+			<FormSubmitButton {loading} text={'Submit'} />
 		</div>
 	</Form>
 </main>

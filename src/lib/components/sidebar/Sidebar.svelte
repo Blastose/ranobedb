@@ -56,6 +56,7 @@
 				<SidebarItem text={'Releases'} href={'/releases'} {tabindex} />
 				<SidebarItem text={'People'} href={'/people'} {tabindex} />
 				<SidebarItem text={'Publishers'} href={'/publishers'} {tabindex} />
+				<SidebarItem text={'Add to database'} href={'/add-to-database'} {tabindex} />
 			</ul>
 		</div>
 	</nav>
