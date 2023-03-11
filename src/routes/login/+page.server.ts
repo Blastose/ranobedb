@@ -29,7 +29,7 @@ export const actions = {
 		const password = parsedForm.data.password;
 
 		try {
-			const key = await auth.validateKeyPassword('email', email, password);
+			const key = await auth.useKey('email', email, password);
 			const session = await auth.createSession(key.userId);
 
 			locals.setSession(session);
