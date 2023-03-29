@@ -3,12 +3,11 @@
 	import SidebarHeading from '$lib/components/sidebar/SidebarHeading.svelte';
 	import SidebarCloseButton from '$lib/components/sidebar/SidebarCloseButton.svelte';
 	import focusSidebar from '$lib/stores/focusSidebar';
-	import { getUser } from '@lucia-auth/sveltekit/client';
 	import { browser } from '$app/environment';
 
 	export let tabindex: boolean;
+	export let user: Lucia.UserAttributes | null;
 	let closeBtn: SidebarCloseButton;
-	const user = getUser();
 
 	$: if (browser && $focusSidebar) {
 		closeBtn.focus();
@@ -24,9 +23,9 @@
 		<ul>
 			<SidebarItem text={'Home'} href={'/'} heading={true} icon={'home'} {tabindex} />
 		</ul>
-		{#if $user}
+		{#if user}
 			<div>
-				<SidebarHeading text={$user.username} icon={'profile'} />
+				<SidebarHeading text={user.username} icon={'profile'} />
 				<ul>
 					<SidebarItem text={'My List'} href={'/my-list'} {tabindex} />
 					<SidebarItem text={'My Profile'} href={'/profile'} {tabindex} />

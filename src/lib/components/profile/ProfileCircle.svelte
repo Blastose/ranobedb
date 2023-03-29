@@ -2,9 +2,8 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import ProfileMenu from '$lib/components/profile/ProfileMenu.svelte';
 	import profileMenu from '$lib/stores/profileMenu';
-	import { getUser } from '@lucia-auth/sveltekit/client';
 
-	const user = getUser();
+	export let user: Lucia.UserAttributes | null;
 	let toggleButton: Node | null = null;
 </script>
 
@@ -12,20 +11,20 @@
 	<button
 		bind:this={toggleButton}
 		aria-label="open profile menu"
-		class="profile {$user ? 'profile-logged-in' : ''}"
+		class="profile {user ? 'profile-logged-in' : ''}"
 		type="button"
 		on:click={() => {
 			profileMenu.set(!$profileMenu);
 		}}
 	>
-		{#if $user}
-			<span class="text-lg font-bold">{$user.username[0]}</span>
+		{#if user}
+			<span class="text-lg font-bold">{user.username[0]}</span>
 		{:else}
 			<Icon height="24" width="24" name="profile" />
 		{/if}
 	</button>
 	{#if $profileMenu}
-		<ProfileMenu {toggleButton} />
+		<ProfileMenu {toggleButton} {user} />
 	{/if}
 </div>
 

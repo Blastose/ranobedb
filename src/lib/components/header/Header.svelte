@@ -15,6 +15,8 @@
 		}
 		focusSidebar.set(true);
 	};
+
+	export let user: Lucia.UserAttributes | null;
 </script>
 
 <header class="header border-b border-[#4b4b4b15] dark:border-[#ffffff1a]">
@@ -57,7 +59,7 @@
 				{/if}
 			</button>
 
-			<ProfileCircle />
+			<ProfileCircle {user} />
 		</div>
 	</div>
 </header>

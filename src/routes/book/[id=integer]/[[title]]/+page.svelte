@@ -5,14 +5,11 @@
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
 	import BookImageContainer from '$lib/components/book/book-image/BookImageContainer.svelte';
 	import modalBook from '$lib/stores/modalBook';
-	import { getUser } from '@lucia-auth/sveltekit/client';
 	import { createRedirectUrl } from '$lib/util/createRedirectUrl';
 	import { page } from '$app/stores';
 	import toast from '$lib/stores/toast';
 
 	export let data: PageData;
-
-	const user = getUser();
 
 	const setModalBook = () => {
 		modalBook.set({
@@ -59,7 +56,7 @@
 			width="240"
 			height="340"
 		/>
-		{#if $user}
+		{#if data.user}
 			<button
 				class="add-button"
 				type="button"

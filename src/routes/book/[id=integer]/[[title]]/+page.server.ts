@@ -4,7 +4,7 @@ import { db, jsonb_agg } from '$lib/server/db';
 
 export const load = (async ({ params, locals }) => {
 	const id = Number(params.id);
-	const { session, user } = await locals.validateUser();
+	const { session, user } = await locals.auth.validateUser();
 	let readingStatusPromise;
 	if (session) {
 		readingStatusPromise = db
@@ -68,5 +68,5 @@ export const load = (async ({ params, locals }) => {
 		readingStatusResult = readingStatus;
 	}
 
-	return { book, readingStatusResult };
+	return { book, readingStatusResult, user };
 }) satisfies PageServerLoad;

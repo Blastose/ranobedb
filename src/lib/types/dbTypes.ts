@@ -36,21 +36,21 @@ export const ReadingListLabelArray = [
 
 export type ReadingListLabelType = (typeof ReadingListLabelArray)[number];
 
-export interface Key {
+export interface AuthKey {
 	id: string;
 	user_id: string;
-	primary: boolean;
+	primary_key: boolean;
 	hashed_password: string | null;
 }
 
-export interface Session {
+export interface AuthSession {
 	id: string;
 	user_id: string;
 	active_expires: BigIntColumnType;
 	idle_expires: BigIntColumnType;
 }
 
-export interface User {
+export interface AuthUser {
 	id: Generated<string>;
 	username: string;
 	reader_id: Generated<number>;
@@ -159,9 +159,9 @@ export interface BookReleaseRel {
 }
 
 export interface DB {
-	session: Session;
-	user: User;
-	key: Key;
+	auth_session: AuthSession;
+	auth_user: AuthUser;
+	auth_key: AuthKey;
 	reads: Reads;
 	reader_labels: ReaderLabels;
 	person: Person;

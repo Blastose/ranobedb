@@ -6,7 +6,7 @@ import { sql } from 'kysely';
 import { getPaginationFromUrl } from '$lib/util/getPaginationFromUrl';
 
 export const load = (async ({ locals, url }) => {
-	const { session, user } = await locals.validateUser();
+	const { session, user } = await locals.auth.validateUser();
 	if (!session) {
 		throw redirect(303, createRedirectUrl('login', url));
 	}

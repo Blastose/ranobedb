@@ -14,13 +14,14 @@
 	import { beforeNavigate } from '$app/navigation';
 
 	export let pathname: string;
+	export let user: Lucia.UserAttributes | null;
 
 	beforeNavigate((beforeNavigate) => {
 		if (beforeNavigate.delta && beforeNavigate.delta < 0) {
 			flyDirection = -1;
 		} else {
 			flyDirection = 1;
-		} 
+		}
 	});
 
 	let flyDirection = 1;
@@ -39,11 +40,11 @@
 		{$sidebar ? '' : 'hide-sidebar'}
 		{$drawer ? 'show-drawer' : ''}"
 	>
-		<Sidebar tabindex={($sidebar && $largeScreen) || $drawer} />
+		<Sidebar {user} tabindex={($sidebar && $largeScreen) || $drawer} />
 	</div>
 	<div class="filler" />
 	<div class="header">
-		<Header />
+		<Header {user} />
 	</div>
 	<div class="content">
 		{#key pathname}
