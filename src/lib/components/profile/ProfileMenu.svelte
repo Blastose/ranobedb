@@ -3,9 +3,8 @@
 	import { clickOutside } from '$lib/util/clickOutside';
 	import profileMenu from '$lib/stores/profileMenu';
 	import { fly } from 'svelte/transition';
-	import { getUser } from '@lucia-auth/sveltekit/client';
 
-	const user = getUser();
+	export let user: Lucia.UserAttributes | null;
 	export let toggleButton: Node | null = null;
 </script>
 
@@ -18,7 +17,7 @@
 	transition:fly={{ y: -10, duration: 100 }}
 >
 	<ul>
-		{#if $user}
+		{#if user}
 			<li class="text-center sidebar-item">
 				<a
 					href="/profile"
@@ -26,7 +25,7 @@
 						profileMenu.set(false);
 					}}
 				>
-					<p class="py-2 text-lg font-bold">{$user.username}</p>
+					<p class="py-2 text-lg font-bold">{user.username}</p>
 				</a>
 			</li>
 			<ProfileMenuItem text={'My List'} href={'/my-list'} />

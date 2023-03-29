@@ -1,6 +1,7 @@
 import lucia from 'lucia-auth';
 import { dev } from '$app/environment';
-import kysely from '@lucia-auth/adapter-kysely';
+import { sveltekit } from 'lucia-auth/middleware';
+import { default as kysely } from '@lucia-auth/adapter-kysely';
 import { db } from '$lib/server/db';
 
 export const auth = lucia({
@@ -14,7 +15,8 @@ export const auth = lucia({
 			readerId: userData.reader_id
 		};
 	},
-	generateCustomUserId: () => crypto.randomUUID()
+	generateCustomUserId: () => crypto.randomUUID(),
+	middleware: sveltekit()
 });
 
 export type Auth = typeof auth;

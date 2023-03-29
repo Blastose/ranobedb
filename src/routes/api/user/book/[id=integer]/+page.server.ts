@@ -4,7 +4,7 @@ import { userBookSchema } from '$lib/zod/schemas';
 
 export const actions = {
 	default: async ({ params, request, locals }) => {
-		const { session, user } = await locals.validateUser();
+		const { session, user } = await locals.auth.validateUser();
 		if (!session) {
 			return fail(401);
 		}

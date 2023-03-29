@@ -5,8 +5,8 @@ import { db } from '$lib/server/db';
 import { sql } from 'kysely';
 
 export const load = (async ({ locals, url }) => {
-	const { session, user } = await locals.validateUser();
-	if (!session) {
+	const { user } = await locals.auth.validateUser();
+	if (!user) {
 		throw redirect(303, createRedirectUrl('login', url));
 	}
 
@@ -34,5 +34,5 @@ export const load = (async ({ locals, url }) => {
 		.execute();
 
 	const [readPerMonth, readLabels] = await Promise.all([readPerMonthPromise, readLabelsPromise]);
-	return { readPerMonth: readPerMonth.rows, readLabels };
+	return { readPerMonth: readPerMonth.rows, readLabels, user };
 }) satisfies PageServerLoad;

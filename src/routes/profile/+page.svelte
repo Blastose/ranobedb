@@ -17,7 +17,6 @@
 	import { browser } from '$app/environment';
 	import { theme } from '$lib/stores/theme';
 	import { onMount } from 'svelte';
-	import { getUser } from '@lucia-auth/sveltekit/client';
 
 	Chart.register(
 		LineController,
@@ -32,8 +31,6 @@
 	);
 	// @ts-ignore
 	Chart.register(Colors);
-
-	const user = getUser();
 
 	export let data: PageData;
 
@@ -163,7 +160,7 @@
 	<div class="flex flex-col gap-4">
 		<div class="flex flex-col gap-1">
 			<p class="font-bold text-2xl">Profile</p>
-			<p class="font-bold text-xl">{$user?.username}</p>
+			<p class="font-bold text-xl">{data.user.username}</p>
 		</div>
 		<div>
 			<p class="font-bold text-xl">Stats:</p>

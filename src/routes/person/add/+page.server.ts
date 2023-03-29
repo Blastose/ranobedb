@@ -7,7 +7,7 @@ import DOMPurify from 'isomorphic-dompurify';
 import { editPersonSchema, joinErrors } from '$lib/zod/schemas';
 
 export const load = (async ({ locals, url }) => {
-	const session = await locals.validate();
+	const session = await locals.auth.validate();
 	if (!session) {
 		throw redirect(303, createRedirectUrl('login', url));
 	}
@@ -24,7 +24,7 @@ type AddPersonErrorType = {
 
 export const actions = {
 	default: async ({ request, locals }) => {
-		const { session, user } = await locals.validateUser();
+		const { session, user } = await locals.auth.validateUser();
 		if (!session) {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
