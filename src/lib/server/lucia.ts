@@ -7,7 +7,7 @@ import { db } from '$lib/server/db';
 export const auth = lucia({
 	adapter: kysely(db, 'pg'),
 	env: dev ? 'DEV' : 'PROD',
-	transformUserData: (userData) => {
+	transformDatabaseUser: (userData) => {
 		return {
 			userId: userData.id,
 			username: userData.username,
