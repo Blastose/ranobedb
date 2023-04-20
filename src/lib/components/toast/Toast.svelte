@@ -4,7 +4,7 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { navigating } from '$app/stores';
 
-	const useHide = (node: HTMLDivElement) => {
+	const useHide = (_node: HTMLDivElement) => {
 		let timer = setTimeout(() => {
 			toast.set(null);
 		}, 2500);

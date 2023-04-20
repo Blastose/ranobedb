@@ -13,7 +13,7 @@
 		}
 	};
 
-	const useEscToClose = (node: HTMLDivElement) => {
+	const useEscToClose = (_node: HTMLDivElement) => {
 		document.addEventListener('keydown', escapeClose);
 
 		return {
