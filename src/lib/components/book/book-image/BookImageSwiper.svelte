@@ -18,7 +18,7 @@
 			moving = true;
 		};
 
-		const pointerEnd = (e: PointerEvent) => {
+		const pointerEnd = (_e: PointerEvent) => {
 			if (moving === true) {
 				moving = false;
 				scrollLeftStart = node.scrollLeft;
