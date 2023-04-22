@@ -11,7 +11,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"format": "prettier --plugin-search-dir . --write .",
+		"db": "graphile-migrate"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.32.2",
@@ -26,6 +27,8 @@
 		"eslint": "^8.38.0",
 		"eslint-config-prettier": "^8.8.0",
 		"eslint-plugin-svelte3": "^4.0.0",
+		"graphile-migrate": "^1.4.1",
+		"kysely-codegen": "^0.10.0",
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.7",
 		"prettier-plugin-svelte": "^2.10.0",
