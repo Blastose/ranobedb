@@ -56,15 +56,15 @@ export const actions = {
 				const returnedPerson = await trx
 					.insertInto('person')
 					.values({
-						person_name: parsedForm.data.name,
-						person_name_romaji: parsedForm.data.nameRomaji || null,
-						person_description: description || null,
-						person_description_markdown: parsedForm.data.description || null
+						name: parsedForm.data.name,
+						name_romaji: parsedForm.data.nameRomaji || null,
+						description: description || null,
+						description_markdown: parsedForm.data.description || null
 					})
-					.returning('person.person_id')
+					.returning('person.id')
 					.executeTakeFirstOrThrow();
 
-				addedPersonId = returnedPerson.person_id;
+				addedPersonId = returnedPerson.id;
 			});
 		} catch (e) {
 			return fail(400, {

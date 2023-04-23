@@ -8,7 +8,7 @@ export const load = (async ({ url }) => {
 	const { limit, page } = getPaginationFromUrl(url);
 
 	const series = await db
-		.selectFrom('book_series')
+		.selectFrom('series')
 		.selectAll()
 		.select(sql<string>`count(*) over()`.as('count'))
 		.orderBy('title_romaji')

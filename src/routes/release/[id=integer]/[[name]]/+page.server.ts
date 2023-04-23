@@ -13,21 +13,17 @@ export const load = (async ({ params }) => {
 				jsonb_agg(
 					qb
 						.selectFrom('publisher')
-						.innerJoin(
-							'publisher_release_rel',
-							'publisher_release_rel.publisher_id',
-							'publisher.id'
-						)
+						.innerJoin('publisher_release', 'publisher_release.publisher_id', 'publisher.id')
 						.select(['publisher.id', 'publisher.name'])
-						.whereRef('publisher_release_rel.release_id', '=', 'release.id')
+						.whereRef('publisher_release.release_id', '=', 'release.id')
 				).as('publishers'),
 			(qb) =>
 				jsonb_agg(
 					qb
 						.selectFrom('book_info')
-						.innerJoin('book_release_rel', 'book_release_rel.book_id', 'book_info.id')
+						.innerJoin('book_release', 'book_release.book_id', 'book_info.id')
 						.selectAll('book_info')
-						.whereRef('book_release_rel.release_id', '=', 'release.id')
+						.whereRef('book_release.release_id', '=', 'release.id')
 				).as('books')
 		])
 		.where('release.id', '=', id)

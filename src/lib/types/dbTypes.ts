@@ -41,6 +41,7 @@ export interface AuthKey {
 	user_id: string;
 	primary_key: boolean;
 	hashed_password: string | null;
+	expires: BigIntColumnType | null;
 }
 
 export interface AuthSession {
@@ -51,32 +52,21 @@ export interface AuthSession {
 }
 
 export interface AuthUser {
-	id: Generated<string>;
-	username: string;
 	reader_id: Generated<number>;
+	username: string;
+	id: Generated<string>;
 	role: Generated<UserRole>;
 }
 
-export interface Reads {
-	added_date: Timestamp | null;
-	book_id: number;
-	finish_date: DateString | null;
-	reader_id: number;
-	start_date: DateString | null;
-}
-
 export interface Book {
-	book_label: string | null;
-	book_publisher: string | null;
-	bookbookwalkerlink: string | null;
-	cover_image_file_name: string | null;
-	description: string | null;
-	description_markdown: string | null;
 	id: Generated<number>;
-	release_date: DateString | null;
 	title: string;
 	title_romaji: string | null;
 	volume: string | null;
+	description: string | null;
+	bookbookwalkerlink: string | null;
+	cover_image_file_name: string | null;
+	description_markdown: string | null;
 }
 
 export interface BookInfo {
@@ -92,87 +82,109 @@ export interface BookInfo {
 	artists: { id: number; name: string }[];
 }
 
-export interface BookSeries {
-	id: Generated<number>;
-	title: string;
-	title_romaji: string | null;
+export interface BookRelease {
+	release_id: number;
+	book_id: number;
 }
 
-export interface PartOf {
+export interface BookSeries {
 	book_id: number;
 	series_id: number;
 }
 
 export interface Person {
-	person_description: string | null;
-	person_description_markdown: string | null;
-	person_id: Generated<number>;
-	person_name: string;
-	person_name_romaji: string | null;
+	id: Generated<number>;
+	name: string;
+	name_romaji: string | null;
+	description: string | null;
+	description_markdown: string | null;
 }
 
-export interface PersonBookRel {
+export interface PersonBook {
 	person_id: number;
 	book_id: number;
 	role: RoleType;
 }
 
+export interface Reads {
+	added_date: Timestamp | null;
+	book_id: number;
+	finish_date: DateString | null;
+	reader_id: number;
+	start_date: DateString | null;
+}
+
 export interface Publisher {
-	description: string | null;
-	description_markdown: string | null;
 	id: Generated<number>;
 	name: string;
 	name_romaji: string | null;
+	description: string | null;
+	description_markdown: string | null;
 }
 
-export interface PublisherRel {
+export interface PublisherRelation {
 	id_parent: number;
 	id_child: number;
 	type: PublisherRelType;
 }
 
-export interface PublisherReleaseRel {
+export interface PublisherRelease {
 	publisher_id: number;
 	release_id: number;
 }
 
 export interface ReaderLabels {
-	book_id: number;
 	label_name: string;
+	book_id: number;
 	reader_id: number;
 }
 
-export interface Release {
-	description: string | null;
-	format: BookFormat;
-	id: Generated<number>;
-	isbn13: string | null;
-	lang: Language;
-	name: string;
-	name_romaji: string | null;
-	release_date: DateString | null;
+export interface ReadingListLabel {
+	label_id: Generated<number>;
+	label_name: string | null;
 }
 
-export interface BookReleaseRel {
+export interface Reads {
+	reader_id: number;
 	book_id: number;
-	release_id: number;
+	start_date: DateString | null;
+	finish_date: DateString | null;
+	added_date: Timestamp | null;
+}
+
+export interface Release {
+	id: Generated<number>;
+	name: string;
+	name_romaji: string | null;
+	format: BookFormat;
+	lang: Language;
+	release_date: DateString | null;
+	isbn13: string | null;
+	description: string | null;
+}
+
+export interface Series {
+	id: Generated<number>;
+	title: string;
+	title_romaji: string | null;
 }
 
 export interface DB {
+	auth_key: AuthKey;
 	auth_session: AuthSession;
 	auth_user: AuthUser;
-	auth_key: AuthKey;
-	reads: Reads;
-	reader_labels: ReaderLabels;
-	person: Person;
-	person_book_rel: PersonBookRel;
-	publisher: Publisher;
-	publisher_rel: PublisherRel;
-	publisher_release_rel: PublisherReleaseRel;
 	book: Book;
 	book_info: BookInfo;
+	book_release: BookRelease;
 	book_series: BookSeries;
-	part_of: PartOf;
+	person: Person;
+	person_book: PersonBook;
+	publisher: Publisher;
+	publisher_relation: PublisherRelation;
+	publisher_release: PublisherRelease;
+	reader_labels: ReaderLabels;
+	reading_list_label: ReadingListLabel;
+	reads: Reads;
 	release: Release;
-	book_release_rel: BookReleaseRel;
+	series: Series;
 }

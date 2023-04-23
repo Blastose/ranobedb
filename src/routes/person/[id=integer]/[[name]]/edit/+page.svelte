@@ -11,19 +11,19 @@
 	export let form: ActionData;
 	export let data: PageData;
 	let loading: boolean;
-	let name = data.person.person_name ?? '';
-	let nameRomaji = data.person.person_name_romaji ?? '';
-	let description = data.person.person_description_markdown ?? '';
+	let name = data.person.name ?? '';
+	let nameRomaji = data.person.name_romaji ?? '';
+	let description = data.person.description_markdown ?? '';
 </script>
 
 <svelte:head>
-	<title>Edit {data.person.person_name} - RanobeDB</title>
+	<title>Edit {data.person.name} - RanobeDB</title>
 </svelte:head>
 
 <main class="main-container flex flex-col gap-4">
 	<div class="flex items-center gap-2">
 		<BackButton />
-		<h1 class="font-bold text-2xl">Edit {data.person.person_name}</h1>
+		<h1 class="font-bold text-2xl">Edit {data.person.name}</h1>
 	</div>
 
 	{#if form?.success && !loading}

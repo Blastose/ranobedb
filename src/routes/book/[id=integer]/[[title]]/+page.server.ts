@@ -28,11 +28,11 @@ export const load = (async ({ params, locals }) => {
 			(qb) =>
 				jsonb_agg(
 					qb
-						.selectFrom('part_of as p1')
-						.innerJoin('part_of as p2', 'p1.series_id', 'p2.series_id')
-						.innerJoin('book_series', 'p1.series_id', 'book_series.id')
+						.selectFrom('book_series as p1')
+						.innerJoin('book_series as p2', 'p1.series_id', 'p2.series_id')
+						.innerJoin('series', 'p1.series_id', 'series.id')
 						.innerJoin('book_info as b_sub', 'b_sub.id', 'p1.book_id')
-						.select(['p1.series_id', 'book_series.title as series_title'])
+						.select(['p1.series_id', 'series.title as series_title'])
 						.select(['b_sub.id', 'b_sub.title', 'b_sub.cover_image_file_name'])
 						.distinctOn(['b_sub.id', 'b_sub.release_date'])
 						.whereRef('p2.book_id', '=', 'book_info.id')
@@ -42,9 +42,9 @@ export const load = (async ({ params, locals }) => {
 				jsonb_agg(
 					qb
 						.selectFrom('release')
-						.innerJoin('book_release_rel', 'book_release_rel.release_id', 'release.id')
+						.innerJoin('book_release', 'book_release.release_id', 'release.id')
 						.selectAll('release')
-						.whereRef('book_release_rel.book_id', '=', 'book_info.id')
+						.whereRef('book_release.book_id', '=', 'book_info.id')
 				).as('releases')
 		])
 		.where('id', '=', id)

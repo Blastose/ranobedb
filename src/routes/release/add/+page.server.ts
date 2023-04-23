@@ -78,7 +78,7 @@ export const actions = {
 					return { book_id: item.id, release_id: addedReleaseId };
 				});
 				if (bookRelInsert.length > 0) {
-					await trx.insertInto('book_release_rel').values(bookRelInsert).execute();
+					await trx.insertInto('book_release').values(bookRelInsert).execute();
 				}
 
 				// Add release-publisher relations
@@ -86,19 +86,19 @@ export const actions = {
 					return { publisher_id: item.id, release_id: addedReleaseId };
 				});
 				if (publisherRelInsert.length > 0) {
-					await trx.insertInto('publisher_release_rel').values(publisherRelInsert).execute();
+					await trx.insertInto('publisher_release').values(publisherRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'publisher_rel') {
+				if (e.code === '23505' && e.table === 'publisher_relation') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to add!' },
 						duplicatePublisherError: {
 							message: 'Duplicate publishers in form. Remove duplicates and try again.'
 						}
 					} as AddReleaseErrorType);
-				} else if (e.code === '23505' && e.table === 'book_release_rel') {
+				} else if (e.code === '23505' && e.table === 'book_release') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to add!' },
 						duplicateBookError: {

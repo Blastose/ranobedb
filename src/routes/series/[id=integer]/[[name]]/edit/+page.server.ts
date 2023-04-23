@@ -14,19 +14,19 @@ export const load = (async ({ locals, url, params }) => {
 
 	const id = Number(params.id);
 	const series = await db
-		.selectFrom('book_series')
-		.selectAll('book_series')
+		.selectFrom('series')
+		.selectAll('series')
 		.select((qb) =>
 			jsonb_agg(
 				qb
 					.selectFrom('book_info')
-					.innerJoin('part_of', 'part_of.book_id', 'book_info.id')
+					.innerJoin('book_series', 'book_series.book_id', 'book_info.id')
 					.select(['book_info.id', 'book_info.title as name'])
-					.whereRef('part_of.series_id', '=', 'book_series.id')
+					.whereRef('book_series.series_id', '=', 'series.id')
 					.orderBy('book_info.release_date')
 			).as('books')
 		)
-		.where('book_series.id', '=', id)
+		.where('series.id', '=', id)
 		.executeTakeFirst();
 
 	if (!series) {
@@ -72,7 +72,7 @@ export const actions = {
 		try {
 			await db.transaction().execute(async (trx) => {
 				await trx
-					.updateTable('book_series')
+					.updateTable('series')
 					.set({
 						title: parsedForm.data.title,
 						title_romaji: parsedForm.data.titleRomaji || null
@@ -80,17 +80,17 @@ export const actions = {
 					.where('id', '=', id)
 					.executeTakeFirstOrThrow();
 
-				await trx.deleteFrom('part_of').where('part_of.series_id', '=', id).execute();
+				await trx.deleteFrom('book_series').where('book_series.series_id', '=', id).execute();
 				const bookRelInsert = parsedForm.data.booksInSeries.map((item) => {
 					return { series_id: id, book_id: item.id };
 				});
 				if (bookRelInsert.length > 0) {
-					await trx.insertInto('part_of').values(bookRelInsert).execute();
+					await trx.insertInto('book_series').values(bookRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'part_of') {
+				if (e.code === '23505' && e.table === 'book_series') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to edit!' },
 						duplicateBooksError: {

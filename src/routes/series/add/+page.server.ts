@@ -52,12 +52,12 @@ export const actions = {
 		try {
 			await db.transaction().execute(async (trx) => {
 				const returnedSeries = await trx
-					.insertInto('book_series')
+					.insertInto('series')
 					.values({
 						title: parsedForm.data.title,
 						title_romaji: parsedForm.data.titleRomaji || null
 					})
-					.returning('book_series.id')
+					.returning('series.id')
 					.executeTakeFirstOrThrow();
 
 				addedSeriesId = returnedSeries.id;
@@ -65,12 +65,12 @@ export const actions = {
 					return { series_id: addedSeriesId, book_id: item.id };
 				});
 				if (bookRelInsert.length > 0) {
-					await trx.insertInto('part_of').values(bookRelInsert).execute();
+					await trx.insertInto('book_series').values(bookRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'part_of') {
+				if (e.code === '23505' && e.table === 'book_series') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to add!' },
 						duplicateBooksError: {

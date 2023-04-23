@@ -15,19 +15,19 @@ export const load = (async ({ params }) => {
 				jsonb_agg(
 					qb
 						.selectFrom('publisher as publisher_parent')
-						.innerJoin('publisher_rel', 'publisher_rel.id_parent', 'publisher_parent.id')
-						.select(['publisher_parent.id', 'publisher_parent.name', 'publisher_rel.type'])
+						.innerJoin('publisher_relation', 'publisher_relation.id_parent', 'publisher_parent.id')
+						.select(['publisher_parent.id', 'publisher_parent.name', 'publisher_relation.type'])
 						.distinct()
-						.whereRef('publisher_rel.id_child', '=', 'publisher.id')
+						.whereRef('publisher_relation.id_child', '=', 'publisher.id')
 				).as('publisher_parents'),
 			(qb) =>
 				jsonb_agg(
 					qb
 						.selectFrom('publisher as publisher_child')
-						.innerJoin('publisher_rel', 'publisher_rel.id_child', 'publisher_child.id')
-						.select(['publisher_child.id', 'publisher_child.name', 'publisher_rel.type'])
+						.innerJoin('publisher_relation', 'publisher_relation.id_child', 'publisher_child.id')
+						.select(['publisher_child.id', 'publisher_child.name', 'publisher_relation.type'])
 						.distinct()
-						.whereRef('publisher_rel.id_parent', '=', 'publisher.id')
+						.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
 				).as('publisher_children'),
 			(qb) =>
 				jsonb_agg(
@@ -53,7 +53,9 @@ export const load = (async ({ params }) => {
 			];
 			return prevGroupedObject;
 		},
-		{} as { [key in PublisherRelType]?: { id: number; name: string; type: PublisherRelType }[] }
+		{} as {
+			[key in PublisherRelType]?: { id: number; name: string; type: PublisherRelType }[];
+		}
 	);
 
 	return { publisher, publisherChildrenGrouped };

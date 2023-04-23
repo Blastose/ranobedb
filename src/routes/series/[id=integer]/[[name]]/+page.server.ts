@@ -6,19 +6,19 @@ export const load = (async ({ params }) => {
 	const id = Number(params.id);
 
 	const series = await db
-		.selectFrom('book_series')
-		.selectAll('book_series')
+		.selectFrom('series')
+		.selectAll('series')
 		.select((qb) =>
 			jsonb_agg(
 				qb
 					.selectFrom('book_info')
-					.innerJoin('part_of', 'part_of.book_id', 'book_info.id')
+					.innerJoin('book_series', 'book_series.book_id', 'book_info.id')
 					.selectAll('book_info')
-					.whereRef('part_of.series_id', '=', 'book_series.id')
+					.whereRef('book_series.series_id', '=', 'series.id')
 					.orderBy('book_info.release_date')
 			).as('books')
 		)
-		.where('book_series.id', '=', id)
+		.where('series.id', '=', id)
 		.executeTakeFirst();
 
 	if (!series) {

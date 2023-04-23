@@ -12,7 +12,8 @@
 		"test:unit": "vitest",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"db": "graphile-migrate"
+		"db": "graphile-migrate",
+		"db-gen": "kysely-codegen --dialect postgres --schema public --include-pattern public.* --out-file ./sql/codegen/db.d.ts"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.32.2",

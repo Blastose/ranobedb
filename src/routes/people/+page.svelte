@@ -16,7 +16,7 @@
 
 		<div class="box-container">
 			{#each data.people as person}
-				<BoxLarge name={person.person_name} href={`/person/${person.person_id}`} />
+				<BoxLarge name={person.name} href={`/person/${person.id}`} />
 			{/each}
 		</div>
 		<Pagination totalPages={data.totalPages} />

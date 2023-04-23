@@ -13,11 +13,7 @@ export const load = (async ({ locals, url, params }) => {
 	}
 
 	const id = Number(params.id);
-	const person = await db
-		.selectFrom('person')
-		.selectAll()
-		.where('person_id', '=', id)
-		.executeTakeFirst();
+	const person = await db.selectFrom('person').selectAll().where('id', '=', id).executeTakeFirst();
 
 	if (!person) {
 		throw error(404);
@@ -67,12 +63,12 @@ export const actions = {
 				await trx
 					.updateTable('person')
 					.set({
-						person_name: parsedForm.data.name,
-						person_name_romaji: parsedForm.data.nameRomaji || null,
-						person_description: description || null,
-						person_description_markdown: parsedForm.data.description || null
+						name: parsedForm.data.name,
+						name_romaji: parsedForm.data.nameRomaji || null,
+						description: description || null,
+						description_markdown: parsedForm.data.description || null
 					})
-					.where('person_id', '=', id)
+					.where('id', '=', id)
 					.executeTakeFirstOrThrow();
 			});
 		} catch (e) {

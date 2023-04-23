@@ -14,12 +14,12 @@ export const load = (async ({ params }) => {
 					qb
 						.selectFrom('book_info')
 						.selectAll('book_info')
-						.innerJoin('person_book_rel', 'person_book_rel.book_id', 'book_info.id')
-						.whereRef('person_book_rel.person_id', '=', 'person.person_id')
+						.innerJoin('person_book', 'person_book.book_id', 'book_info.id')
+						.whereRef('person_book.person_id', '=', 'person.id')
 						.distinct()
 				).as('books')
 		])
-		.where('person_id', '=', id)
+		.where('id', '=', id)
 		.executeTakeFirst();
 
 	if (!person) {

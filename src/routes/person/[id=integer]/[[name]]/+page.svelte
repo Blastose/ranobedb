@@ -9,13 +9,13 @@
 </script>
 
 <svelte:head>
-	<title>{data.person.person_name} - RanobeDB</title>
+	<title>{data.person.name} - RanobeDB</title>
 </svelte:head>
 
 <TopBottomLayout backgroundCover={null}>
 	<svelte:fragment slot="top">
-		<p class="text-xl sm:text-3xl font-bold">{data.person.person_name}</p>
-		<p class="text-lg sm:text-xl font-semibold">{data.person.person_name_romaji ?? ''}</p>
+		<p class="text-xl sm:text-3xl font-bold">{data.person.name}</p>
+		<p class="text-lg sm:text-xl font-semibold">{data.person.name_romaji ?? ''}</p>
 		<p class="text-sm sm:text-base font-semibold">Person</p>
 	</svelte:fragment>
 
@@ -24,7 +24,7 @@
 			<div>
 				<p class="font-bold">Biography</p>
 				<div class="markdown-text">
-					{@html data.person.person_description || 'N/A'}
+					{@html data.person.description || 'N/A'}
 				</div>
 			</div>
 			<div class="w-min">

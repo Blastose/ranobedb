@@ -23,10 +23,10 @@ export const load = (async ({ locals, url, params }) => {
 				jsonb_agg(
 					qb
 						.selectFrom('publisher as publisher_child')
-						.innerJoin('publisher_rel', 'publisher_rel.id_child', 'publisher_child.id')
-						.select(['publisher_child.id', 'publisher_child.name', 'publisher_rel.type'])
+						.innerJoin('publisher_relation', 'publisher_relation.id_child', 'publisher_child.id')
+						.select(['publisher_child.id', 'publisher_child.name', 'publisher_relation.type'])
 						.distinct()
-						.whereRef('publisher_rel.id_parent', '=', 'publisher.id')
+						.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
 				).as('publisher_rels')
 		])
 		.where('publisher.id', '=', id)
@@ -88,17 +88,20 @@ export const actions = {
 					.where('id', '=', id)
 					.executeTakeFirstOrThrow();
 
-				await trx.deleteFrom('publisher_rel').where('publisher_rel.id_parent', '=', id).execute();
+				await trx
+					.deleteFrom('publisher_relation')
+					.where('publisher_relation.id_parent', '=', id)
+					.execute();
 				const publisherRelInsert = parsedForm.data.publisherRel.map((item) => {
 					return { id_parent: id, id_child: item.id, type: item.type };
 				});
 				if (publisherRelInsert.length > 0) {
-					await trx.insertInto('publisher_rel').values(publisherRelInsert).execute();
+					await trx.insertInto('publisher_relation').values(publisherRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'publisher_rel') {
+				if (e.code === '23505' && e.table === 'publisher_relation') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to edit!' },
 						duplicatePublisherError: {

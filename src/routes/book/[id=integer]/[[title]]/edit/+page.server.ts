@@ -23,14 +23,10 @@ export const load = (async ({ locals, url, params }) => {
 				jsonb_agg(
 					qb
 						.selectFrom('person')
-						.leftJoin('person_book_rel', 'person_book_rel.person_id', 'person.person_id')
-						.select([
-							'person.person_id as id',
-							'person.person_name as name',
-							'person_book_rel.role'
-						])
-						.select('person_book_rel.role')
-						.whereRef('person_book_rel.book_id', '=', 'book.id')
+						.leftJoin('person_book', 'person_book.person_id', 'person.id')
+						.select(['person.id', 'person.name', 'person_book.role'])
+						.select('person_book.role')
+						.whereRef('person_book.book_id', '=', 'book.id')
 				).as('people')
 		])
 		.where('id', '=', id)
@@ -98,18 +94,18 @@ export const actions = {
 					.where('id', '=', id)
 					.executeTakeFirstOrThrow();
 
-				await trx.deleteFrom('person_book_rel').where('book_id', '=', id).execute();
+				await trx.deleteFrom('person_book').where('book_id', '=', id).execute();
 				const personRelInsert = parsedForm.data.person.map((item) => {
 					return { book_id: id, person_id: item.id, role: item.role };
 				});
 				if (personRelInsert.length > 0) {
-					await trx.insertInto('person_book_rel').values(personRelInsert).execute();
+					await trx.insertInto('person_book').values(personRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
 				console.log(e);
-				if (e.code === '23505' && e.table === 'person_book_rel') {
+				if (e.code === '23505' && e.table === 'person_book') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to edit!' },
 						duplicatePersonsError: {
