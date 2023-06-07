@@ -106,14 +106,6 @@ export interface PersonBook {
 	role: RoleType;
 }
 
-export interface Reads {
-	added_date: Timestamp | null;
-	book_id: number;
-	finish_date: DateString | null;
-	reader_id: number;
-	start_date: DateString | null;
-}
-
 export interface Publisher {
 	id: Generated<number>;
 	name: string;
