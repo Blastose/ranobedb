@@ -10,7 +10,7 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export type DateString = ColumnType<string, Date | string, Date | string>;
 
-export const BookFormatArray = ['digital', 'print'] as const;
+export const BookFormatArray = ['digital', 'print', 'audio'] as const;
 
 export type BookFormat = (typeof BookFormatArray)[number];
 
