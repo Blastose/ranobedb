@@ -1,7 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db, jsonb_agg } from '$lib/server/db';
+import { db } from '$lib/server/db';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import marked from '$lib/marked/marked';
 import DOMPurify from 'isomorphic-dompurify';
 import { editBookSchema, joinErrors } from '$lib/zod/schemas';
@@ -18,16 +19,15 @@ export const load = (async ({ locals, url, params }) => {
 	const book = await db
 		.selectFrom('book')
 		.selectAll('book')
-		.select([
-			(qb) =>
-				jsonb_agg(
-					qb
-						.selectFrom('person')
-						.leftJoin('person_book', 'person_book.person_id', 'person.id')
-						.select(['person.id', 'person.name', 'person_book.role'])
-						.select('person_book.role')
-						.whereRef('person_book.book_id', '=', 'book.id')
-				).as('people')
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
+					.selectFrom('person')
+					.leftJoin('person_book', 'person_book.person_id', 'person.id')
+					.select(['person.id', 'person.name', 'person_book.role'])
+					.select('person_book.role')
+					.whereRef('person_book.book_id', '=', 'book.id')
+			).as('people')
 		])
 		.where('id', '=', id)
 		.groupBy('book.id')

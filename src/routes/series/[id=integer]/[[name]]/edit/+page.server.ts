@@ -1,7 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db, jsonb_agg } from '$lib/server/db';
+import { db } from '$lib/server/db';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { editSeriesSchema, joinErrors } from '$lib/zod/schemas';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
@@ -16,16 +17,16 @@ export const load = (async ({ locals, url, params }) => {
 	const series = await db
 		.selectFrom('series')
 		.selectAll('series')
-		.select((qb) =>
-			jsonb_agg(
-				qb
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
 					.selectFrom('book_info')
 					.innerJoin('book_series', 'book_series.book_id', 'book_info.id')
 					.select(['book_info.id', 'book_info.title as name'])
 					.whereRef('book_series.series_id', '=', 'series.id')
 					.orderBy('book_info.release_date')
 			).as('books')
-		)
+		])
 		.where('series.id', '=', id)
 		.executeTakeFirst();
 

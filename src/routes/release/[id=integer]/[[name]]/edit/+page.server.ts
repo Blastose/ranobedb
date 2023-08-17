@@ -1,7 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db, jsonb_agg } from '$lib/server/db';
+import { db } from '$lib/server/db';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { editReleaseSchema, joinErrors } from '$lib/zod/schemas';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
@@ -17,23 +18,21 @@ export const load = (async ({ locals, url, params }) => {
 	const release = await db
 		.selectFrom('release')
 		.selectAll('release')
-		.select([
-			(qb) =>
-				jsonb_agg(
-					qb
-						.selectFrom('publisher')
-						.innerJoin('publisher_release', 'publisher_release.publisher_id', 'publisher.id')
-						.select(['publisher.id', 'publisher.name'])
-						.whereRef('publisher_release.release_id', '=', 'release.id')
-				).as('publishers'),
-			(qb) =>
-				jsonb_agg(
-					qb
-						.selectFrom('book')
-						.innerJoin('book_release', 'book_release.book_id', 'book.id')
-						.select(['book.id', 'book.title as name'])
-						.whereRef('book_release.release_id', '=', 'release.id')
-				).as('books')
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
+					.selectFrom('publisher')
+					.innerJoin('publisher_release', 'publisher_release.publisher_id', 'publisher.id')
+					.select(['publisher.id', 'publisher.name'])
+					.whereRef('publisher_release.release_id', '=', 'release.id')
+			).as('publishers'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('book')
+					.innerJoin('book_release', 'book_release.book_id', 'book.id')
+					.select(['book.id', 'book.title as name'])
+					.whereRef('book_release.release_id', '=', 'release.id')
+			).as('books')
 		])
 		.where('release.id', '=', id)
 		.executeTakeFirst();

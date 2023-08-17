@@ -1,7 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db, jsonb_agg } from '$lib/server/db';
+import { db } from '$lib/server/db';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import marked from '$lib/marked/marked';
 import DOMPurify from 'isomorphic-dompurify';
 import { editPublisherSchema, joinErrors } from '$lib/zod/schemas';
@@ -18,16 +19,15 @@ export const load = (async ({ locals, url, params }) => {
 	const publisher = await db
 		.selectFrom('publisher')
 		.selectAll('publisher')
-		.select([
-			(qb) =>
-				jsonb_agg(
-					qb
-						.selectFrom('publisher as publisher_child')
-						.innerJoin('publisher_relation', 'publisher_relation.id_child', 'publisher_child.id')
-						.select(['publisher_child.id', 'publisher_child.name', 'publisher_relation.type'])
-						.distinct()
-						.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
-				).as('publisher_rels')
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
+					.selectFrom('publisher as publisher_child')
+					.innerJoin('publisher_relation', 'publisher_relation.id_child', 'publisher_child.id')
+					.select(['publisher_child.id', 'publisher_child.name', 'publisher_relation.type'])
+					.distinct()
+					.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
+			).as('publisher_rels')
 		])
 		.where('publisher.id', '=', id)
 		.executeTakeFirst();
