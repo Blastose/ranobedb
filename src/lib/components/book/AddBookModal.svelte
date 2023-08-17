@@ -39,8 +39,12 @@
 					if (result.type === 'success') {
 						await invalidateAll();
 						modalBook.set(null);
+						let message = 'Success';
+						if (result.data?.message) {
+							message = String(result.data?.message);
+						}
 						toast.set({
-							message: result.data?.message ?? 'Success',
+							message,
 							closeButton: false,
 							icon: 'checkCircle'
 						});

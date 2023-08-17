@@ -15,9 +15,7 @@ CREATE TYPE public.user_role AS ENUM ('admin', 'moderator', 'user');
 CREATE TABLE public.auth_key (
     id text NOT NULL PRIMARY KEY,
     user_id uuid NOT NULL,
-    primary_key boolean NOT NULL,
     hashed_password text,
-    expires bigint,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id)
 );
 

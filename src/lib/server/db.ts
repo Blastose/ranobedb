@@ -14,10 +14,12 @@ export const jsonb_agg = <DB, TB extends keyof DB, O = object>(
 	return sql<O[]>`coalesce((select jsonb_agg(x) from (${qb}) x), '[]'::jsonb)`;
 };
 
+export const pool = new Pool({
+	connectionString: DATABASE_URL
+});
+
 export const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
-		pool: new Pool({
-			connectionString: DATABASE_URL
-		})
+		pool
 	})
 });

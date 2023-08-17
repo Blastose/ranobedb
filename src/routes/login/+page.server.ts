@@ -2,7 +2,7 @@ import { auth } from '$lib/server/lucia';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { loginSchema } from '$lib/zod/schemas';
 import type { PageServerLoad } from './$types';
-import { LuciaError } from 'lucia-auth';
+import { LuciaError } from 'lucia';
 
 export const load = (async ({ locals }) => {
 	const session = await locals.auth.validate();
@@ -30,7 +30,7 @@ export const actions = {
 
 		try {
 			const key = await auth.useKey('email', email, password);
-			const session = await auth.createSession(key.userId);
+			const session = await auth.createSession({ userId: key.userId, attributes: {} });
 
 			locals.auth.setSession(session);
 		} catch (error) {

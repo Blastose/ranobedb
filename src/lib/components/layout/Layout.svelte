@@ -9,9 +9,10 @@
 	import largeScreen from '$lib/stores/largeScreen';
 	import modalBook from '$lib/stores/modalBook';
 	import Fly from '$lib/components/layout/Fly.svelte';
+	import type { User } from 'lucia';
 
 	export let pathname: string;
-	export let user: Lucia.UserAttributes | null;
+	export let user: User | undefined;
 </script>
 
 <Toast />

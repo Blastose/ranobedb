@@ -4,9 +4,10 @@
 	import SidebarCloseButton from '$lib/components/sidebar/SidebarCloseButton.svelte';
 	import focusSidebar from '$lib/stores/focusSidebar';
 	import { browser } from '$app/environment';
+	import type { User } from 'lucia';
 
 	export let tabindex: boolean;
-	export let user: Lucia.UserAttributes | null;
+	export let user: User | undefined;
 	let closeBtn: SidebarCloseButton;
 
 	$: if (browser && $focusSidebar) {

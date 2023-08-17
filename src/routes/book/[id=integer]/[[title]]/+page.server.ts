@@ -4,9 +4,10 @@ import { db, jsonb_agg } from '$lib/server/db';
 
 export const load = (async ({ params, locals }) => {
 	const id = Number(params.id);
-	const { session, user } = await locals.auth.validateUser();
+	const session = await locals.auth.validate();
+	const user = session?.user;
 	let readingStatusPromise;
-	if (session) {
+	if (session && user) {
 		readingStatusPromise = db
 			.selectFrom('reads')
 			.leftJoin('book_info', 'book_info.id', 'reads.book_id')

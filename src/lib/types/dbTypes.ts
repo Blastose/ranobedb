@@ -39,9 +39,7 @@ export type ReadingListLabelType = (typeof ReadingListLabelArray)[number];
 export interface AuthKey {
 	id: string;
 	user_id: string;
-	primary_key: boolean;
 	hashed_password: string | null;
-	expires: BigIntColumnType | null;
 }
 
 export interface AuthSession {

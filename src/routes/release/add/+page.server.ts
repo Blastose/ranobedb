@@ -28,12 +28,13 @@ type AddReleaseErrorType = {
 
 export const actions = {
 	default: async ({ request, locals }) => {
-		const { session, user } = await locals.auth.validateUser();
+		const session = await locals.auth.validate();
 		if (!session) {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
 			} as AddReleaseErrorType);
 		}
+		const user = session.user;
 		if (user.role !== 'admin') {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
