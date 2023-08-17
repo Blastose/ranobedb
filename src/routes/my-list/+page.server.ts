@@ -6,10 +6,11 @@ import { sql } from 'kysely';
 import { getPaginationFromUrl } from '$lib/util/getPaginationFromUrl';
 
 export const load = (async ({ locals, url }) => {
-	const { session, user } = await locals.auth.validateUser();
+	const session = await locals.auth.validate();
 	if (!session) {
 		throw redirect(303, createRedirectUrl('login', url));
 	}
+	const user = session.user;
 
 	const labelParamFilter = url.searchParams.get('q');
 	let labelFilter = '';

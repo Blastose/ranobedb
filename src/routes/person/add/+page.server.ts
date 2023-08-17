@@ -24,12 +24,13 @@ type AddPersonErrorType = {
 
 export const actions = {
 	default: async ({ request, locals }) => {
-		const { session, user } = await locals.auth.validateUser();
+		const session = await locals.auth.validate();
 		if (!session) {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
 			} as AddPersonErrorType);
 		}
+		const user = session.user;
 		if (user.role !== 'admin') {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
@@ -56,15 +57,15 @@ export const actions = {
 				const returnedPerson = await trx
 					.insertInto('person')
 					.values({
-						person_name: parsedForm.data.name,
-						person_name_romaji: parsedForm.data.nameRomaji || null,
-						person_description: description || null,
-						person_description_markdown: parsedForm.data.description || null
+						name: parsedForm.data.name,
+						name_romaji: parsedForm.data.nameRomaji || null,
+						description: description || null,
+						description_markdown: parsedForm.data.description || null
 					})
-					.returning('person.person_id')
+					.returning('person.id')
 					.executeTakeFirstOrThrow();
 
-				addedPersonId = returnedPerson.person_id;
+				addedPersonId = returnedPerson.id;
 			});
 		} catch (e) {
 			return fail(400, {

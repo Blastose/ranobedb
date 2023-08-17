@@ -3,8 +3,9 @@
 	import { clickOutside } from '$lib/util/clickOutside';
 	import profileMenu from '$lib/stores/profileMenu';
 	import { fly } from 'svelte/transition';
+	import type { User } from 'lucia';
 
-	export let user: Lucia.UserAttributes | null;
+	export let user: User | undefined;
 	export let toggleButton: Node | null = null;
 </script>
 

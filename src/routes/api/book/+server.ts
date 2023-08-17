@@ -2,6 +2,7 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { json } from '@sveltejs/kit';
 import { addCharacterBetweenString } from '$lib/util/addCharacterBetweenString';
+import type { Expression, SqlBool } from 'kysely';
 
 export const GET = (async ({ url }) => {
 	const nameAsNumber = Number(url.searchParams.get('name'));
@@ -11,9 +12,15 @@ export const GET = (async ({ url }) => {
 	const people = await db
 		.selectFrom('book')
 		.select(['id', 'title as name'])
-		.where('title', 'ilike', name)
-		.orWhere('title_romaji', 'ilike', name)
-		.$if(!isNaN(nameAsNumber), (qb) => qb.orWhere('id', '=', nameAsNumber))
+		.where(({ eb }) => {
+			const ors: Expression<SqlBool>[] = [];
+			ors.push(eb('title', 'ilike', name));
+			ors.push(eb('title_romaji', 'ilike', name));
+			if (!isNaN(nameAsNumber)) {
+				ors.push(eb('id', '=', nameAsNumber));
+			}
+			return eb.or(ors);
+		})
 		.limit(16)
 		.orderBy('title_romaji')
 		.execute();

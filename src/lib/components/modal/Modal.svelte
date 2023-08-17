@@ -13,7 +13,7 @@
 		}
 	};
 
-	const useEscToClose = (_node: HTMLDivElement) => {
+	const useEscToClose = (_node: HTMLButtonElement) => {
 		document.addEventListener('keydown', escapeClose);
 
 		return {
@@ -30,7 +30,7 @@
 	}
 
 	let tabArrayIndex: number;
-	let dialogContainer: HTMLDivElement;
+	let dialogContainer: HTMLButtonElement;
 	let focusableElements: NodeList;
 
 	const closeOnDialogContainer = (e: Event) => {
@@ -51,7 +51,7 @@
 		}
 	};
 
-	const focusTrap = (node: HTMLDivElement) => {
+	const focusTrap = (node: HTMLButtonElement) => {
 		tabArrayIndex = 0;
 		focusableElements = node.querySelectorAll('input, button, select, a');
 
@@ -72,7 +72,7 @@
 </script>
 
 {#if $modalBook}
-	<div
+	<button
 		class="dialog-container"
 		use:focusTrap
 		use:useEscToClose
@@ -83,12 +83,12 @@
 				e.preventDefault();
 			}
 		}}
-		transition:fade={{ duration: 150 }}
+		transition:fade|global={{ duration: 150 }}
 	>
 		<dialog
 			aria-label="Add/Edit book to reading list"
 			open={Boolean($modalBook)}
-			transition:fly={{ y: -10, duration: 150 }}
+			transition:fly|global={{ y: -10, duration: 150 }}
 		>
 			<ModalCloseButton
 				onClose={() => {
@@ -102,7 +102,7 @@
 				finishDate={$modalBook.finishDate}
 			/>
 		</dialog>
-	</div>
+	</button>
 {/if}
 
 <style>
@@ -110,6 +110,8 @@
 		position: fixed;
 		display: flex;
 		place-items: center;
+		text-align: left;
+		cursor: default;
 		z-index: 51;
 		width: 100%;
 		height: 100vh;

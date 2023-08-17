@@ -1,7 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db, jsonb_agg } from '$lib/server/db';
+import { db } from '$lib/server/db';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { editReleaseSchema, joinErrors } from '$lib/zod/schemas';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
@@ -17,27 +18,21 @@ export const load = (async ({ locals, url, params }) => {
 	const release = await db
 		.selectFrom('release')
 		.selectAll('release')
-		.select([
-			(qb) =>
-				jsonb_agg(
-					qb
-						.selectFrom('publisher')
-						.innerJoin(
-							'publisher_release_rel',
-							'publisher_release_rel.publisher_id',
-							'publisher.id'
-						)
-						.select(['publisher.id', 'publisher.name'])
-						.whereRef('publisher_release_rel.release_id', '=', 'release.id')
-				).as('publishers'),
-			(qb) =>
-				jsonb_agg(
-					qb
-						.selectFrom('book')
-						.innerJoin('book_release_rel', 'book_release_rel.book_id', 'book.id')
-						.select(['book.id', 'book.title as name'])
-						.whereRef('book_release_rel.release_id', '=', 'release.id')
-				).as('books')
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
+					.selectFrom('publisher')
+					.innerJoin('publisher_release', 'publisher_release.publisher_id', 'publisher.id')
+					.select(['publisher.id', 'publisher.name'])
+					.whereRef('publisher_release.release_id', '=', 'release.id')
+			).as('publishers'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('book')
+					.innerJoin('book_release', 'book_release.book_id', 'book.id')
+					.select(['book.id', 'book.title as name'])
+					.whereRef('book_release.release_id', '=', 'release.id')
+			).as('books')
 		])
 		.where('release.id', '=', id)
 		.executeTakeFirst();
@@ -62,12 +57,13 @@ type EditReleaseErrorType = {
 
 export const actions = {
 	default: async ({ request, params, locals }) => {
-		const { session, user } = await locals.auth.validateUser();
+		const session = await locals.auth.validate();
 		if (!session) {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to edit.' }
 			} as EditReleaseErrorType);
 		}
+		const user = session.user;
 		if (user.role !== 'admin') {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to edit.' }
@@ -107,39 +103,36 @@ export const actions = {
 					.executeTakeFirstOrThrow();
 
 				// Update release-book relations
-				await trx
-					.deleteFrom('book_release_rel')
-					.where('book_release_rel.release_id', '=', id)
-					.execute();
+				await trx.deleteFrom('book_release').where('book_release.release_id', '=', id).execute();
 				const bookRelInsert = parsedForm.data.bookRel.map((item) => {
 					return { book_id: item.id, release_id: id };
 				});
 				if (bookRelInsert.length > 0) {
-					await trx.insertInto('book_release_rel').values(bookRelInsert).execute();
+					await trx.insertInto('book_release').values(bookRelInsert).execute();
 				}
 
 				// Update release-publisher relations
 				await trx
-					.deleteFrom('publisher_release_rel')
-					.where('publisher_release_rel.release_id', '=', id)
+					.deleteFrom('publisher_release')
+					.where('publisher_release.release_id', '=', id)
 					.execute();
 				const publisherRelInsert = parsedForm.data.publisherRel.map((item) => {
 					return { publisher_id: item.id, release_id: id };
 				});
 				if (publisherRelInsert.length > 0) {
-					await trx.insertInto('publisher_release_rel').values(publisherRelInsert).execute();
+					await trx.insertInto('publisher_release').values(publisherRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'publisher_rel') {
+				if (e.code === '23505' && e.table === 'publisher_relation') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to edit!' },
 						duplicatePublisherError: {
 							message: 'Duplicate publishers in form. Remove duplicates and try again.'
 						}
 					} as EditReleaseErrorType);
-				} else if (e.code === '23505' && e.table === 'book_release_rel') {
+				} else if (e.code === '23505' && e.table === 'book_release') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to edit!' },
 						duplicateBookError: {

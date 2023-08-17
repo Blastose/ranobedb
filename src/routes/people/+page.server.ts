@@ -11,7 +11,7 @@ export const load = (async ({ url }) => {
 		.selectFrom('person')
 		.selectAll()
 		.select(sql<string>`count(*) over()`.as('count'))
-		.orderBy('person_name_romaji')
+		.orderBy('name_romaji')
 		.limit(limit)
 		.offset(limit * (page - 1))
 		.execute();

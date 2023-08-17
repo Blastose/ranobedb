@@ -8,24 +8,11 @@
 	import drawer from '$lib/stores/drawer';
 	import largeScreen from '$lib/stores/largeScreen';
 	import modalBook from '$lib/stores/modalBook';
-
-	import { fly } from 'svelte/transition';
-	import { cubicOut } from 'svelte/easing';
-	import { beforeNavigate } from '$app/navigation';
+	import Fly from '$lib/components/layout/Fly.svelte';
+	import type { User } from 'lucia';
 
 	export let pathname: string;
-	export let user: Lucia.UserAttributes | null;
-
-	beforeNavigate((beforeNavigate) => {
-		if (beforeNavigate.delta && beforeNavigate.delta < 0) {
-			flyDirection = -1;
-		} else {
-			flyDirection = 1;
-		}
-	});
-
-	let flyDirection = 1;
-	$: flyXOffset = $largeScreen ? 20 : 12;
+	export let user: User | undefined;
 </script>
 
 <Toast />
@@ -47,11 +34,9 @@
 		<Header {user} />
 	</div>
 	<div class="content">
-		{#key pathname}
-			<div in:fly={{ x: flyXOffset * flyDirection, duration: 250, easing: cubicOut }}>
-				<slot />
-			</div>
-		{/key}
+		<Fly key={pathname}>
+			<slot />
+		</Fly>
 	</div>
 </div>
 
@@ -74,8 +59,8 @@
 	.sidebar {
 		grid-area: sidebar;
 		margin-left: -16rem;
-		transition-duration: 150ms;
-		transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+		transition-duration: 450ms;
+		transition-timing-function: cubic-bezier(0.17, 0.67, 0.23, 1.02);
 	}
 
 	.header {

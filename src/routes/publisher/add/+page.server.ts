@@ -27,12 +27,13 @@ type AddPublisherErrorType = {
 
 export const actions = {
 	default: async ({ request, locals }) => {
-		const { session, user } = await locals.auth.validateUser();
+		const session = await locals.auth.validate();
 		if (!session) {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
 			} as AddPublisherErrorType);
 		}
+		const user = session.user;
 		if (user.role !== 'admin') {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
@@ -72,12 +73,12 @@ export const actions = {
 					return { id_parent: addedPublisherId, id_child: item.id, type: item.type };
 				});
 				if (publisherRelInsert.length > 0) {
-					await trx.insertInto('publisher_rel').values(publisherRelInsert).execute();
+					await trx.insertInto('publisher_relation').values(publisherRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'publisher_rel') {
+				if (e.code === '23505' && e.table === 'publisher_relation') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to add!' },
 						duplicatePublisherError: {

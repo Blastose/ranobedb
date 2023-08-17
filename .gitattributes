@@ -1,0 +1,2 @@
+sql/migrations/committed/*.sql text eol=lf
+sql/migrations/current.sql text eol=lf

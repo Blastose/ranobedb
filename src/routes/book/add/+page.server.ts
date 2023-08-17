@@ -27,12 +27,13 @@ type AddBookErrorType = {
 
 export const actions = {
 	default: async ({ request, locals }) => {
-		const { session, user } = await locals.auth.validateUser();
+		const session = await locals.auth.validate();
 		if (!session) {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
 			} as AddBookErrorType);
 		}
+		const user = session.user;
 		if (user.role !== 'admin') {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to add.' }
@@ -76,13 +77,13 @@ export const actions = {
 					return { book_id: addedBookId, person_id: item.id, role: item.role };
 				});
 				if (personRelInsert.length > 0) {
-					await trx.insertInto('person_book_rel').values(personRelInsert).execute();
+					await trx.insertInto('person_book').values(personRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
 				console.log(e);
-				if (e.code === '23505' && e.table === 'person_book_rel') {
+				if (e.code === '23505' && e.table === 'person_book') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to add!' },
 						duplicatePersonsError: {

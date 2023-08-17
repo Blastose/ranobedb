@@ -1,7 +1,8 @@
 import type { PageServerLoad, Actions } from './$types';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db, jsonb_agg } from '$lib/server/db';
+import { db } from '$lib/server/db';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import marked from '$lib/marked/marked';
 import DOMPurify from 'isomorphic-dompurify';
 import { editPublisherSchema, joinErrors } from '$lib/zod/schemas';
@@ -18,16 +19,15 @@ export const load = (async ({ locals, url, params }) => {
 	const publisher = await db
 		.selectFrom('publisher')
 		.selectAll('publisher')
-		.select([
-			(qb) =>
-				jsonb_agg(
-					qb
-						.selectFrom('publisher as publisher_child')
-						.innerJoin('publisher_rel', 'publisher_rel.id_child', 'publisher_child.id')
-						.select(['publisher_child.id', 'publisher_child.name', 'publisher_rel.type'])
-						.distinct()
-						.whereRef('publisher_rel.id_parent', '=', 'publisher.id')
-				).as('publisher_rels')
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
+					.selectFrom('publisher as publisher_child')
+					.innerJoin('publisher_relation', 'publisher_relation.id_child', 'publisher_child.id')
+					.select(['publisher_child.id', 'publisher_child.name', 'publisher_relation.type'])
+					.distinct()
+					.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
+			).as('publisher_rels')
 		])
 		.where('publisher.id', '=', id)
 		.executeTakeFirst();
@@ -48,12 +48,13 @@ type EditPublisherErrorType = {
 
 export const actions = {
 	default: async ({ request, params, locals }) => {
-		const { session, user } = await locals.auth.validateUser();
+		const session = await locals.auth.validate();
 		if (!session) {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to edit.' }
 			} as EditPublisherErrorType);
 		}
+		const user = session.user;
 		if (user.role !== 'admin') {
 			return fail(400, {
 				error: { message: 'Insufficient permission. Unable to edit.' }
@@ -88,17 +89,20 @@ export const actions = {
 					.where('id', '=', id)
 					.executeTakeFirstOrThrow();
 
-				await trx.deleteFrom('publisher_rel').where('publisher_rel.id_parent', '=', id).execute();
+				await trx
+					.deleteFrom('publisher_relation')
+					.where('publisher_relation.id_parent', '=', id)
+					.execute();
 				const publisherRelInsert = parsedForm.data.publisherRel.map((item) => {
 					return { id_parent: id, id_child: item.id, type: item.type };
 				});
 				if (publisherRelInsert.length > 0) {
-					await trx.insertInto('publisher_rel').values(publisherRelInsert).execute();
+					await trx.insertInto('publisher_relation').values(publisherRelInsert).execute();
 				}
 			});
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'publisher_rel') {
+				if (e.code === '23505' && e.table === 'publisher_relation') {
 					return fail(400, {
 						error: { message: 'Invalid form entries. Unable to edit!' },
 						duplicatePublisherError: {

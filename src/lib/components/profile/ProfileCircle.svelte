@@ -2,8 +2,9 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import ProfileMenu from '$lib/components/profile/ProfileMenu.svelte';
 	import profileMenu from '$lib/stores/profileMenu';
+	import type { User } from 'lucia';
 
-	export let user: Lucia.UserAttributes | null;
+	export let user: User | undefined;
 	let toggleButton: Node | null = null;
 </script>
 

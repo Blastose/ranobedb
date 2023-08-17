@@ -1,9 +1,10 @@
 import type { LayoutServerLoad } from './$types';
 
 export const load = (async (event) => {
-	const { user } = await event.locals.auth.validateUser();
+	const session = await event.locals.auth.validate();
+
 	return {
 		pathname: event.url.pathname,
-		user
+		user: session?.user
 	};
 }) satisfies LayoutServerLoad;

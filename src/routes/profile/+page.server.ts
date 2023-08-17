@@ -5,7 +5,8 @@ import { db } from '$lib/server/db';
 import { sql } from 'kysely';
 
 export const load = (async ({ locals, url }) => {
-	const { user } = await locals.auth.validateUser();
+	const session = await locals.auth.validate();
+	const user = session?.user;
 	if (!user) {
 		throw redirect(303, createRedirectUrl('login', url));
 	}

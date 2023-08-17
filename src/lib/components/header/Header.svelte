@@ -6,6 +6,7 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import Logo from '$lib/components/icon/Logo.svelte';
 	import ProfileCircle from '$lib/components/profile/ProfileCircle.svelte';
+	import type { User } from 'lucia';
 
 	const openSidebar = () => {
 		if (window.matchMedia('(min-width: 1024px)').matches) {
@@ -16,7 +17,7 @@
 		focusSidebar.set(true);
 	};
 
-	export let user: Lucia.UserAttributes | null;
+	export let user: User | undefined;
 </script>
 
 <header class="header border-b border-[#4b4b4b15] dark:border-[#ffffff1a]">
