@@ -32,7 +32,7 @@ export const load = (async ({ params }) => {
 				eb
 					.selectFrom('book_info')
 					.selectAll('book_info')
-					.where(sql`publisher @> '[{"id":${sql.literal(id)}}]'`)
+					.where(sql`publisher @> '[{"id":${sql.lit(id)}}]'`)
 					.orderBy('book_info.title_romaji')
 			).as('books')
 		])
