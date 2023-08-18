@@ -3,11 +3,9 @@
 	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
 	import Drawer from '$lib/components/drawer/Drawer.svelte';
 	import Toast from '$lib/components/toast/Toast.svelte';
-	import Modal from '$lib/components/modal/Modal.svelte';
 	import sidebar from '$lib/stores/sidebar';
 	import drawer from '$lib/stores/drawer';
 	import largeScreen from '$lib/stores/largeScreen';
-	import modalBook from '$lib/stores/modalBook';
 	import Fly from '$lib/components/layout/Fly.svelte';
 	import type { User } from 'lucia';
 
@@ -16,9 +14,6 @@
 </script>
 
 <Toast />
-{#if $modalBook}
-	<Modal />
-{/if}
 <Drawer />
 
 <div class="main">

@@ -1,33 +1,39 @@
 <script lang="ts">
+	import { createDialog, melt } from '@melt-ui/svelte';
 	import type { PageData } from './$types';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import Box from '$lib/components/box/Box.svelte';
 	import ReleaseCard from '$lib/components/release/ReleaseCard.svelte';
 	import BookImageContainer from '$lib/components/book/book-image/BookImageContainer.svelte';
-	import modalBook from '$lib/stores/modalBook';
 	import { createRedirectUrl } from '$lib/util/createRedirectUrl';
 	import { page } from '$app/stores';
-	import toast from '$lib/stores/toast';
+	import AddBookModal from '$lib/components/book/AddBookModal.svelte';
+	import ModalCloseButton from '$lib/components/modal/ModalCloseButton.svelte';
+	import Modal from '$lib/components/modal/Modal.svelte';
+
+	const {
+		elements: { trigger, overlay, content, title, close, portalled },
+		states: { open }
+	} = createDialog({ preventScroll: false });
 
 	export let data: PageData;
-
-	const setModalBook = () => {
-		modalBook.set({
-			book: {
-				id: data.book.id,
-				title: data.book.title,
-				cover_image_file_name: data.book.cover_image_file_name
-			},
-			startDate: data.readingStatusResult.start_date,
-			finishDate: data.readingStatusResult.finish_date,
-			status: data.readingStatusResult.label_name
-		});
-	};
 </script>
 
 <svelte:head>
 	<title>{data.book.title} - RanobeDB</title>
 </svelte:head>
+
+<Modal {open} {portalled} {overlay} {content}>
+	<AddBookModal
+		book={data.book}
+		finishDate={data.readingStatusResult.finish_date}
+		startDate={data.readingStatusResult.start_date}
+		status={data.readingStatusResult.label_name}
+		meltTitle={title}
+		{open}
+	/>
+	<ModalCloseButton {close} />
+</Modal>
 
 <main class="layout-container">
 	<div
@@ -57,14 +63,7 @@
 			height="340"
 		/>
 		{#if data.user}
-			<button
-				class="add-button"
-				type="button"
-				on:click={() => {
-					setModalBook();
-					toast.set(null);
-				}}
-			>
+			<button class="add-button" type="button" use:melt={$trigger}>
 				{#if data.readingStatusResult.label_name}
 					{data.readingStatusResult.label_name}
 				{:else}

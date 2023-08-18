@@ -1,135 +1,56 @@
 <script lang="ts">
-	import ModalCloseButton from '$lib/components/modal/ModalCloseButton.svelte';
-	import { fly, fade } from 'svelte/transition';
-	import { navigating } from '$app/stores';
-	import AddBookModal from '$lib/components/book/AddBookModal.svelte';
-	import modalBook from '$lib/stores/modalBook';
-	import { beforeNavigate } from '$app/navigation';
+	import { melt } from '@melt-ui/svelte';
+	import type { Dialog } from '@melt-ui/svelte';
+	import type { Writable } from 'svelte/store';
+	import { fade, fly } from 'svelte/transition';
 
-	const escapeClose = (e: KeyboardEvent) => {
-		if (e.key === 'Escape') {
-			modalBook.set(null);
-			document.removeEventListener('keydown', escapeClose);
-		}
-	};
-
-	const useEscToClose = (_node: HTMLButtonElement) => {
-		document.addEventListener('keydown', escapeClose);
-
-		return {
-			destroy() {
-				document.removeEventListener('keydown', escapeClose);
-			}
-		};
-	};
-
-	$: {
-		if ($navigating && $modalBook) {
-			modalBook.set(null);
-		}
-	}
-
-	let tabArrayIndex: number;
-	let dialogContainer: HTMLButtonElement;
-	let focusableElements: NodeList;
-
-	const closeOnDialogContainer = (e: Event) => {
-		if (e.target === dialogContainer) {
-			modalBook.set(null);
-		}
-	};
-
-	const handleTab = (e: KeyboardEvent) => {
-		if (e.shiftKey && e.key === 'Tab') {
-			e.preventDefault();
-			tabArrayIndex = tabArrayIndex - 1 < 0 ? focusableElements.length - 1 : tabArrayIndex - 1;
-			(focusableElements[tabArrayIndex] as HTMLElement).focus();
-		} else if (e.key === 'Tab') {
-			e.preventDefault();
-			tabArrayIndex = (tabArrayIndex + 1) % focusableElements.length;
-			(focusableElements[tabArrayIndex] as HTMLElement).focus();
-		}
-	};
-
-	const focusTrap = (node: HTMLButtonElement) => {
-		tabArrayIndex = 0;
-		focusableElements = node.querySelectorAll('input, button, select, a');
-
-		document.addEventListener('keydown', handleTab);
-		return {
-			destroy() {
-				document.removeEventListener('keydown', handleTab);
-			}
-		};
-	};
-
-	beforeNavigate((navigation) => {
-		if ($modalBook) {
-			navigation.cancel();
-			modalBook.set(null);
-		}
-	});
+	export let portalled: Dialog['elements']['portalled'];
+	export let overlay: Dialog['elements']['overlay'];
+	export let content: Dialog['elements']['content'];
+	export let open: Writable<boolean>;
 </script>
 
-{#if $modalBook}
-	<button
-		class="dialog-container"
-		use:focusTrap
-		use:useEscToClose
-		bind:this={dialogContainer}
-		on:click={closeOnDialogContainer}
-		on:keydown={(e) => {
-			if (e.target === dialogContainer) {
-				e.preventDefault();
-			}
-		}}
-		transition:fade|global={{ duration: 150 }}
-	>
-		<dialog
-			aria-label="Add/Edit book to reading list"
-			open={Boolean($modalBook)}
-			transition:fly|global={{ y: -10, duration: 150 }}
-		>
-			<ModalCloseButton
-				onClose={() => {
-					modalBook.set(null);
-				}}
-			/>
-			<AddBookModal
-				book={$modalBook.book}
-				status={$modalBook.status}
-				startDate={$modalBook.startDate}
-				finishDate={$modalBook.finishDate}
-			/>
-		</dialog>
-	</button>
-{/if}
+<div use:melt={$portalled}>
+	{#if $open}
+		<div transition:fade={{ duration: 150 }} use:melt={$overlay} class="overlay" />
+		<div class="content" transition:fly={{ y: -10, duration: 150 }} use:melt={$content}>
+			<slot />
+		</div>
+	{/if}
+</div>
 
 <style>
-	.dialog-container {
+	.overlay {
 		position: fixed;
-		display: flex;
-		place-items: center;
-		text-align: left;
-		cursor: default;
-		z-index: 51;
-		width: 100%;
-		height: 100vh;
-		background-color: rgba(0, 0, 0, 0.473);
+		inset: 0px;
+		z-index: 50;
+		background-color: rgba(0, 0, 0, 0.5);
 	}
 
-	dialog {
-		border-radius: 0.1rem;
-		width: 100%;
+	.content {
+		position: fixed;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 50;
+		border-radius: 0.375rem;
+		background-color: white;
+		padding: 1.5rem;
+		width: 90vw;
+		max-width: 640px;
 		height: 100%;
+		max-height: 540px;
 		overflow-y: auto;
+		overflow-x: hidden;
 	}
 
-	@media (min-width: 768px) {
-		dialog {
-			border-radius: 0.375rem;
-			width: 640px;
-			max-height: 445px;
+	:global(.dark) .content {
+		background-color: var(--dark-700);
+	}
+
+	@media (min-width: 640px) {
+		.content {
+			max-height: 480px;
 		}
 	}
 </style>

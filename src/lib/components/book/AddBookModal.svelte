@@ -3,14 +3,19 @@
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import { enhance } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
-	import modalBook from '$lib/stores/modalBook';
 	import toast from '$lib/stores/toast';
 	import FormButtonLoad from '$lib/components/form/FormButtonLoad.svelte';
+	import { melt } from '@melt-ui/svelte';
+	import type { Dialog } from '@melt-ui/svelte';
+	import type { Writable } from 'svelte/store';
 
 	export let book: Pick<BookInfo, 'id' | 'title' | 'cover_image_file_name'>;
 	export let status: string | null;
 	export let startDate: string | null;
 	export let finishDate: string | null;
+	export let meltTitle: Dialog['elements']['title'];
+	export let open: Writable<boolean>;
+
 	let labels: { label_name: string; label_id: number }[] = [
 		{ label_name: 'Reading', label_id: 1 },
 		{ label_name: 'Finished', label_id: 2 },
@@ -25,7 +30,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-	<p class="text-xl">Add book to reading list</p>
+	<p use:melt={$meltTitle} class="text-xl">Add book to reading list</p>
 	<div class="layout">
 		<p class="title">{book.title}</p>
 		<img class="image" src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg" alt="" />
@@ -37,8 +42,8 @@
 				loading = newLoadingValue;
 				return async ({ result }) => {
 					if (result.type === 'success') {
+						open.set(false);
 						await invalidateAll();
-						modalBook.set(null);
 						let message = 'Success';
 						if (result.data?.message) {
 							message = String(result.data?.message);
@@ -156,7 +161,7 @@
 			'image title'
 			'form form';
 		grid-template-columns: 25% 1fr;
-		grid-template-rows: min-content min-content 1fr;
+		grid-template-rows: min-content 1fr;
 		column-gap: 1rem;
 		row-gap: 1rem;
 	}
@@ -167,7 +172,7 @@
 				'image title'
 				'image form';
 			grid-template-columns: 35% 1fr;
-			grid-template-rows: min-content min-content 1fr;
+			grid-template-rows: min-content 1fr;
 		}
 	}
 </style>
