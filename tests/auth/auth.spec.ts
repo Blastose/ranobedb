@@ -106,7 +106,7 @@ test.describe('auth', () => {
 		await page.getByLabel('email').fill('not@email.com');
 		await page.getByLabel('username').fill('username');
 		await page.getByLabel('password').fill('aejdjsldjlsee');
-		await page.locator('main form button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(
 			page.getByText('Username is already in use. Please use a different username')
