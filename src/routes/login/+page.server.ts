@@ -1,56 +1,51 @@
 import { auth } from '$lib/server/lucia';
-import { fail, redirect, type Actions } from '@sveltejs/kit';
-import { loginSchema } from '$lib/zod/schemas';
+import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { LuciaError } from 'lucia';
+import { loginSchema, type Message } from '$lib/zod/schemas2';
+import { superValidate, message } from 'sveltekit-superforms/server';
 
 export const load = (async ({ locals }) => {
 	const session = await locals.auth.validate();
 	if (session) {
 		throw redirect(303, '/');
 	}
-	return {};
+
+	const form = await superValidate<typeof loginSchema, Message>(loginSchema);
+	return { form };
 }) satisfies PageServerLoad;
 
 export const actions = {
 	default: async ({ request, locals, url }) => {
-		const form = await request.formData();
+		const form = await superValidate<typeof loginSchema, Message>(request, loginSchema);
 
-		const parsedForm = loginSchema.safeParse(form);
-		if (!parsedForm.success) {
-			return fail(400, {
-				email: form.get('email')?.toString(),
-				password: form.get('password')?.toString(),
-				error: true
-			});
+		if (!form.valid) {
+			return message(form, { status: 'error', text: 'Invalid entries in form' }, { status: 400 });
 		}
 
-		const email = parsedForm.data.email;
-		const password = parsedForm.data.password;
+		const email = form.data.email;
+		const password = form.data.password;
 
 		try {
 			const key = await auth.useKey('email', email, password);
 			const session = await auth.createSession({ userId: key.userId, attributes: {} });
-
 			locals.auth.setSession(session);
 		} catch (error) {
 			if (
 				error instanceof LuciaError &&
 				(error.message === 'AUTH_INVALID_KEY_ID' || error.message === 'AUTH_INVALID_PASSWORD')
 			) {
-				return fail(400, {
-					email,
-					password,
-					message: 'Invalid login credentials',
-					error: true
-				});
+				return message(
+					form,
+					{ status: 'error', text: 'Invalid login credentials' },
+					{ status: 400 }
+				);
 			}
-			return fail(500, {
-				email,
-				password,
-				message: 'An unknown error has occurred',
-				error: true
-			});
+			return message(
+				form,
+				{ status: 'error', text: 'An unknown error has occurred' },
+				{ status: 500 }
+			);
 		}
 
 		const redirectUrl = url.searchParams.get('redirect');

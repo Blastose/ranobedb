@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let type: 'success' | 'error';
+	export let type: 'success' | 'error' | 'warning';
 </script>
 
 <div class="alert" class:success={type === 'success'} class:error={type === 'error'}>
