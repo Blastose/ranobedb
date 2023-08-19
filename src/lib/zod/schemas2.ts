@@ -1,4 +1,9 @@
+import { ReadingListLabelArray } from '$lib/types/dbTypes';
 import { z } from 'zod';
+
+const ISODateRegex = /\d{4}-[01]\d-[0-3]\d/;
+
+export const ISODate = z.string().regex(ISODateRegex, 'Date must be a valid ISO date');
 
 export type Message = { status: 'error' | 'success' | 'warning'; text: string };
 
@@ -20,4 +25,12 @@ export const signupSchema = z.object({
 		.string({ required_error: 'Password is required' })
 		.min(6, { message: 'Password must be between 6 and 255 characters' })
 		.max(255, { message: 'Password must be between 6 and 255 characters' })
+});
+
+export const userBookSchema = z.object({
+	startDate: ISODate.or(z.literal('')).optional(),
+	finishDate: ISODate.or(z.literal('')).optional(),
+	label: z.enum(ReadingListLabelArray),
+	type: z.enum(['add', 'remove', 'update']),
+	inList: z.boolean().optional()
 });

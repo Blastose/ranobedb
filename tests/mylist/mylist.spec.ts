@@ -11,6 +11,8 @@ test.describe('add/edit/remove books from my list', () => {
 		await page.getByLabel('Finish date').fill('2020-12-12');
 		await page.getByLabel('Status').selectOption('Finished');
 		await page.getByRole('dialog').getByRole('button', { name: 'Add' }).click();
+		await page.goto('/');
+		await page.goto('/book/1032');
 		await expect(page.locator('main button.add-button')).toHaveText('Finished');
 
 		await page.locator('main').getByRole('button', { name: 'Finished' }).click();
@@ -18,6 +20,8 @@ test.describe('add/edit/remove books from my list', () => {
 		await page.getByLabel('Finish date').fill('2020-12-31');
 		await page.getByLabel('Status').selectOption('Plan to read');
 		await page.getByRole('dialog').getByRole('button', { name: 'Update' }).click();
+		await page.goto('/');
+		await page.goto('/book/1032');
 		await expect(page.locator('main button.add-button')).toHaveText('Plan to read');
 
 		await page.locator('main').getByRole('button', { name: 'Plan to read' }).click();

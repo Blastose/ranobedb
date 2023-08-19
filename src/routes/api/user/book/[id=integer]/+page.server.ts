@@ -1,6 +1,8 @@
 import { fail, type Actions } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
-import { userBookSchema } from '$lib/zod/schemas';
+import { userBookSchema } from '$lib/zod/schemas2';
+import { superValidate, message } from 'sveltekit-superforms/server';
+import type { Message } from '$lib/zod/schemas2';
 
 export const actions = {
 	default: async ({ params, request, locals }) => {
@@ -9,21 +11,18 @@ export const actions = {
 			return fail(401);
 		}
 		const user = session.user;
-
 		const readerId = user.readerId;
 
-		const form = await request.formData();
-
-		const parsedForm = userBookSchema.safeParse(form);
-		if (!parsedForm.success) {
-			return fail(400);
+		const form = await superValidate<typeof userBookSchema, Message>(request, userBookSchema);
+		if (!form.valid) {
+			return message(form, { status: 'error', text: 'Invalid form' }, { status: 400 });
 		}
 
-		const type = parsedForm.data.type;
+		const type = form.data.type;
 		const bookId = Number(params.id);
-		const startDate = parsedForm.data.startDate || null;
-		const finishDate = parsedForm.data.finishDate || null;
-		const status = parsedForm.data.label;
+		const startDate = form.data.startDate || null;
+		const finishDate = form.data.finishDate || null;
+		const status = form.data.label;
 
 		let successMessage = '';
 		try {
@@ -83,9 +82,9 @@ export const actions = {
 			});
 		} catch (e) {
 			console.log(e);
-			return fail(400);
+			return message(form, { status: 'error', text: 'An error has occurred' }, { status: 400 });
 		}
 
-		return { success: true, message: successMessage };
+		return message(form, { status: 'success', text: successMessage });
 	}
 } satisfies Actions;

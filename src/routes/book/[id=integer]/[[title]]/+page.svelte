@@ -24,14 +24,7 @@
 </svelte:head>
 
 <Modal {open} {portalled} {overlay} {content}>
-	<AddBookModal
-		book={data.book}
-		finishDate={data.readingStatusResult.finish_date}
-		startDate={data.readingStatusResult.start_date}
-		status={data.readingStatusResult.label_name}
-		meltTitle={title}
-		{open}
-	/>
+	<AddBookModal dataForm={data.form} book={data.book} meltTitle={title} {open} />
 	<ModalCloseButton {close} />
 </Modal>
 

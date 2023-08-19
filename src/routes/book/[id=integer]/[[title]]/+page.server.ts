@@ -2,6 +2,9 @@ import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { superValidate } from 'sveltekit-superforms/server';
+import { userBookSchema, type Message } from '$lib/zod/schemas2';
+import type { ReadingListLabelType } from '$lib/types/dbTypes';
 
 export const load = (async ({ params, locals }) => {
 	const id = Number(params.id);
@@ -68,5 +71,15 @@ export const load = (async ({ params, locals }) => {
 		readingStatusResult = readingStatus;
 	}
 
-	return { book, readingStatusResult, user };
+	const form = await superValidate<typeof userBookSchema, Message>(
+		{
+			startDate: readingStatusResult.start_date ?? undefined,
+			finishDate: readingStatusResult.finish_date ?? undefined,
+			label: (readingStatusResult.label_name as ReadingListLabelType) ?? 'Reading',
+			inList: Boolean(readingStatus)
+		},
+		userBookSchema
+	);
+
+	return { book, readingStatusResult, user, form };
 }) satisfies PageServerLoad;

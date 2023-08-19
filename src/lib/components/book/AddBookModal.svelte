@@ -1,20 +1,46 @@
 <script lang="ts">
 	import type { BookInfo } from '$lib/types/dbTypes';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
-	import { enhance } from '$app/forms';
-	import { invalidateAll } from '$app/navigation';
 	import toast from '$lib/stores/toast';
 	import FormButtonLoad from '$lib/components/form/FormButtonLoad.svelte';
 	import { melt } from '@melt-ui/svelte';
 	import type { Dialog } from '@melt-ui/svelte';
 	import type { Writable } from 'svelte/store';
+	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { Message, userBookSchema } from '$lib/zod/schemas2';
+	import { superForm } from 'sveltekit-superforms/client';
+	import FormInput from '$lib/components/form2/FormInput.svelte';
+	import FormSelect from '$lib/components/form2/FormSelect.svelte';
 
 	export let book: Pick<BookInfo, 'id' | 'title' | 'cover_image_file_name'>;
-	export let status: string | null;
-	export let startDate: string | null;
-	export let finishDate: string | null;
 	export let meltTitle: Dialog['elements']['title'];
 	export let open: Writable<boolean>;
+	export let dataForm: SuperValidated<typeof userBookSchema, Message>;
+
+	const supForm = superForm(dataForm, {
+		onSubmit: () => {
+			loading = newLoadingValue;
+		},
+		onUpdate: ({ form }) => {
+			form.message;
+			loading = null;
+			if (!form.valid || (form.message && form.message.status === 'error')) {
+				toast.set({
+					icon: 'close',
+					message: form.message?.text ?? 'An error has occurred',
+					closeButton: false
+				});
+				return;
+			}
+			open.set(false);
+			toast.set({
+				icon: 'checkCircle',
+				message: form.message?.text ?? 'Success',
+				closeButton: false
+			});
+		}
+	});
+	const { enhance, form } = supForm;
 
 	let labels: { label_name: string; label_id: number }[] = [
 		{ label_name: 'Reading', label_id: 1 },
@@ -24,9 +50,16 @@
 		{ label_name: 'On hold', label_id: 5 }
 	];
 
+	const labelsForm = labels.map((v) => {
+		return {
+			displayText: v.label_name,
+			value: v.label_name
+		};
+	});
+
 	let newLoadingValue: 'add' | 'update' | 'remove' | null = null;
 	let loading: 'add' | 'update' | 'remove' | null = null;
-	let statusOption = status ?? 'Reading';
+	let defaultStatusOption = $form.label ?? 'Reading';
 </script>
 
 <div class="flex flex-col gap-2">
@@ -34,57 +67,39 @@
 	<div class="layout">
 		<p class="title">{book.title}</p>
 		<img class="image" src="{PUBLIC_IMAGE_URL}/{book.cover_image_file_name}.jpg" alt="" />
-		<form
-			class="form"
-			method="POST"
-			action="/api/user/book/{book.id}"
-			use:enhance={() => {
-				loading = newLoadingValue;
-				return async ({ result }) => {
-					if (result.type === 'success') {
-						open.set(false);
-						await invalidateAll();
-						let message = 'Success';
-						if (result.data?.message) {
-							message = String(result.data?.message);
-						}
-						toast.set({
-							message,
-							closeButton: false,
-							icon: 'checkCircle'
-						});
-					} else {
-						toast.set({ message: 'An unknown error has occurred.', closeButton: false });
-					}
-					loading = null;
-				};
-			}}
-		>
+		<form class="form" method="POST" action="/api/user/book/{book.id}" use:enhance>
 			<div class="flex flex-col gap-1">
-				<label for="startDate">Start date</label>
-				<input class="input" type="date" name="startDate" id="startDate" bind:value={startDate} />
-
-				<label for="finishDate">Finish date</label>
-				<input
-					class="input"
+				<FormInput
+					form={supForm}
+					field="startDate"
+					padding={false}
+					showRequiredSymbolIfRequired={false}
 					type="date"
-					name="finishDate"
-					id="finishDate"
-					bind:value={finishDate}
+					label="Start date"
 				/>
 
-				<label for="label">Status</label>
-				<select bind:value={statusOption} class="input" name="label" id="label">
-					{#each labels as label (label.label_id)}
-						<option selected={label.label_name === status} value={label.label_name}>
-							{label.label_name}
-						</option>
-					{/each}
-				</select>
+				<FormInput
+					form={supForm}
+					field="finishDate"
+					padding={false}
+					showRequiredSymbolIfRequired={false}
+					type="date"
+					label="Finish date"
+				/>
+
+				<FormSelect
+					form={supForm}
+					field="label"
+					padding={false}
+					showRequiredSymbolIfRequired={false}
+					label="Status"
+					dropdownOptions={labelsForm}
+					selectedValue={defaultStatusOption}
+				/>
 			</div>
 
 			<div class="flex flex-col gap-2">
-				{#if status}
+				{#if $form.inList}
 					<FormButtonLoad
 						name="type"
 						text="Update"

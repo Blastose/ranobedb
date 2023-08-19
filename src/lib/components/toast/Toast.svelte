@@ -3,6 +3,7 @@
 	import { fade } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { navigating } from '$app/stores';
+	import { browser } from '$app/environment';
 
 	const useHide = (_node: HTMLDivElement) => {
 		let timer = setTimeout(() => {
@@ -17,7 +18,7 @@
 	};
 
 	$: {
-		if ($navigating) {
+		if ($navigating && browser) {
 			toast.set(null);
 		}
 	}

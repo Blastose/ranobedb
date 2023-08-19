@@ -4,7 +4,7 @@
 	import { formFieldProxy, type SuperForm } from 'sveltekit-superforms/client';
 
 	type T = $$Generic<AnyZodObject>;
-	type inputType = 'text' | 'password' | 'email';
+	type inputType = 'text' | 'password' | 'email' | 'date';
 
 	export let form: SuperForm<ZodValidation<T>, any>;
 	export let field: FormPathLeaves<z.infer<T>>;
@@ -12,6 +12,8 @@
 	export let label: string = '';
 	export let placeholder: string = '';
 	export let type: inputType = 'text';
+	export let padding: boolean = true;
+	export let showRequiredSymbolIfRequired: boolean = true;
 
 	const { path, value, errors, constraints } = formFieldProxy(form, field);
 </script>
@@ -20,7 +22,7 @@
 	<label class="flex flex-col gap-1">
 		<span>
 			<span class="dark:text-white">{label || String(path)}</span>
-			{#if $constraints?.required}
+			{#if $constraints?.required && showRequiredSymbolIfRequired}
 				<span class="text-red-600 dark:text-red-400">*</span>
 			{/if}
 		</span>
@@ -29,6 +31,7 @@
 			name={field}
 			{placeholder}
 			class="input"
+			class:reset-padding={!padding}
 			class:error={$errors}
 			aria-invalid={$errors ? 'true' : undefined}
 			bind:value={$value}
@@ -46,6 +49,10 @@
 		background-color: rgb(229 231 235);
 		padding: 0.5rem 0.75rem;
 		border-radius: 0.375rem;
+	}
+
+	:global(.input.reset-padding) {
+		padding: 0.5rem;
 	}
 
 	:global(.input:focus) {
