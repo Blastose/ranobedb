@@ -1097,7 +1097,7 @@ packages:
 
   /chart.js@4.2.0:
     resolution: {integrity: sha512-wbtcV+QKeH0F7gQZaCJEIpsNriFheacouJQTVIjITi3eQA8bTlIBoknz0+dgV79aeKLNMAX+nDslIVE/nJ3rzA==}
-    engines: {pnpm: ^7.0.0}
+    engines: {pnpm: ^8.7.0}
     dependencies:
       '@kurkle/color': 0.3.2
     dev: false

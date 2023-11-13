@@ -47,7 +47,7 @@
 <style>
 	:global(.input) {
 		background-color: rgb(229 231 235);
-		padding: 0.5rem 0.75rem;
+		padding: 0.5rem;
 		border-radius: 0.375rem;
 	}
 

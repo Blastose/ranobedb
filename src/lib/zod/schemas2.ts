@@ -1,4 +1,4 @@
-import { ReadingListLabelArray } from '$lib/types/dbTypes';
+import { PersonRolesArray, ReadingListLabelArray } from '$lib/types/dbTypes';
 import { z } from 'zod';
 
 const ISODateRegex = /\d{4}-[01]\d-[0-3]\d/;
@@ -33,4 +33,18 @@ export const userBookSchema = z.object({
 	label: z.enum(ReadingListLabelArray),
 	type: z.enum(['add', 'remove', 'update']),
 	inList: z.boolean().optional()
+});
+
+export const editBookSchema = z.object({
+	title: z.string({ required_error: 'Title is required' }),
+	titleRomaji: z.string({ required_error: 'Title romaji is required' }),
+	description: z.string().optional(),
+	volume: z.string({ required_error: 'Volume is required' }),
+	persons: z
+		.object({
+			id: z.number(),
+			name: z.string(),
+			role: z.enum(PersonRolesArray)
+		})
+		.array()
 });
