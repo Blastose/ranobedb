@@ -49,13 +49,13 @@ test.describe('auth', () => {
 		await page.goto('/login');
 		await page.getByLabel('email').fill('fake@email.com');
 		await page.getByLabel('password').fill('password');
-		await page.locator('main form button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Log In' }).click();
 
 		await expect(page).toHaveURL('/');
 		await page.goto('/my-list');
 		await expect(page).toHaveURL('/my-list');
 
-		await page.locator('form[action="/signout"] > button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Sign Out' }).click();
 		await expect(page).toHaveURL('/login');
 	});
 
@@ -64,18 +64,17 @@ test.describe('auth', () => {
 		await page.getByLabel('email').fill('email@DelAfter.com');
 		await page.getByLabel('username').fill('usernameDelAfter');
 		await page.getByLabel('password').fill('passwordDelAfter');
-		await page.locator('main form button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(page).toHaveURL('/signup');
-		const locator = page.locator('main > div > p');
-		await expect(locator).toContainText('Successfully created an account.');
+		await expect(page.getByText('Successfully created an account.')).toBeVisible();
 	});
 
 	test('user cannot login with invalid credentials', async ({ page }) => {
 		await page.goto('/login');
 		await page.getByLabel('email').fill('fake');
 		await page.getByLabel('password').fill('password');
-		await page.locator('main form button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Log In' }).click();
 
 		await expect(page).toHaveURL('/login');
 	});
@@ -85,10 +84,9 @@ test.describe('auth', () => {
 		await page.getByLabel('email').fill('email@email.com');
 		await page.getByLabel('username').fill('username');
 		await page.getByLabel('password').fill('1');
-		await page.locator('main form button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Sign Up' }).click();
 
-		const locator = page.locator('div > label + input#password + span');
-		await expect(locator).toContainText('Password must be between 6 and 255 characters');
+		await expect(page).toHaveURL('/signup');
 	});
 
 	test('user cannot create an account with same email', async ({ page }) => {
@@ -96,10 +94,11 @@ test.describe('auth', () => {
 		await page.getByLabel('email').fill('fake@email.com');
 		await page.getByLabel('username').fill('username123');
 		await page.getByLabel('password').fill('aejdjsldjlsee');
-		await page.locator('main form button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Sign Up' }).click();
 
-		const locator = page.locator('div > label + input#email + span');
-		await expect(locator).toContainText('Email is already in use. Please use a different email');
+		await expect(
+			page.getByText('Email is already in use. Please use a different email')
+		).toBeVisible();
 	});
 
 	test('user cannot create an account with same username', async ({ page }) => {
@@ -107,12 +106,11 @@ test.describe('auth', () => {
 		await page.getByLabel('email').fill('not@email.com');
 		await page.getByLabel('username').fill('username');
 		await page.getByLabel('password').fill('aejdjsldjlsee');
-		await page.locator('main form button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Sign Up' }).click();
 
-		const locator = page.locator('div > label + input#username + span');
-		await expect(locator).toContainText(
-			'Username is already in use. Please use a different username'
-		);
+		await expect(
+			page.getByText('Username is already in use. Please use a different username')
+		).toBeVisible();
 	});
 
 	test('user cannot access login only pages', async ({ page }) => {

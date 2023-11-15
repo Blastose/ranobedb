@@ -1,23 +1,23 @@
-/// <reference types="lucia-auth" />
-declare namespace Lucia {
-	type Auth = import('$lib/server/lucia.js').Auth;
-	type DatabaseUserAttributes = {
-		username: string;
-		role: 'admin' | 'moderator' | 'user';
-		reader_id: number;
-	};
-}
+// See https://kit.svelte.dev/docs/types#app
+// for information about these interfaces
+declare global {
+	namespace Lucia {
+		type Auth = import('$lib/server/lucia').Auth;
+		type DatabaseUserAttributes = {
+			username: string;
+			role: import('$lib/server/dbTypes').UserRole;
+		};
+		type DatabaseSessionAttributes = object;
+	}
 
-/// <reference types="@sveltejs/kit" />
-declare namespace App {
-	interface Locals {
-		auth: import('lucia').AuthRequest;
+	namespace App {
+		// interface Error {}
+		interface Locals {
+			auth: import('lucia').AuthRequest;
+		}
+		// interface PageData {}
+		// interface Platform {}
 	}
 }
 
-declare namespace svelteHTML {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	interface HTMLAttributes<T> {
-		'on:outclick'?: () => void;
-	}
-}
+export {};

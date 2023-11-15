@@ -9,14 +9,14 @@ test.describe('redirect', () => {
 		await expect(page).toHaveURL('/login?redirect=/my-list');
 
 		await page.goto('/book/1031');
-		await page.locator('main a.add-button').click();
+		await page.locator('main').getByRole('link', { name: 'Add' }).click();
 		await expect(page).toHaveURL('/login?redirect=/book/1031');
 	});
 });
 
 test.describe('user is redirected after logging in', () => {
 	test.afterEach(async ({ page }) => {
-		await page.locator('form[action="/signout"] > button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Sign Out' }).click();
 		await expect(page).toHaveURL('/login');
 	});
 
@@ -26,7 +26,7 @@ test.describe('user is redirected after logging in', () => {
 		await page.goto('/login?redirect=/book/1031');
 		await page.getByLabel('email').fill('aa@aa.com');
 		await page.getByLabel('password').fill('aaaaaa');
-		await page.locator('main form button[type="submit"]').click();
+		await page.getByRole('button', { name: 'Log In' }).click();
 
 		await expect(page).toHaveURL('/book/1031');
 	});
