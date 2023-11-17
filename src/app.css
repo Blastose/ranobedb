@@ -1,3 +1,81 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	:root {
+		--header-height: 64px;
+		--bg-light: #f2f2f2;
+		--text-light: #222222;
+		--bg-dark: #222222;
+		--text-dark: #f2f2f2;
+	}
+}
+
+html {
+	overflow-x: hidden;
+	height: 100dvh;
+	background-color: var(--bg-light);
+	color: var(--text-light);
+	overflow-wrap: anywhere;
+}
+
+html.dark {
+	background-color: var(--bg-dark);
+	color: var(--text-dark);
+	color-scheme: dark;
+}
+
+body {
+	height: 100%;
+}
+
+/* Remove blue highlight on mobile presses */
+input,
+textarea,
+button,
+select,
+a {
+	-webkit-tap-highlight-color: transparent;
+}
+
+@layer components {
+	.container-rndb {
+		@apply container px-4 mx-auto;
+		transition: max-width 450ms;
+	}
+}
+
+.thin-scrollbar {
+	scrollbar-gutter: stable;
+	scrollbar-width: thin;
+	scrollbar-color: #ffffff00 transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 1px;
+	border: transparent;
+	visibility: hidden;
+}
+
+.dark .thin-scrollbar::-webkit-scrollbar-thumb {
+	background-color: rgba(255, 255, 255, 0.5);
+}
+
+.thin-scrollbar:hover {
+	scrollbar-color: #94949450 transparent;
+}
+
+.thin-scrollbar:hover::-webkit-scrollbar-thumb {
+	visibility: visible;
+}
