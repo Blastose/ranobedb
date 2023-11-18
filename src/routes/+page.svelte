@@ -4,7 +4,7 @@
 
 <PageTitle title="Home" />
 
-<main class="container-rndb">
+<main class="container-rndb flex flex-col gap-4">
 	<h1 class="font-bold text-4xl">Home</h1>
 	<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 	<a href="/books">Books</a>

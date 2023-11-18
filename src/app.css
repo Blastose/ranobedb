@@ -6,9 +6,29 @@
 	:root {
 		--header-height: 64px;
 		--bg-light: #f2f2f2;
+		--bg-light1: rgb(231, 230, 236);
 		--text-light: #222222;
 		--bg-dark: #222222;
+		--bg-dark1: rgb(48, 48, 51);
 		--text-dark: #f2f2f2;
+
+		--primary-50: #fafafa;
+		--primary-100: #e4e7ee;
+		--primary-200: #d9dbe6;
+		--primary-300: #cdcedd;
+		--primary-400: #bbbcce;
+		--primary-500: #73739c;
+		--primary-600: #696987;
+		--primary-700: #585975;
+		--primary-800: #474963;
+
+		--dark-200: #545555;
+		--dark-300: #505152;
+		--dark-400: #434446;
+		--dark-500: #38393a;
+		--dark-550: #2f3031;
+		--dark-600: #272829;
+		--dark-700: #212224;
 	}
 }
 
@@ -41,7 +61,7 @@ a {
 
 @layer components {
 	.container-rndb {
-		@apply container px-4 mx-auto;
+		@apply container px-4 sm:px-6 mx-auto;
 		transition: max-width 450ms;
 	}
 }
@@ -78,4 +98,37 @@ a {
 
 .thin-scrollbar:hover::-webkit-scrollbar-thumb {
 	visibility: visible;
+}
+
+.input {
+	background-color: rgb(229 231 235);
+	padding: 0.5rem;
+	border-radius: 0.375rem;
+}
+
+.input.reset-padding {
+	padding: 0.5rem;
+}
+
+.input:focus {
+	outline: 2px solid transparent;
+	outline-offset: 2px;
+	box-shadow: 0 0 0 2px var(--primary-600);
+}
+
+.input.error {
+	box-shadow: 0 0 0 2px rgb(238, 82, 82);
+}
+
+.input:focus.error {
+	box-shadow: 0 0 0 2px rgb(238, 82, 82);
+}
+
+.dark .input.error {
+	box-shadow: 0 0 0 2px rgb(248 113 113);
+}
+
+.dark .input {
+	background-color: var(--dark-500);
+	color: white;
 }

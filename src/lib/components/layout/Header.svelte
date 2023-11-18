@@ -14,9 +14,10 @@
 			<RanobeDb hideTextWhenWidthSmall={true} />
 		</div>
 
-		<Search />
-
-		<div class="sm:w-[168px] flex justify-end"><ProfileButton /></div>
+		<div class="flex gap-4">
+			<Search />
+			<ProfileButton />
+		</div>
 	</div>
 </header>
 

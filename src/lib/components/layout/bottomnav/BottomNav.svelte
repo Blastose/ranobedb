@@ -50,11 +50,11 @@
 		display: block;
 		height: 3.5rem;
 		view-transition-name: bottom-nav;
-		background-color: rgb(231, 230, 236);
+		background-color: var(--bg-light1);
 	}
 
 	:global(.dark) .bottom-nav {
-		background-color: rgb(48, 48, 51);
+		background-color: var(--bg-dark1);
 	}
 
 	.nav-items {

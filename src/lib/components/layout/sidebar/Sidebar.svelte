@@ -4,6 +4,8 @@
 	import SidebarListItem from './SidebarListItem.svelte';
 	import SidebarSection from './SidebarSection.svelte';
 	import type { User } from 'lucia';
+	import SidebarFormButton from './SidebarFormButton.svelte';
+	import { IconLogout } from '@tabler/icons-svelte';
 
 	export let user: User | undefined;
 </script>
@@ -30,19 +32,16 @@
 					text="Profile"
 					icon="profile"
 				/>
-				<SidebarListItem
-					active={$page.url.pathname === '/signout'}
-					href="/signout"
-					text="Sign out"
-					icon="logout"
-				/>
+				<SidebarFormButton text="Sign out" action="/logout">
+					<IconLogout />
+				</SidebarFormButton>
 			</SidebarSection>
 		{:else}
 			<SidebarSection sectionHeading="User">
 				<SidebarListItem
 					active={$page.url.pathname === '/login'}
 					href="/login"
-					text="Login"
+					text="Log in"
 					icon="login"
 				/>
 				<SidebarListItem
@@ -104,13 +103,13 @@
 		width: 100%;
 		height: 100dvh;
 		overflow-y: auto;
-		background-color: rgb(231, 230, 236);
+		background-color: var(--bg-light1);
 		display: flex;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 1.5rem;
 	}
 
 	:global(.dark) .sidebar {
-		background-color: rgb(48, 48, 51);
+		background-color: var(--bg-dark1);
 	}
 </style>

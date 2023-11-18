@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import { Kysely, PostgresDialect } from 'kysely';
 import pkg from 'pg';
 const { Pool } = pkg;
-import type { DB } from '$lib/types/dbTypes';
+import type { DB } from '$lib/server/dbTypes';
+import { generateRandomString } from 'lucia/utils';
 
 dotenv.config();
 
@@ -18,10 +19,12 @@ const db = new Kysely<DB>({
 let id: string;
 test.describe('auth', () => {
 	test.beforeAll(async () => {
+		const userId = generateRandomString(15);
 		const user = await db
 			.insertInto('auth_user')
 			.values({
-				username: 'username'
+				username: 'username',
+				id: userId
 			})
 			.returning('id')
 			.executeTakeFirstOrThrow();

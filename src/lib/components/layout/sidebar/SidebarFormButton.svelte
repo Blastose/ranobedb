@@ -1,15 +1,16 @@
 <script lang="ts">
-	export let active: boolean;
+	import { enhance } from '$app/forms';
+
 	export let text: string;
-	export let href: string;
+	export let action: string;
 </script>
 
-<a {href}>
-	<span class:active class="sidebar-item">
+<form method="post" {action} use:enhance>
+	<button type="submit" class="sidebar-item">
 		<slot />
 		{text}
-	</span>
-</a>
+	</button>
+</form>
 
 <style>
 	.sidebar-item {
@@ -18,22 +19,19 @@
 		display: flex;
 		gap: 0.5rem;
 		padding: 0.25rem 0.5rem;
+		text-align: left;
+		width: 100%;
 	}
 
 	.sidebar-item:hover {
 		background-color: rgb(202, 202, 214);
 	}
 
-	.active.sidebar-item {
-		color: var(--text-dark);
-		background-color: var(--primary-600);
-	}
-
 	:global(.dark) .sidebar-item {
 		color: var(--text-dark);
 	}
 
-	:global(.dark) .sidebar-item:hover:not(.active) {
+	:global(.dark) .sidebar-item:hover {
 		background-color: rgb(74, 74, 78);
 	}
 </style>

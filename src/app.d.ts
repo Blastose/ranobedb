@@ -18,6 +18,12 @@ declare global {
 		}
 		// interface PageData {}
 		// interface Platform {}
+		namespace Superforms {
+			type Message = {
+				type: 'error' | 'success' | 'warning';
+				text: string;
+			};
+		}
 	}
 
 	interface Document {
