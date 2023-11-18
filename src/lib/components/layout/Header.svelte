@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { User } from 'lucia';
-	import ProfileButton from './ProfileButton.svelte';
+	import ProfileButton from '$lib/components/layout/profile/ProfileButton.svelte';
 	import RanobeDb from './RanobeDB.svelte';
 	import Search from './Search.svelte';
 
@@ -16,7 +16,7 @@
 
 		<div class="flex gap-4">
 			<Search />
-			<ProfileButton />
+			<ProfileButton {user} />
 		</div>
 	</div>
 </header>
