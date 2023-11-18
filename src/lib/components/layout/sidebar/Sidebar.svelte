@@ -5,7 +5,7 @@
 	import SidebarSection from './SidebarSection.svelte';
 	import type { User } from 'lucia';
 	import SidebarFormButton from './SidebarFormButton.svelte';
-	import { IconLogout } from '@tabler/icons-svelte';
+	import Icon from '$lib/components/icon/Icon.svelte';
 
 	export let user: User | undefined;
 </script>
@@ -33,7 +33,7 @@
 					icon="profile"
 				/>
 				<SidebarFormButton text="Sign out" action="/logout">
-					<IconLogout />
+					<Icon name="logout" />
 				</SidebarFormButton>
 			</SidebarSection>
 		{:else}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { IconDatabase, IconHome, IconSearch, IconSettings } from '@tabler/icons-svelte';
+	import Icon from '$lib/components/icon/Icon.svelte';
 	import BottomNavButton from './BottomNavButton.svelte';
 </script>
 
@@ -9,7 +9,7 @@
 		<ul class="nav-items">
 			<li>
 				<BottomNavButton href="/" text="Home" active={$page.url.pathname === '/'}>
-					<IconHome />
+					<Icon name="home" />
 				</BottomNavButton>
 			</li>
 			<li>
@@ -18,7 +18,7 @@
 					text="Database"
 					active={$page.url.pathname === '/database'}
 				>
-					<IconDatabase />
+					<Icon name="database" />
 				</BottomNavButton>
 			</li>
 			<li>
@@ -27,7 +27,7 @@
 					text="Search"
 					active={$page.url.pathname === '/advanced-search'}
 				>
-					<IconSearch />
+					<Icon name="search" />
 				</BottomNavButton>
 			</li>
 			<li>
@@ -36,7 +36,7 @@
 					text="Settings"
 					active={$page.url.pathname === '/settings'}
 				>
-					<IconSettings />
+					<Icon name="settings" />
 				</BottomNavButton>
 			</li>
 		</ul>

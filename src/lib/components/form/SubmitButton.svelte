@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { IconLoader2 } from '@tabler/icons-svelte';
+	import Icon from '../icon/Icon.svelte';
 
 	export let text: string;
 	export let submitting: boolean;
@@ -10,7 +10,7 @@
 	{#if !delayed}
 		{text}
 	{:else}
-		<IconLoader2 class="animate-spin" />
+		<Icon name="loading" class="animate-spin" />
 	{/if}
 </button>
 

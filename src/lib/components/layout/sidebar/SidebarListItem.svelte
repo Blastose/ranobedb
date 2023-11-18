@@ -1,19 +1,6 @@
 <script lang="ts">
 	import SidebarItem from './SidebarItem.svelte';
-	import {
-		IconHome,
-		IconLogout,
-		IconUser,
-		IconNotebook,
-		IconBook,
-		IconBooks,
-		IconNotes,
-		IconFriends,
-		IconBuilding,
-		IconPlus,
-		IconLogin,
-		IconUserPlus
-	} from '@tabler/icons-svelte';
+	import Icon from '$lib/components/icon/Icon.svelte';
 
 	export let active: boolean;
 	export let href: string;
@@ -36,29 +23,29 @@
 <li>
 	<SidebarItem {active} {href} {text}>
 		{#if icon === 'home'}
-			<IconHome />
+			<Icon name="home" />
 		{:else if icon === 'logout'}
-			<IconLogout />
+			<Icon name="logout" />
 		{:else if icon === 'profile'}
-			<IconUser />
+			<Icon name="profile" />
 		{:else if icon === 'mylist'}
-			<IconNotebook />
+			<Icon name="bookMultiple" />
 		{:else if icon === 'books'}
-			<IconBook />
+			<Icon name="book" />
 		{:else if icon === 'series'}
-			<IconBooks />
+			<Icon name="bookshelf" />
 		{:else if icon === 'releases'}
-			<IconNotes />
+			<Icon name="file" />
 		{:else if icon === 'people'}
-			<IconFriends />
+			<Icon name="people" />
 		{:else if icon === 'publishers'}
-			<IconBuilding />
+			<Icon name="company" />
 		{:else if icon === 'add'}
-			<IconPlus />
+			<Icon name="plus" />
 		{:else if icon === 'login'}
-			<IconLogin />
+			<Icon name="login" />
 		{:else if icon === 'signup'}
-			<IconUserPlus />
+			<Icon name="signup" />
 		{/if}
 	</SidebarItem>
 </li>

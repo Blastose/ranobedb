@@ -31,13 +31,20 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="form">
-			<TextField {form} field={'email'} placeholder="Email" label="Email" />
+			<TextField
+				{form}
+				field={'email'}
+				placeholder="Email"
+				label="Email"
+				showRequiredSymbolIfRequired={false}
+			/>
 			<TextField
 				{form}
 				field={'password'}
 				type="password"
 				placeholder="Password"
 				label="Password"
+				showRequiredSymbolIfRequired={false}
 			/>
 		</svelte:fragment>
 

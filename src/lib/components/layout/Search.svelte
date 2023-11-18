@@ -1,8 +1,8 @@
 <script>
-	import { IconSearch } from '@tabler/icons-svelte';
+	import Icon from '../icon/Icon.svelte';
 </script>
 
 <div class="flex items-center gap-2">
-	<IconSearch />
+	<Icon name="search" />
 	<input class="input" type="text" placeholder="Search" />
 </div>
