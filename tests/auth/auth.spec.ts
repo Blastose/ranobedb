@@ -86,11 +86,12 @@ test.describe('auth', () => {
 
 	test('user cannot login with invalid credentials', async ({ page }) => {
 		await page.goto('/login');
-		await page.getByLabel('email').fill('fake');
+		await page.getByLabel('email').fill('fake@fake.ca');
 		await page.getByLabel('password').fill('password');
 		await page.getByRole('button', { name: 'Log In' }).click();
 
 		await expect(page).toHaveURL('/login');
+		await expect(page.getByText('Invalid login credentials')).toBeVisible();
 	});
 
 	test('user cannot create an account with invalid password', async ({ page }) => {

@@ -3,6 +3,7 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import AuthFormShell from '$lib/components/form/AuthFormShell.svelte';
 	import { superForm } from 'sveltekit-superforms/client';
+	import Alert from '$lib/components/layout/Alert.svelte';
 
 	export let data;
 
@@ -22,11 +23,9 @@
 	>
 		<svelte:fragment slot="alert">
 			{#if !$delayed && $message}
-				{#if $message.type === 'success'}
-					<p>success</p>
-				{:else}
-					<p>error</p>
-				{/if}
+				<Alert type={$message.type}>
+					<p>{$message.text}</p>
+				</Alert>
 			{/if}
 		</svelte:fragment>
 

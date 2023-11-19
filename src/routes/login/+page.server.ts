@@ -1,5 +1,5 @@
 import { loginSchema } from '$lib/zod/schema';
-import { redirect } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import { auth } from '$lib/server/lucia';
 import { message, superValidate } from 'sveltekit-superforms/server';
 import { LuciaError } from 'lucia';
@@ -20,7 +20,7 @@ export const actions = {
 		const form = await superValidate(request, loginSchema);
 
 		if (!form.valid) {
-			return message(form, { text: 'Invalid form', type: 'error' });
+			return fail(400, { form });
 		}
 
 		const email = form.data.email;
