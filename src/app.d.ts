@@ -14,9 +14,20 @@ declare global {
 		// interface Error {}
 		interface Locals {
 			auth: import('lucia').AuthRequest;
+			user: import('lucia').User | undefined;
 		}
 		// interface PageData {}
 		// interface Platform {}
+		namespace Superforms {
+			type Message = {
+				type: 'error' | 'success' | 'warning';
+				text: string;
+			};
+		}
+	}
+
+	interface Document {
+		startViewTransition(updateCallback: () => Promise<void>): ViewTransition;
 	}
 }
 

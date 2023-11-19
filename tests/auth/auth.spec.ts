@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { Kysely, PostgresDialect } from 'kysely';
 import pkg from 'pg';
 const { Pool } = pkg;
-import type { DB } from '$lib/types/dbTypes';
+import type { DB } from '$lib/server/dbTypes';
 
 dotenv.config();
 
@@ -18,10 +18,12 @@ const db = new Kysely<DB>({
 let id: string;
 test.describe('auth', () => {
 	test.beforeAll(async () => {
+		const userId = 'aaaaaaaaaaaaaaa';
 		const user = await db
 			.insertInto('auth_user')
 			.values({
-				username: 'username'
+				username: 'username',
+				id: userId
 			})
 			.returning('id')
 			.executeTakeFirstOrThrow();
@@ -39,6 +41,19 @@ test.describe('auth', () => {
 	});
 	test.afterAll(async () => {
 		await db.deleteFrom('auth_session').where('user_id', '=', id).execute();
+		await db
+			.deleteFrom('auth_session')
+			.where((eb) =>
+				eb('id', '=', 'none').or(
+					'auth_session.user_id',
+					'in',
+					eb
+						.selectFrom('auth_user')
+						.select('auth_user.id')
+						.where('auth_user.username', '=', 'usernameDelAfter')
+				)
+			)
+			.execute();
 		await db.deleteFrom('auth_key').where('id', '=', 'email:fake@email.com').execute();
 		await db.deleteFrom('auth_key').where('id', '=', 'email:email@DelAfter.com').execute();
 		await db.deleteFrom('auth_user').where('username', '=', 'username').execute();
@@ -66,17 +81,17 @@ test.describe('auth', () => {
 		await page.getByLabel('password').fill('passwordDelAfter');
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
-		await expect(page).toHaveURL('/signup');
-		await expect(page.getByText('Successfully created an account.')).toBeVisible();
+		await expect(page).toHaveURL('/');
 	});
 
 	test('user cannot login with invalid credentials', async ({ page }) => {
 		await page.goto('/login');
-		await page.getByLabel('email').fill('fake');
+		await page.getByLabel('email').fill('fake@fake.ca');
 		await page.getByLabel('password').fill('password');
 		await page.getByRole('button', { name: 'Log In' }).click();
 
 		await expect(page).toHaveURL('/login');
+		await expect(page.getByText('Invalid login credentials')).toBeVisible();
 	});
 
 	test('user cannot create an account with invalid password', async ({ page }) => {
