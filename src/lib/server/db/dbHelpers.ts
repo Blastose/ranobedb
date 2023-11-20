@@ -4,7 +4,7 @@ import {
 	type InferResult,
 	type SelectQueryBuilder,
 	expressionBuilder,
-	ExpressionWrapper
+	type ExpressionWrapper
 } from 'kysely';
 import { db } from './db';
 import type { DB, Language } from './dbTypes';

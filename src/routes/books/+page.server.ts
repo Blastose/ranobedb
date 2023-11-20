@@ -1,4 +1,4 @@
-import { getBooks2, paginationBuilderExecuteWithCount } from '$lib/server/dbHelpers';
+import { getBooks2, paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
 
 export const load = async ({ url }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;

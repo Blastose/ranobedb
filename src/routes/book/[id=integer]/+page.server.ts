@@ -1,4 +1,4 @@
-import { getBooks2 } from '$lib/server/dbHelpers.js';
+import { getBooks2 } from '$lib/server/db/dbHelpers.js';
 import { error } from '@sveltejs/kit';
 
 export const load = async ({ params }) => {

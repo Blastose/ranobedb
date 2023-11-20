@@ -5,7 +5,7 @@ declare global {
 		type Auth = import('$lib/server/lucia').Auth;
 		type DatabaseUserAttributes = {
 			username: string;
-			role: import('$lib/server/dbTypes').UserRole;
+			role: import('$lib/server/db/dbTypes').UserRole;
 		};
 		type DatabaseSessionAttributes = object;
 	}
