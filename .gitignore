@@ -4,6 +4,7 @@ node_modules
 /.svelte-kit
 /package
 /sql/codegen
+/static/covers_temp
 .env
 .env.*
 !.env.example

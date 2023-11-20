@@ -28,6 +28,7 @@
 		top: 0;
 		view-transition-name: header;
 		background-color: var(--bg-light);
+		z-index: 1;
 	}
 
 	:global(.dark) .header {

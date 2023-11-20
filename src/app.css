@@ -17,6 +17,7 @@
 		--primary-200: #d9dbe6;
 		--primary-300: #cdcedd;
 		--primary-400: #bbbcce;
+		--primary-450: rgb(154, 154, 189);
 		--primary-500: #73739c;
 		--primary-600: #696987;
 		--primary-700: #585975;
@@ -61,7 +62,7 @@ a {
 
 @layer components {
 	.container-rndb {
-		@apply container px-4 sm:px-6 mx-auto;
+		@apply container px-4 sm:px-6 pb-4 mx-auto;
 		transition: max-width 450ms;
 	}
 }
