@@ -32,7 +32,7 @@ export const getBooks = db
 
 // TODO
 type LanguagePriority = { lang: Language; romaji: boolean };
-const prio: LanguagePriority[] = [
+const defaultLangPrio: LanguagePriority[] = [
 	{ lang: 'en', romaji: false },
 	{ lang: 'jp', romaji: true }
 ];
@@ -71,7 +71,7 @@ function withBookTitleCte() {
 			.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
 			.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
 			.orderBy('book.id')
-			.orderBy(titleCaseBuilder(prio))
+			.orderBy(titleCaseBuilder(defaultLangPrio))
 	);
 }
 
