@@ -18,7 +18,7 @@
 
 		<Pagination currentPage={data.currentPage} totalPages={data.totalPages} siblingCount={1} />
 	</div>
-	<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+	<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
 		{#each data.books as book (book.id)}
 			<BookCard {book} />
 		{/each}

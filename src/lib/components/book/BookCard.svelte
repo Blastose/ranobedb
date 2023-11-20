@@ -1,7 +1,32 @@
 <script lang="ts">
 	import type { Book } from '$lib/server/dbHelpers';
+	import type { Language } from '$lib/server/dbTypes';
 
 	export let book: Book;
+
+	const prio: { lang: Language; romaji: boolean }[] = [
+		{ lang: 'en', romaji: false },
+		{ lang: 'jp', romaji: true }
+	];
+
+	function getFirstLang(languages: (typeof book)['titles']) {
+		for (const pri of prio) {
+			for (const lang of languages) {
+				if (lang.lang == pri.lang) {
+					if (pri.romaji) {
+						return lang.romaji ?? lang.title;
+					} else {
+						return lang.title;
+					}
+				}
+			}
+		}
+		return languages.at(0)?.title ?? '';
+	}
+
+	$: displayedTitle = prio.find((p) => p.lang === 'jp')?.romaji
+		? book.romaji ?? book.title
+		: book.title;
 </script>
 
 <div class="bg-[var(--bg-light1)] dark:bg-[var(--bg-dark1)] p-2 rounded-sm shadow-sm">
@@ -16,9 +41,7 @@
 			/>
 		{/if}
 		<h4 class="flex flex-col gap-2">
-			{#each book.titles.filter((v) => v.lang === 'jp' && v.official).slice(0, 1) as title}
-				<a class="line-clamp-2 font-bold text-lg" href="/book/{book.id}">{title.title}</a>
-			{/each}
+			<a class="line-clamp-2 font-bold text-lg" href="/book/{book.id}">{book.title}</a>
 			<!-- 
 			<div class="persons-container">
 				{#each book.persons as person}
@@ -28,7 +51,7 @@
 				{/each}
 			</div> -->
 
-			<p class="line-clamp-4">
+			<p class="line-clamp-4 whitespace-pre-wrap">
 				{book.description_jp}
 			</p>
 		</h4>
