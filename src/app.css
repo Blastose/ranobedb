@@ -39,6 +39,7 @@ html {
 	background-color: var(--bg-light);
 	color: var(--text-light);
 	overflow-wrap: anywhere;
+	scrollbar-gutter: stable;
 }
 
 html.dark {

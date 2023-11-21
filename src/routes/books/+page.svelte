@@ -1,14 +1,14 @@
 <script lang="ts">
 	import BookCard from '$lib/components/book/BookCard.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
-	import DbShell from '$lib/components/layout/db/DBShell.svelte';
+	import DBShell from '$lib/components/layout/db/DBShell.svelte';
 
 	export let data;
 </script>
 
 <PageTitle title="Books" />
 
-<DbShell
+<DBShell
 	name="books"
 	currentPage={data.currentPage}
 	totalPages={data.totalPages}
@@ -21,4 +21,4 @@
 			{/each}
 		</div>
 	</svelte:fragment>
-</DbShell>
+</DBShell>
