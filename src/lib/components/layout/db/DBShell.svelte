@@ -2,6 +2,7 @@
 	import Pagination from '$lib/components/pagination/Pagination.svelte';
 	import { page } from '$app/stores';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import Fly from '../Fly.svelte';
 
 	export let name: string;
 	export let currentPage: number;
@@ -41,7 +42,9 @@
 		<p>{results} results</p>
 	</div>
 
-	<slot name="display" />
+	<Fly key={$page.url.searchParams.toString()}>
+		<slot name="display" />
+	</Fly>
 
 	<div class="asdf2">
 		<Pagination url={$page.url} {currentPage} {totalPages} />

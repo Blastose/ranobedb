@@ -21,7 +21,7 @@
 >
 	<div class="header-items container-rndb">
 		<div class="visible lg:invisible">
-			<RanobeDb hideTextWhenWidthSmall={true} />
+			<RanobeDb {user} hideTextWhenWidthSmall={true} showOpenDrawerButton={true} />
 		</div>
 
 		<div class="flex gap-4">

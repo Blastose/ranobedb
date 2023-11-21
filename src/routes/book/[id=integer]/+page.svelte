@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import { themeStore } from '$lib/stores/themeStore.js';
 
 	export let data;
@@ -10,6 +11,8 @@
 			? `background-image: linear-gradient(rgba(242, 242, 242, 0.2) 0%, rgba(242, 242, 242, 1) 90%, rgba(242, 242, 242, 1) 100%), url(/covers_temp/${book.filename}.jpg);`
 			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%),  url(/covers_temp/${book.filename}.jpg);`;
 </script>
+
+<PageTitle title={book.title ?? book.title_orig ?? ''} />
 
 <main class="container-rndb -mt-16 flex flex-col gap-4">
 	<div class="banner-img h-[256px] bg-no-repeat bg-cover" style={theme}>

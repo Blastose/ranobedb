@@ -1,8 +1,9 @@
 <script lang="ts">
-	import BottomNav from '$lib/components/layout/bottomnav/BottomNav.svelte';
+	import { page } from '$app/stores';
 	import Header from './Header.svelte';
 	import Sidebar from '$lib/components/layout/sidebar/Sidebar.svelte';
 	import type { User } from 'lucia';
+	import Fly from './Fly.svelte';
 
 	export let user: User | undefined;
 </script>
@@ -16,10 +17,10 @@
 		<Header {user} />
 
 		<div class="main-wrapper">
-			<slot />
+			<Fly key={$page.url.pathname}>
+				<slot />
+			</Fly>
 		</div>
-
-		<BottomNav />
 	</div>
 </div>
 
