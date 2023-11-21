@@ -1,39 +1,24 @@
 <script lang="ts">
 	import BookCard from '$lib/components/book/BookCard.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
-	import Pagination from '$lib/components/pagination/Pagination.svelte';
+	import DbShell from '$lib/components/layout/db/DBShell.svelte';
 
 	export let data;
 </script>
 
 <PageTitle title="Books" />
 
-<main class="container-rndb flex flex-col gap-4">
-	<div class="asdf">
-		<h1 class="font-bold text-4xl">Browse books</h1>
-
-		<div>
-			<input type="text" class="input w-full max-w-xl" placeholder="Search" />
+<DbShell
+	name="books"
+	currentPage={data.currentPage}
+	totalPages={data.totalPages}
+	results={data.count}
+>
+	<svelte:fragment slot="display">
+		<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+			{#each data.books as book (book.id)}
+				<BookCard {book} />
+			{/each}
 		</div>
-
-		<Pagination currentPage={data.currentPage} totalPages={data.totalPages} siblingCount={1} />
-	</div>
-	<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
-		{#each data.books as book (book.id)}
-			<BookCard {book} />
-		{/each}
-	</div>
-
-	<div>
-		<Pagination currentPage={data.currentPage} totalPages={data.totalPages} siblingCount={1} />
-	</div>
-</main>
-
-<style>
-	.asdf {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		view-transition-name: db-head-page;
-	}
-</style>
+	</svelte:fragment>
+</DbShell>

@@ -3,10 +3,23 @@
 
 	export let currentPage: number;
 	export let totalPages: number;
-	export let siblingCount: number;
+	export let siblingCount: number = 1;
+	export let url: URL;
+
+	function createPaginationUrl(page: number | undefined, url: URL) {
+		page = page ?? 0;
+		const newUrl = new URL(url);
+		if (page < 1) {
+			page = 1;
+		} else if (page > totalPages) {
+			page = totalPages;
+		}
+		newUrl.searchParams.set('page', String(page));
+		return `${newUrl.pathname}${newUrl.search}`;
+	}
 
 	// From https://github.com/melt-ui/melt-ui/blob/ce5054a90eabd06dc3f964a15dbc571905d9cc1e/src/lib/builders/pagination/helpers.ts
-	function getPageItems(page: number) {
+	function getPageItems(page: number, totalPages: number, siblingCount: number) {
 		type PageItem = { type: 'ellipsis' | 'page'; value?: number; key: string };
 		const pageItems: Array<PageItem> = [];
 		const pagesToShow = new Set([1, totalPages]);
@@ -58,13 +71,13 @@
 		return currentPage === 1;
 	}
 
-	function rightDisabled(currentPage: number) {
+	function rightDisabled(currentPage: number, totalPages: number) {
 		return currentPage === totalPages;
 	}
 
-	$: pageItems = getPageItems(currentPage);
+	$: pageItems = getPageItems(currentPage, totalPages, siblingCount);
 	$: isPreviousDisabled = leftDisabled(currentPage);
-	$: isNextDisabled = rightDisabled(currentPage);
+	$: isNextDisabled = rightDisabled(currentPage, totalPages);
 </script>
 
 {#if currentPage <= totalPages && currentPage > 0}
@@ -75,7 +88,11 @@
 					<Icon name="chevronLeft" />
 				</button>
 			{:else}
-				<a class="arrow-button" href="/books?page={currentPage - 1}" aria-label="Previous">
+				<a
+					class="arrow-button"
+					href={createPaginationUrl(currentPage - 1, url)}
+					aria-label="Previous"
+				>
 					<Icon name="chevronLeft" />
 				</a>
 			{/if}
@@ -86,7 +103,7 @@
 					<a
 						class:active={currentPage === page.value}
 						class="pagination-button"
-						href="/books?page={page.value}">{page.value}</a
+						href={createPaginationUrl(page.value, url)}>{page.value}</a
 					>
 				{/if}
 			{/each}
@@ -95,7 +112,7 @@
 					<Icon name="chevronRight" />
 				</button>
 			{:else}
-				<a class="arrow-button" href="/books?page={currentPage + 1}" aria-label="Next">
+				<a class="arrow-button" href={createPaginationUrl(currentPage + 1, url)} aria-label="Next">
 					<Icon name="chevronRight" />
 				</a>
 			{/if}

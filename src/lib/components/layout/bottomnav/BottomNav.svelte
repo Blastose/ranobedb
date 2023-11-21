@@ -51,6 +51,7 @@
 		height: 3.5rem;
 		view-transition-name: bottom-nav;
 		background-color: var(--bg-light1);
+		z-index: 9999;
 	}
 
 	:global(.dark) .bottom-nav {

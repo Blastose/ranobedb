@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Book } from '$lib/server/dbHelpers';
-	import type { Language } from '$lib/server/dbTypes';
+	import type { Book } from '$lib/server/db/books/books';
+	import type { Language } from '$lib/server/db/dbTypes';
 
 	export let book: Book;
 

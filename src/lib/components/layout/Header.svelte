@@ -3,12 +3,22 @@
 	import ProfileButton from '$lib/components/layout/profile/ProfileButton.svelte';
 	import RanobeDb from './RanobeDB.svelte';
 	import Search from './Search.svelte';
+	import { page } from '$app/stores';
 
 	export let user: User | undefined;
-	user;
+
+	let scrollY: number | undefined;
+	$: isOnBookRoute = $page.url.pathname.startsWith('/book/');
 </script>
 
-<header class="header">
+<svelte:window bind:scrollY />
+
+<header
+	class="header"
+	class:on-book-route={isOnBookRoute}
+	class:scrolled={scrollY && scrollY > 0}
+	class:hide-bg-color={isOnBookRoute}
+>
 	<div class="header-items container-rndb">
 		<div class="visible lg:invisible">
 			<RanobeDb hideTextWhenWidthSmall={true} />
@@ -28,11 +38,19 @@
 		top: 0;
 		view-transition-name: header;
 		background-color: var(--bg-light);
-		z-index: 1;
+		z-index: 9999;
+	}
+
+	.on-book-route {
+		transition: background-color 450ms;
 	}
 
 	:global(.dark) .header {
 		background-color: var(--bg-dark);
+	}
+
+	.header.hide-bg-color:not(.scrolled) {
+		background-color: unset;
 	}
 
 	.header-items {
