@@ -57,7 +57,7 @@
 	</script>
 </svelte:head>
 
-<Layout user={data.user}>
+<Layout user={data.user} url={data.url}>
 	<slot />
 </Layout>
 

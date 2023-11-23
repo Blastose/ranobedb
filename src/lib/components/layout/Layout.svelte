@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import Header from './Header.svelte';
 	import Sidebar from '$lib/components/layout/sidebar/Sidebar.svelte';
 	import type { User } from 'lucia';
 	import Fly from './Fly.svelte';
 
 	export let user: User | undefined;
+	export let url: string;
 </script>
 
 <div class="layout-container">
@@ -17,7 +17,7 @@
 		<Header {user} />
 
 		<div class="main-wrapper">
-			<Fly key={$page.url.pathname}>
+			<Fly key={url}>
 				<slot />
 			</Fly>
 		</div>
@@ -40,6 +40,7 @@
 	.main-wrapper {
 		flex-grow: 1;
 		overflow-x: clip;
+		container: main / inline-size;
 	}
 
 	.sidebar-wrapper {

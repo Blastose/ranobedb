@@ -2,36 +2,28 @@
 	import Pagination from '$lib/components/pagination/Pagination.svelte';
 	import { page } from '$app/stores';
 	import Icon from '$lib/components/icon/Icon.svelte';
-	import Fly from '../Fly.svelte';
+	import Fly from '$lib/components/layout/Fly.svelte';
+	import SearchInput from '$lib/components/form/SearchInput.svelte';
+	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 
 	export let name: string;
 	export let currentPage: number;
 	export let totalPages: number;
 	export let results: number;
+	export let inputPlaceholder: string;
 </script>
 
 <main class="container-rndb flex flex-col gap-4">
-	<div class="asdf">
+	<div class="db-filters">
 		<h1 class="font-bold text-4xl">Browse {name}</h1>
 
 		<form method="get">
 			<div class="flex flex-col gap-2">
-				<div class="relative">
-					<input
-						name="q"
-						type="text"
-						class="input w-full max-w-xl"
-						style="padding-left: 2.5rem !important;"
-						placeholder="Search by book title"
-					/>
-					<Icon class="absolute top-2 left-2" name="search" />
-				</div>
+				<SearchInput {inputPlaceholder} ariaLabel={inputPlaceholder} />
 
-				<button
-					type="submit"
-					class="text-white flex gap-2 items-center w-fit rounded-md px-4 py-2 bg-[var(--primary-500)]"
-					><Icon name="search" />Search</button
-				>
+				<div class="w-fit">
+					<SubmitButton text="Search" delayed={false} submitting={false} />
+				</div>
 			</div>
 
 			<slot name="form" />
@@ -46,20 +38,20 @@
 		<slot name="display" />
 	</Fly>
 
-	<div class="asdf2">
+	<div class="pagination-bottom">
 		<Pagination url={$page.url} {currentPage} {totalPages} />
 	</div>
 </main>
 
 <style>
-	.asdf {
+	.db-filters {
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
 		view-transition-name: db-head-page;
 	}
 
-	.asdf2 {
+	.pagination-bottom {
 		view-transition-name: db-head-page-bottom;
 	}
 </style>

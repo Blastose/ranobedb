@@ -66,8 +66,21 @@ function withBookTitleCte() {
 export const getBooks2 = withBookTitleCte()
 	.selectFrom('cte_book')
 	.leftJoin('image', 'cte_book.image_id', 'image.id')
-	.selectAll('cte_book')
-	.select(['image.filename'])
+	.leftJoin('release_book', 'release_book.book_id', 'cte_book.id')
+	.leftJoin('release', 'release.id', 'release_book.release_id')
+	.select([
+		'cte_book.description',
+		'cte_book.description_jp',
+		'cte_book.id',
+		'cte_book.image_id',
+		'cte_book.lang',
+		'cte_book.romaji',
+		'cte_book.romaji_orig',
+		'cte_book.title',
+		'cte_book.title_orig',
+		'image.filename'
+	])
+	.select((eb) => eb.fn.min('release.release_date').as('date'))
 	.select((eb) => [
 		jsonArrayFrom(
 			eb
@@ -82,6 +95,18 @@ export const getBooks2 = withBookTitleCte()
 				.whereRef('book_person_alias.book_id', '=', 'cte_book.id')
 				.select(['book_person_alias.role_type', 'person_alias.name', 'person_alias.person_id'])
 		).as('persons')
+	])
+	.groupBy([
+		'cte_book.description',
+		'cte_book.description_jp',
+		'cte_book.id',
+		'cte_book.image_id',
+		'cte_book.lang',
+		'cte_book.romaji',
+		'cte_book.romaji_orig',
+		'cte_book.title',
+		'cte_book.title_orig',
+		'image.filename'
 	])
 	.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
 

@@ -50,6 +50,18 @@
 				{/each}
 			</div>
 		</section>
+
+		<section>
+			<h2 class="font-bold text-lg">Releases</h2>
+		</section>
+
+		<section>
+			<h2 class="font-bold text-lg">Reviews</h2>
+		</section>
+
+		<section>
+			<h2 class="font-bold text-lg">User stats</h2>
+		</section>
 	</div>
 </main>
 

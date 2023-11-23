@@ -84,7 +84,12 @@
 	<nav class="pagination-container">
 		<div class="flex gap-2 flex-wrap">
 			{#if isPreviousDisabled}
-				<button disabled class:disabled={isPreviousDisabled} class="arrow-button">
+				<button
+					aria-label="Previous"
+					disabled
+					class:disabled={isPreviousDisabled}
+					class="arrow-button"
+				>
 					<Icon name="chevronLeft" />
 				</button>
 			{:else}
@@ -108,7 +113,7 @@
 				{/if}
 			{/each}
 			{#if isNextDisabled}
-				<button disabled class:disabled={isNextDisabled} class="arrow-button">
+				<button aria-label="Next" disabled class:disabled={isNextDisabled} class="arrow-button">
 					<Icon name="chevronRight" />
 				</button>
 			{:else}

@@ -1,25 +1,26 @@
 <script lang="ts">
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
+	import DisplayBoxContainer from '$lib/components/layout/db/DisplayBoxContainer.svelte';
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
 	export let data;
 </script>
 
-<PageTitle title="Releases" />
+<PageTitle title="People" />
 
 <DbShell
-	name="releases"
+	name="people"
 	currentPage={data.currentPage}
 	totalPages={data.totalPages}
 	results={data.count}
-	inputPlaceholder="Search by release title"
+	inputPlaceholder="Search by person name"
 >
 	<svelte:fragment slot="display">
-		<div class="flex flex-col gap-4">
-			{#each data.releases as release (release.id)}
-				<LinkBox display={release.title} href="/release/{release.id}" />
+		<DisplayBoxContainer>
+			{#each data.people as person (person.id)}
+				<LinkBox display={person.name} href="/person/{person.id}" />
 			{/each}
-		</div>
+		</DisplayBoxContainer>
 	</svelte:fragment>
 </DbShell>

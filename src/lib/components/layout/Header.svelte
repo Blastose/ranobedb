@@ -2,8 +2,8 @@
 	import type { User } from 'lucia';
 	import ProfileButton from '$lib/components/layout/profile/ProfileButton.svelte';
 	import RanobeDb from './RanobeDB.svelte';
-	import Search from './Search.svelte';
 	import { page } from '$app/stores';
+	import SearchInput from '$lib/components/form/SearchInput.svelte';
 
 	export let user: User | undefined;
 
@@ -25,7 +25,8 @@
 		</div>
 
 		<div class="flex gap-4">
-			<Search />
+			<SearchInput ariaLabel="Quick search" inputPlaceholder="Search" />
+
 			<ProfileButton {user} />
 		</div>
 	</div>

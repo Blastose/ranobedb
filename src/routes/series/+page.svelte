@@ -6,20 +6,22 @@
 	export let data;
 </script>
 
-<PageTitle title="Releases" />
+<PageTitle title="Series" />
 
 <DbShell
-	name="releases"
+	name="series"
 	currentPage={data.currentPage}
 	totalPages={data.totalPages}
 	results={data.count}
-	inputPlaceholder="Search by release title"
+	inputPlaceholder="Search by series title"
 >
 	<svelte:fragment slot="display">
-		<div class="flex flex-col gap-4">
-			{#each data.releases as release (release.id)}
-				<LinkBox display={release.title} href="/release/{release.id}" />
-			{/each}
+		<div>
+			<div class="flex flex-col gap-4">
+				{#each data.series as series (series.id)}
+					<LinkBox display={series.titles[0].title} href="/release/{series.id}" />
+				{/each}
+			</div>
 		</div>
 	</svelte:fragment>
 </DbShell>

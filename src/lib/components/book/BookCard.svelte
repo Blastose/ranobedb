@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Book } from '$lib/server/db/books/books';
 	import type { Language } from '$lib/server/db/dbTypes';
+	import { formatDate } from './book';
 
 	export let book: Book;
 
@@ -50,6 +51,10 @@
 					</p>
 				{/each}
 			</div> -->
+
+			{#if book.date}
+				<p>{formatDate(book.date)}</p>
+			{/if}
 
 			<p class="line-clamp-4 whitespace-pre-wrap">
 				{book.description_jp}

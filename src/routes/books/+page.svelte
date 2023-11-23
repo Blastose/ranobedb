@@ -13,6 +13,7 @@
 	currentPage={data.currentPage}
 	totalPages={data.totalPages}
 	results={data.count}
+	inputPlaceholder="Search by book title"
 >
 	<svelte:fragment slot="display">
 		<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
