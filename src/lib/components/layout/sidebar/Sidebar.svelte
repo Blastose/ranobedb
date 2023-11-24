@@ -8,10 +8,39 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 
 	export let user: User | undefined;
+	export let isDrawer: boolean = false;
+	export let handleNavigation: (() => void) | undefined = undefined;
+
+	function watchNavigation(node: HTMLElement) {
+		function handleAClick(e: Event) {
+			if (!handleNavigation) {
+				return;
+			}
+			let target = e.target;
+			if (!target || !(target instanceof Element)) {
+				return;
+			}
+
+			let a = target.closest('a');
+			if (!a || !node.contains(a)) {
+				return;
+			}
+
+			handleNavigation();
+		}
+
+		node.addEventListener('click', handleAClick);
+
+		return {
+			destroy() {
+				node.removeEventListener('click', handleAClick);
+			}
+		};
+	}
 </script>
 
-<aside class="sidebar thin-scrollbar">
-	<RanobeDb hideTextWhenWidthSmall={false} />
+<aside use:watchNavigation class="sidebar thin-scrollbar" class:drawer={isDrawer}>
+	<RanobeDb {user} hideTextWhenWidthSmall={false} />
 
 	<nav class="flex flex-col gap-4">
 		<SidebarSection>
@@ -107,6 +136,10 @@
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
+	}
+
+	.sidebar.drawer {
+		view-transition-name: drawer;
 	}
 
 	:global(.dark) .sidebar {

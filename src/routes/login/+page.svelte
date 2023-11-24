@@ -11,7 +11,7 @@
 	const { enhance, message, delayed, submitting } = form;
 </script>
 
-<PageTitle title="Sign up" />
+<PageTitle title="Log in" />
 
 <main class="container-rndb flex justify-center">
 	<AuthFormShell

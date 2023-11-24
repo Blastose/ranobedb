@@ -14,6 +14,7 @@ function saveThemeToLocalStorageAndDocument(newTheme: Theme) {
 		document.documentElement.classList.remove('dark');
 	}
 	localStorage.setItem('theme', newTheme);
+	document.cookie = `theme=${newTheme}; path=/; max-age=1704085200`; // 1704085200 is one year
 }
 
 function createThemeStore() {

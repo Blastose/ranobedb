@@ -6,14 +6,13 @@
 	import { onMount } from 'svelte';
 
 	onNavigate((navigation) => {
-		if (!document.startViewTransition) return;
-
-		return new Promise((resolve) => {
-			document.startViewTransition(async () => {
-				resolve();
-				await navigation.complete;
-			});
-		});
+		// if (!document.startViewTransition) return;
+		// return new Promise((resolve) => {
+		// 	document.startViewTransition(async () => {
+		// 		resolve();
+		// 		await navigation.complete;
+		// 	});
+		// });
 	});
 
 	onMount(() => {
@@ -58,7 +57,7 @@
 	</script>
 </svelte:head>
 
-<Layout user={data.user}>
+<Layout user={data.user} url={data.url}>
 	<slot />
 </Layout>
 

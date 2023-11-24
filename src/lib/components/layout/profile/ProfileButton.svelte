@@ -124,6 +124,7 @@
 		border-radius: 0.375rem;
 		overflow: hidden;
 		padding: 0.5rem;
+		z-index: 10;
 	}
 
 	:global(.dark) .profile-menu {
