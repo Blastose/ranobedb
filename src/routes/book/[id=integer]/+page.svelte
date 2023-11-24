@@ -53,6 +53,15 @@
 
 		<section>
 			<h2 class="font-bold text-lg">Releases</h2>
+			<div>
+				{#each book.releases as release}
+					<p>
+						<a href="/release/{release.id}"
+							>{release.title} - {release.lang} - {release.release_date}</a
+						>
+					</p>
+				{/each}
+			</div>
 		</section>
 
 		<section>
@@ -78,6 +87,6 @@
 	.blur-image {
 		height: 100%;
 		width: 100%;
-		backdrop-filter: blur(10px);
+		backdrop-filter: blur(8px);
 	}
 </style>

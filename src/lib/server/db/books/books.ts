@@ -4,27 +4,6 @@ import { db } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
 
-export const getBooks = db
-	.selectFrom('book')
-	.leftJoin('image', 'book.image_id', 'image.id')
-	.selectAll('book')
-	.select(['image.filename'])
-	.select((eb) => [
-		jsonArrayFrom(
-			eb
-				.selectFrom('book_title')
-				.whereRef('book_title.book_id', '=', 'book.id')
-				.selectAll('book_title')
-		).as('titles'),
-		jsonArrayFrom(
-			eb
-				.selectFrom('person_alias')
-				.innerJoin('book_person_alias', 'book_person_alias.person_alias_id', 'person_alias.id')
-				.whereRef('book_person_alias.book_id', '=', 'book.id')
-				.select(['book_person_alias.role_type', 'person_alias.name', 'person_alias.person_id'])
-		).as('persons')
-	]);
-
 function titleCaseBuilder(langPrios: LanguagePriority[]) {
 	const eb = expressionBuilder<DB, 'book_title'>();
 
@@ -109,5 +88,46 @@ export const getBooks2 = withBookTitleCte()
 		'image.filename'
 	])
 	.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
+
+export const getBook = (id: number) => {
+	return withBookTitleCte()
+		.selectFrom('cte_book')
+		.leftJoin('image', 'cte_book.image_id', 'image.id')
+		.select([
+			'cte_book.description',
+			'cte_book.description_jp',
+			'cte_book.id',
+			'cte_book.image_id',
+			'cte_book.lang',
+			'cte_book.romaji',
+			'cte_book.romaji_orig',
+			'cte_book.title',
+			'cte_book.title_orig',
+			'image.filename'
+		])
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
+					.selectFrom('book_title')
+					.whereRef('book_title.book_id', '=', 'cte_book.id')
+					.selectAll('book_title')
+			).as('titles'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('person_alias')
+					.innerJoin('book_person_alias', 'book_person_alias.person_alias_id', 'person_alias.id')
+					.whereRef('book_person_alias.book_id', '=', 'cte_book.id')
+					.select(['book_person_alias.role_type', 'person_alias.name', 'person_alias.person_id'])
+			).as('persons'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('release')
+					.leftJoin('release_book', 'release.id', 'release_book.release_id')
+					.whereRef('release_book.book_id', '=', 'cte_book.id')
+					.selectAll('release')
+			).as('releases')
+		])
+		.where('cte_book.id', '=', id);
+};
 
 export type Book = InferResult<typeof getBooks2>[number];
