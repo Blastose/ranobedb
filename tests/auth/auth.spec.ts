@@ -40,6 +40,19 @@ test.describe('auth', () => {
 		id = user.id;
 	});
 	test.afterAll(async () => {
+		await db
+			.deleteFrom('user_list_label')
+			.where((eb) =>
+				eb('id', '=', -1).or(
+					'user_list_label.user_id',
+					'in',
+					eb
+						.selectFrom('auth_user')
+						.select('auth_user.id')
+						.where('auth_user.username', '=', 'usernameDelAfter')
+				)
+			)
+			.execute();
 		await db.deleteFrom('auth_session').where('user_id', '=', id).execute();
 		await db
 			.deleteFrom('auth_session')
