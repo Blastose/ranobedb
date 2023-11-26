@@ -122,7 +122,7 @@ export const getBook = (id: number) => {
 			jsonArrayFrom(
 				eb
 					.selectFrom('release')
-					.leftJoin('release_book', 'release.id', 'release_book.release_id')
+					.innerJoin('release_book', 'release.id', 'release_book.release_id')
 					.whereRef('release_book.book_id', '=', 'cte_book.id')
 					.selectAll('release')
 			).as('releases')

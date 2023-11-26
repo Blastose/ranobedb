@@ -146,7 +146,7 @@ export interface UserListBook {
   book_id: number;
   finished: Timestamp | null;
   notes: string;
-  score: number;
+  score: number | null;
   started: Timestamp | null;
   user_id: string;
 }

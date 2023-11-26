@@ -7,6 +7,8 @@ const zUsername = z
 		USERNAME_REGEX,
 		'Username must only contain alphanumeric characters, dash (-), and underscore (_)'
 	);
+const ISO_DATE_REGEX = /\d{4}-[01]\d-[0-3]\d/;
+export const zISODate = z.string().regex(ISO_DATE_REGEX, 'Date must be a valid ISO date');
 
 export const loginSchema = z.object({
 	email: z
@@ -26,4 +28,12 @@ export const signupSchema = z.object({
 		.string({ required_error: 'Password is required' })
 		.min(6, { message: 'Password must be between 6 and 255 characters' })
 		.max(255, { message: 'Password must be between 6 and 255 characters' })
+});
+
+export const userListBookSchema = z.object({
+	labelIds: z.array(z.number()),
+	score: z.number().optional(),
+	startDate: zISODate.or(z.literal('')).optional(),
+	finishDate: zISODate.or(z.literal('')).optional(),
+	notes: z.string().max(2000, { message: 'Note must between less than 2000 characters' })
 });

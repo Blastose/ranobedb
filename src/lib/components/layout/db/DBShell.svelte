@@ -29,6 +29,8 @@
 			<slot name="form" />
 		</form>
 
+		<slot name="info" />
+
 		<Pagination url={$page.url} {currentPage} {totalPages} />
 
 		<p>{results} results</p>
