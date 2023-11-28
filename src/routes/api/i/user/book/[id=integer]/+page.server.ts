@@ -30,19 +30,23 @@ export const actions = {
 			notes: form.data.notes
 		};
 
+		let messageText = '';
 		try {
 			if (form.data.type === 'add') {
 				await addBookToList(addBookParams);
+				messageText = 'Added book to list';
 			} else if (form.data.type === 'update') {
 				await editBookInList(addBookParams);
+				messageText = 'Updated book successfully';
 			} else if (form.data.type === 'delete') {
 				await removeBookFromList(addBookParams);
+				messageText = 'Removed book from list';
 			}
 		} catch (e) {
 			console.log(e);
 			return message(form, { type: 'error', text: 'An error has occurred' }, { status: 400 });
 		}
 
-		return message(form, { type: 'success', text: 'Success' });
+		return message(form, { type: 'success', text: messageText });
 	}
 } satisfies Actions;

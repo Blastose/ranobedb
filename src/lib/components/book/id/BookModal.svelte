@@ -9,6 +9,7 @@
 	import TextField from '$lib/components/form/TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import { tick } from 'svelte';
+	import { addToast } from '$lib/components/toast/Toaster.svelte';
 
 	export let book: BookR;
 	export let form: SuperValidated<typeof userListBookSchema>;
@@ -21,7 +22,13 @@
 			openNested.set(false);
 			await tick();
 			open.set(false);
-			// Send toast;
+
+			addToast({
+				data: {
+					title: form.message?.text ?? 'Success',
+					type: 'success'
+				}
+			});
 		}
 	});
 
@@ -49,6 +56,8 @@
 	} = createDialog({ forceVisible: true, preventScroll: false });
 
 	$: currentTheme = `background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%), url(/covers_temp/${book.filename}.jpg);`;
+	$: modalTitle =
+		$form3.type === 'add' ? 'Add book to reading list' : 'Update book in reading list';
 </script>
 
 <button use:melt={$trigger} class="rounded-md px-2 py-1 bg-[var(--primary-500)]">Modal</button>
@@ -66,17 +75,9 @@
 		>
 			<div class="flex flex-col gap-2">
 				<div class="flex flex-col">
-					<h2 use:melt={$title} class="font-medium">Add book to reading list</h2>
+					<h2 use:melt={$title} class="font-medium">{modalTitle}</h2>
 					<h3 class="text-xl font-bold">{book.title}</h3>
 				</div>
-				<!-- 
-				<img
-					width="240"
-					height="360"
-					class="img max-w-[50px] h-fit rounded-sm shadow-sm"
-					src="/covers_temp/{book.filename}.jpg"
-					alt=""
-				/> -->
 
 				<form
 					action="/api/i/user/book/{book.id}"
