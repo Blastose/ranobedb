@@ -1,12 +1,5 @@
 import { db } from '$lib/server/db/db';
-
-export const defaultUserListLabels = [
-	{ id: 1, label: 'Reading' },
-	{ id: 2, label: 'Finished' },
-	{ id: 3, label: 'Plan to read' },
-	{ id: 4, label: 'Stalled' },
-	{ id: 5, label: 'Dropped' }
-];
+import { defaultUserListLabels } from '$lib/zod/schema';
 
 export async function insertDefaultUserListLabels(userId: string) {
 	const defaultUserListLabelValues = defaultUserListLabels.map((v) => {

@@ -3,7 +3,7 @@ import {
 	getUserListBookWithLabels,
 	type UserListBookWithLabels
 } from '$lib/server/db/user/list.js';
-import { userListBookSchema, type UserListFormType } from '$lib/zod/schema.js';
+import { userListBookSchema, type ReadingStatus, type UserListFormType } from '$lib/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms/server';
 
@@ -29,13 +29,21 @@ export const load = async ({ params, locals }) => {
 	} else {
 		formType = 'add';
 	}
-	console.log(formType);
-	const form = await superValidate({ ...userListBook, type: formType }, userListBookSchema);
+
+	let readingStatus: ReadingStatus | undefined = undefined;
+	if (userListBook) {
+		// ids 1 to 10 are reserved for reading status
+		readingStatus = userListBook.labels.filter((v) => v.id <= 10).at(0)?.label as ReadingStatus;
+	}
+	const userListForm = await superValidate(
+		{ ...userListBook, readingStatus, type: formType },
+		userListBookSchema,
+		{ errors: false }
+	);
 
 	return {
 		book,
-		userListBook,
-		form,
+		userListForm,
 		theme: locals.theme
 	};
 };

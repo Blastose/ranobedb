@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db/db';
-import type { Nullish } from '$lib/zod/schema';
+import { defaultUserListLabels, type Nullish } from '$lib/zod/schema';
 import { sql, type InferResult } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
@@ -63,6 +63,7 @@ export async function addBookToList(params: {
 	userId: string;
 	bookId: number;
 	labelIds: number[];
+	readingStatusId: number;
 	score: Nullish<number>;
 	started: Nullish<string>;
 	finished: Nullish<string>;
@@ -81,6 +82,7 @@ export async function addBookToList(params: {
 			})
 			.execute();
 
+		params.labelIds.push(params.readingStatusId);
 		const userListBookLabels = params.labelIds.map((labelId) => {
 			return {
 				book_id: params.bookId,
@@ -104,6 +106,7 @@ export async function editBookInList(params: {
 	userId: string;
 	bookId: number;
 	labelIds: number[];
+	readingStatusId: number;
 	score: Nullish<number>;
 	started: Nullish<string>;
 	finished: Nullish<string>;
@@ -134,6 +137,8 @@ export async function editBookInList(params: {
 			.where('user_id', '=', params.userId)
 			.execute();
 
+		// Remove all default reaind status list ids
+		toRemove.push(...defaultUserListLabels.map((v) => v.id));
 		if (toRemove.length > 0) {
 			await trx
 				.deleteFrom('user_list_book_label')
@@ -147,6 +152,7 @@ export async function editBookInList(params: {
 				.execute();
 		}
 
+		toAdd.push(params.readingStatusId);
 		const toAddLabels = toAdd.map((labelId) => {
 			return {
 				book_id: params.bookId,

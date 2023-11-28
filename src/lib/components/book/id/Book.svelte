@@ -4,15 +4,13 @@
 	import { themeStore } from '$lib/stores/themeStore';
 	import type { User } from 'lucia';
 	import BookModal from './BookModal.svelte';
-	import type { UserListBookWithLabels } from '$lib/server/db/user/list';
 	import type { userListBookSchema } from '$lib/zod/schema';
 	import type { SuperValidated } from 'sveltekit-superforms';
 
 	export let book: BookR;
 	export let theme: Theme;
 	export let user: User | undefined;
-	export let userListBook: UserListBookWithLabels | undefined;
-	export let form: SuperValidated<typeof userListBookSchema>;
+	export let userListForm: SuperValidated<typeof userListBookSchema>;
 
 	$: currentTheme =
 		($themeStore ?? theme) === 'light'
@@ -36,9 +34,8 @@
 					alt=""
 				/>
 
-				{form.data.type}
 				{#if user}
-					<BookModal {form} {book} />
+					<BookModal {userListForm} {book} />
 				{:else}
 					<button>Log in</button>
 				{/if}

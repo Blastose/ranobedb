@@ -182,7 +182,7 @@ a {
 	overflow-y: auto;
 	overflow-x: hidden;
 	height: 100dvh;
-	max-height: 512px;
+	max-height: 600px;
 	width: 90dvw;
 	max-width: 1000px;
 	transform: translate(-50%, -50%);

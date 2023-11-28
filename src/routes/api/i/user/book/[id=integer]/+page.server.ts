@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { message, superValidate } from 'sveltekit-superforms/server';
-import { userListBookSchema } from '$lib/zod/schema';
+import { defaultUserListLabelsMap, userListBookSchema } from '$lib/zod/schema';
 import { addBookToList, editBookInList, removeBookFromList } from '$lib/server/db/user/list';
 
 export const actions = {
@@ -18,12 +18,14 @@ export const actions = {
 			return message(form, { type: 'error', text: 'Invalid form entries' });
 		}
 
-		console.log(form);
+		const labelIds = form.data.labels.map((v) => v.id);
+		const readingStatusId = defaultUserListLabelsMap.get(form.data.readingStatus) ?? 1;
 
 		const addBookParams = {
 			userId: user.userId,
 			bookId,
-			labelIds: form.data.labels.map((v) => v.id),
+			labelIds,
+			readingStatusId,
 			score: form.data.score,
 			started: form.data.started,
 			finished: form.data.finished,

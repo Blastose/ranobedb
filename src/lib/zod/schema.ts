@@ -1,5 +1,19 @@
 import { z } from 'zod';
 
+export const defaultUserListLabelsArray = [
+	'Reading',
+	'Finished',
+	'Plan to read',
+	'Stalled',
+	'Dropped'
+] as const;
+export type ReadingStatus = (typeof defaultUserListLabelsArray)[number];
+export const defaultUserListLabelsMap = new Map<ReadingStatus, number>();
+export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) => {
+	defaultUserListLabelsMap.set(v, index + 1);
+	return { id: index + 1, label: v };
+});
+
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const zUsername = z
 	.string({ required_error: 'Username is required' })
@@ -39,6 +53,7 @@ export const userListBookSchema = z.object({
 			label: z.string()
 		})
 	),
+	readingStatus: z.enum(defaultUserListLabelsArray),
 	score: z.number().min(1).max(10).nullish(),
 	started: zISODate.or(z.literal('')).nullish(),
 	finished: zISODate.or(z.literal('')).nullish(),
