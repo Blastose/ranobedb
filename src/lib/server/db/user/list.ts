@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db/db';
-import { sql } from 'kysely';
+import type { Nullish } from '$lib/zod/schema';
+import { sql, type InferResult } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
 export function getUserLabelCounts(userId: string) {
@@ -54,14 +55,18 @@ export function getUserListBookWithLabels(userId: string, bookId: number) {
 		]);
 }
 
+export type UserListBookWithLabels = InferResult<
+	ReturnType<typeof getUserListBookWithLabels>
+>[number];
+
 export async function addBookToList(params: {
 	userId: string;
 	bookId: number;
 	labelIds: number[];
-	score: number | null;
-	started: string | null;
-	finished: string | null;
-	notes: string | null;
+	score: Nullish<number>;
+	started: Nullish<string>;
+	finished: Nullish<string>;
+	notes: Nullish<string>;
 }) {
 	await db.transaction().execute(async (trx) => {
 		await trx
@@ -99,10 +104,10 @@ export async function editBookInList(params: {
 	userId: string;
 	bookId: number;
 	labelIds: number[];
-	score: number | null;
-	started: string | null;
-	finished: string | null;
-	notes: string | null;
+	score: Nullish<number>;
+	started: Nullish<string>;
+	finished: Nullish<string>;
+	notes: Nullish<string>;
 }) {
 	await db.transaction().execute(async (trx) => {
 		const oldLabelIds = (
@@ -125,6 +130,8 @@ export async function editBookInList(params: {
 				finished: params.finished,
 				notes: params.notes ?? ''
 			})
+			.where('book_id', '=', params.bookId)
+			.where('user_id', '=', params.userId)
 			.execute();
 
 		if (toRemove.length > 0) {
@@ -155,10 +162,16 @@ export async function editBookInList(params: {
 
 export async function removeBookFromList(params: { userId: string; bookId: number }) {
 	await db.transaction().execute(async (trx) => {
-		await trx.deleteFrom('user_list_book_label').where('book_id', '=', params.bookId).execute();
+		// neeed whrere
+		await trx
+			.deleteFrom('user_list_book_label')
+			.where('book_id', '=', params.bookId)
+			.where('user_id', '=', params.userId)
+			.execute();
 		await trx
 			.deleteFrom('user_list_book')
-			.where((eb) => eb.and([eb('book_id', '=', params.bookId), eb('user_id', '=', params.userId)]))
+			.where('book_id', '=', params.bookId)
+			.where('user_id', '=', params.userId)
 			.execute();
 	});
 }

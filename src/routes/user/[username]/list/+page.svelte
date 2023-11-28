@@ -4,12 +4,15 @@
 	import DBShell from '$lib/components/layout/db/DBShell.svelte';
 
 	export let data;
+
+	$: pageTitle = data.isMyList ? 'My list' : `${data.listUser.username}'s list`;
 </script>
 
-<PageTitle title="Books" />
+<PageTitle title={pageTitle} />
 
 <DBShell
-	name="books"
+	name={pageTitle}
+	customName={true}
 	currentPage={data.currentPage}
 	totalPages={data.totalPages}
 	results={data.count}

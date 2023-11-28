@@ -30,10 +30,20 @@ export const signupSchema = z.object({
 		.max(255, { message: 'Password must be between 6 and 255 characters' })
 });
 
+const userListFormTypes = ['add', 'update', 'delete'] as const;
+export type UserListFormType = (typeof userListFormTypes)[number];
 export const userListBookSchema = z.object({
-	labelIds: z.array(z.number()),
-	score: z.number().optional(),
-	startDate: zISODate.or(z.literal('')).optional(),
-	finishDate: zISODate.or(z.literal('')).optional(),
-	notes: z.string().max(2000, { message: 'Note must between less than 2000 characters' })
+	labels: z.array(
+		z.object({
+			id: z.number(),
+			label: z.string()
+		})
+	),
+	score: z.number().min(1).max(10).nullish(),
+	started: zISODate.or(z.literal('')).nullish(),
+	finished: zISODate.or(z.literal('')).nullish(),
+	notes: z.string().max(2000, { message: 'Note must between less than 2000 characters' }).nullish(),
+	type: z.enum(userListFormTypes)
 });
+
+export type Nullish<T> = T | null | undefined;

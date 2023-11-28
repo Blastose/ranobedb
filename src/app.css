@@ -173,3 +173,37 @@ a {
 	z-index: 99999;
 	background-color: rgb(0 0 0 / 0.5);
 }
+
+.modal-content {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	z-index: 99999;
+	overflow-y: auto;
+	overflow-x: hidden;
+	height: 100dvh;
+	max-height: 512px;
+	width: 90dvw;
+	max-width: 1000px;
+	transform: translate(-50%, -50%);
+	border-radius: 0.75rem;
+	background-color: var(--bg-light);
+	padding: 1.5rem;
+}
+
+.dark .modal-content {
+	background-color: var(--bg-dark);
+}
+
+.close-btn {
+	position: absolute;
+	right: 10px;
+	z-index: 999999;
+	top: 10px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 9999px;
+	height: 2rem;
+	width: 2rem;
+}

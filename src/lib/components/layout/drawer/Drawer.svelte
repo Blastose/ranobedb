@@ -40,7 +40,7 @@
 				easing: quintOut
 			}}
 		>
-			<button use:melt={$close} aria-label="Close" class="close-btn">
+			<button use:melt={$close} aria-label="Close" class="close-btn btn">
 				<Icon name="close" />
 			</button>
 
@@ -66,18 +66,5 @@
 
 	:global(.dark) .modal-drawer {
 		background-color: var(--bg-dark);
-	}
-
-	.close-btn {
-		position: absolute;
-		right: 10px;
-		z-index: 999999;
-		top: 10px;
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 9999px;
-		height: 2rem;
-		width: 2rem;
 	}
 </style>

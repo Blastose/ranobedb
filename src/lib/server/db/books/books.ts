@@ -130,4 +130,5 @@ export const getBook = (id: number) => {
 		.where('cte_book.id', '=', id);
 };
 
+export type BookR = InferResult<ReturnType<typeof getBook>>[number];
 export type Book = InferResult<typeof getBooks2>[number];

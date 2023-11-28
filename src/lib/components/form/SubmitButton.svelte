@@ -4,9 +4,11 @@
 	export let text: string;
 	export let submitting: boolean;
 	export let delayed: boolean;
+	export let name: string | undefined = undefined;
+	export let value: string | undefined = undefined;
 </script>
 
-<button disabled={submitting} type="submit" class="button" class:loading={delayed}>
+<button {name} {value} disabled={submitting} type="submit" class="button" class:loading={delayed}>
 	{#if !delayed}
 		{text}
 	{:else}
