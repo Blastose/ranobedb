@@ -27,8 +27,8 @@ export const actions = {
 			labelIds,
 			readingStatusId,
 			score: form.data.score,
-			started: form.data.started,
-			finished: form.data.finished,
+			started: form.data.started || null,
+			finished: form.data.finished || null,
 			notes: form.data.notes
 		};
 

@@ -168,7 +168,6 @@ export async function editBookInList(params: {
 
 export async function removeBookFromList(params: { userId: string; bookId: number }) {
 	await db.transaction().execute(async (trx) => {
-		// neeed whrere
 		await trx
 			.deleteFrom('user_list_book_label')
 			.where('book_id', '=', params.bookId)
