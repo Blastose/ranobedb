@@ -95,25 +95,35 @@
 					class="flex flex-col gap-4"
 					use:enhance
 				>
-					<div class="flex flex-col gap-2">
-						<SelectField
-							form={sForm}
-							field="readingStatus"
-							label="Reading status"
-							dropdownOptions={readingStatuses}
-							showRequiredSymbolIfRequired={false}
-							selectedValue={$form.readingStatus}
-						/>
-						<TextField form={sForm} type="date" field="started" label="Started" />
-						<TextField form={sForm} type="date" field="finished" label="Finished" />
-						<TextField
-							form={sForm}
-							type="number"
-							field="score"
-							label="Score"
-							placeholder="Score (between 1 and 10)"
-						/>
-						<TextField form={sForm} type="textarea" field="notes" label="Notes" textareaRows={2} />
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-2 sm:gap-x-4">
+						<div class="flex flex-col gap-2">
+							<SelectField
+								form={sForm}
+								field="readingStatus"
+								label="Reading status"
+								dropdownOptions={readingStatuses}
+								showRequiredSymbolIfRequired={false}
+								selectedValue={$form.readingStatus}
+							/>
+							<TextField form={sForm} type="date" field="started" label="Started" />
+							<TextField form={sForm} type="date" field="finished" label="Finished" />
+						</div>
+						<div class="flex flex-col gap-2">
+							<TextField
+								form={sForm}
+								type="number"
+								field="score"
+								label="Score"
+								placeholder="Score (between 1 and 10)"
+							/>
+							<TextField
+								form={sForm}
+								type="textarea"
+								field="notes"
+								label="Notes"
+								textareaRows={2}
+							/>
+						</div>
 					</div>
 
 					<div class="flex flex-col sm:flex-row justify-end gap-2">
@@ -181,9 +191,8 @@
 </div>
 
 <style>
-	.confirm-modal {
+	.modal-content.confirm-modal {
 		max-width: 512px;
-		max-height: 200px;
 	}
 
 	.blur-image {
