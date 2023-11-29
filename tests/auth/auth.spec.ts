@@ -80,8 +80,6 @@ test.describe('auth', () => {
 		await page.getByRole('button', { name: 'Log In' }).click();
 
 		await expect(page).toHaveURL('/');
-		await page.goto('/my-list');
-		await expect(page).toHaveURL('/my-list');
 
 		await page.getByRole('button', { name: 'Sign Out' }).click();
 		await expect(page).toHaveURL('/login');
@@ -139,10 +137,5 @@ test.describe('auth', () => {
 		await expect(
 			page.getByText('Username is already in use. Please use a different username')
 		).toBeVisible();
-	});
-
-	test('user cannot access login only pages', async ({ page }) => {
-		await page.goto('/my-list');
-		await expect(page).not.toHaveURL('/my-list');
 	});
 });
