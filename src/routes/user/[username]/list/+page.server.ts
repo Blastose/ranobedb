@@ -1,8 +1,8 @@
-import { getBooks2 } from '$lib/server/db/books/books';
 import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
-import { getUserLabelCounts } from '$lib/server/db/user/list';
+import { getBooksRL, getUserLabelCounts } from '$lib/server/db/user/list';
 import { error } from '@sveltejs/kit';
+import type { Expression, SqlBool } from 'kysely';
 
 export const load = async ({ url, params, locals }) => {
 	const session = await locals.auth.validate();
@@ -10,6 +10,7 @@ export const load = async ({ url, params, locals }) => {
 	const listUserUsername = params.username;
 	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const query = url.searchParams.get('q');
+	const labels = url.searchParams.getAll('l').map((l) => Number(l) || 1);
 
 	const listUser = await db
 		.selectFrom('auth_user')
@@ -22,18 +23,22 @@ export const load = async ({ url, params, locals }) => {
 	}
 
 	const userLabelCounts = await getUserLabelCounts(listUser.id).execute();
-	console.log(userLabelCounts);
 
-	let k = getBooks2;
-
-	k = k.innerJoin('user_list_book', (join) =>
-		join
-			.onRef('user_list_book.book_id', '=', 'cte_book.id')
-			.on('user_list_book.user_id', '=', listUser.id)
-	);
+	let k = getBooksRL(listUser.id);
 
 	if (query) {
 		k = k.where('cte_book.title', 'ilike', `%${query}%`);
+	}
+
+	if (labels.length > 0) {
+		k = k.where((eb) => {
+			const ors: Expression<SqlBool>[] = [];
+			for (const l of labels) {
+				ors.push(eb('label_id', '=', l));
+			}
+
+			return eb.or(ors);
+		});
 	}
 
 	const {

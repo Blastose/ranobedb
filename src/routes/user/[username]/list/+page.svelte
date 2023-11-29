@@ -2,6 +2,7 @@
 	import BookCard from '$lib/components/book/BookCard.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DBShell from '$lib/components/layout/db/DBShell.svelte';
+	import LabelContainer from '$lib/components/readinglist/LabelContainer.svelte';
 
 	export let data;
 
@@ -19,11 +20,7 @@
 	inputPlaceholder="Search by book title"
 >
 	<svelte:fragment slot="info">
-		<div>
-			{#each data.userLabelCounts as userLabelCount}
-				<div>{userLabelCount.label_id} - {userLabelCount.label} - {userLabelCount.book_count}</div>
-			{/each}
-		</div>
+		<LabelContainer userLabels={data.userLabelCounts} />
 	</svelte:fragment>
 
 	<svelte:fragment slot="display">

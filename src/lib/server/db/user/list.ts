@@ -2,6 +2,77 @@ import { db } from '$lib/server/db/db';
 import { defaultUserListLabels, type Nullish } from '$lib/zod/schema';
 import { sql, type InferResult } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { withBookTitleCte } from '../books/books';
+
+// TODO Refactor with getBooks2
+export function getBooksRL(userId: string) {
+	return withBookTitleCte()
+		.selectFrom('cte_book')
+		.leftJoin('image', 'cte_book.image_id', 'image.id')
+		.leftJoin('release_book', 'release_book.book_id', 'cte_book.id')
+		.leftJoin('release', 'release.id', 'release_book.release_id')
+		.innerJoin('user_list_book', (join) =>
+			join
+				.onRef('user_list_book.book_id', '=', 'cte_book.id')
+				.on('user_list_book.user_id', '=', userId)
+		)
+		.innerJoin('user_list_book_label', (join) =>
+			join
+				.onRef('user_list_book_label.book_id', '=', 'cte_book.id')
+				.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id')
+		)
+		.innerJoin('user_list_label', (join) =>
+			join
+				.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
+				.on((eb) => eb.between('user_list_label.id', 1, 10))
+				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id')
+		)
+		.select([
+			'cte_book.description',
+			'cte_book.description_jp',
+			'cte_book.id',
+			'cte_book.image_id',
+			'cte_book.lang',
+			'cte_book.romaji',
+			'cte_book.romaji_orig',
+			'cte_book.title',
+			'cte_book.title_orig',
+			'image.filename',
+			'user_list_label.id as label_id',
+			'user_list_label.label'
+		])
+		.select((eb) => eb.fn.min('release.release_date').as('date'))
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
+					.selectFrom('book_title')
+					.whereRef('book_title.book_id', '=', 'cte_book.id')
+					.selectAll('book_title')
+			).as('titles'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('person_alias')
+					.innerJoin('book_person_alias', 'book_person_alias.person_alias_id', 'person_alias.id')
+					.whereRef('book_person_alias.book_id', '=', 'cte_book.id')
+					.select(['book_person_alias.role_type', 'person_alias.name', 'person_alias.person_id'])
+			).as('persons')
+		])
+		.groupBy([
+			'cte_book.description',
+			'cte_book.description_jp',
+			'cte_book.id',
+			'cte_book.image_id',
+			'cte_book.lang',
+			'cte_book.romaji',
+			'cte_book.romaji_orig',
+			'cte_book.title',
+			'cte_book.title_orig',
+			'image.filename',
+			'user_list_label.id',
+			'user_list_label.label'
+		])
+		.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
+}
 
 export function getUserLabelCounts(userId: string) {
 	return db
@@ -27,6 +98,7 @@ export function getUserLabelCounts(userId: string) {
 		.groupBy(['user_list_label.label', 'user_list_label.id'])
 		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
 }
+export type UserLabel = InferResult<ReturnType<typeof getUserLabelCounts>>[number];
 
 export function getUserListBookWithLabels(userId: string, bookId: number) {
 	return db

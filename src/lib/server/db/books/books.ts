@@ -24,7 +24,7 @@ function titleCaseBuilder(langPrios: LanguagePriority[]) {
 	return cb as ExpressionWrapper<DB, 'book_title', number>;
 }
 
-function withBookTitleCte() {
+export function withBookTitleCte() {
 	return db.with('cte_book', (db) =>
 		db
 			.selectFrom('book')
