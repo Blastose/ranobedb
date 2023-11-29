@@ -13,6 +13,7 @@
 	import SelectField from '$lib/components/form/SelectField.svelte';
 
 	export let book: BookR;
+	export let imageBgStyle: string;
 	export let userListForm: SuperValidated<typeof userListBookSchema>;
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {
@@ -34,7 +35,8 @@
 					type: 'success'
 				}
 			});
-		}
+		},
+		taintedMessage: null
 	});
 
 	$: ({ form, enhance, delayed, submitting } = sForm);
@@ -61,24 +63,27 @@
 	} = createDialog({ forceVisible: true, preventScroll: false });
 
 	$: modalTitle = $form.type === 'add' ? 'Add book to reading list' : 'Update book in reading list';
+	$: modalSubmitText = $form.type === 'add' ? 'Add' : 'Update';
 </script>
 
-<button use:melt={$trigger} class="rounded-md px-4 py-2 text-white bg-[var(--primary-500)]"
-	>{$form.labels.at(0)?.label ?? 'Add'}</button
->
+<button use:melt={$trigger} class="primary-btn">{$form.labels.at(0)?.label ?? 'Add'}</button>
 
 <div use:melt={$portalled}>
 	{#if $open}
 		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
 		<div
-			class="modal-content"
+			class="modal-content no-pt"
 			transition:fly={{
 				duration: 250,
 				y: 8
 			}}
 			use:melt={$content}
 		>
-			<div class="flex flex-col gap-2">
+			<div class="banner-img h-[86px]" style={imageBgStyle}>
+				<div class="blur-image" />
+			</div>
+
+			<div class="flex flex-col gap-2 -mt-12 z-[9999999] relative">
 				<div class="flex flex-col">
 					<h2 use:melt={$title} class="font-medium">{modalTitle}</h2>
 					<h3 class="text-xl font-bold">{book.title}</h3>
@@ -111,27 +116,25 @@
 						<TextField form={sForm} type="textarea" field="notes" label="Notes" textareaRows={2} />
 					</div>
 
-					<div class="flex flex-col sm:flex-row gap-2">
+					<div class="flex flex-col sm:flex-row justify-end gap-2">
 						<SubmitButton
 							value={$form.type}
-							text="Save"
+							text={modalSubmitText}
 							delayed={$delayed && !$openNested}
 							submitting={$submitting && !$openNested}
 						/>
 						{#if $form.type === 'update'}
-							<button
-								type="button"
-								use:melt={$triggerNested}
-								disabled={$submitting}
-								class="whitespace-nowrap btn px-4 py-2 rounded-md">Remove from list</button
+							<button type="button" use:melt={$triggerNested} class="whitespace-nowrap btn btn-pad"
+								>Remove from list</button
 							>
 						{/if}
 					</div>
 				</form>
-				<button use:melt={$close} aria-label="close" class="close-btn btn">
-					<Icon name="close" />
-				</button>
 			</div>
+
+			<button use:melt={$close} aria-label="close" class="close-btn btn">
+				<Icon name="close" />
+			</button>
 
 			<div use:melt={$portalledNested}>
 				{#if $openNested}
@@ -155,19 +158,13 @@
 							use:enhance
 							class="mt-6 flex justify-end gap-2"
 						>
+							<button type="button" use:melt={$closeNested} class="btn btn-pad">Cancel</button>
 							<button
-								disabled={$submitting}
-								type="button"
-								use:melt={$closeNested}
-								class="btn px-4 py-2 rounded-md">Cancel</button
-							>
-							<button
-								disabled={$submitting}
 								on:click={() => {
 									$form.type = 'delete';
 								}}
 								type="submit"
-								class="text-white px-4 py-2 rounded-md bg-[var(--primary-500)]"
+								class="primary-btn"
 							>
 								Delete
 							</button>
@@ -187,5 +184,20 @@
 	.confirm-modal {
 		max-width: 512px;
 		max-height: 200px;
+	}
+
+	.blur-image {
+		height: 100%;
+		width: 100%;
+		backdrop-filter: blur(4px);
+	}
+
+	.banner-img {
+		overflow: hidden;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: 20% 20%;
+		margin-left: calc(-50vw + 50%);
+		margin-right: calc(-50vw + 50%);
 	}
 </style>

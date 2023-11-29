@@ -144,6 +144,11 @@ a {
 	width: 100%;
 }
 
+.btn-pad {
+	padding: 0.5rem 1rem;
+	border-radius: 0.375rem;
+}
+
 .btn {
 	transition: background-color 300ms;
 }
@@ -191,6 +196,10 @@ a {
 	padding: 1.5rem;
 }
 
+.modal-content.no-pt {
+	padding: 0 1.5rem 1.5rem 1.5rem;
+}
+
 .dark .modal-content {
 	background-color: var(--bg-dark);
 }
@@ -206,4 +215,19 @@ a {
 	border-radius: 9999px;
 	height: 2rem;
 	width: 2rem;
+}
+
+.primary-btn {
+	border-radius: 0.375rem;
+	display: flex;
+	justify-content: center;
+	padding: 0.5rem 1rem;
+	color: white;
+	background-color: var(--primary-500);
+	transition: background-color 150ms;
+}
+
+.primary-btn.loading,
+.primary-btn:hover {
+	background-color: var(--primary-800);
 }

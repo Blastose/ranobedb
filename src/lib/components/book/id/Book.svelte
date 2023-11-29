@@ -12,14 +12,14 @@
 	export let user: User | undefined;
 	export let userListForm: SuperValidated<typeof userListBookSchema>;
 
-	$: currentTheme =
+	$: imageBgStyle =
 		($themeStore ?? theme) === 'light'
 			? `background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%), url(/covers_temp/${book.filename}.jpg);`
 			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%),  url(/covers_temp/${book.filename}.jpg);`;
 </script>
 
 <main class="container-rndb -mt-16 flex flex-col gap-4">
-	<div class="banner-img h-[256px] bg-no-repeat bg-cover" style={currentTheme}>
+	<div class="banner-img h-[256px]" style={imageBgStyle}>
 		<div class="blur-image" />
 	</div>
 
@@ -29,13 +29,13 @@
 				<img
 					width="240"
 					height="360"
-					class="img max-w-[100px] h-fit sm:max-w-[200px] rounded-sm shadow-sm"
+					class="img max-w-[128px] h-fit sm:max-w-[200px] rounded-sm shadow-sm"
 					src="/covers_temp/{book.filename}.jpg"
 					alt=""
 				/>
 
 				{#if user}
-					<BookModal {userListForm} {book} />
+					<BookModal {userListForm} {book} {imageBgStyle} />
 				{:else}
 					<button>Log in</button>
 				{/if}
