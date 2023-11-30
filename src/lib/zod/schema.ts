@@ -21,8 +21,22 @@ const zUsername = z
 		USERNAME_REGEX,
 		'Username must only contain alphanumeric characters, dash (-), and underscore (_)'
 	);
-const ISO_DATE_REGEX = /\d{4}-[01]\d-[0-3]\d/;
-export const zISODate = z.string().regex(ISO_DATE_REGEX, 'Date must be a valid ISO date');
+function isValidISO8601Date(dateString: string): boolean {
+	const isoDateRegex = /^\d{4,5}-\d{2}-\d{2}$/;
+	if (!isoDateRegex.test(dateString)) {
+		return false;
+	}
+
+	const [year, month, day] = dateString.split('-').map((v) => Number(v));
+	if (month < 1 || month > 12 || day < 1) {
+		return false;
+	}
+	const daysInMonth = new Date(year, month, 0).getDate();
+	return day <= daysInMonth;
+}
+export const zISODate = z
+	.string()
+	.refine((v) => isValidISO8601Date(v), { message: 'Date must be a valid ISO date' });
 
 export const loginSchema = z.object({
 	email: z

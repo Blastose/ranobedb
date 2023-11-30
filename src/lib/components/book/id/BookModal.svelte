@@ -134,8 +134,11 @@
 							submitting={$submitting && !$openNested}
 						/>
 						{#if $form.type === 'update'}
-							<button type="button" use:melt={$triggerNested} class="whitespace-nowrap btn btn-pad"
-								>Remove from list</button
+							<button
+								disabled={$submitting}
+								type="button"
+								use:melt={$triggerNested}
+								class="whitespace-nowrap btn btn-pad">Remove from list</button
 							>
 						{/if}
 					</div>
