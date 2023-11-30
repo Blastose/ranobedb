@@ -20,6 +20,10 @@ export type ReleaseType = 'complete' | 'partial';
 
 export type SeriesStatus = 'cancelled' | 'completed' | 'ongoing' | 'unknown';
 
+export type Timestamp = ColumnType<Date, Date | string, Date | string>;
+
+export type DateString = ColumnType<string, string, string>;
+
 export type UserRole = 'admin' | 'moderator' | 'user';
 
 export interface AuthKey {
@@ -139,6 +143,29 @@ export interface SeriesTitle {
 	title: string;
 }
 
+export interface UserListBook {
+	added: Generated<Timestamp>;
+	book_id: number;
+	finished: DateString | null;
+	notes: string;
+	score: number | null;
+	started: DateString | null;
+	user_id: string;
+}
+
+export interface UserListBookLabel {
+	book_id: number;
+	label_id: number;
+	user_id: string;
+}
+
+export interface UserListLabel {
+	id: number;
+	label: string;
+	private: boolean;
+	user_id: string;
+}
+
 export interface DB {
 	auth_key: AuthKey;
 	auth_session: AuthSession;
@@ -157,4 +184,7 @@ export interface DB {
 	series: Series;
 	series_book: SeriesBook;
 	series_title: SeriesTitle;
+	user_list_book: UserListBook;
+	user_list_book_label: UserListBookLabel;
+	user_list_label: UserListLabel;
 }

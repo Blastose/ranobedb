@@ -7,8 +7,8 @@
 
 	export let data;
 
-	const form = superForm(data.form);
-	const { enhance, message, delayed, submitting } = form;
+	$: form = superForm(data.form);
+	$: ({ enhance, message, delayed, submitting } = form);
 </script>
 
 <PageTitle title="Log in" />

@@ -3,10 +3,13 @@
 	import Sidebar from '$lib/components/layout/sidebar/Sidebar.svelte';
 	import type { User } from 'lucia';
 	import Fly from './Fly.svelte';
+	import Toaster from '$lib/components/toast/Toaster.svelte';
 
 	export let user: User | undefined;
 	export let url: string;
 </script>
+
+<Toaster />
 
 <div class="layout-container">
 	<div class="sidebar-wrapper sidebar-animation">

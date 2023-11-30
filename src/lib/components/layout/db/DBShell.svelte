@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Pagination from '$lib/components/pagination/Pagination.svelte';
 	import { page } from '$app/stores';
-	import Icon from '$lib/components/icon/Icon.svelte';
 	import Fly from '$lib/components/layout/Fly.svelte';
 	import SearchInput from '$lib/components/form/SearchInput.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
@@ -11,11 +10,14 @@
 	export let totalPages: number;
 	export let results: number;
 	export let inputPlaceholder: string;
+	export let customName: boolean = false;
+
+	$: heading = customName ? name : `Browse ${name}`;
 </script>
 
 <main class="container-rndb flex flex-col gap-4">
 	<div class="db-filters">
-		<h1 class="font-bold text-4xl">Browse {name}</h1>
+		<h1 class="font-bold text-4xl">{heading}</h1>
 
 		<form method="get">
 			<div class="flex flex-col gap-2">
@@ -28,6 +30,8 @@
 
 			<slot name="form" />
 		</form>
+
+		<slot name="info" />
 
 		<Pagination url={$page.url} {currentPage} {totalPages} />
 

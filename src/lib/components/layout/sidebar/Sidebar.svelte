@@ -50,8 +50,8 @@
 		{#if user}
 			<SidebarSection sectionHeading={user.username}>
 				<SidebarListItem
-					active={$page.url.pathname === '/my-list'}
-					href="/my-list"
+					active={$page.url.pathname.startsWith(`/user/${user.username}/list`)}
+					href="/user/{user.username}/list"
 					text="My List"
 					icon="mylist"
 				/>

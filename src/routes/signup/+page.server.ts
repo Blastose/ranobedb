@@ -1,3 +1,4 @@
+import { insertDefaultUserListLabels } from '$lib/server/db/user/user.js';
 import { auth } from '$lib/server/lucia.js';
 import { signupSchema } from '$lib/zod/schema';
 import { redirect } from '@sveltejs/kit';
@@ -42,6 +43,7 @@ export const actions = {
 				}
 			});
 			const session = await auth.createSession({ userId: user.userId, attributes: {} });
+			await insertDefaultUserListLabels(session.user.userId);
 			locals.auth.setSession(session);
 		} catch (error) {
 			if (error instanceof LuciaError && error.message === 'AUTH_DUPLICATE_KEY_ID') {

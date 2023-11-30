@@ -24,7 +24,7 @@ function titleCaseBuilder(langPrios: LanguagePriority[]) {
 	return cb as ExpressionWrapper<DB, 'book_title', number>;
 }
 
-function withBookTitleCte() {
+export function withBookTitleCte() {
 	return db.with('cte_book', (db) =>
 		db
 			.selectFrom('book')
@@ -122,7 +122,7 @@ export const getBook = (id: number) => {
 			jsonArrayFrom(
 				eb
 					.selectFrom('release')
-					.leftJoin('release_book', 'release.id', 'release_book.release_id')
+					.innerJoin('release_book', 'release.id', 'release_book.release_id')
 					.whereRef('release_book.book_id', '=', 'cte_book.id')
 					.selectAll('release')
 			).as('releases')
@@ -130,4 +130,5 @@ export const getBook = (id: number) => {
 		.where('cte_book.id', '=', id);
 };
 
+export type BookR = InferResult<ReturnType<typeof getBook>>[number];
 export type Book = InferResult<typeof getBooks2>[number];

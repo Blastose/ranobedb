@@ -18,7 +18,7 @@ function saveThemeToLocalStorageAndDocument(newTheme: Theme) {
 }
 
 function createThemeStore() {
-	const { subscribe, set, update } = writable<Theme>('dark');
+	const { subscribe, set, update } = writable<Theme>(undefined);
 
 	return {
 		subscribe,

@@ -5,9 +5,11 @@
 	export let action: string;
 </script>
 
-<form method="post" {action} use:enhance>
-	<button type="submit" class="sidebar-item">
-		<slot />
-		{text}
-	</button>
-</form>
+<li>
+	<form method="post" {action} use:enhance>
+		<button type="submit" class="sidebar-item">
+			<slot />
+			{text}
+		</button>
+	</form>
+</li>

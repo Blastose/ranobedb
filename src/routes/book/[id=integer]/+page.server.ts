@@ -1,17 +1,49 @@
 import { getBook } from '$lib/server/db/books/books';
+import {
+	getUserListBookWithLabels,
+	type UserListBookWithLabels
+} from '$lib/server/db/user/list.js';
+import { userListBookSchema, type ReadingStatus, type UserListFormType } from '$lib/zod/schema.js';
 import { error } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms/server';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
+	const bookId = Number(id);
+	const session = await locals.auth.validate();
+	const user = session?.user;
 
-	const book = await getBook(Number(id)).executeTakeFirst();
+	let userListBook: UserListBookWithLabels | undefined = undefined;
+	if (user) {
+		userListBook = await getUserListBookWithLabels(user.userId, bookId).executeTakeFirst();
+	}
 
+	const book = await getBook(bookId).executeTakeFirst();
 	if (!book) {
 		throw error(404);
 	}
 
+	let formType: UserListFormType;
+	if (userListBook) {
+		formType = 'update';
+	} else {
+		formType = 'add';
+	}
+
+	let readingStatus: ReadingStatus | undefined = undefined;
+	if (userListBook) {
+		// ids 1 to 10 are reserved for reading status
+		readingStatus = userListBook.labels.filter((v) => v.id <= 10).at(0)?.label as ReadingStatus;
+	}
+	const userListForm = await superValidate(
+		{ ...userListBook, readingStatus, type: formType },
+		userListBookSchema,
+		{ errors: false }
+	);
+
 	return {
 		book,
+		userListForm,
 		theme: locals.theme
 	};
 };
