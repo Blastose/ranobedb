@@ -6,7 +6,8 @@ import { withBookTitleCte } from '../books/books';
 
 // TODO Refactor with getBooks2
 export function getBooksRL(userId: string) {
-	return withBookTitleCte()
+	return db
+		.with('cte_book', withBookTitleCte())
 		.selectFrom('cte_book')
 		.leftJoin('image', 'cte_book.image_id', 'image.id')
 		.leftJoin('release_book', 'release_book.book_id', 'cte_book.id')
