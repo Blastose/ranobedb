@@ -7,8 +7,21 @@
 
 	export let user: User | undefined;
 
+	function disableHeaderOpacity(pathname: string) {
+		if (
+			pathname.startsWith('/book/') ||
+			pathname.startsWith('/series/') ||
+			pathname.startsWith('/release/') ||
+			pathname.startsWith('/person/') ||
+			pathname.startsWith('/publisher/')
+		) {
+			return true;
+		}
+		return false;
+	}
+
 	let scrollY: number | undefined;
-	$: isOnBookRoute = $page.url.pathname.startsWith('/book/');
+	$: isOnBookRoute = disableHeaderOpacity($page.url.pathname);
 </script>
 
 <svelte:window bind:scrollY />

@@ -1,9 +1,18 @@
 <script lang="ts">
-	export let imageBgStyle: string | null;
+	import type { Theme } from '$lib/stores/themeStore';
 
-	$: asdf =
-		imageBgStyle ??
-		`background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%);`;
+	export let imageBgStyle: string | null;
+	export let theme: Theme;
+
+	function defaultBackgroundImage(color: string, theme: Theme) {
+		if (theme === 'dark') {
+			return `background-image: linear-gradient(${color} 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%);`;
+		} else {
+			return `background-image: linear-gradient(${color} 0%, rgba(242, 242, 242, 1) 90%, rgba(242, 242, 242, 1) 100%);`;
+		}
+	}
+
+	$: asdf = imageBgStyle ?? defaultBackgroundImage('rgba(115, 115, 156, 1)', theme);
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
@@ -11,7 +20,7 @@
 		<div class="blur-image" />
 	</div>
 
-	<div class="-mt-32 z-10 flex flex-col gap-4">
+	<div class="-mt-32 z-10">
 		<slot />
 	</div>
 </main>

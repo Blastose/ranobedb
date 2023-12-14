@@ -43,7 +43,6 @@ export const load = async ({ params, locals }) => {
 
 	return {
 		book,
-		userListForm,
-		theme: locals.theme
+		userListForm
 	};
 };
