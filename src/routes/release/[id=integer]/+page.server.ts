@@ -7,7 +7,7 @@ export const load = async ({ params }) => {
 	const release = await getRelease(id).executeTakeFirst();
 
 	if (!release) {
-		throw error(404);
+		error(404);
 	}
 
 	console.log(release);

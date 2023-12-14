@@ -19,7 +19,7 @@ export const load = async ({ url, params, locals }) => {
 		.executeTakeFirst();
 
 	if (!listUser) {
-		throw error(404);
+		error(404);
 	}
 
 	const userLabelCounts = await getUserLabelCounts(listUser.id).execute();

@@ -20,7 +20,7 @@ export const load = async ({ params, locals }) => {
 
 	const book = await getBook(bookId).executeTakeFirst();
 	if (!book) {
-		throw error(404);
+		error(404);
 	}
 
 	let formType: UserListFormType;

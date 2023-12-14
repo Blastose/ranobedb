@@ -7,7 +7,7 @@ export const load = async ({ params }) => {
 	const person = await getPeople.where('person.id', '=', id).executeTakeFirst();
 
 	if (!person) {
-		throw error(404);
+		error(404);
 	}
 
 	return { person };

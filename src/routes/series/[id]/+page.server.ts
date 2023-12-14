@@ -6,7 +6,7 @@ export const load = async ({ params }) => {
 	const series = await getSeries.where('series.id', '=', id).executeTakeFirst();
 
 	if (!series) {
-		throw error(404);
+		error(404);
 	}
 
 	return {

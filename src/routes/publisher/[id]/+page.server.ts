@@ -7,7 +7,7 @@ export const load = async ({ params }) => {
 	const publisher = await getPublishers.where('publisher.id', '=', id).executeTakeFirst();
 
 	if (!publisher) {
-		throw error(404);
+		error(404);
 	}
 
 	return { publisher };
