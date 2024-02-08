@@ -90,7 +90,7 @@
 				icon="books"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/my-series'}
+				active={$page.url.pathname === '/series'}
 				href="/series"
 				text="Series"
 				icon="series"
