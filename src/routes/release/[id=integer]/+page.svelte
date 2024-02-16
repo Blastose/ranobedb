@@ -1,10 +1,13 @@
 <script lang="ts">
+	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
+	import { themeStore } from '$lib/stores/themeStore.js';
+
 	export let data;
 
 	$: release = data.release;
 </script>
 
-<main class="container-rndb">
+<DbRouteShell theme={$themeStore ?? data.theme} imageBgStyle={null}>
 	<p>Release</p>
 	<h1 class="text-2xl font-bold">{release.title}</h1>
 	{#if release.romaji}
@@ -33,4 +36,4 @@
 			{/each}
 		</div>
 	</div>
-</main>
+</DbRouteShell>

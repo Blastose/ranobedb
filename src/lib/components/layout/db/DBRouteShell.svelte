@@ -8,7 +8,7 @@
 		if (theme === 'dark') {
 			return `background-image: linear-gradient(${color} 0%, ${color} 10%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%);`;
 		} else {
-			return `background-image: linear-gradient(${color} 0%, ${color} 20%, rgba(242, 242, 242, 1) 66%, rgba(242, 242, 242, 1) 100%);`;
+			return `background-image: linear-gradient(${color} 0%, ${color} 0%, rgba(242, 242, 242, 1) 66%, rgba(242, 242, 242, 1) 100%);`;
 		}
 	}
 
