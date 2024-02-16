@@ -6,17 +6,17 @@
 
 	function defaultBackgroundImage(color: string, theme: Theme) {
 		if (theme === 'dark') {
-			return `background-image: linear-gradient(${color} 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%);`;
+			return `background-image: linear-gradient(${color} 0%, ${color} 10%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%);`;
 		} else {
-			return `background-image: linear-gradient(${color} 0%, rgba(242, 242, 242, 1) 90%, rgba(242, 242, 242, 1) 100%);`;
+			return `background-image: linear-gradient(${color} 0%, ${color} 20%, rgba(242, 242, 242, 1) 66%, rgba(242, 242, 242, 1) 100%);`;
 		}
 	}
 
-	$: asdf = imageBgStyle ?? defaultBackgroundImage('rgba(115, 115, 156, 1)', theme);
+	$: bgStyle = imageBgStyle ?? defaultBackgroundImage('rgba(115, 115, 156, 1)', theme);
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
-	<div class="banner-img h-[256px]" style={asdf}>
+	<div class="banner-img h-[256px]" style={bgStyle}>
 		<div class="blur-image" />
 	</div>
 

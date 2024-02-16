@@ -63,10 +63,12 @@
 	} = createDialog({ forceVisible: true, preventScroll: false });
 
 	$: modalTitle = $form.type === 'add' ? 'Add book to reading list' : 'Update book in reading list';
-	$: modalSubmitText = $form.type === 'add' ? 'Add' : 'Update';
+	$: modalSubmitText = $form.type === 'add' ? 'Add to reading list' : 'Update';
 </script>
 
-<button use:melt={$trigger} class="primary-btn">{$form.labels.at(0)?.label ?? 'Add'}</button>
+<button use:melt={$trigger} class="primary-btn w-full max-w-xs"
+	>{$form.labels.at(0)?.label ?? 'Add to reading list'}</button
+>
 
 <div use:melt={$portalled}>
 	{#if $open}
