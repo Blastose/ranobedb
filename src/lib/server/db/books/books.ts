@@ -1,5 +1,5 @@
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
-import { type InferResult, expressionBuilder, type ExpressionWrapper } from 'kysely';
+import { type InferResult, expressionBuilder, type ExpressionWrapper, QueryCreator } from 'kysely';
 import { db } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
@@ -25,8 +25,8 @@ function titleCaseBuilder(langPrios: LanguagePriority[]) {
 }
 
 export function withBookTitleCte() {
-	return db.with('cte_book', (db) =>
-		db
+	return (eb: QueryCreator<DB>) => {
+		return eb
 			.selectFrom('book')
 			.leftJoin('book_title', 'book_title.book_id', 'book.id')
 			.leftJoin('book_title as book_title_orig', (join) =>
@@ -38,11 +38,12 @@ export function withBookTitleCte() {
 			.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
 			.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
 			.orderBy('book.id')
-			.orderBy(titleCaseBuilder(defaultLangPrio))
-	);
+			.orderBy(titleCaseBuilder(defaultLangPrio));
+	};
 }
 
-export const getBooks2 = withBookTitleCte()
+export const getBooks2 = db
+	.with('cte_book', withBookTitleCte())
 	.selectFrom('cte_book')
 	.leftJoin('image', 'cte_book.image_id', 'image.id')
 	.leftJoin('release_book', 'release_book.book_id', 'cte_book.id')
@@ -90,7 +91,8 @@ export const getBooks2 = withBookTitleCte()
 	.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
 
 export const getBook = (id: number) => {
-	return withBookTitleCte()
+	return db
+		.with('cte_book', withBookTitleCte())
 		.selectFrom('cte_book')
 		.leftJoin('image', 'cte_book.image_id', 'image.id')
 		.select([
@@ -125,7 +127,14 @@ export const getBook = (id: number) => {
 					.innerJoin('release_book', 'release.id', 'release_book.release_id')
 					.whereRef('release_book.book_id', '=', 'cte_book.id')
 					.selectAll('release')
-			).as('releases')
+			).as('releases'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('series')
+					.innerJoin('series_book', 'series.id', 'series_book.series_id')
+					.whereRef('series_book.book_id', '=', 'cte_book.id')
+					.selectAll('series')
+			).as('series')
 		])
 		.where('cte_book.id', '=', id);
 };

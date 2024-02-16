@@ -19,7 +19,7 @@
 		<div>
 			<div class="flex flex-col gap-4">
 				{#each data.series as series (series.id)}
-					<LinkBox display={series.titles[0].title} href="/release/{series.id}" />
+					<LinkBox display={series.titles[0].title} href="/series/{series.id}" />
 				{/each}
 			</div>
 		</div>

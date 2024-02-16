@@ -19,6 +19,7 @@
 	}
 
 	.sidebar-heading {
+		padding: 0 0.25rem;
 		font-size: 1.125rem;
 		line-height: 1.75rem;
 		font-weight: 700;

@@ -63,7 +63,7 @@
 					</li>
 					<Hr />
 					<li>
-						<ProfileFormButton {item} action="logout" text="Sign out">
+						<ProfileFormButton {item} action="/logout" text="Sign out">
 							<Icon name="logout" />
 						</ProfileFormButton>
 					</li>

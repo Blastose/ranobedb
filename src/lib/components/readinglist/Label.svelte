@@ -6,7 +6,7 @@
 	$: active = activeLabels.includes(userLabel.label_id);
 </script>
 
-<div>
+<div class="flex flex-col gap-1">
 	<a class="font-bold reading-label" class:active href="?l={userLabel.label_id}"
 		>{userLabel.label} ({userLabel.book_count})</a
 	>
@@ -36,7 +36,7 @@
 
 	.box-underline {
 		width: 100%;
-		height: 0.25rem;
+		height: 0.166rem;
 		border-radius: 0.075rem;
 		transition: background-color 300ms;
 	}
