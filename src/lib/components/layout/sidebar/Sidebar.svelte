@@ -7,7 +7,7 @@
 	import SidebarFormButton from './SidebarFormButton.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let user: User | undefined;
+	export let user: User | null;
 	export let isDrawer: boolean = false;
 	export let handleNavigation: (() => void) | undefined = undefined;
 

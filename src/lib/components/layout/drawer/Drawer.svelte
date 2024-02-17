@@ -7,7 +7,7 @@
 	import { writable } from 'svelte/store';
 	import { quintOut } from 'svelte/easing';
 
-	export let user: User | undefined;
+	export let user: User | null;
 	const customOpen = writable(false);
 
 	const {

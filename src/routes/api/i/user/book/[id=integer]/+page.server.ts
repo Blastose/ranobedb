@@ -7,12 +7,11 @@ import { addBookToList, editBookInList, removeBookFromList } from '$lib/server/d
 export const actions = {
 	default: async ({ params, request, locals }) => {
 		const bookId = Number(params.id);
-		const session = await locals.auth.validate();
-		if (!session) {
+		if (!locals.user) {
 			return fail(401);
 		}
 
-		const user = session.user;
+		const user = locals.user;
 		const form = await superValidate(request, userListBookSchema);
 		if (!form.valid) {
 			return message(form, { type: 'error', text: 'Invalid form entries' });
@@ -22,7 +21,7 @@ export const actions = {
 		const readingStatusId = defaultUserListLabelsMap.get(form.data.readingStatus) ?? 1;
 
 		const addBookParams = {
-			userId: user.userId,
+			userId: user.id,
 			bookId,
 			labelIds,
 			readingStatusId,

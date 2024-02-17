@@ -4,20 +4,11 @@ import type { Theme } from '$lib/stores/themeStore';
 
 // for information about these interfaces
 declare global {
-	namespace Lucia {
-		type Auth = import('$lib/server/lucia').Auth;
-		type DatabaseUserAttributes = {
-			username: string;
-			role: import('$lib/server/db/dbTypes').UserRole;
-		};
-		type DatabaseSessionAttributes = object;
-	}
-
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			auth: import('lucia').AuthRequest;
-			user: import('lucia').User | undefined;
+			user: import('lucia').User | null;
+			session: import('lucia').Session | null;
 			theme: Theme;
 		}
 		// interface PageData {}

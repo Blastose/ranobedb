@@ -4,8 +4,6 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
-
 export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "en" | "eo" | "es" | "eu" | "fa" | "fi" | "fr" | "ga" | "gd" | "he" | "hi" | "hr" | "hu" | "id" | "it" | "iu" | "ja" | "ko" | "la" | "lt" | "lv" | "mk" | "ms" | "nl" | "no" | "pl" | "pt-br" | "pt-pt" | "ro" | "ru" | "sk" | "sl" | "sr" | "sv" | "ta" | "th" | "tr" | "uk" | "ur" | "vi" | "zh" | "zh-Hans" | "zh-Hant";
 
 export type PublisherRelType = "imprint" | "label" | "subsidiary";
@@ -24,20 +22,15 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export type UserRole = "admin" | "moderator" | "user";
 
-export interface AuthKey {
-  hashed_password: string | null;
-  id: string;
-  user_id: string;
-}
-
 export interface AuthSession {
-  active_expires: Int8;
+  expires_at: Timestamp;
   id: string;
-  idle_expires: Int8;
   user_id: string;
 }
 
 export interface AuthUser {
+  email: string;
+  hashed_password: string;
   id: string;
   joined: Generated<Timestamp>;
   role: Generated<UserRole>;
@@ -67,8 +60,10 @@ export interface BookTitle {
 
 export interface Image {
   filename: string;
+  height: number;
   id: Generated<number>;
   spoiler: boolean;
+  width: number;
 }
 
 export interface Publisher {
@@ -166,7 +161,6 @@ export interface UserListLabel {
 }
 
 export interface DB {
-  auth_key: AuthKey;
   auth_session: AuthSession;
   auth_user: AuthUser;
   book: Book;

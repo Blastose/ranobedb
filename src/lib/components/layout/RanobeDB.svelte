@@ -2,7 +2,7 @@
 	import Drawer from './drawer/Drawer.svelte';
 	import type { User } from 'lucia';
 
-	export let user: User | undefined;
+	export let user: User | null;
 
 	export let hideTextWhenWidthSmall: boolean;
 	export let showOpenDrawerButton: boolean = false;

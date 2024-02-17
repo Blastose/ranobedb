@@ -5,8 +5,7 @@ import { error } from '@sveltejs/kit';
 import type { Expression, SqlBool } from 'kysely';
 
 export const load = async ({ url, params, locals }) => {
-	const session = await locals.auth.validate();
-	const user = session?.user;
+	const user = locals.user;
 	const listUserUsername = params.username;
 	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const query = url.searchParams.get('q');
