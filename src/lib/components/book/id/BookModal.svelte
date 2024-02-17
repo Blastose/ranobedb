@@ -4,8 +4,8 @@
 	import { fade, fly } from 'svelte/transition';
 	import type { BookR } from '$lib/server/db/books/books';
 	import { defaultUserListLabelsArray, type userListBookSchema } from '$lib/zod/schema';
-	import type { SuperValidated } from 'sveltekit-superforms';
-	import { superForm } from 'sveltekit-superforms/client';
+	import type { Infer, SuperValidated } from 'sveltekit-superforms';
+	import { superForm } from 'sveltekit-superforms';
 	import TextField from '$lib/components/form/TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import { tick } from 'svelte';
@@ -14,7 +14,7 @@
 
 	export let book: BookR;
 	export let imageBgStyle: string;
-	export let userListForm: SuperValidated<typeof userListBookSchema>;
+	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {
 		return { display: v, value: v };

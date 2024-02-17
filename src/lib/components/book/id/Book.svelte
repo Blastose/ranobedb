@@ -5,13 +5,13 @@
 	import type { User } from 'lucia';
 	import BookModal from './BookModal.svelte';
 	import type { userListBookSchema } from '$lib/zod/schema';
-	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import Description from '$lib/components/book/Description.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
 	export let user: User | null;
-	export let userListForm: SuperValidated<typeof userListBookSchema>;
+	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
 
 	$: imageBgStyle =
 		($themeStore ?? theme) === 'light'

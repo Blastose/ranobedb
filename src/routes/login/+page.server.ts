@@ -1,20 +1,21 @@
 import { loginSchema } from '$lib/zod/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { getUserByEmail, lucia } from '$lib/server/lucia';
-import { message, superValidate } from 'sveltekit-superforms/server';
+import { superValidate, message } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 import { Argon2id } from 'oslo/password';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
 
-	const form = await superValidate(loginSchema);
+	const form = await superValidate(zod(loginSchema));
 
 	return { form };
 };
 
 export const actions = {
 	default: async ({ request, cookies }) => {
-		const form = await superValidate(request, loginSchema);
+		const form = await superValidate(request, zod(loginSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });
