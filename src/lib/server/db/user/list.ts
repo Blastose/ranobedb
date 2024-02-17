@@ -30,7 +30,7 @@ export function getBooksRL(userId: string) {
 		)
 		.select([
 			'cte_book.description',
-			'cte_book.description_jp',
+			'cte_book.description_ja',
 			'cte_book.id',
 			'cte_book.image_id',
 			'cte_book.lang',
@@ -52,15 +52,15 @@ export function getBooksRL(userId: string) {
 			).as('titles'),
 			jsonArrayFrom(
 				eb
-					.selectFrom('person_alias')
-					.innerJoin('book_person_alias', 'book_person_alias.person_alias_id', 'person_alias.id')
-					.whereRef('book_person_alias.book_id', '=', 'cte_book.id')
-					.select(['book_person_alias.role_type', 'person_alias.name', 'person_alias.person_id'])
-			).as('persons')
+					.selectFrom('staff_alias')
+					.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+					.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
+					.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id'])
+			).as('staff')
 		])
 		.groupBy([
 			'cte_book.description',
-			'cte_book.description_jp',
+			'cte_book.description_ja',
 			'cte_book.id',
 			'cte_book.image_id',
 			'cte_book.lang',

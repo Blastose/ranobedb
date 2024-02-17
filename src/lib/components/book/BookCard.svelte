@@ -7,7 +7,7 @@
 
 	const prio: { lang: Language; romaji: boolean }[] = [
 		{ lang: 'en', romaji: false },
-		{ lang: 'jp', romaji: true }
+		{ lang: 'ja', romaji: true }
 	];
 
 	function getFirstLang(languages: (typeof book)['titles']) {
@@ -25,7 +25,7 @@
 		return languages.at(0)?.title ?? '';
 	}
 
-	$: displayedTitle = prio.find((p) => p.lang === 'jp')?.romaji
+	$: displayedTitle = prio.find((p) => p.lang === 'ja')?.romaji
 		? book.romaji ?? book.title
 		: book.title;
 </script>
@@ -43,21 +43,13 @@
 		{/if}
 		<h4 class="flex flex-col gap-2">
 			<a class="line-clamp-2 font-bold text-lg" href="/book/{book.id}">{book.title}</a>
-			<!-- 
-			<div class="persons-container">
-				{#each book.persons as person}
-					<p>
-						<a href="/person/{person.person_id}">{person.name} - {person.role_type}</a>
-					</p>
-				{/each}
-			</div> -->
 
 			{#if book.date}
 				<p>{formatDate(book.date)}</p>
 			{/if}
 
 			<p class="line-clamp-4 whitespace-pre-wrap">
-				{book.description_jp}
+				{book.description_ja}
 			</p>
 		</h4>
 	</div>
@@ -68,11 +60,5 @@
 		display: grid;
 		grid-template-columns: 100px 1fr;
 		gap: 0.75rem;
-	}
-
-	.persons-container {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
 	}
 </style>

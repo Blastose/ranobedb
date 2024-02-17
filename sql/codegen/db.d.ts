@@ -6,9 +6,7 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 
 export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
 
-export type Language = "en" | "jp";
-
-export type PersonRole = "artist" | "author" | "editor" | "translator";
+export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "en" | "eo" | "es" | "eu" | "fa" | "fi" | "fr" | "ga" | "gd" | "he" | "hi" | "hr" | "hu" | "id" | "it" | "iu" | "ja" | "ko" | "la" | "lt" | "lv" | "mk" | "ms" | "nl" | "no" | "pl" | "pt-br" | "pt-pt" | "ro" | "ru" | "sk" | "sl" | "sr" | "sv" | "ta" | "th" | "tr" | "uk" | "ur" | "vi" | "zh" | "zh-Hans" | "zh-Hant";
 
 export type PublisherRelType = "imprint" | "label" | "subsidiary";
 
@@ -19,6 +17,8 @@ export type ReleasePublisherType = "label" | "publisher";
 export type ReleaseType = "complete" | "partial";
 
 export type SeriesStatus = "cancelled" | "completed" | "ongoing" | "unknown";
+
+export type StaffRole = "artist" | "author" | "editor" | "translator";
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
@@ -39,21 +39,22 @@ export interface AuthSession {
 
 export interface AuthUser {
   id: string;
+  joined: Generated<Timestamp>;
   role: Generated<UserRole>;
   username: string;
 }
 
 export interface Book {
   description: string;
-  description_jp: string | null;
+  description_ja: string | null;
   id: Generated<number>;
   image_id: number | null;
 }
 
-export interface BookPersonAlias {
+export interface BookStaffAlias {
   book_id: number;
-  person_alias_id: number;
-  role_type: PersonRole;
+  role_type: StaffRole;
+  staff_alias_id: number;
 }
 
 export interface BookTitle {
@@ -68,20 +69,6 @@ export interface Image {
   filename: string;
   id: Generated<number>;
   spoiler: boolean;
-}
-
-export interface Person {
-  bookwalker_id: number | null;
-  description: string;
-  id: Generated<number>;
-}
-
-export interface PersonAlias {
-  id: Generated<number>;
-  main_alias: boolean;
-  name: string;
-  person_id: number;
-  romaji: string | null;
 }
 
 export interface Publisher {
@@ -141,6 +128,20 @@ export interface SeriesTitle {
   title: string;
 }
 
+export interface Staff {
+  bookwalker_id: number | null;
+  description: string;
+  id: Generated<number>;
+}
+
+export interface StaffAlias {
+  id: Generated<number>;
+  main_alias: boolean;
+  name: string;
+  romaji: string | null;
+  staff_id: number;
+}
+
 export interface UserListBook {
   added: Generated<Timestamp>;
   book_id: number;
@@ -169,11 +170,9 @@ export interface DB {
   auth_session: AuthSession;
   auth_user: AuthUser;
   book: Book;
-  book_person_alias: BookPersonAlias;
+  book_staff_alias: BookStaffAlias;
   book_title: BookTitle;
   image: Image;
-  person: Person;
-  person_alias: PersonAlias;
   publisher: Publisher;
   publisher_relation: PublisherRelation;
   release: Release;
@@ -182,6 +181,8 @@ export interface DB {
   series: Series;
   series_book: SeriesBook;
   series_title: SeriesTitle;
+  staff: Staff;
+  staff_alias: StaffAlias;
   user_list_book: UserListBook;
   user_list_book_label: UserListBookLabel;
   user_list_label: UserListLabel;

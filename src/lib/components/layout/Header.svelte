@@ -12,7 +12,7 @@
 			pathname.startsWith('/book/') ||
 			pathname.startsWith('/series/') ||
 			pathname.startsWith('/release/') ||
-			pathname.startsWith('/person/') ||
+			pathname.startsWith('/staff/') ||
 			pathname.startsWith('/publisher/')
 		) {
 			return true;

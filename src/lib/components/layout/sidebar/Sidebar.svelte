@@ -102,9 +102,9 @@
 				icon="releases"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/people'}
-				href="/people"
-				text="People"
+				active={$page.url.pathname === '/staff'}
+				href="/staff"
+				text="Staff"
 				icon="people"
 			/>
 			<SidebarListItem
