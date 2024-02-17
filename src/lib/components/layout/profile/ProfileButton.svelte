@@ -7,7 +7,7 @@
 	import ProfileFormButton from './ProfileFormButton.svelte';
 	import Hr from '../Hr.svelte';
 
-	export let user: User | undefined;
+	export let user: User | null;
 
 	const {
 		elements: { trigger, menu, item, separator, arrow },

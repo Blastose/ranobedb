@@ -5,14 +5,14 @@
 	import { page } from '$app/stores';
 	import SearchInput from '$lib/components/form/SearchInput.svelte';
 
-	export let user: User | undefined;
+	export let user: User | null;
 
 	function disableHeaderOpacity(pathname: string) {
 		if (
 			pathname.startsWith('/book/') ||
 			pathname.startsWith('/series/') ||
 			pathname.startsWith('/release/') ||
-			pathname.startsWith('/person/') ||
+			pathname.startsWith('/staff/') ||
 			pathname.startsWith('/publisher/')
 		) {
 			return true;

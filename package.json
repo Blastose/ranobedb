@@ -16,13 +16,14 @@
 		"db-gen": "kysely-codegen --dialect postgres --schema public --include-pattern public.* --out-file ./sql/codegen/db.d.ts"
 	},
 	"devDependencies": {
-		"@lucia-auth/adapter-postgresql": "^2.0.2",
+		"@lucia-auth/adapter-postgresql": "^3.1.0",
 		"@melt-ui/pp": "^0.1.4",
 		"@melt-ui/svelte": "^0.61.1",
 		"@playwright/test": "^1.28.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-node": "^2.0.0",
 		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/pg": "^8.10.9",
 		"@typescript-eslint/eslint-plugin": "^6.0.0",
 		"@typescript-eslint/parser": "^6.0.0",
@@ -33,7 +34,7 @@
 		"eslint-plugin-svelte": "^2.30.0",
 		"kysely": "^0.26.3",
 		"kysely-codegen": "^0.11.0",
-		"lucia": "^2.7.5",
+		"lucia": "^3.0.1",
 		"pg": "^8.11.3",
 		"postcss": "^8.4.31",
 		"prettier": "^2.8.0",
@@ -47,8 +48,10 @@
 		"typescript": "^5.0.0",
 		"vite": "^5.0.0",
 		"vitest": "^1.0.0",
-		"zod": "^3.22.4",
-		"@sveltejs/vite-plugin-svelte": "^3.0.0"
+		"zod": "^3.22.4"
+	},
+	"dependencies": {
+		"oslo": "^1.1.1"
 	},
 	"type": "module"
 }

@@ -23,12 +23,12 @@ test.describe('add/edit/remove books from reading list', () => {
 			await trx
 				.deleteFrom('user_list_book_label')
 				.where('book_id', '=', 1)
-				.where('user_id', '=', 'dadlv67bf85l52p')
+				.where('user_id', '=', 'q5tphufdf9pdlyo')
 				.execute();
 			await trx
 				.deleteFrom('user_list_book')
 				.where('book_id', '=', 1)
-				.where('user_id', '=', 'dadlv67bf85l52p')
+				.where('user_id', '=', 'q5tphufdf9pdlyo')
 				.execute();
 		});
 	});
@@ -36,7 +36,7 @@ test.describe('add/edit/remove books from reading list', () => {
 	test('user can add, update, and remove books from reading list', async ({ page }) => {
 		await page.goto('/book/1');
 
-		await page.locator('main').getByRole('button', { name: 'Add' }).click();
+		await page.locator('main').getByRole('button', { name: 'Add to reading list' }).click();
 		await page.getByLabel('Started').fill('2020-11-12');
 		await page.getByLabel('Finished', { exact: true }).fill('2020-12-12');
 		await page.getByLabel('Reading status').selectOption('Finished');
@@ -57,6 +57,8 @@ test.describe('add/edit/remove books from reading list', () => {
 		await page.locator('main').getByRole('button', { name: 'Plan to read' }).click();
 		await page.getByRole('dialog').getByRole('button', { name: 'Remove from list' }).click();
 		await page.getByRole('button', { name: 'Delete' }).click();
-		await expect(page.locator('main button[aria-haspopup="dialog"]')).toHaveText('Add');
+		await expect(page.locator('main button[aria-haspopup="dialog"]')).toHaveText(
+			'Add to reading list'
+		);
 	});
 });

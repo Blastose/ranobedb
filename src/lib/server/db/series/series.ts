@@ -12,7 +12,7 @@ export const getSeries = db
 				.innerJoin('series_book', 'series_book.book_id', 'book.id')
 				.innerJoin('book_title', 'book_title.book_id', 'book.id')
 				.whereRef('series_book.series_id', '=', 'series.id')
-				.where('book_title.lang', '=', 'jp')
+				.where('book_title.lang', '=', 'ja')
 				.where('book_title.official', '=', true)
 				.select(['book_title.title', 'book.id'])
 				.orderBy('sort_order desc')

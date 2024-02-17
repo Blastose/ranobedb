@@ -1,14 +1,11 @@
 import { loginSchema } from '$lib/zod/schema';
 import { fail, redirect } from '@sveltejs/kit';
-import { auth } from '$lib/server/lucia';
+import { getUserByEmail, lucia } from '$lib/server/lucia';
 import { message, superValidate } from 'sveltekit-superforms/server';
-import { LuciaError } from 'lucia';
+import { Argon2id } from 'oslo/password';
 
 export const load = async ({ locals }) => {
-	const session = await locals.auth.validate();
-	if (session) {
-		redirect(303, '/');
-	}
+	if (locals.user) redirect(302, '/');
 
 	const form = await superValidate(loginSchema);
 
@@ -16,7 +13,7 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, cookies }) => {
 		const form = await superValidate(request, loginSchema);
 
 		if (!form.valid) {
@@ -26,26 +23,22 @@ export const actions = {
 		const email = form.data.email;
 		const password = form.data.password;
 
-		try {
-			const key = await auth.useKey('email', email, password);
-			const session = await auth.createSession({
-				userId: key.userId,
-				attributes: {}
-			});
-			locals.auth.setSession(session);
-		} catch (error) {
-			if (
-				error instanceof LuciaError &&
-				(error.message === 'AUTH_INVALID_KEY_ID' || error.message === 'AUTH_INVALID_PASSWORD')
-			) {
-				return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
-			}
-			return message(
-				form,
-				{ type: 'error', text: 'An unknown error has occurred' },
-				{ status: 500 }
-			);
+		const user = await getUserByEmail(email);
+		if (!user) {
+			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
 		}
+
+		const validPassword = await new Argon2id().verify(user.hashed_password, password);
+		if (!validPassword) {
+			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
+		}
+
+		const session = await lucia.createSession(user.id, {});
+		const sessionCookie = lucia.createSessionCookie(session.id);
+		cookies.set(sessionCookie.name, sessionCookie.value, {
+			path: '.',
+			...sessionCookie.attributes
+		});
 
 		console.log(form);
 		return message(form, { text: 'Valid form', type: 'success' });

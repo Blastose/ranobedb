@@ -7,7 +7,7 @@
 	import SidebarFormButton from './SidebarFormButton.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let user: User | undefined;
+	export let user: User | null;
 	export let isDrawer: boolean = false;
 	export let handleNavigation: (() => void) | undefined = undefined;
 
@@ -102,9 +102,9 @@
 				icon="releases"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/people'}
-				href="/people"
-				text="People"
+				active={$page.url.pathname === '/staff'}
+				href="/staff"
+				text="Staff"
 				icon="people"
 			/>
 			<SidebarListItem

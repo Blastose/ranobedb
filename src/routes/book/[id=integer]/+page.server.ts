@@ -10,12 +10,11 @@ import { superValidate } from 'sveltekit-superforms/server';
 export const load = async ({ params, locals }) => {
 	const id = params.id;
 	const bookId = Number(id);
-	const session = await locals.auth.validate();
-	const user = session?.user;
+	const user = locals.user;
 
 	let userListBook: UserListBookWithLabels | undefined = undefined;
 	if (user) {
-		userListBook = await getUserListBookWithLabels(user.userId, bookId).executeTakeFirst();
+		userListBook = await getUserListBookWithLabels(user.id, bookId).executeTakeFirst();
 	}
 
 	const book = await getBook(bookId).executeTakeFirst();

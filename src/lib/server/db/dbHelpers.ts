@@ -5,7 +5,7 @@ import type { Language } from './dbTypes';
 export type LanguagePriority = { lang: Language; romaji: boolean };
 export const defaultLangPrio: LanguagePriority[] = [
 	{ lang: 'en', romaji: false },
-	{ lang: 'jp', romaji: true }
+	{ lang: 'ja', romaji: true }
 ];
 
 export function paginationBuilder<O, DB, TB extends keyof DB>(

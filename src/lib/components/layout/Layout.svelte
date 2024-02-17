@@ -5,7 +5,7 @@
 	import Fly from './Fly.svelte';
 	import Toaster from '$lib/components/toast/Toaster.svelte';
 
-	export let user: User | undefined;
+	export let user: User | null;
 	export let url: string;
 </script>
 

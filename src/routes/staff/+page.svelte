@@ -7,19 +7,19 @@
 	export let data;
 </script>
 
-<PageTitle title="People" />
+<PageTitle title="Staff" />
 
 <DbShell
-	name="people"
+	name="staff"
 	currentPage={data.currentPage}
 	totalPages={data.totalPages}
 	results={data.count}
-	inputPlaceholder="Search by person name"
+	inputPlaceholder="Search by staff name"
 >
 	<svelte:fragment slot="display">
 		<DisplayBoxContainer>
-			{#each data.people as person (person.id)}
-				<LinkBox display={person.name} href="/person/{person.id}" />
+			{#each data.staff as staff (staff.id)}
+				<LinkBox display={staff.name} href="/staff/{staff.id}" />
 			{/each}
 		</DisplayBoxContainer>
 	</svelte:fragment>

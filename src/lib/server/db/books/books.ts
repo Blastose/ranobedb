@@ -18,7 +18,7 @@ function titleCaseBuilder(langPrios: LanguagePriority[]) {
 		count++;
 	}
 	// Fallback to jp title if there are no matches
-	cb = cb.when('book_title.lang', '=', 'jp').then(maxCount);
+	cb = cb.when('book_title.lang', '=', 'ja').then(maxCount);
 	cb = cb.else(maxCount + 1).end();
 
 	return cb as ExpressionWrapper<DB, 'book_title', number>;
@@ -30,7 +30,7 @@ export function withBookTitleCte() {
 			.selectFrom('book')
 			.leftJoin('book_title', 'book_title.book_id', 'book.id')
 			.leftJoin('book_title as book_title_orig', (join) =>
-				join.onRef('book_title_orig.book_id', '=', 'book.id').on('book_title_orig.lang', '=', 'jp')
+				join.onRef('book_title_orig.book_id', '=', 'book.id').on('book_title_orig.lang', '=', 'ja')
 			)
 			.orderBy('book.id')
 			.distinctOn('book.id')
@@ -50,7 +50,7 @@ export const getBooks2 = db
 	.leftJoin('release', 'release.id', 'release_book.release_id')
 	.select([
 		'cte_book.description',
-		'cte_book.description_jp',
+		'cte_book.description_ja',
 		'cte_book.id',
 		'cte_book.image_id',
 		'cte_book.lang',
@@ -70,15 +70,15 @@ export const getBooks2 = db
 		).as('titles'),
 		jsonArrayFrom(
 			eb
-				.selectFrom('person_alias')
-				.innerJoin('book_person_alias', 'book_person_alias.person_alias_id', 'person_alias.id')
-				.whereRef('book_person_alias.book_id', '=', 'cte_book.id')
-				.select(['book_person_alias.role_type', 'person_alias.name', 'person_alias.person_id'])
-		).as('persons')
+				.selectFrom('staff_alias')
+				.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+				.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
+				.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id'])
+		).as('staff')
 	])
 	.groupBy([
 		'cte_book.description',
-		'cte_book.description_jp',
+		'cte_book.description_ja',
 		'cte_book.id',
 		'cte_book.image_id',
 		'cte_book.lang',
@@ -97,7 +97,7 @@ export const getBook = (id: number) => {
 		.leftJoin('image', 'cte_book.image_id', 'image.id')
 		.select([
 			'cte_book.description',
-			'cte_book.description_jp',
+			'cte_book.description_ja',
 			'cte_book.id',
 			'cte_book.image_id',
 			'cte_book.lang',
@@ -116,11 +116,11 @@ export const getBook = (id: number) => {
 			).as('titles'),
 			jsonArrayFrom(
 				eb
-					.selectFrom('person_alias')
-					.innerJoin('book_person_alias', 'book_person_alias.person_alias_id', 'person_alias.id')
-					.whereRef('book_person_alias.book_id', '=', 'cte_book.id')
-					.select(['book_person_alias.role_type', 'person_alias.name', 'person_alias.person_id'])
-			).as('persons'),
+					.selectFrom('staff_alias')
+					.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+					.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
+					.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id'])
+			).as('staff'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('release')

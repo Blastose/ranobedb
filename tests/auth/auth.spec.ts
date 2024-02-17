@@ -23,20 +23,15 @@ test.describe('auth', () => {
 			.insertInto('auth_user')
 			.values({
 				username: 'username',
-				id: userId
+				id: userId,
+				email: 'fake@email.com',
+				// Unhashed password is `password`
+				hashed_password:
+					'$argon2id$v=19$m=19456,t=2,p=1$KXosrnaI50U0xiXDxyoGxA$axycEXkr/fz3OhsPJafCaAaj7I7vM1bBUPfZuRfWzvQ'
 			})
 			.returning('id')
 			.executeTakeFirstOrThrow();
 
-		await db
-			.insertInto('auth_key')
-			.values({
-				id: 'email:fake@email.com',
-				user_id: user.id,
-				hashed_password:
-					'Sy7AupawzmlZTlnB:4a2ffaf661cc8d9e4df423b19add3c84c241bffa23e9d7162fc4d6959248dc15b16f0aee40304481a137c031c2147a727fb8d8f5d380743bc7ffc0df9d201fdc'
-			})
-			.executeTakeFirst();
 		id = user.id;
 	});
 	test.afterAll(async () => {
@@ -67,8 +62,6 @@ test.describe('auth', () => {
 				)
 			)
 			.execute();
-		await db.deleteFrom('auth_key').where('id', '=', 'email:fake@email.com').execute();
-		await db.deleteFrom('auth_key').where('id', '=', 'email:email@DelAfter.com').execute();
 		await db.deleteFrom('auth_user').where('username', '=', 'username').execute();
 		await db.deleteFrom('auth_user').where('username', '=', 'usernameDelAfter').execute();
 	});
@@ -137,5 +130,10 @@ test.describe('auth', () => {
 		await expect(
 			page.getByText('Username is already in use. Please use a different username')
 		).toBeVisible();
+	});
+
+	test('User cannot access login required pages', async ({ page }) => {
+		await page.goto('/profile');
+		await expect(page).toHaveURL('/login');
 	});
 });

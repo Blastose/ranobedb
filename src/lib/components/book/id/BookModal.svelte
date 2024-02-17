@@ -73,15 +73,15 @@
 <div use:melt={$portalled}>
 	{#if $open}
 		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
-		<div
-			class="modal-content"
-			transition:fly={{
-				duration: 250,
-				y: 8
-			}}
-			use:melt={$content}
-		>
-			<div class="modal-content-inner no-pt">
+		<div class="modal-content">
+			<div
+				transition:fly={{
+					duration: 250,
+					y: 8
+				}}
+				use:melt={$content}
+				class="modal-content-inner no-pt"
+			>
 				<div class="banner-img h-[86px]" style={imageBgStyle}>
 					<div class="blur-image" />
 				</div>
@@ -155,40 +155,42 @@
 				<div use:melt={$portalledNested}>
 					{#if $openNested}
 						<div use:melt={$overlayNested} class="modal-bg" transition:fade={{ duration: 150 }} />
-						<div
-							class="modal-content confirm-modal"
-							transition:fly={{
-								duration: 250,
-								y: 8
-							}}
-							use:melt={$contentNested}
-						>
-							<h2 use:melt={$titleNested} class="text-lg font-medium">Warning</h2>
-							<p use:melt={$descriptionNested}>
-								Are you sure you want to remove this book from your list?
-							</p>
-
-							<form
-								action="/api/i/user/book/{book.id}"
-								method="post"
-								use:enhance
-								class="mt-6 flex justify-end gap-2"
+						<div class="modal-content">
+							<div
+								class="modal-content-inner confirm-modal"
+								transition:fly={{
+									duration: 250,
+									y: 8
+								}}
+								use:melt={$contentNested}
 							>
-								<button type="button" use:melt={$closeNested} class="btn btn-pad">Cancel</button>
-								<button
-									on:click={() => {
-										$form.type = 'delete';
-									}}
-									type="submit"
-									class="primary-btn"
-								>
-									Delete
-								</button>
-							</form>
+								<h2 use:melt={$titleNested} class="text-lg font-medium">Warning</h2>
+								<p use:melt={$descriptionNested}>
+									Are you sure you want to remove this book from your list?
+								</p>
 
-							<button use:melt={$closeNested} aria-label="close" class="close-btn btn">
-								<Icon name="close" />
-							</button>
+								<form
+									action="/api/i/user/book/{book.id}"
+									method="post"
+									use:enhance
+									class="mt-6 flex justify-end gap-2"
+								>
+									<button type="button" use:melt={$closeNested} class="btn btn-pad">Cancel</button>
+									<button
+										on:click={() => {
+											$form.type = 'delete';
+										}}
+										type="submit"
+										class="primary-btn"
+									>
+										Delete
+									</button>
+								</form>
+
+								<button use:melt={$closeNested} aria-label="close" class="close-btn btn">
+									<Icon name="close" />
+								</button>
+							</div>
 						</div>
 					{/if}
 				</div>
@@ -198,7 +200,7 @@
 </div>
 
 <style>
-	.modal-content.confirm-modal {
+	.modal-content-inner.confirm-modal {
 		max-width: 512px;
 	}
 

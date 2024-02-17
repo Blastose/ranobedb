@@ -10,7 +10,7 @@
 
 	export let book: BookR;
 	export let theme: Theme;
-	export let user: User | undefined;
+	export let user: User | null;
 	export let userListForm: SuperValidated<typeof userListBookSchema>;
 
 	$: imageBgStyle =
@@ -48,8 +48,8 @@
 
 				<section class="pt-4">
 					<h2 class="font-bold text-lg">Description</h2>
-					{#if book.description_jp}
-						<Description description={book.description_jp} />
+					{#if book.description_ja}
+						<Description description={book.description_ja} />
 					{/if}
 				</section>
 			</div>
@@ -67,10 +67,10 @@
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
 			<div class="flex gap-4">
-				{#each book.persons as person}
+				{#each book.staff as staff}
 					<p>
-						<a href="/person/{person.person_id}"
-							>{person.name} <span class="opacity-70">{person.role_type}</span></a
+						<a href="/staff/{staff.staff_id}"
+							>{staff.name} <span class="opacity-70">{staff.role_type}</span></a
 						>
 					</p>
 				{/each}
