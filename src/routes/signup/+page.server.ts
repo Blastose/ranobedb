@@ -6,19 +6,20 @@ import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
-import { message, setError, superValidate } from 'sveltekit-superforms/server';
+import { message, setError, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
 
-	const form = await superValidate(signupSchema);
+	const form = await superValidate(zod(signupSchema));
 
 	return { form };
 };
 
 export const actions = {
 	default: async ({ request, cookies }) => {
-		const form = await superValidate(request, signupSchema);
+		const form = await superValidate(request, zod(signupSchema));
 
 		if (!form.valid) {
 			return message(form, { text: 'Invalid form', type: 'error' });

@@ -1,16 +1,13 @@
 <script lang="ts" context="module">
-	import type { AnyZodObject } from 'zod';
-	type T = AnyZodObject;
+	type Rec = Record<string, unknown>;
 </script>
 
-<script lang="ts" generics="T extends AnyZodObject">
-	import type { z } from 'zod';
-	import type { ZodValidation, FormPathLeaves } from 'sveltekit-superforms';
-	import { formFieldProxy, type SuperForm } from 'sveltekit-superforms/client';
+<script lang="ts" generics="T extends Rec">
+	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
 	type DropdownOption = { display: string; value: string };
-	export let form: SuperForm<ZodValidation<T>, App.Superforms.Message>;
-	export let field: FormPathLeaves<z.infer<T>>;
+	export let form: SuperForm<T, App.Superforms.Message>;
+	export let field: FormPathLeaves<T>;
 	export let label: string = '';
 	export let selectedValue: string;
 	export let dropdownOptions: ReadonlyArray<DropdownOption> | Array<DropdownOption>;

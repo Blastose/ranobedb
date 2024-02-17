@@ -1,16 +1,13 @@
 <script lang="ts" context="module">
-	import type { AnyZodObject } from 'zod';
-	type T = AnyZodObject;
+	type Rec = Record<string, unknown>;
 	type InputType = 'text' | 'password' | 'email' | 'date' | 'number' | 'textarea';
 </script>
 
-<script lang="ts" generics="T extends AnyZodObject">
-	import type { z } from 'zod';
-	import type { ZodValidation, FormPathLeaves } from 'sveltekit-superforms';
-	import { formFieldProxy, type SuperForm } from 'sveltekit-superforms/client';
+<script lang="ts" generics="T extends Rec">
+	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
-	export let form: SuperForm<ZodValidation<T>, App.Superforms.Message>;
-	export let field: FormPathLeaves<z.infer<T>>;
+	export let form: SuperForm<T, App.Superforms.Message>;
+	export let field: FormPathLeaves<T>;
 	export let label: string = '';
 	export let placeholder: string = '';
 	export let type: InputType = 'text';

@@ -2,7 +2,7 @@
 	import TextField from '$lib/components/form/TextField.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import AuthFormShell from '$lib/components/form/AuthFormShell.svelte';
-	import { superForm } from 'sveltekit-superforms/client';
+	import { superForm } from 'sveltekit-superforms';
 
 	export let data;
 

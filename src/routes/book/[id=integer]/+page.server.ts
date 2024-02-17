@@ -5,7 +5,8 @@ import {
 } from '$lib/server/db/user/list.js';
 import { userListBookSchema, type ReadingStatus, type UserListFormType } from '$lib/zod/schema.js';
 import { error } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms/server';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -36,7 +37,7 @@ export const load = async ({ params, locals }) => {
 	}
 	const userListForm = await superValidate(
 		{ ...userListBook, readingStatus, type: formType },
-		userListBookSchema,
+		zod(userListBookSchema),
 		{ errors: false }
 	);
 
