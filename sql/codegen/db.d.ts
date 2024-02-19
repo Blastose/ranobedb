@@ -1,5 +1,7 @@
 import type { ColumnType } from "kysely";
 
+export type DbItem = "book" | "publisher" | "release" | "series" | "staff";
+
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
@@ -40,12 +42,27 @@ export interface AuthUser {
 export interface Book {
   description: string;
   description_ja: string | null;
+  hidden: boolean;
   id: Generated<number>;
+  image_id: number | null;
+  locked: boolean;
+}
+
+export interface BookHist {
+  change_id: number;
+  description: string;
+  description_ja: string | null;
   image_id: number | null;
 }
 
 export interface BookStaffAlias {
   book_id: number;
+  role_type: StaffRole;
+  staff_alias_id: number;
+}
+
+export interface BookStaffAliasHist {
+  change_id: number;
   role_type: StaffRole;
   staff_alias_id: number;
 }
@@ -56,6 +73,26 @@ export interface BookTitle {
   official: boolean;
   romaji: string | null;
   title: string;
+}
+
+export interface BookTitleHist {
+  change_id: number;
+  lang: Language;
+  official: boolean;
+  romaji: string | null;
+  title: string;
+}
+
+export interface Change {
+  added: Generated<Timestamp>;
+  comments: string;
+  id: Generated<number>;
+  ihid: boolean;
+  ilock: boolean;
+  item_id: number;
+  item_name: DbItem;
+  revision: number;
+  user_id: string;
 }
 
 export interface Image {
@@ -164,8 +201,12 @@ export interface DB {
   auth_session: AuthSession;
   auth_user: AuthUser;
   book: Book;
+  book_hist: BookHist;
   book_staff_alias: BookStaffAlias;
+  book_staff_alias_hist: BookStaffAliasHist;
   book_title: BookTitle;
+  book_title_hist: BookTitleHist;
+  change: Change;
   image: Image;
   publisher: Publisher;
   publisher_relation: PublisherRelation;

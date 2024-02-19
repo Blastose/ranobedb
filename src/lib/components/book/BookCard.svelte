@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Book } from '$lib/server/db/books/books';
-	import type { Language } from '$lib/server/db/dbTypes';
+	import type { Language } from '$lib/db/dbTypes';
 	import { formatDate } from './book';
 
 	export let book: Book;

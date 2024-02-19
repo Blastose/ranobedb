@@ -1,5 +1,5 @@
 import { sql, type SelectQueryBuilder } from 'kysely';
-import type { Language } from './dbTypes';
+import type { Language } from '$lib/db/dbTypes';
 
 // TODO
 export type LanguagePriority = { lang: Language; romaji: boolean };

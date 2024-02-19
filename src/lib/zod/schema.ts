@@ -1,3 +1,4 @@
+import { languagesArray, staffRolesArray } from '$lib/db/dbTypes';
 import { z } from 'zod';
 
 export const defaultUserListLabelsArray = [
@@ -73,6 +74,30 @@ export const userListBookSchema = z.object({
 	finished: zISODate.or(z.literal('')).nullish(),
 	notes: z.string().max(2000, { message: 'Note must between less than 2000 characters' }).nullish(),
 	type: z.enum(userListFormTypes)
+});
+
+export const bookSchema = z.object({
+	hidden: z.boolean(),
+	locked: z.boolean(),
+	description: z.string(),
+	description_ja: z.string().nullish(),
+	image_id: z.number().nullish(),
+
+	titles: z.array(
+		z.object({
+			lang: z.enum(languagesArray),
+			official: z.boolean(),
+			title: z.string(),
+			romaji: z.string().nullish()
+		})
+	),
+
+	staff: z.array(
+		z.object({
+			staff_alias_id: z.number(),
+			role_type: z.enum(staffRolesArray)
+		})
+	)
 });
 
 export type Nullish<T> = T | null | undefined;
