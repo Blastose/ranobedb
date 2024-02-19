@@ -11,7 +11,7 @@
 	export let book: BookR;
 	export let theme: Theme;
 	export let user: User | null;
-	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
+	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
 
 	$: imageBgStyle =
 		($themeStore ?? theme) === 'light'
@@ -20,6 +20,8 @@
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
+	<slot />
+
 	<div class="banner-img h-[256px]" style={imageBgStyle}>
 		<div class="blur-image" />
 	</div>
@@ -35,10 +37,12 @@
 					alt=""
 				/>
 
-				{#if user}
-					<BookModal {userListForm} {book} {imageBgStyle} />
-				{:else}
-					<a class="primary-btn w-full max-w-xs" href="/login">Add to reading list</a>
+				{#if userListForm}
+					{#if user}
+						<BookModal {userListForm} {book} {imageBgStyle} />
+					{:else}
+						<a class="primary-btn w-full max-w-xs" href="/login">Add to reading list</a>
+					{/if}
 				{/if}
 			</div>
 

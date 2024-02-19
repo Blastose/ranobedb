@@ -42,6 +42,31 @@ export function withBookTitleCte() {
 	};
 }
 
+export function withBookHistTitleCte() {
+	return (eb: QueryCreator<DB>) => {
+		return eb
+			.selectFrom('book_hist')
+			.leftJoin('book_title', 'book_title.book_id', 'book_hist.change_id')
+			.leftJoin('book_title as book_title_orig', (join) =>
+				join
+					.onRef('book_title_orig.book_id', '=', 'book_hist.change_id')
+					.on('book_title_orig.lang', '=', 'ja')
+			)
+			.orderBy('book_hist.change_id')
+			.distinctOn('book_hist.change_id')
+			.select([
+				'book_hist.change_id as id',
+				'book_hist.description',
+				'book_hist.description_ja',
+				'book_hist.image_id'
+			])
+			.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
+			.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
+			.orderBy('id')
+			.orderBy(titleCaseBuilder(defaultLangPrio));
+	};
+}
+
 export const getBooks2 = db
 	.with('cte_book', withBookTitleCte())
 	.selectFrom('cte_book')
@@ -137,6 +162,65 @@ export const getBook = (id: number) => {
 			).as('series')
 		])
 		.where('cte_book.id', '=', id);
+};
+
+export const getBookHist = (id: number, revision: number) => {
+	return db
+		.with('cte_book', withBookHistTitleCte())
+		.selectFrom('cte_book')
+		.leftJoin('image', 'cte_book.image_id', 'image.id')
+		.select([
+			'cte_book.description',
+			'cte_book.description_ja',
+			'cte_book.id',
+			'cte_book.image_id',
+			'cte_book.lang',
+			'cte_book.romaji',
+			'cte_book.romaji_orig',
+			'cte_book.title',
+			'cte_book.title_orig',
+			'image.filename'
+		])
+		.select((eb) => [
+			jsonArrayFrom(
+				eb
+					.selectFrom('book_title_hist')
+					.whereRef('book_title_hist.change_id', '=', 'cte_book.id')
+					.select([
+						'book_title_hist.change_id as book_id',
+						'book_title_hist.lang',
+						'book_title_hist.official',
+						'book_title_hist.romaji',
+						'book_title_hist.title'
+					])
+			).as('titles'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('staff_alias')
+					.innerJoin(
+						'book_staff_alias_hist',
+						'book_staff_alias_hist.staff_alias_id',
+						'staff_alias.id'
+					)
+					.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
+					.select(['book_staff_alias_hist.role_type', 'staff_alias.name', 'staff_alias.staff_id'])
+			).as('staff'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('release')
+					.innerJoin('release_book', 'release.id', 'release_book.release_id')
+					.where('release_book.book_id', '=', id)
+					.selectAll('release')
+			).as('releases'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('series')
+					.innerJoin('series_book', 'series.id', 'series_book.series_id')
+					.where('series_book.book_id', '=', id)
+					.selectAll('series')
+			).as('series')
+		])
+		.where('cte_book.id', '=', revision);
 };
 
 export type BookR = InferResult<ReturnType<typeof getBook>>[number];
