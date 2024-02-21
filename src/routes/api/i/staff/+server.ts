@@ -19,7 +19,7 @@ async function getStaffByName(name: string, nameAsNumber: number) {
 			ors.push(eb('staff_alias.name', 'ilike', name));
 			ors.push(eb('staff_alias.romaji', 'ilike', name));
 			if (!isNaN(nameAsNumber)) {
-				ors.push(eb('id', '=', nameAsNumber));
+				ors.push(eb('staff.id', '=', nameAsNumber));
 			}
 			return eb.or(ors);
 		})
@@ -31,7 +31,6 @@ export type ApiStaff = Awaited<ReturnType<typeof getStaffByName>>;
 
 export const GET: RequestHandler = async ({ url }) => {
 	const form = await superValidate(url.searchParams, zod(searchNameSchema));
-	console.log(form);
 
 	const nameAsNumber = Number(form.data.name);
 	let name = form.data.name;
@@ -39,6 +38,6 @@ export const GET: RequestHandler = async ({ url }) => {
 
 	if (!url.searchParams.get('name')) return json([]);
 
-	const s = getStaffByName(name, nameAsNumber);
+	const s = await getStaffByName(name, nameAsNumber);
 	return json(s);
 };

@@ -48,7 +48,7 @@
 
 			<div>
 				<h1 class="font-bold text-3xl sm:text-4xl">{book.title}</h1>
-				<p class="opacity-60">{book.romaji_orig}</p>
+				<p class="opacity-60">{book.romaji_orig ?? ''}</p>
 
 				<section class="pt-4">
 					<h2 class="font-bold text-lg">Description</h2>
@@ -111,6 +111,10 @@
 
 		<section>
 			<h2 class="font-bold text-lg">User stats</h2>
+		</section>
+
+		<section>
+			<a class="block font-bold text-lg" href="/book/{book.id}/edit">Edit book</a>
 		</section>
 	</div>
 </main>

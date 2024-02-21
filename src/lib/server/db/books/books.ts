@@ -170,6 +170,7 @@ export const getBook = (id: number) => {
 		.where('cte_book.id', '=', id);
 };
 
+// TODO fix with revision
 export const getBookHist = (id: number, revision: number) => {
 	return db
 		.with('cte_book', withBookHistTitleCte())
@@ -232,7 +233,7 @@ export const getBookHist = (id: number, revision: number) => {
 					.selectAll('series')
 			).as('series')
 		])
-		.where('cte_book.id', '=', revision);
+		.where('cte_book.id', '=', id);
 };
 
 export type BookR = InferResult<ReturnType<typeof getBook>>[number];

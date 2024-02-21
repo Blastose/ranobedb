@@ -5,7 +5,10 @@
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import BookTitlesInput from './BookTitlesInput.svelte';
 	import BookStaffInput from './BookStaffInput.svelte';
+	import type { BookR } from '$lib/server/db/books/books';
+	import Hr from '$lib/components/layout/Hr.svelte';
 
+	export let book: BookR;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
 	export let type: 'add' | 'edit';
 
@@ -13,11 +16,14 @@
 	$: ({ form, enhance, delayed, submitting } = sForm);
 </script>
 
-<SuperDebug data={$form} />
+<!-- <SuperDebug data={$form} /> -->
 
-<form method="post" class="container-rndb flex flex-col gap-4" use:enhance>
+<form method="post" class="flex flex-col gap-4" use:enhance>
+	<h1 class="font-bold text-xl">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
+
 	<BookTitlesInput {form} />
-	<BookStaffInput {form} />
+
+	<Hr />
 
 	<TextField
 		form={sForm}
@@ -37,6 +43,17 @@
 		placeholder="Description (japanese)"
 	/>
 
+	<Hr />
+
+	<section>
+		<p class="font-bold text-xl">Database relations:</p>
+		<BookStaffInput {form} />
+	</section>
+
+	<input name="type" type="hidden" value={type} />
+
+	<Hr />
+
 	<TextField
 		form={sForm}
 		type="textarea"
@@ -45,8 +62,6 @@
 		textareaRows={4}
 		placeholder="Summarize the changes you have made"
 	/>
-
-	<input name="type" type="hidden" value={type} />
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text="Submit edit" />
 </form>

@@ -11,7 +11,7 @@
 		{#each changes as change}
 			<p>
 				<a href="/book/{change.item_id}/rev/{change.revision}"
-					>rev.b.{change.item_id}.r.{change.revision} - {change.added} - {change.user_id} - {change.comments}</a
+					>rev.b.{change.item_id}.r.{change.revision} - {change.added} - {change.username} - {change.comments}</a
 				>
 			</p>
 		{/each}

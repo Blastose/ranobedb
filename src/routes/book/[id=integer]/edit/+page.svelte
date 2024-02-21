@@ -9,6 +9,6 @@
 
 <PageTitle title="Editing {book.title ?? book.title_orig ?? ''}" />
 
-<div>
-	<BookForm bookForm={data.form} type="edit" />
+<div class="container-rndb">
+	<BookForm bookForm={data.form} {book} type="edit" />
 </div>

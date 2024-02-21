@@ -1,3 +1,4 @@
+import { editBook } from '$lib/server/db/books/actions.js';
 import { getBook } from '$lib/server/db/books/books';
 import { bookSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
@@ -21,7 +22,8 @@ export const load = async ({ params, locals }) => {
 };
 
 export const actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals, params }) => {
+		const id = Number(params.id);
 		if (!locals.user) redirect(302, '/');
 		if (locals.user.role === 'user') fail(403);
 
@@ -32,6 +34,12 @@ export const actions = {
 		}
 
 		console.log(form.data);
+
+		try {
+			await editBook({ book: form.data, id }, locals.user);
+		} catch (e) {
+			console.log(e);
+		}
 
 		return message(form, { text: 'Valid form', type: 'success' });
 	}
