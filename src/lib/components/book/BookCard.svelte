@@ -40,6 +40,8 @@
 				src="/covers_temp/{book.filename}.jpg"
 				alt=""
 			/>
+		{:else}
+			<div />
 		{/if}
 		<h4 class="flex flex-col gap-2">
 			<a class="line-clamp-2 font-bold text-lg" href="/book/{book.id}">{book.title}</a>
@@ -49,7 +51,7 @@
 			{/if}
 
 			<p class="line-clamp-4 whitespace-pre-wrap">
-				{book.description_ja}
+				{book.description_ja ?? ''}
 			</p>
 		</h4>
 	</div>

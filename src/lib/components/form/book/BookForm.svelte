@@ -8,18 +8,24 @@
 	import type { BookR } from '$lib/server/db/books/books';
 	import Hr from '$lib/components/layout/Hr.svelte';
 
-	export let book: BookR;
+	export let book: BookR | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
 	export let type: 'add' | 'edit';
 
 	$: sForm = superForm(bookForm, { dataType: 'json', resetForm: false });
 	$: ({ form, enhance, delayed, submitting } = sForm);
+
+	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>
 
 <!-- <SuperDebug data={$form} /> -->
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
-	<h1 class="font-bold text-xl">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
+	{#if book}
+		<h1 class="font-bold text-xl">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
+	{:else}
+		<h1 class="font-bold text-xl">Add book</h1>
+	{/if}
 
 	<BookTitlesInput {form} />
 
@@ -63,5 +69,5 @@
 		placeholder="Summarize the changes you have made"
 	/>
 
-	<SubmitButton delayed={$delayed} submitting={$submitting} text="Submit edit" />
+	<SubmitButton delayed={$delayed} submitting={$submitting} text={submitButtonText} />
 </form>

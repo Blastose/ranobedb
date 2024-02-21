@@ -3,12 +3,10 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
 	export let data;
-
-	$: book = data.book;
 </script>
 
-<PageTitle title="Editing {book.title ?? book.title_orig ?? ''}" />
+<PageTitle title="Add book" />
 
 <main class="container-rndb">
-	<BookForm bookForm={data.form} {book} type="edit" />
+	<BookForm bookForm={data.form} book={undefined} type="add" />
 </main>

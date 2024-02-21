@@ -96,3 +96,88 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 		}
 	});
 }
+
+export async function addBook(data: { book: Infer<typeof bookSchema> }, user: User) {
+	await db.transaction().execute(async (trx) => {
+		const insertedBook = await trx
+			.insertInto('book')
+			.values({
+				description: data.book.description ?? '',
+				description_ja: data.book.description_ja,
+				hidden: data.book.hidden,
+				locked: data.book.locked,
+				image_id: data.book.image_id
+			})
+			.returning('book.id')
+			.executeTakeFirstOrThrow();
+
+		const change = await addChange(
+			trx,
+			{
+				comments: data.book.comment,
+				hidden: data.book.hidden,
+				locked: data.book.locked,
+				item_id: insertedBook.id,
+				item_name: 'book'
+			},
+			user
+		);
+
+		await trx
+			.insertInto('book_hist')
+			.values({
+				description: data.book.description ?? '',
+				description_ja: data.book.description_ja,
+				change_id: change.change_id,
+				image_id: data.book.image_id
+			})
+			.executeTakeFirstOrThrow();
+		const bookTitleInsert = data.book.titles.map((item) => {
+			return {
+				book_id: insertedBook.id,
+				lang: item.lang,
+				official: item.official,
+				title: item.title,
+				romaji: item.romaji
+			};
+		}) satisfies Insertable<BookTitle>[];
+		if (bookTitleInsert.length > 0) {
+			await trx.insertInto('book_title').values(bookTitleInsert).execute();
+		}
+		const bookTitleHistInsert = data.book.titles.map((item) => {
+			return {
+				change_id: change.change_id,
+				lang: item.lang,
+				official: item.official,
+				title: item.title,
+				romaji: item.romaji
+			};
+		}) satisfies Insertable<BookTitleHist>[];
+		if (bookTitleHistInsert.length > 0) {
+			await trx.insertInto('book_title_hist').values(bookTitleHistInsert).execute();
+		}
+
+		const bookStaffAliases = data.book.staff.map((item) => {
+			return {
+				book_id: insertedBook.id,
+				staff_alias_id: item.staff_alias_id,
+				role_type: item.role_type,
+				note: item.note
+			};
+		}) satisfies Insertable<BookStaffAlias>[];
+		if (bookStaffAliases.length > 0) {
+			await trx.insertInto('book_staff_alias').values(bookStaffAliases).execute();
+		}
+		const bookStaffAliasesHist = data.book.staff.map((item) => {
+			return {
+				change_id: change.change_id,
+				staff_alias_id: item.staff_alias_id,
+				role_type: item.role_type,
+				note: item.note
+			};
+		}) satisfies Insertable<BookStaffAliasHist>[];
+		if (bookStaffAliasesHist.length > 0) {
+			await trx.insertInto('book_staff_alias_hist').values(bookStaffAliasesHist).execute();
+		}
+	});
+}
