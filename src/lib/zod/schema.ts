@@ -79,7 +79,7 @@ export const userListBookSchema = z.object({
 export const bookSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
-	description: z.string(),
+	description: z.string().nullish(),
 	description_ja: z.string().nullish(),
 	image_id: z.number().nullish(),
 
@@ -94,10 +94,17 @@ export const bookSchema = z.object({
 
 	staff: z.array(
 		z.object({
+			name: z.string(),
+			staff_id: z.number(),
 			staff_alias_id: z.number(),
-			role_type: z.enum(staffRolesArray)
+			role_type: z.enum(staffRolesArray),
+			note: z.string()
 		})
-	)
+	),
+
+	comment: z.string()
 });
+
+export const searchNameSchema = z.object({ name: z.string() });
 
 export type Nullish<T> = T | null | undefined;

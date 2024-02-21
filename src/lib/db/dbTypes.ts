@@ -59,10 +59,62 @@ export const languagesArray = [
 	'uk',
 	'ur',
 	'vi',
-	'zh',
 	'zh-Hans',
 	'zh-Hant'
 ] as const;
+
+export const languageNames: Record<Language, string> = {
+	ar: 'Arabic',
+	bg: 'Bulgarian',
+	ca: 'Catalan',
+	ck: 'Chukchi',
+	cs: 'Czech',
+	da: 'Danish',
+	de: 'German',
+	el: 'Greek',
+	en: 'English',
+	eo: 'Esperanto',
+	es: 'Spanish',
+	eu: 'Basque',
+	fa: 'Persian',
+	fi: 'Finnish',
+	fr: 'French',
+	ga: 'Irish',
+	gd: 'Scottish Gaelic',
+	he: 'Hebrew',
+	hi: 'Hindi',
+	hr: 'Croatian',
+	hu: 'Hungarian',
+	id: 'Indonesian',
+	it: 'Italian',
+	iu: 'Inuktitut',
+	ja: 'Japanese',
+	ko: 'Korean',
+	la: 'Latin',
+	lt: 'Lithuanian',
+	lv: 'Latvian',
+	mk: 'Macedonian',
+	ms: 'Malay',
+	nl: 'Dutch',
+	no: 'Norwegian',
+	pl: 'Polish',
+	'pt-br': 'Portuguese (Brazil)',
+	'pt-pt': 'Portuguese (Portugal)',
+	ro: 'Romanian',
+	ru: 'Russian',
+	sk: 'Slovak',
+	sl: 'Slovenian',
+	sr: 'Serbian',
+	sv: 'Swedish',
+	ta: 'Tamil',
+	th: 'Thai',
+	tr: 'Turkish',
+	uk: 'Ukrainian',
+	ur: 'Urdu',
+	vi: 'Vietnamese',
+	'zh-Hans': 'Chinese (Simplified)',
+	'zh-Hant': 'Chinese (Traditional)'
+};
 
 export type Language = (typeof languagesArray)[number];
 
@@ -117,12 +169,14 @@ export interface BookHist {
 
 export interface BookStaffAlias {
 	book_id: number;
+	note: string;
 	role_type: StaffRole;
 	staff_alias_id: number;
 }
 
 export interface BookStaffAliasHist {
 	change_id: number;
+	note: string;
 	role_type: StaffRole;
 	staff_alias_id: number;
 }

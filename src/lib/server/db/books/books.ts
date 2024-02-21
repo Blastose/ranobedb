@@ -144,7 +144,13 @@ export const getBook = (id: number) => {
 					.selectFrom('staff_alias')
 					.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
 					.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
-					.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id'])
+					.select([
+						'book_staff_alias.role_type',
+						'staff_alias.name',
+						'staff_alias.staff_id',
+						'staff_alias.id as staff_alias_id',
+						'book_staff_alias.note'
+					])
 			).as('staff'),
 			jsonArrayFrom(
 				eb
@@ -203,7 +209,13 @@ export const getBookHist = (id: number, revision: number) => {
 						'staff_alias.id'
 					)
 					.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
-					.select(['book_staff_alias_hist.role_type', 'staff_alias.name', 'staff_alias.staff_id'])
+					.select([
+						'book_staff_alias_hist.role_type',
+						'staff_alias.name',
+						'staff_alias.staff_id',
+						'staff_alias.id as staff_alias_id',
+						'book_staff_alias_hist.note'
+					])
 			).as('staff'),
 			jsonArrayFrom(
 				eb
