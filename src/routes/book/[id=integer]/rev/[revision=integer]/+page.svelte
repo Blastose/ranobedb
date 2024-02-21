@@ -9,17 +9,4 @@
 
 <PageTitle title={book.title ?? book.title_orig ?? ''} />
 
-<div class="flex flex-col gap-2">
-	<p>aksdfjsjfkljasfjklejdjkalsejdjaeklsdj</p>
-	<p>aksdfjsjfkljasfjklejdjkalsejdjaeklsdj</p>
-	<p>aksdfjsjfkljasfjklejdjkalsejdjaeklsdj</p>
-	<p>aksdfjsjfkljasfjklejdjkalsejdjaeklsdj</p>
-	<p>aksdfjsjfkljasfjklejdjkalsejdjaeklsdj</p>
-	<p>aksdfjsjfkljasfjklejdjkalsejdjaeklsdj</p>
-	<p>aksdfjsjfkljasfjklejdjkalsejdjaeklsdj</p>
-	<p>aksdfjsjfkljasfjklejdjkalsejdjaeklsdj</p>
-
-	<div>
-		<Book {book} theme={data.theme} user={data.user} />
-	</div>
-</div>
+<Book {book} theme={data.theme} user={data.user} isRevision={true} />

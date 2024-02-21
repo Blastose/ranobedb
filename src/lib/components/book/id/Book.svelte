@@ -10,13 +10,15 @@
 
 	export let book: BookR;
 	export let theme: Theme;
+	export let isRevision: boolean;
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
 
-	$: imageBgStyle =
-		($themeStore ?? theme) === 'light'
+	$: imageBgStyle = book.filename
+		? ($themeStore ?? theme) === 'light'
 			? `background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%), url(/covers_temp/${book.filename}.jpg);`
-			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%), url(/covers_temp/${book.filename}.jpg);`;
+			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%), url(/covers_temp/${book.filename}.jpg);`
+		: '';
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
@@ -29,13 +31,19 @@
 	<div class="-mt-32 z-10 flex flex-col gap-4">
 		<div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] md:grid-cols-[256px_1fr] gap-6 sm:gap-12">
 			<div class="flex flex-col items-center gap-4">
-				<img
-					width="240"
-					height="360"
-					class="img max-w-[200px] h-fit sm:max-w-[200px] rounded-sm shadow-sm"
-					src="/covers_temp/{book.filename}.jpg"
-					alt=""
-				/>
+				{#if book.filename}
+					<img
+						width="240"
+						height="360"
+						class="img max-w-[200px] h-fit sm:max-w-[200px] rounded-sm shadow-sm"
+						src="/covers_temp/{book.filename}.jpg"
+						alt=""
+					/>
+				{:else}
+					<div class="bg-neutral-500 w-[240px] h-[360px]">
+						<p class="p-4">No cover</p>
+					</div>
+				{/if}
 
 				{#if userListForm}
 					{#if user}
@@ -113,9 +121,11 @@
 			<h2 class="font-bold text-lg">User stats</h2>
 		</section>
 
-		<section>
-			<a class="block font-bold text-lg" href="/book/{book.id}/edit">Edit book</a>
-		</section>
+		{#if !isRevision}
+			<section>
+				<a class="block font-bold text-lg" href="/book/{book.id}/edit">Edit book</a>
+			</section>
+		{/if}
 	</div>
 </main>
 
