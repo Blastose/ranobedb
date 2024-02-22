@@ -83,14 +83,24 @@ export const bookSchema = z.object({
 	description_ja: z.string().nullish(),
 	image_id: z.number().nullish(),
 
-	titles: z.array(
-		z.object({
-			lang: z.enum(languagesArray),
-			official: z.boolean(),
-			title: z.string(),
-			romaji: z.string().nullish()
-		})
-	),
+	titles: z
+		.array(
+			z.object({
+				lang: z.enum(languagesArray),
+				official: z.boolean(),
+				title: z.string().min(1, { message: 'Title must be at least 1 character' }),
+				romaji: z.string().nullish()
+			})
+		)
+		.refine((titles) => {
+			if (titles.length === 0) {
+				return false;
+			}
+			if (!titles.some((v) => v.lang === 'ja')) {
+				return false;
+			}
+			return true;
+		}),
 
 	staff: z.array(
 		z.object({
@@ -102,7 +112,7 @@ export const bookSchema = z.object({
 		})
 	),
 
-	comment: z.string()
+	comment: z.string().min(1, { message: 'Summary must have at least 1 character' })
 });
 
 export const searchNameSchema = z.object({ name: z.string() });

@@ -10,8 +10,9 @@
 	<div>
 		{#each changes as change}
 			<p>
-				<a href="/book/{change.item_id}/rev/{change.revision}"
-					>rev.b.{change.item_id}.r.{change.revision} - {change.added} - {change.username} - {change.comments}</a
+				<a href="/book/{change.item_id}/revision/{change.revision}"
+					>rev.b.{change.item_id}r{change.revision} - {new Date(change.added).toLocaleString()} - {change.username}
+					- {change.comments}</a
 				>
 			</p>
 		{/each}

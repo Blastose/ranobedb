@@ -124,6 +124,7 @@
 		{#if !isRevision}
 			<section>
 				<a class="block font-bold text-lg" href="/book/{book.id}/edit">Edit book</a>
+				<a class="block font-bold text-lg" href="/book/{book.id}/history">History</a>
 			</section>
 		{/if}
 	</div>

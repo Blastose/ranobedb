@@ -16,7 +16,7 @@ export const load = async ({ params, locals }) => {
 		error(404);
 	}
 
-	const form = await superValidate(book, zod(bookSchema));
+	const form = await superValidate(book, zod(bookSchema), { errors: false });
 
 	return { book, form };
 };
@@ -40,6 +40,8 @@ export const actions = {
 		} catch (e) {
 			console.log(e);
 		}
+
+		// ahhhhhhhhhhhhhhhhhhhhhhhhh
 
 		return message(form, { text: 'Valid form', type: 'success' });
 	}

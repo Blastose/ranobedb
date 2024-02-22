@@ -29,7 +29,7 @@ export const actions = {
 		if (!locals.user) redirect(302, '/');
 		if (locals.user.role === 'user') fail(403);
 
-		const form = await superValidate(request, zod(bookSchema));
+		const form = await superValidate(request, zod(bookSchema), { errors: false });
 
 		if (!form.valid) {
 			return fail(400, { form });

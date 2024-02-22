@@ -27,7 +27,7 @@
 		<h1 class="font-bold text-xl">Add book</h1>
 	{/if}
 
-	<BookTitlesInput {form} />
+	<BookTitlesInput form={sForm} />
 
 	<Hr />
 
@@ -53,7 +53,7 @@
 
 	<section>
 		<p class="font-bold text-xl">Database relations:</p>
-		<BookStaffInput {form} />
+		<BookStaffInput form={sForm} />
 	</section>
 
 	<input name="type" type="hidden" value={type} />
