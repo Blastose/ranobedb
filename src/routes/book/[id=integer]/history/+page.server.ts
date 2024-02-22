@@ -1,4 +1,6 @@
+import { getBook } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db.js';
+import { error } from '@sveltejs/kit';
 
 export const load = async ({ params }) => {
 	const id = params.id;
@@ -14,5 +16,10 @@ export const load = async ({ params }) => {
 		.orderBy('change.revision desc')
 		.execute();
 
-	return { changes };
+	const book = await getBook(bookId).executeTakeFirstOrThrow();
+	if (!book) {
+		error(404);
+	}
+
+	return { changes, book };
 };

@@ -52,6 +52,16 @@ body {
 	height: 100%;
 }
 
+a.link {
+	color: rgb(80, 80, 211);
+}
+a.link:hover {
+	text-decoration: underline;
+}
+.dark a.link {
+	color: rgb(169, 170, 245);
+}
+
 /* Remove blue highlight on mobile presses */
 input,
 textarea,
