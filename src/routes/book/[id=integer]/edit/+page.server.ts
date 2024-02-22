@@ -25,7 +25,7 @@ export const actions = {
 	default: async ({ request, locals, params }) => {
 		const id = Number(params.id);
 		if (!locals.user) redirect(302, '/');
-		if (locals.user.role === 'user') fail(403);
+		if (locals.user.role === 'user') return fail(403);
 
 		const form = await superValidate(request, zod(bookSchema));
 

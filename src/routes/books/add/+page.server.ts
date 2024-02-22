@@ -18,7 +18,8 @@ export const load = async ({ locals }) => {
 				}
 			]
 		},
-		zod(bookSchema)
+		zod(bookSchema),
+		{ errors: false }
 	);
 
 	return { form };
@@ -27,9 +28,9 @@ export const load = async ({ locals }) => {
 export const actions = {
 	default: async ({ request, locals }) => {
 		if (!locals.user) redirect(302, '/');
-		if (locals.user.role === 'user') fail(403);
+		if (locals.user.role === 'user') return fail(403);
 
-		const form = await superValidate(request, zod(bookSchema), { errors: false });
+		const form = await superValidate(request, zod(bookSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });
