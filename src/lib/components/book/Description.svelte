@@ -42,8 +42,9 @@
 
 <div class="description-container">
 	<div style:max-height="{maxHeight}px" bind:this={parentDescriptionElement} class="description">
-		<div use:removeHydration class="whitespace-pre-wrap" bind:this={descriptionElement}>
-			{description}
+		<div use:removeHydration bind:this={descriptionElement}>
+			<!-- {description} -->
+			<MarkdownToHtml markdown={description} type="full" />
 		</div>
 	</div>
 

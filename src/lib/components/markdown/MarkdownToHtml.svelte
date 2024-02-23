@@ -2,6 +2,7 @@
 	import { converter } from './markdownToHtml';
 
 	export let markdown: string;
+	export let type: 'full' | 'singleline';
 
 	function addRevealedClass(event: Event) {
 		const element = event.currentTarget as HTMLSpanElement;
@@ -22,9 +23,9 @@
 		};
 	}
 
-	$: html = converter(markdown);
+	$: html = converter(markdown, type);
 </script>
 
-<div class="markdown whitespace-pre-wrap" use:revealSpoilers>
+<div class="markdown" use:revealSpoilers>
 	{@html html}
 </div>

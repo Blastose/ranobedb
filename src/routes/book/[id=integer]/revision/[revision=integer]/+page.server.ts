@@ -9,7 +9,20 @@ export const load = async ({ params }) => {
 	const revision = Number(params.revision);
 	const previousRevision = revision - 1;
 
-	const book = await getBookHist(bookId, revision).executeTakeFirst();
+	const bookPromise = await getBookHist(bookId, revision).executeTakeFirst();
+
+	const changesPromise = await getChanges('book', bookId, [
+		previousRevision,
+		revision,
+		revision + 1
+	]).execute();
+
+	const [book, changes] = await Promise.all([bookPromise, changesPromise]);
+
+	const prevChange = changes.find((i) => i.revision === previousRevision);
+	const change = changes.find((i) => i.revision === revision)!;
+	const nextChange = changes.find((i) => i.revision === revision + 1);
+
 	if (!book) {
 		error(404);
 	}
@@ -20,18 +33,9 @@ export const load = async ({ params }) => {
 		if (!prevBook) {
 			error(404);
 		}
-		// Diff these somehow
+		// TODO diff these better
 		diff = detailedDiff(prevBook, book);
 	}
-
-	const changes = await getChanges('book', bookId, [
-		previousRevision,
-		revision,
-		revision + 1
-	]).execute();
-	const prevChange = changes.find((i) => i.revision === previousRevision);
-	const change = changes.find((i) => i.revision === revision)!;
-	const nextChange = changes.find((i) => i.revision === revision + 1);
 
 	return {
 		bookId,

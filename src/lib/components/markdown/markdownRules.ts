@@ -74,7 +74,16 @@ export const rules = {
 		order: order++
 	}),
 	link: Object.assign({}, SimpleMarkdown.defaultRules.link, {
-		order: order++
+		order: order++,
+		html: function (node, output, state) {
+			const attributes = {
+				href: SimpleMarkdown.sanitizeUrl(node.target),
+				title: node.title,
+				rel: 'noopener nofollow ugc',
+				target: '_blank'
+			};
+			return SimpleMarkdown.htmlTag('a', output(node.content, state), attributes);
+		} satisfies SimpleMarkdown.HtmlNodeOutput
 	}),
 	em: Object.assign({}, SimpleMarkdown.defaultRules.em, {
 		order: order++
@@ -89,6 +98,57 @@ export const rules = {
 		order: order++,
 		match: SimpleMarkdown.anyScopeRegex(/^\n/)
 	}) satisfies SimpleMarkdownRule,
+	text: Object.assign({}, SimpleMarkdown.defaultRules.text, {
+		order: order++,
+		match: SimpleMarkdown.anyScopeRegex(/^[\s\S]+?(?=[^0-9A-Za-z\s]|\n\n|\n|\w+:\S|$)/)
+	})
+};
+
+export const rulesSingleLine = {
+	Array: Object.assign({}, SimpleMarkdown.defaultRules.Array, {
+		order: order++
+	}),
+	spoiler: {
+		order: order++,
+		match: SimpleMarkdown.inlineRegex(/^>!\s*((.|\n(?!\n))*?)\s*!</),
+		parse: function (capture, parse, state) {
+			return {
+				content: parse(capture[1], state)
+			};
+		},
+		html: function (node, output, state) {
+			return SimpleMarkdown.htmlTag('span', output(node.content, state), { class: 'spoiler' });
+		}
+	} satisfies SimpleMarkdownRule,
+	newline: Object.assign({}, SimpleMarkdown.defaultRules.newline, {
+		order: order++
+	}),
+	paragraph: Object.assign({}, SimpleMarkdown.defaultRules.paragraph, {
+		order: order++,
+		match: SimpleMarkdown.blockRegex(/^((?:[^\n]|\n(?! *\n))+)\n/),
+		html: function (node, output, state) {
+			if (node.content.length === 0) return '';
+			return SimpleMarkdown.htmlTag('p', output(node.content, state));
+		} satisfies SimpleMarkdown.HtmlNodeOutput
+	}) satisfies SimpleMarkdownRule,
+	autolink: Object.assign({}, SimpleMarkdown.defaultRules.autolink, {
+		order: order++
+	}),
+	url: Object.assign({}, SimpleMarkdown.defaultRules.url, {
+		order: order++
+	}),
+	link: Object.assign({}, SimpleMarkdown.defaultRules.link, {
+		order: order++,
+		html: function (node, output, state) {
+			const attributes = {
+				href: SimpleMarkdown.sanitizeUrl(node.target),
+				title: node.title,
+				rel: 'noopener nofollow ugc',
+				target: '_blank'
+			};
+			return SimpleMarkdown.htmlTag('a', output(node.content, state), attributes);
+		} satisfies SimpleMarkdown.HtmlNodeOutput
+	}),
 	text: Object.assign({}, SimpleMarkdown.defaultRules.text, {
 		order: order++,
 		match: SimpleMarkdown.anyScopeRegex(/^[\s\S]+?(?=[^0-9A-Za-z\s]|\n\n|\n|\w+:\S|$)/)

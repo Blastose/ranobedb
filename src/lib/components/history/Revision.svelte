@@ -28,11 +28,15 @@
 
 	{#if changes.change.revision !== 1}
 		<div class="grid grid-cols-2">
-			<RevisionInfo change={changes.prevChange} {buildBaseLink} />
-			<RevisionInfo change={changes.change} {buildBaseLink} />
+			<RevisionInfo change={changes.prevChange} {buildBaseLink} isLatestRevision={false} />
+			<RevisionInfo
+				change={changes.change}
+				{buildBaseLink}
+				isLatestRevision={!Boolean(changes.nextChange)}
+			/>
 		</div>
 	{:else}
-		<RevisionInfo change={changes.change} {buildBaseLink} />
+		<RevisionInfo change={changes.change} {buildBaseLink} isLatestRevision={true} />
 	{/if}
 
 	{#if diff}

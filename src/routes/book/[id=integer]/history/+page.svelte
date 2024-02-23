@@ -1,5 +1,6 @@
 <script lang="ts">
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 
 	export let data;
 
@@ -35,7 +36,7 @@
 						>
 						<td>{new Date(change.added).toLocaleString()}</td>
 						<td><a class="link" href="/user/{change.username}">{change.username}</a></td>
-						<td class="w-full">{change.comments}</td>
+						<td class="w-full"><MarkdownToHtml markdown={change.comments} type="singleline" /></td>
 					</tr>
 				{/each}
 			</tbody>
