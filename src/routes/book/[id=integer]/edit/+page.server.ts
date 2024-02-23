@@ -2,7 +2,9 @@ import { editBook } from '$lib/server/db/books/actions.js';
 import { getBook, getBookHist } from '$lib/server/db/books/books';
 import { bookSchema, revisionSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms';
+import pkg from 'pg';
+const { DatabaseError } = pkg;
+import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
@@ -49,7 +51,19 @@ export const actions = {
 		try {
 			await editBook({ book: form.data, id }, locals.user);
 		} catch (e) {
-			console.log(e);
+			if (e instanceof DatabaseError) {
+				if (
+					e.code === '23505' &&
+					e.table === 'book_staff_alias' &&
+					e.constraint === 'book_staff_alias_pkey'
+				) {
+					return setError(
+						form,
+						'staff._errors',
+						'Duplicate staff member with same roles in form. Remove duplicates and try again.'
+					);
+				}
+			}
 		}
 
 		return message(form, { text: 'Valid form', type: 'success' });

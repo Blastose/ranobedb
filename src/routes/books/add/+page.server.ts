@@ -1,8 +1,10 @@
 import { addBook } from '$lib/server/db/books/actions';
 import { bookSchema } from '$lib/zod/schema.js';
 import { fail, redirect } from '@sveltejs/kit';
-import { message, superValidate } from 'sveltekit-superforms';
+import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import pkg from 'pg';
+const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
@@ -41,7 +43,19 @@ export const actions = {
 		try {
 			await addBook({ book: form.data }, locals.user);
 		} catch (e) {
-			console.log(e);
+			if (e instanceof DatabaseError) {
+				if (
+					e.code === '23505' &&
+					e.table === 'book_staff_alias' &&
+					e.constraint === 'book_staff_alias_pkey'
+				) {
+					return setError(
+						form,
+						'staff._errors',
+						'Duplicate staff member with same roles in form. Remove duplicates and try again.'
+					);
+				}
+			}
 		}
 
 		return message(form, { text: 'Valid form', type: 'success' });

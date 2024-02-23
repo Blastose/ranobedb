@@ -36,7 +36,9 @@
 	<div class="flex gap-6 flex-wrap">
 		{#each $values as staff, i}
 			<div class="flex flex-col gap-2 flex-wrap">
-				<p><span class="text-sm opacity-70">#{staff.staff_id}:</span> {staff.name}</p>
+				<a class="link w-fit" target="_blank" rel="noreferrer" href="/staff/{staff.staff_id}"
+					><span class="text-sm">#{staff.staff_id}:</span> {staff.name}</a
+				>
 				<label class="flex gap-2 items-center"
 					><span>Role: </span>
 					<select name="staff-role" class="input reset-padding" bind:value={$values[i].role_type}>
@@ -63,4 +65,7 @@
 		{/each}
 		<ComboboxInput handleAdd={handleAddStaff} {search} />
 	</div>
+	{#if $errors}
+		<p class="error-text-color">{$errors}</p>
+	{/if}
 </section>
