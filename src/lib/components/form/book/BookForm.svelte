@@ -7,13 +7,22 @@
 	import BookStaffInput from './BookStaffInput.svelte';
 	import type { BookR } from '$lib/server/db/books/books';
 	import Hr from '$lib/components/layout/Hr.svelte';
+	import { addToast } from '$lib/components/toast/Toaster.svelte';
 
 	export let book: BookR | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
 	export let type: 'add' | 'edit';
 
-	$: sForm = superForm(bookForm, { dataType: 'json', resetForm: false });
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	$: sForm = superForm(bookForm, {
+		dataType: 'json',
+		resetForm: false,
+		onUpdated({ form: f }) {
+			if (!f.valid) {
+				addToast({ data: { title: 'Error in form!', type: 'error' } });
+			}
+		}
+	});
+	$: ({ enhance, delayed, submitting } = sForm);
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>

@@ -77,7 +77,7 @@
 	.description {
 		max-width: 64rem;
 		overflow: hidden;
-		transition-duration: 300ms;
+		transition: max-height 300ms;
 	}
 
 	.expand-description-text {
@@ -92,7 +92,7 @@
 	}
 
 	.hide-text-gradient {
-		transition-duration: 300ms;
+		transition: margin 300ms;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

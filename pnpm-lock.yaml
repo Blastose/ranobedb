@@ -94,6 +94,9 @@ devDependencies:
   svelte-sequential-preprocessor:
     specifier: ^2.0.1
     version: 2.0.1
+  sveltekit-flash-message:
+    specifier: ^2.4.2
+    version: 2.4.2(@sveltejs/kit@2.5.0)(svelte@4.2.3)
   sveltekit-superforms:
     specifier: ^2.2.1
     version: 2.2.1(@sveltejs/kit@2.5.0)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.9)(svelte@4.2.3)
@@ -4108,6 +4111,16 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.5
       periscopic: 3.1.0
+    dev: true
+
+  /sveltekit-flash-message@2.4.2(@sveltejs/kit@2.5.0)(svelte@4.2.3):
+    resolution: {integrity: sha512-iXZSOp8La7kHQuOsXOcjIp7x24J/Ycs2uPoHwtjsbObVCbjgxZrtvjd0XUfA0mYZBp97BtAQ5SW5owRDJCWq6A==}
+    peerDependencies:
+      '@sveltejs/kit': 1.x || 2.x
+      svelte: 3.x || 4.x || >=5.0.0-next.51
+    dependencies:
+      '@sveltejs/kit': 2.5.0(@sveltejs/vite-plugin-svelte@3.0.2)(svelte@4.2.3)(vite@5.0.9)
+      svelte: 4.2.3
     dev: true
 
   /sveltekit-superforms@2.2.1(@sveltejs/kit@2.5.0)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.9)(svelte@4.2.3):

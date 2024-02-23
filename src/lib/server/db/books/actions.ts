@@ -98,7 +98,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 }
 
 export async function addBook(data: { book: Infer<typeof bookSchema> }, user: User) {
-	await db.transaction().execute(async (trx) => {
+	return await db.transaction().execute(async (trx) => {
 		const insertedBook = await trx
 			.insertInto('book')
 			.values({
@@ -179,5 +179,7 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 		if (bookStaffAliasesHist.length > 0) {
 			await trx.insertInto('book_staff_alias_hist').values(bookStaffAliasesHist).execute();
 		}
+
+		return insertedBook.id;
 	});
 }

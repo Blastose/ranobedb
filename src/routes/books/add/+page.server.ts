@@ -1,7 +1,8 @@
 import { addBook } from '$lib/server/db/books/actions';
 import { bookSchema } from '$lib/zod/schema.js';
 import { fail, redirect } from '@sveltejs/kit';
-import { message, setError, superValidate } from 'sveltekit-superforms';
+import { setError, superValidate } from 'sveltekit-superforms';
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
@@ -28,7 +29,7 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-	default: async ({ request, locals }) => {
+	default: async ({ request, locals, cookies }) => {
 		if (!locals.user) redirect(302, '/');
 		if (locals.user.role === 'user') return fail(403);
 
@@ -40,8 +41,9 @@ export const actions = {
 
 		console.log(form.data);
 
+		let newBookId: number | undefined = undefined;
 		try {
-			await addBook({ book: form.data }, locals.user);
+			newBookId = await addBook({ book: form.data }, locals.user);
 		} catch (e) {
 			if (e instanceof DatabaseError) {
 				if (
@@ -58,6 +60,14 @@ export const actions = {
 			}
 		}
 
-		return message(form, { text: 'Valid form', type: 'success' });
+		if (newBookId) {
+			flashRedirect(
+				303,
+				`/book/${newBookId}`,
+				{ type: 'success', message: 'Successfully added book!' },
+				cookies
+			);
+		}
+		return fail(400, { form });
 	}
 };

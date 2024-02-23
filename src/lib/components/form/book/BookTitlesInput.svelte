@@ -40,7 +40,7 @@
 				bind:value={$values[i].title}
 			/>
 			{#if $valueErrors[i]?.title}
-				<span class="text-red-600 dark:text-red-400">{$valueErrors[i]?.title}</span>
+				<span class="error-text-color">{$valueErrors[i]?.title}</span>
 			{/if}
 			<input
 				placeholder="Romanization (leave empty if the title is already in romaji)"
@@ -51,7 +51,7 @@
 				bind:value={$values[i].romaji}
 			/>
 			{#if $valueErrors[i]?.romaji}
-				<span class="text-red-600 dark:text-red-400">{$valueErrors[i]?.romaji}</span>
+				<span class="error-text-color">{$valueErrors[i]?.romaji}</span>
 			{/if}
 
 			<div class="flex flex-wrap gap-1 items-center justify-between">

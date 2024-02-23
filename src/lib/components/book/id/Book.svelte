@@ -76,7 +76,7 @@
 
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
-			<div class="flex gap-4">
+			<div class="flex flex-wrap gap-4">
 				{#each book.staff as staff}
 					<p>
 						<a href="/staff/{staff.staff_id}"

@@ -1,7 +1,8 @@
 <script lang="ts">
-	import Icon from '../icon/Icon.svelte';
+	import Icon from '$lib/components/icon/Icon.svelte';
+	import type { ToastData } from '$lib/components/toast/toast';
 
-	export let type: 'success' | 'error' | 'warning';
+	export let type: ToastData['type'];
 
 	let open = true;
 

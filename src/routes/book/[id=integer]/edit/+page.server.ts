@@ -2,9 +2,10 @@ import { editBook } from '$lib/server/db/books/actions.js';
 import { getBook, getBookHist } from '$lib/server/db/books/books';
 import { bookSchema, revisionSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
-import { message, setError, superValidate } from 'sveltekit-superforms';
+import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
@@ -35,7 +36,7 @@ export const load = async ({ params, locals, url }) => {
 };
 
 export const actions = {
-	default: async ({ request, locals, params }) => {
+	default: async ({ request, locals, params, cookies }) => {
 		const id = Number(params.id);
 		if (!locals.user) redirect(302, '/');
 		if (locals.user.role === 'user') return fail(403);
@@ -48,8 +49,10 @@ export const actions = {
 
 		console.log(form.data);
 
+		let success = false;
 		try {
 			await editBook({ book: form.data, id }, locals.user);
+			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {
 				if (
@@ -66,6 +69,14 @@ export const actions = {
 			}
 		}
 
-		return message(form, { text: 'Valid form', type: 'success' });
+		if (success) {
+			flashRedirect(
+				303,
+				`/book/${id}`,
+				{ type: 'success', message: 'Successfully edited book!' },
+				cookies
+			);
+		}
+		return fail(400, { form });
 	}
 };
