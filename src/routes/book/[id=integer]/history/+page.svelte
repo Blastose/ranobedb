@@ -34,9 +34,9 @@
 								>b{change.item_id}.{change.revision}</a
 							></td
 						>
-						<td>{new Date(change.added).toLocaleString()}</td>
+						<td class="whitespace-nowrap">{new Date(change.added).toLocaleString()}</td>
 						<td><a class="link" href="/user/{change.username}">{change.username}</a></td>
-						<td class="w-full"><MarkdownToHtml markdown={change.comments} type="singleline" /></td>
+						<td class=""><MarkdownToHtml markdown={change.comments} type="singleline" /></td>
 					</tr>
 				{/each}
 			</tbody>
@@ -46,7 +46,7 @@
 
 <style>
 	table {
-		white-space: nowrap;
+		word-wrap: normal;
 	}
 
 	th {
