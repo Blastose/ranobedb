@@ -1,19 +1,30 @@
 import { editBook } from '$lib/server/db/books/actions.js';
-import { getBook } from '$lib/server/db/books/books';
-import { bookSchema } from '$lib/zod/schema.js';
+import { getBook, getBookHist } from '$lib/server/db/books/books';
+import { bookSchema, revisionSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/');
 
 	const id = params.id;
 	const bookId = Number(id);
+	let book;
 
-	const book = await getBook(bookId).executeTakeFirst();
+	const revision = await superValidate(url, zod(revisionSchema));
+	if (revision.valid && url.searchParams.get('revision')) {
+		book = await getBookHist(bookId, revision.data.revision).executeTakeFirst();
+	} else {
+		book = await getBook(bookId).executeTakeFirst();
+	}
+
 	if (!book) {
 		error(404);
+	}
+
+	if (revision.valid && url.searchParams.get('revision')) {
+		book = { ...book, comment: `Reverted to revision ${revision.data.revision}` };
 	}
 
 	const form = await superValidate(book, zod(bookSchema), { errors: false });
@@ -40,8 +51,6 @@ export const actions = {
 		} catch (e) {
 			console.log(e);
 		}
-
-		// ahhhhhhhhhhhhhhhhhhhhhhhhh
 
 		return message(form, { text: 'Valid form', type: 'success' });
 	}

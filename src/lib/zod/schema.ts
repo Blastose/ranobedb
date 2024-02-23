@@ -116,5 +116,6 @@ export const bookSchema = z.object({
 });
 
 export const searchNameSchema = z.object({ name: z.string() });
+export const revisionSchema = z.object({ revision: z.number() });
 
 export type Nullish<T> = T | null | undefined;

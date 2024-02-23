@@ -267,3 +267,109 @@ input[type='checkbox'] {
 .sub-btn:hover {
 	background-color: var(--primary-800);
 }
+
+.markdown h1 {
+	font-weight: bold;
+	margin: 0.67rem 0;
+	font-size: 2rem;
+}
+.markdown h2 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 1.5rem;
+}
+.markdown h3 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 1.125rem;
+}
+.markdown h4 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 1rem;
+}
+.markdown h5 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 0.83rem;
+}
+.markdown h6 {
+	font-weight: bold;
+	margin: 0.5rem 0;
+	font-size: 0.67rem;
+}
+.markdown a {
+	color: rgb(92, 92, 226);
+}
+.markdown a:hover {
+	text-decoration: underline;
+}
+.dark .markdown a {
+	color: rgb(150, 150, 255);
+}
+.markdown li {
+	display: list-item;
+}
+.markdown ol {
+	display: block;
+	list-style-type: decimal;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 30px;
+}
+.markdown ul {
+	display: block;
+	list-style-type: disc;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	margin-left: 0;
+	margin-right: 0;
+	padding-left: 30px;
+}
+.markdown pre {
+	overflow-x: auto;
+	background-color: rgb(216, 216, 228);
+	border-radius: 0.25rem;
+	padding: 0.25rem 0.5rem;
+	margin: 0.25rem 0rem;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+}
+.dark .markdown pre {
+	background-color: rgb(49, 49, 51);
+}
+.markdown code:not(pre code) {
+	border: solid 1px rgb(186, 186, 192);
+	padding: 0rem 0.25rem;
+	border-radius: 0.125rem;
+	background-color: rgb(216, 216, 228);
+}
+.dark .markdown code:not(pre code) {
+	border: solid 1px rgb(69, 66, 80);
+	background-color: rgb(49, 49, 51);
+}
+.markdown .spoiler {
+	background: rgb(172, 172, 199);
+	border-radius: 0.25rem;
+	cursor: pointer;
+	color: transparent;
+}
+.dark .markdown .spoiler {
+	background: rgb(70, 68, 78);
+}
+.markdown .spoiler:not(.revealed) > * {
+	opacity: 0;
+}
+.markdown .spoiler.revealed {
+	transition: 450ms;
+	background: rgb(223, 223, 236);
+	border-radius: 2px;
+	cursor: text;
+	color: var(--text-light);
+}
+.dark .markdown .spoiler.revealed {
+	background: rgb(59, 58, 65);
+	color: var(--text-dark);
+}

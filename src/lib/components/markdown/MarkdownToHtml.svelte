@@ -1,0 +1,30 @@
+<script lang="ts">
+	import { converter } from './markdownToHtml';
+
+	export let markdown: string;
+
+	function addRevealedClass(event: Event) {
+		const element = event.currentTarget as HTMLSpanElement;
+		element.classList.add('revealed');
+	}
+
+	function revealSpoilers(node: HTMLElement) {
+		const spoilerTextElements = node.querySelectorAll('.spoiler');
+		spoilerTextElements.forEach((element) => {
+			element.addEventListener('click', addRevealedClass);
+		});
+		return {
+			destroy() {
+				spoilerTextElements.forEach((element) => {
+					element.removeEventListener('click', addRevealedClass);
+				});
+			}
+		};
+	}
+
+	$: html = converter(markdown);
+</script>
+
+<div class="markdown whitespace-pre-wrap" use:revealSpoilers>
+	{@html html}
+</div>

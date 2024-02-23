@@ -22,9 +22,7 @@
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
-	<slot />
-
-	<div class="banner-img h-[256px]" style={imageBgStyle}>
+	<div class="banner-img {isRevision ? 'h-[128px]' : 'h-[256px]'}" style={imageBgStyle}>
 		<div class="blur-image" />
 	</div>
 
