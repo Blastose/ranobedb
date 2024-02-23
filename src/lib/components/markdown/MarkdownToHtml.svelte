@@ -26,6 +26,6 @@
 	$: html = converter(markdown, type);
 </script>
 
-<div class="markdown" use:revealSpoilers>
+<div class="markdown" class:singleline={type === 'singleline'} use:revealSpoilers>
 	{@html html}
 </div>

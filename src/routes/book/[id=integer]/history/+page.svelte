@@ -1,6 +1,6 @@
 <script lang="ts">
+	import History from '$lib/components/history/History.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
-	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 
 	export let data;
 
@@ -8,53 +8,14 @@
 	$: book = data.book;
 
 	$: title = `Edit history of ${book.title ?? book.title_orig ?? ''}`;
+
+	function buildRevisionLink(item_id: number, revision: number) {
+		return `/book/${item_id}/revision/${revision}`;
+	}
 </script>
 
 <PageTitle {title} />
 
-<div class="container-rndb flex flex-col gap-4">
-	<h1 class="font-semibold text-2xl">{title}</h1>
-
-	<div class="grid overflow-x-auto">
-		<table>
-			<thead>
-				<tr>
-					<th>Revision</th>
-					<th>Date</th>
-					<th>User</th>
-					<th>Edit summary</th>
-				</tr>
-			</thead>
-
-			<tbody>
-				{#each changes as change}
-					<tr>
-						<td
-							><a class="link" href="/book/{change.item_id}/revision/{change.revision}"
-								>b{change.item_id}.{change.revision}</a
-							></td
-						>
-						<td class="whitespace-nowrap">{new Date(change.added).toLocaleString()}</td>
-						<td><a class="link" href="/user/{change.username}">{change.username}</a></td>
-						<td class=""><MarkdownToHtml markdown={change.comments} type="singleline" /></td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
-</div>
-
-<style>
-	table {
-		word-wrap: normal;
-	}
-
-	th {
-		text-align: left;
-	}
-
-	th,
-	td {
-		padding: 0 15px;
-	}
-</style>
+<main class="container-rndb">
+	<History {changes} {title} {buildRevisionLink} />
+</main>

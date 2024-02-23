@@ -274,6 +274,9 @@ input[type='checkbox'] {
 	margin-left: 0;
 	margin-right: 0;
 }
+.markdown.singleline p {
+	margin: 0;
+}
 .markdown h1 {
 	font-weight: bold;
 	margin: 0.67rem 0;
