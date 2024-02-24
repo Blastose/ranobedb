@@ -134,7 +134,7 @@ export type StaffRole = (typeof staffRolesArray)[number];
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type UserRole = 'admin' | 'moderator' | 'user';
+export type UserRole = 'admin' | 'banned' | 'editor' | 'moderator' | 'unverified' | 'user';
 
 export interface AuthSession {
 	expires_at: Timestamp;
@@ -143,12 +143,17 @@ export interface AuthSession {
 }
 
 export interface AuthUser {
-	email: string;
-	hashed_password: string;
 	id: string;
+	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;
 	role: Generated<UserRole>;
 	username: string;
+}
+
+export interface AuthUserCredentials {
+	email: string;
+	hashed_password: string;
+	user_id: string;
 }
 
 export interface Book {
@@ -314,6 +319,7 @@ export interface UserListLabel {
 export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
+	auth_user_credentials: AuthUserCredentials;
 	book: Book;
 	book_hist: BookHist;
 	book_staff_alias: BookStaffAlias;

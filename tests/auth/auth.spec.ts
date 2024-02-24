@@ -23,14 +23,20 @@ test.describe('auth', () => {
 			.insertInto('auth_user')
 			.values({
 				username: 'username',
-				id: userId,
-				email: 'fake@email.com',
-				// Unhashed password is `password`
-				hashed_password:
-					'$argon2id$v=19$m=19456,t=2,p=1$KXosrnaI50U0xiXDxyoGxA$axycEXkr/fz3OhsPJafCaAaj7I7vM1bBUPfZuRfWzvQ'
+				id: userId
 			})
 			.returning('id')
 			.executeTakeFirstOrThrow();
+		await db
+			.insertInto('auth_user_credentials')
+			.values({
+				email: 'fake@email.com',
+				// Unhashed password is `password`
+				hashed_password:
+					'$argon2id$v=19$m=19456,t=2,p=1$KXosrnaI50U0xiXDxyoGxA$axycEXkr/fz3OhsPJafCaAaj7I7vM1bBUPfZuRfWzvQ',
+				user_id: userId
+			})
+			.execute();
 
 		id = user.id;
 	});
@@ -54,6 +60,20 @@ test.describe('auth', () => {
 			.where((eb) =>
 				eb('id', '=', 'none').or(
 					'auth_session.user_id',
+					'in',
+					eb
+						.selectFrom('auth_user')
+						.select('auth_user.id')
+						.where('auth_user.username', '=', 'usernameDelAfter')
+				)
+			)
+			.execute();
+		await db.deleteFrom('auth_user_credentials').where('user_id', '=', id).execute();
+		await db
+			.deleteFrom('auth_user_credentials')
+			.where((eb) =>
+				eb('user_id', '=', 'none').or(
+					'auth_user_credentials.user_id',
 					'in',
 					eb
 						.selectFrom('auth_user')

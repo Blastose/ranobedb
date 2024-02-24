@@ -1,4 +1,3 @@
-import { insertDefaultUserListLabels } from '$lib/server/db/user/user.js';
 import { createUser, lucia } from '$lib/server/lucia.js';
 import { signupSchema } from '$lib/zod/schema';
 import { redirect } from '@sveltejs/kit';
@@ -41,7 +40,7 @@ export const actions = {
 
 			const session = await lucia.createSession(userId, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
-			await insertDefaultUserListLabels(userId);
+
 			cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
 				...sessionCookie.attributes
