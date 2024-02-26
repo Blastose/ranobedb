@@ -64,8 +64,8 @@ export type UserListFormType = (typeof userListFormTypes)[number];
 export const userListBookSchema = z.object({
 	labels: z.array(
 		z.object({
-			id: z.number(),
-			label: z.string()
+			id: z.number().max(2000000),
+			label: z.string().max(2000)
 		})
 	),
 	readingStatus: z.enum(defaultUserListLabelsArray),
@@ -79,8 +79,8 @@ export const userListBookSchema = z.object({
 export const bookSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
-	description: z.string().nullish(),
-	description_ja: z.string().nullish(),
+	description: z.string().max(2000).nullish(),
+	description_ja: z.string().max(2000).nullish(),
 	image_id: z.number().nullish(),
 
 	titles: z
@@ -88,10 +88,11 @@ export const bookSchema = z.object({
 			z.object({
 				lang: z.enum(languagesArray),
 				official: z.boolean(),
-				title: z.string().min(1, { message: 'Title must be at least 1 character' }),
-				romaji: z.string().nullish()
+				title: z.string().min(1, { message: 'Title must be at least 1 character' }).max(2000),
+				romaji: z.string().max(2000).nullish()
 			})
 		)
+		.max(50)
 		.refine((titles) => {
 			if (titles.length === 0) {
 				return false;
@@ -102,17 +103,19 @@ export const bookSchema = z.object({
 			return true;
 		}),
 
-	staff: z.array(
-		z.object({
-			name: z.string(),
-			staff_id: z.number(),
-			staff_alias_id: z.number(),
-			role_type: z.enum(staffRolesArray),
-			note: z.string()
-		})
-	),
+	staff: z
+		.array(
+			z.object({
+				name: z.string().max(2000),
+				staff_id: z.number().max(2000000),
+				staff_alias_id: z.number().max(2000000),
+				role_type: z.enum(staffRolesArray),
+				note: z.string().max(2000)
+			})
+		)
+		.max(50),
 
-	comment: z.string().min(1, { message: 'Summary must have at least 1 character' })
+	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
 });
 
 export const searchNameSchema = z.object({ name: z.string() });

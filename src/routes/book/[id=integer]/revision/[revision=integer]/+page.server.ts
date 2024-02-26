@@ -1,9 +1,10 @@
 import { getBookHist } from '$lib/server/db/books/books.js';
 import { getChanges } from '$lib/server/db/change/change.js';
-import { error } from '@sveltejs/kit';
+import { hasVisibilityPerms } from '$lib/server/db/user/user';
+import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
 
-export const load = async ({ params }) => {
+export const load = async ({ params, locals }) => {
 	const id = params.id;
 	const bookId = Number(id);
 	const revision = Number(params.revision);
@@ -26,7 +27,12 @@ export const load = async ({ params }) => {
 	if (!book) {
 		error(404);
 	}
-
+	if (book.hidden) {
+		if (!locals.user || (locals.user && !hasVisibilityPerms(locals.user))) {
+			// TODO simplier to just redirect, but might want to change it to return data to the page instead
+			redirect(302, `/book/${bookId}`);
+		}
+	}
 	let diff;
 	if (previousRevision > 0) {
 		const prevBook = await getBookHist(bookId, previousRevision).executeTakeFirst();

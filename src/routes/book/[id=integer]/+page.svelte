@@ -5,6 +5,7 @@
 	import { page } from '$app/stores';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import { onMount } from 'svelte';
+	import DeletedItem from '$lib/components/forbidden/DeletedItem.svelte';
 
 	const flash = getFlash(page);
 
@@ -20,12 +21,17 @@
 	});
 </script>
 
-<PageTitle title={book.title ?? book.title_orig ?? ''} />
+<!-- TODO use discriminated unions in Svelte 5 -->
+{#if book}
+	<PageTitle title={book.title ?? book.title_orig ?? ''} />
 
-<Book
-	{book}
-	userListForm={data.userListForm}
-	theme={data.theme}
-	user={data.user}
-	isRevision={false}
-/>
+	<Book
+		{book}
+		userListForm={data.userListForm}
+		theme={data.theme}
+		user={data.user}
+		isRevision={false}
+	/>
+{:else}
+	<DeletedItem title={data.title ?? ''} reason={data.reason ?? ''} />
+{/if}

@@ -274,6 +274,9 @@ input[type='checkbox'] {
 	background-color: var(--primary-800);
 }
 
+.markdown p:first-child {
+	margin-top: 0;
+}
 .markdown p {
 	margin-top: 1rem;
 	margin-bottom: 1rem;

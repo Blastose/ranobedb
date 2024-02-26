@@ -8,6 +8,7 @@
 	import type { BookR } from '$lib/server/db/books/books';
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
+	import VisibilityInputs from '../all/VisibilityInputs.svelte';
 
 	export let book: BookR | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
@@ -22,7 +23,7 @@
 			}
 		}
 	});
-	$: ({ enhance, delayed, submitting } = sForm);
+	$: ({ form, enhance, delayed, submitting } = sForm);
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>
@@ -34,6 +35,11 @@
 		<h1 class="font-bold text-xl">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add book</h1>
+	{/if}
+
+	<!-- TODO -->
+	{#if true}
+		<VisibilityInputs form={sForm} />
 	{/if}
 
 	<BookTitlesInput form={sForm} />
@@ -64,8 +70,6 @@
 		<p class="font-bold text-xl">Database relations:</p>
 		<BookStaffInput form={sForm} />
 	</section>
-
-	<input name="type" type="hidden" value={type} />
 
 	<Hr />
 

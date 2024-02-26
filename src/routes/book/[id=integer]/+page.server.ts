@@ -1,8 +1,10 @@
 import { getBook } from '$lib/server/db/books/books';
+import { getChanges } from '$lib/server/db/change/change.js';
 import {
 	getUserListBookWithLabels,
 	type UserListBookWithLabels
 } from '$lib/server/db/user/list.js';
+import { hasVisibilityPerms } from '$lib/server/db/user/user';
 import { userListBookSchema, type ReadingStatus, type UserListFormType } from '$lib/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
@@ -21,6 +23,19 @@ export const load = async ({ params, locals }) => {
 	const book = await getBook(bookId).executeTakeFirst();
 	if (!book) {
 		error(404);
+	}
+
+	if (book.hidden) {
+		if (!user || (user && !hasVisibilityPerms(user))) {
+			const change = await getChanges('book', bookId)
+				.orderBy('change.revision desc')
+				.executeTakeFirstOrThrow();
+			return {
+				book: undefined,
+				title: book.title,
+				reason: change.comments
+			};
+		}
 	}
 
 	let formType: UserListFormType;

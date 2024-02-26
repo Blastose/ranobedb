@@ -98,8 +98,8 @@ devDependencies:
     specifier: ^2.4.2
     version: 2.4.2(@sveltejs/kit@2.5.0)(svelte@4.2.3)
   sveltekit-superforms:
-    specifier: ^2.2.1
-    version: 2.2.1(@sveltejs/kit@2.5.0)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.9)(svelte@4.2.3)
+    specifier: ^2.6.1
+    version: 2.6.1(@sveltejs/kit@2.5.0)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.9)(svelte@4.2.3)
   tailwindcss:
     specifier: ^3.3.5
     version: 3.3.5
@@ -4123,9 +4123,8 @@ packages:
       svelte: 4.2.3
     dev: true
 
-  /sveltekit-superforms@2.2.1(@sveltejs/kit@2.5.0)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.9)(svelte@4.2.3):
-    resolution: {integrity: sha512-BVqIbw6NA1BSuuDR99wG60d4/RLH3kd3CSq6MsXTYjV4yKPT3yJL0iiLim0XBZSIntSCgL2ZZ4KW+WSTrMlinQ==}
-    requiresBuild: true
+  /sveltekit-superforms@2.6.1(@sveltejs/kit@2.5.0)(@types/json-schema@7.0.15)(esbuild-runner@2.2.2)(esbuild@0.19.9)(svelte@4.2.3):
+    resolution: {integrity: sha512-ZJkW4Q+wDUYu+iX6XxLA9A1Sa2M5SqCGkum/Tz5xG5yAVFUumrrcxDetLApgiEAXzTme8v+Uh/eAwiYWFP4Buw==}
     peerDependencies:
       '@sveltejs/kit': 1.x || 2.x
       svelte: 3.x || 4.x || >=5.0.0-next.51

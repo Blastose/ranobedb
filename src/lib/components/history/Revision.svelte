@@ -11,6 +11,17 @@
 <div class="flex flex-col gap-2">
 	<p class="font-bold text-lg">Revision {changes.change.revision} of {title}</p>
 
+	{#if (changes.change.ihid || changes.change.ilock) && !changes.nextChange}
+		<div>
+			{#if changes.change.ihid}
+				<p class="error-text-color">This item is currently hidden from view.</p>
+			{/if}
+			{#if changes.change.ilock}
+				<p class="error-text-color">This item is currently locked for editing.</p>
+			{/if}
+		</div>
+	{/if}
+
 	<div class="flex justify-between">
 		{#if changes.prevChange}
 			<a class="link" href="{buildBaseLink()}/revision/{changes.prevChange.revision}"

@@ -153,6 +153,8 @@ export const getBook = (id: number) => {
 			'cte_book.romaji_orig',
 			'cte_book.title',
 			'cte_book.title_orig',
+			'cte_book.locked',
+			'cte_book.hidden',
 			'image.filename'
 		])
 		.select((eb) => [
@@ -193,7 +195,6 @@ export const getBook = (id: number) => {
 		.where('cte_book.id', '=', id);
 };
 
-// TODO fix with revision
 export const getBookHist = (id: number, revision: number) => {
 	return db
 		.with('cte_book', withBookHistTitleCte())
@@ -210,6 +211,8 @@ export const getBookHist = (id: number, revision: number) => {
 			'cte_book.romaji_orig',
 			'cte_book.title',
 			'cte_book.title_orig',
+			'change.ilock as locked',
+			'change.ihid as hidden',
 			'image.filename'
 		])
 		.select((eb) => [

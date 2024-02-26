@@ -5,10 +5,16 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
+import { permissions } from '$lib/server/db/user/user';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/');
+
+	let canEdit = false;
+	if (permissions[locals.user.role].includes('add')) {
+		canEdit = true;
+	}
 
 	const form = await superValidate(
 		{
@@ -25,15 +31,17 @@ export const load = async ({ locals }) => {
 		{ errors: false }
 	);
 
-	return { form };
+	return { form, canEdit };
 };
 
 export const actions = {
 	default: async ({ request, locals, cookies }) => {
 		if (!locals.user) redirect(302, '/');
-		if (locals.user.role === 'user') return fail(403);
 
 		const form = await superValidate(request, zod(bookSchema));
+		if (!permissions[locals.user.role].includes('add')) {
+			return fail(403, { form });
+		}
 
 		if (!form.valid) {
 			return fail(400, { form });

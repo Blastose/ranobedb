@@ -65,6 +65,13 @@
 			</div>
 		</div>
 
+		<!-- TODO move this section somewhere else -->
+		<section>
+			<h2 class="font-bold text-lg">Visibility</h2>
+			<p>Hidden: {book.hidden}</p>
+			<p>Locked: {book.locked}</p>
+		</section>
+
 		<section class="mt-4">
 			<h2 class="font-bold text-lg">Titles</h2>
 			<div>

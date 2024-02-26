@@ -1,7 +1,7 @@
 import { sql, type SelectQueryBuilder } from 'kysely';
 import type { Language } from '$lib/db/dbTypes';
 
-// TODO
+// TODO add language priority table/settings
 export type LanguagePriority = { lang: Language; romaji: boolean };
 export const defaultLangPrio: LanguagePriority[] = [
 	{ lang: 'en', romaji: false },

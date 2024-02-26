@@ -5,15 +5,32 @@ import type { User } from 'lucia';
 import { addChange } from '../change/change';
 import type { Insertable } from 'kysely';
 import type { BookStaffAlias, BookStaffAliasHist, BookTitle, BookTitleHist } from '$lib/db/dbTypes';
+import { hasVisibilityPerms, permissions } from '../user/user';
+import { ChangePermissionError } from '../errors/errors';
 
 export async function editBook(data: { book: Infer<typeof bookSchema>; id: number }, user: User) {
 	await db.transaction().execute(async (trx) => {
+		const currentBook = await trx
+			.selectFrom('book')
+			.where('book.id', '=', data.id)
+			.select(['book.hidden', 'book.locked'])
+			.executeTakeFirstOrThrow();
+		const userHasVisibilityPerms = hasVisibilityPerms(user);
+		const hidden = userHasVisibilityPerms ? data.book.hidden : currentBook.hidden;
+		const locked = userHasVisibilityPerms ? data.book.locked : currentBook.locked;
+
+		if (currentBook.hidden || currentBook.locked) {
+			if (!userHasVisibilityPerms) {
+				throw new ChangePermissionError('');
+			}
+		}
+
 		const change = await addChange(
 			trx,
 			{
 				comments: data.book.comment,
-				hidden: data.book.hidden,
-				locked: data.book.locked,
+				hidden,
+				locked,
 				item_id: data.id,
 				item_name: 'book'
 			},
@@ -25,8 +42,8 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 			.set({
 				description: data.book.description ?? '',
 				description_ja: data.book.description_ja,
-				hidden: data.book.hidden,
-				locked: data.book.locked,
+				hidden,
+				locked,
 				image_id: data.book.image_id
 			})
 			.where('book.id', '=', data.id)
@@ -99,13 +116,17 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 
 export async function addBook(data: { book: Infer<typeof bookSchema> }, user: User) {
 	return await db.transaction().execute(async (trx) => {
+		const canChangeVisibility = permissions[user.role].includes('visibility');
+		const hidden = canChangeVisibility ? data.book.hidden : false;
+		const locked = canChangeVisibility ? data.book.locked : false;
+
 		const insertedBook = await trx
 			.insertInto('book')
 			.values({
 				description: data.book.description ?? '',
 				description_ja: data.book.description_ja,
-				hidden: data.book.hidden,
-				locked: data.book.locked,
+				hidden,
+				locked,
 				image_id: data.book.image_id
 			})
 			.returning('book.id')
@@ -115,8 +136,8 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 			trx,
 			{
 				comments: data.book.comment,
-				hidden: data.book.hidden,
-				locked: data.book.locked,
+				hidden,
+				locked,
 				item_id: insertedBook.id,
 				item_name: 'book'
 			},
