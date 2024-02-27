@@ -4,7 +4,7 @@ import {
 	getUserListBookWithLabels,
 	type UserListBookWithLabels
 } from '$lib/server/db/user/list.js';
-import { hasVisibilityPerms } from '$lib/server/db/user/user';
+import { hasVisibilityPerms } from '$lib/db/permissions';
 import { userListBookSchema, type ReadingStatus, type UserListFormType } from '$lib/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';

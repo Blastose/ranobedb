@@ -5,7 +5,7 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
-import { permissions } from '$lib/server/db/user/user';
+import { permissions } from '$lib/db/permissions';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {

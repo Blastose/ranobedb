@@ -1,6 +1,6 @@
 import { getBookHist } from '$lib/server/db/books/books.js';
 import { getChanges } from '$lib/server/db/change/change.js';
-import { hasVisibilityPerms } from '$lib/server/db/user/user';
+import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
 

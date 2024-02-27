@@ -5,7 +5,7 @@ import type { User } from 'lucia';
 import { addChange } from '../change/change';
 import type { Insertable } from 'kysely';
 import type { BookStaffAlias, BookStaffAliasHist, BookTitle, BookTitleHist } from '$lib/db/dbTypes';
-import { hasVisibilityPerms, permissions } from '../user/user';
+import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError } from '../errors/errors';
 
 export async function editBook(data: { book: Infer<typeof bookSchema>; id: number }, user: User) {

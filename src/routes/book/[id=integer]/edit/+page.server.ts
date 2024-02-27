@@ -7,7 +7,7 @@ import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { permissions } from '$lib/server/db/user/user';
+import { permissions } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 
 export const load = async ({ params, locals, url }) => {
