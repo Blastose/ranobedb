@@ -6,7 +6,13 @@ import type { ToastData } from '$lib/components/toast/toast';
 // for information about these interfaces
 declare global {
 	namespace App {
-		// interface Error {}
+		interface Error {
+			message?: string | null;
+			dbItemDeleted?: {
+				title: string | null;
+				reason: string | null;
+			};
+		}
 		interface Locals {
 			user: import('lucia').User | null;
 			session: import('lucia').Session | null;

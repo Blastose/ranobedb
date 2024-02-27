@@ -7,7 +7,7 @@ export const load = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
 
 	if (!hasVisibilityPerms(locals.user)) {
-		error(401);
+		error(403);
 	}
 
 	const query = getBooks2

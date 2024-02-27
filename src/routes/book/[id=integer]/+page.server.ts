@@ -30,11 +30,12 @@ export const load = async ({ params, locals }) => {
 			const change = await getChanges('book', bookId)
 				.orderBy('change.revision desc')
 				.executeTakeFirstOrThrow();
-			return {
-				book: undefined,
-				title: book.title,
-				reason: change.comments
-			};
+			error(403, {
+				dbItemDeleted: {
+					reason: change.comments,
+					title: book.title
+				}
+			});
 		}
 	}
 

@@ -10,5 +10,5 @@
 <PageTitle title="Editing {book.title ?? book.title_orig ?? ''}" />
 
 <main class="container-rndb">
-	<BookForm bookForm={data.form} {book} type="edit" />
+	<BookForm bookForm={data.form} {book} type="edit" user={data.user} />
 </main>

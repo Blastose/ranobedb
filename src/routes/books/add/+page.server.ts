@@ -1,6 +1,6 @@
 import { addBook } from '$lib/server/db/books/actions';
 import { bookSchema } from '$lib/zod/schema.js';
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -9,11 +9,10 @@ import { permissions } from '$lib/db/permissions';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/');
+	if (!locals.user) redirect(302, '/login');
 
-	let canEdit = false;
-	if (permissions[locals.user.role].includes('add')) {
-		canEdit = true;
+	if (!permissions[locals.user.role].includes('add')) {
+		error(403);
 	}
 
 	const form = await superValidate(
@@ -31,7 +30,7 @@ export const load = async ({ locals }) => {
 		{ errors: false }
 	);
 
-	return { form, canEdit };
+	return { form };
 };
 
 export const actions = {

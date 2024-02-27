@@ -7,6 +7,7 @@
 	import type { userListBookSchema } from '$lib/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import Description from '$lib/components/book/Description.svelte';
+	import { hasVisibilityPerms } from '$lib/db/permissions';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -66,11 +67,13 @@
 		</div>
 
 		<!-- TODO move this section somewhere else -->
-		<section>
-			<h2 class="font-bold text-lg">Visibility</h2>
-			<p>Hidden: {book.hidden}</p>
-			<p>Locked: {book.locked}</p>
-		</section>
+		{#if user && hasVisibilityPerms(user)}
+			<section>
+				<h2 class="font-bold text-lg">Visibility</h2>
+				<p>Hidden: {book.hidden}</p>
+				<p>Locked: {book.locked}</p>
+			</section>
+		{/if}
 
 		<section class="mt-4">
 			<h2 class="font-bold text-lg">Titles</h2>

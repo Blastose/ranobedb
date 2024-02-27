@@ -7,26 +7,33 @@ import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { permissions } from '$lib/db/permissions';
+import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 
 export const load = async ({ params, locals, url }) => {
-	if (!locals.user) redirect(302, '/');
+	if (!locals.user) redirect(302, '/login');
 
 	const id = params.id;
 	const bookId = Number(id);
 	let book;
 
 	const revision = await superValidate(url, zod(revisionSchema));
+	// We need to check if the url search params contains `revision`
+	// because the .valid property will be false if it doesn't,
+	// but that's find since we'll just use the "current" revision
 	if (revision.valid && url.searchParams.get('revision')) {
 		book = await getBookHist(bookId, revision.data.revision).executeTakeFirst();
 	} else {
 		book = await getBook(bookId).executeTakeFirst();
 	}
 
-	// TODO show for hidden/locked only if user has visibility perms
 	if (!book) {
 		error(404);
+	}
+	if (book.hidden || book.locked) {
+		if (!hasVisibilityPerms(locals.user)) {
+			error(403);
+		}
 	}
 
 	if (revision.valid && url.searchParams.get('revision')) {

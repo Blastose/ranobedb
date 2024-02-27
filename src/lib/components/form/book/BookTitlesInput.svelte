@@ -30,15 +30,17 @@
 	<h2 class="font-bold text-lg">Titles</h2>
 	{#each $values as title, i}
 		<div class="flex flex-col gap-2">
-			<p>{languageNames[title.lang]}</p>
-			<input
-				placeholder="Title in {languageNames[title.lang]}"
-				class="input w-full"
-				class:error={$valueErrors[i]?.title}
-				aria-invalid={$valueErrors[i]?.title ? 'true' : undefined}
-				type="text"
-				bind:value={$values[i].title}
-			/>
+			<label class="flex flex-col gap-2"
+				>{languageNames[title.lang]}
+				<input
+					placeholder="Title in {languageNames[title.lang]}"
+					class="input w-full"
+					class:error={$valueErrors[i]?.title}
+					aria-invalid={$valueErrors[i]?.title ? 'true' : undefined}
+					type="text"
+					bind:value={$values[i].title}
+				/>
+			</label>
 			{#if $valueErrors[i]?.title}
 				<span class="error-text-color">{$valueErrors[i]?.title}</span>
 			{/if}

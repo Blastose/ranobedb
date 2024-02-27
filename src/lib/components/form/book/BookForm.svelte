@@ -9,10 +9,13 @@
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import VisibilityInputs from '../all/VisibilityInputs.svelte';
+	import { hasVisibilityPerms } from '$lib/db/permissions';
+	import type { User } from 'lucia';
 
 	export let book: BookR | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
 	export let type: 'add' | 'edit';
+	export let user: User | null;
 
 	$: sForm = superForm(bookForm, {
 		dataType: 'json',
@@ -37,8 +40,7 @@
 		<h1 class="font-bold text-xl">Add book</h1>
 	{/if}
 
-	<!-- TODO -->
-	{#if true}
+	{#if user && hasVisibilityPerms(user)}
 		<VisibilityInputs form={sForm} />
 	{/if}
 
