@@ -74,6 +74,9 @@
 				<p>Locked: {book.locked}</p>
 			</section>
 		{/if}
+		{#if book.locked}
+			<p>This book is locked from editing</p>
+		{/if}
 
 		<section class="mt-4">
 			<h2 class="font-bold text-lg">Titles</h2>

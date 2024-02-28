@@ -50,3 +50,18 @@ export async function paginationBuilderExecuteWithCount<O, DB, TB extends keyof 
 export function getCountFromPaginatedQuery(queryResults: { count: string }[]) {
 	return Number(queryResults.at(0)?.count) || 0;
 }
+
+export function getCurrentVisibilityStatus<T extends { hidden: boolean; locked: boolean }>(
+	item: T & { latest_change?: { hidden: boolean; locked: boolean } | null }
+) {
+	if (item.latest_change) {
+		return {
+			hidden: item.latest_change.hidden,
+			locked: item.latest_change.locked
+		};
+	}
+	return {
+		hidden: item.hidden,
+		locked: item.locked
+	};
+}

@@ -16,7 +16,7 @@ const db = new Kysely<DB>({
 });
 
 test.describe('add/edit/remove books from reading list', () => {
-	test.use({ storageState: 'storage-state/storageStateRL.json' });
+	test.use({ storageState: 'storage-state/storageStateMod.json' });
 
 	test.afterAll(async () => {
 		await db.transaction().execute(async (trx) => {

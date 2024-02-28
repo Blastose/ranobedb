@@ -7,8 +7,9 @@ import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
+import { hasEditPerms, hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
+import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -30,17 +31,26 @@ export const load = async ({ params, locals, url }) => {
 	if (!book) {
 		error(404);
 	}
-	if (book.hidden || book.locked) {
+
+	const visibilityStatus = getCurrentVisibilityStatus(book);
+
+	if (visibilityStatus.locked || visibilityStatus.hidden) {
 		if (!hasVisibilityPerms(locals.user)) {
 			error(403);
 		}
 	}
-
-	if (revision.valid && url.searchParams.get('revision')) {
-		book = { ...book, comment: `Reverted to revision ${revision.data.revision}` };
+	if (!hasEditPerms(locals.user)) {
+		error(403);
 	}
 
-	const form = await superValidate(book, zod(bookSchema), { errors: false });
+	const prefilledComment =
+		revision.valid && url.searchParams.get('revision')
+			? `Reverted to revision ${revision.data.revision}`
+			: undefined;
+
+	const form = await superValidate({ ...book, comment: prefilledComment }, zod(bookSchema), {
+		errors: false
+	});
 
 	return { book, form };
 };

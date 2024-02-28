@@ -1,4 +1,4 @@
-import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, expressionBuilder, type ExpressionWrapper, QueryCreator } from 'kysely';
 import { db } from '$lib/server/db/db';
 import type { DB } from '$lib/db/dbTypes';
@@ -216,6 +216,14 @@ export const getBookHist = (id: number, revision: number) => {
 			'image.filename'
 		])
 		.select((eb) => [
+			jsonObjectFrom(
+				eb
+					.selectFrom('change')
+					.where('change.item_id', '=', id)
+					.select(['change.ihid as hidden', 'change.ilock as locked'])
+					.orderBy('change.revision desc')
+					.limit(1)
+			).as('latest_change'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('book_title_hist')
