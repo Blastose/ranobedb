@@ -6,6 +6,7 @@ export const load = async ({ url }) => {
 	const query = url.searchParams.get('q');
 
 	let k = getBooks2;
+	k = k.where('cte_book.hidden', '=', false);
 	if (query) {
 		k = k.where('cte_book.title', 'ilike', `%${query}%`);
 	}

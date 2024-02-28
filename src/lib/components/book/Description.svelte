@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import Icon from '../icon/Icon.svelte';
+	import Icon from '$lib/components/icon/Icon.svelte';
+	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 
 	export let description: string;
 
@@ -41,10 +42,9 @@
 
 <div class="description-container">
 	<div style:max-height="{maxHeight}px" bind:this={parentDescriptionElement} class="description">
-		<!-- TODO Maybe use markdown instead of whitespace-pre-wrap -->
-		<p use:removeHydration class="whitespace-pre-wrap" bind:this={descriptionElement}>
-			{description}
-		</p>
+		<div use:removeHydration bind:this={descriptionElement} class="description">
+			<MarkdownToHtml markdown={description} type="full" />
+		</div>
 	</div>
 
 	{#if hydration || descriptionElementClientHeight > maxHeightNotExpanded}
@@ -77,7 +77,7 @@
 	.description {
 		max-width: 64rem;
 		overflow: hidden;
-		transition-duration: 300ms;
+		transition: max-height 300ms;
 	}
 
 	.expand-description-text {
@@ -92,7 +92,7 @@
 	}
 
 	.hide-text-gradient {
-		transition-duration: 300ms;
+		transition: margin 300ms;
 		display: flex;
 		flex-direction: column;
 		align-items: center;

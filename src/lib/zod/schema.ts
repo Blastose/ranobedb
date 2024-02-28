@@ -1,3 +1,4 @@
+import { languagesArray, staffRolesArray } from '$lib/db/dbTypes';
 import { z } from 'zod';
 
 export const defaultUserListLabelsArray = [
@@ -63,8 +64,8 @@ export type UserListFormType = (typeof userListFormTypes)[number];
 export const userListBookSchema = z.object({
 	labels: z.array(
 		z.object({
-			id: z.number(),
-			label: z.string()
+			id: z.number().max(2000000),
+			label: z.string().max(2000)
 		})
 	),
 	readingStatus: z.enum(defaultUserListLabelsArray),
@@ -74,5 +75,50 @@ export const userListBookSchema = z.object({
 	notes: z.string().max(2000, { message: 'Note must between less than 2000 characters' }).nullish(),
 	type: z.enum(userListFormTypes)
 });
+
+export const bookSchema = z.object({
+	hidden: z.boolean(),
+	locked: z.boolean(),
+	description: z.string().max(2000).nullish(),
+	description_ja: z.string().max(2000).nullish(),
+	image_id: z.number().nullish(),
+
+	titles: z
+		.array(
+			z.object({
+				lang: z.enum(languagesArray),
+				official: z.boolean(),
+				title: z.string().min(1, { message: 'Title must be at least 1 character' }).max(2000),
+				romaji: z.string().max(2000).nullish()
+			})
+		)
+		.max(50)
+		.refine((titles) => {
+			if (titles.length === 0) {
+				return false;
+			}
+			if (!titles.some((v) => v.lang === 'ja')) {
+				return false;
+			}
+			return true;
+		}),
+
+	staff: z
+		.array(
+			z.object({
+				name: z.string().max(2000),
+				staff_id: z.number().max(2000000),
+				staff_alias_id: z.number().max(2000000),
+				role_type: z.enum(staffRolesArray),
+				note: z.string().max(2000)
+			})
+		)
+		.max(50),
+
+	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
+});
+
+export const searchNameSchema = z.object({ name: z.string() });
+export const revisionSchema = z.object({ revision: z.number() });
 
 export type Nullish<T> = T | null | undefined;

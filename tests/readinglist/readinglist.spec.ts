@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { Kysely, PostgresDialect } from 'kysely';
 import pkg from 'pg';
 const { Pool } = pkg;
-import type { DB } from '$lib/server/db/dbTypes';
+import type { DB } from '$lib/db/dbTypes';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ const db = new Kysely<DB>({
 });
 
 test.describe('add/edit/remove books from reading list', () => {
-	test.use({ storageState: 'storage-state/storageStateRL.json' });
+	test.use({ storageState: 'storage-state/storageStateMod.json' });
 
 	test.afterAll(async () => {
 		await db.transaction().execute(async (trx) => {

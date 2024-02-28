@@ -89,6 +89,7 @@ export function getUserLabelCounts(userId: string) {
 				.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
 				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id')
 		)
+		.leftJoin('book', 'book.id', 'user_list_book.book_id')
 		.select((eb) => eb.fn.coalesce('user_list_label.label', sql<string>`'No label'`).as('label'))
 		.select((eb) => eb.fn.count('user_list_book.book_id').as('book_count'))
 		.select((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`9999`).as('label_id'))
@@ -96,6 +97,7 @@ export function getUserLabelCounts(userId: string) {
 			eb.or([eb('user_list_book.user_id', '=', userId), eb('user_list_book.user_id', 'is', null)])
 		)
 		.where('user_list_label.user_id', '=', userId)
+		.where((eb) => eb.or([eb('book.hidden', '=', false), eb('book.hidden', 'is', null)]))
 		.groupBy(['user_list_label.label', 'user_list_label.id'])
 		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
 }

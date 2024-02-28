@@ -6,6 +6,7 @@
 	import type { User } from 'lucia';
 	import SidebarFormButton from './SidebarFormButton.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import { hasVisibilityPerms } from '$lib/db/permissions';
 
 	export let user: User | null;
 	export let isDrawer: boolean = false;
@@ -120,6 +121,41 @@
 				icon="add"
 			/>
 		</SidebarSection>
+
+		{#if user && hasVisibilityPerms(user)}
+			<SidebarSection sectionHeading="Moderator">
+				<SidebarListItem
+					active={$page.url.pathname === '/mod/books'}
+					href="/mod/books"
+					text="Books"
+					icon="books"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/mod/series'}
+					href="/mod/series"
+					text="Series"
+					icon="series"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/mod/releases'}
+					href="/mod/releases"
+					text="Releases"
+					icon="releases"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/mod/staff'}
+					href="/mod/staff"
+					text="Staff"
+					icon="people"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/mod/publishers'}
+					href="/mod/publishers"
+					text="Publishers"
+					icon="publishers"
+				/>
+			</SidebarSection>
+		{/if}
 	</nav>
 </aside>
 

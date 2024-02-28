@@ -1,7 +1,7 @@
 import { sql, type SelectQueryBuilder } from 'kysely';
-import type { Language } from './dbTypes';
+import type { Language } from '$lib/db/dbTypes';
 
-// TODO
+// TODO add language priority table/settings
 export type LanguagePriority = { lang: Language; romaji: boolean };
 export const defaultLangPrio: LanguagePriority[] = [
 	{ lang: 'en', romaji: false },
@@ -49,4 +49,19 @@ export async function paginationBuilderExecuteWithCount<O, DB, TB extends keyof 
 // returned from the base query, no rows are returned
 export function getCountFromPaginatedQuery(queryResults: { count: string }[]) {
 	return Number(queryResults.at(0)?.count) || 0;
+}
+
+export function getCurrentVisibilityStatus<T extends { hidden: boolean; locked: boolean }>(
+	item: T & { latest_change?: { hidden: boolean; locked: boolean } | null }
+) {
+	if (item.latest_change) {
+		return {
+			hidden: item.latest_change.hidden,
+			locked: item.latest_change.locked
+		};
+	}
+	return {
+		hidden: item.hidden,
+		locked: item.locked
+	};
 }

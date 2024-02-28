@@ -21,9 +21,9 @@
 <div class="flex flex-col gap-1">
 	<label class="flex flex-col gap-1">
 		<span>
-			<span class="dark:text-white">{label || String(field)}</span>
+			<span class="dark:text-[var(--text-dark)]">{label || String(field)}</span>
 			{#if $constraints?.required && showRequiredSymbolIfRequired}
-				<span class="text-red-600 dark:text-red-400">*</span>
+				<span class="error-text-color">*</span>
 			{/if}
 		</span>
 		{#if type === 'textarea'}
@@ -66,6 +66,6 @@
 		{/if}
 	</label>
 	{#if $errors}
-		<span class="text-red-600 dark:text-red-400">{$errors}</span>
+		<span class="error-text-color">{$errors}</span>
 	{/if}
 </div>

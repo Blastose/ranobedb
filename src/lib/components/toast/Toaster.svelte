@@ -1,10 +1,4 @@
 <script lang="ts" context="module">
-	export type ToastData = {
-		title: string;
-		type: 'success' | 'error' | 'info';
-		description?: string;
-	};
-
 	const {
 		elements,
 		helpers,
@@ -19,6 +13,7 @@
 	import { createToaster } from '@melt-ui/svelte';
 	import Toast from './Toast.svelte';
 	import { flip } from 'svelte/animate';
+	import type { ToastData } from './toast';
 </script>
 
 <div class="toaster-container" use:portal>

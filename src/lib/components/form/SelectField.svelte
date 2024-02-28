@@ -21,7 +21,7 @@
 		<span>
 			<span class="dark:text-white">{label || String(field)}</span>
 			{#if $constraints?.required && showRequiredSymbolIfRequired}
-				<span class="text-red-600 dark:text-red-400">*</span>
+				<span class="error-text-color">*</span>
 			{/if}
 		</span>
 		<select
@@ -41,6 +41,6 @@
 		</select>
 	</label>
 	{#if $errors}
-		<span class="text-red-600 dark:text-red-400">{$errors}</span>
+		<span class="error-text-color">{$errors}</span>
 	{/if}
 </div>

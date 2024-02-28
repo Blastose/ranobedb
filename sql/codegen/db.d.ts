@@ -1,10 +1,12 @@
 import type { ColumnType } from "kysely";
 
+export type DbItem = "book" | "publisher" | "release" | "series" | "staff";
+
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "en" | "eo" | "es" | "eu" | "fa" | "fi" | "fr" | "ga" | "gd" | "he" | "hi" | "hr" | "hu" | "id" | "it" | "iu" | "ja" | "ko" | "la" | "lt" | "lv" | "mk" | "ms" | "nl" | "no" | "pl" | "pt-br" | "pt-pt" | "ro" | "ru" | "sk" | "sl" | "sr" | "sv" | "ta" | "th" | "tr" | "uk" | "ur" | "vi" | "zh" | "zh-Hans" | "zh-Hant";
+export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "en" | "eo" | "es" | "eu" | "fa" | "fi" | "fr" | "ga" | "gd" | "he" | "hi" | "hr" | "hu" | "id" | "it" | "iu" | "ja" | "ko" | "la" | "lt" | "lv" | "mk" | "ms" | "nl" | "no" | "pl" | "pt-br" | "pt-pt" | "ro" | "ru" | "sk" | "sl" | "sr" | "sv" | "ta" | "th" | "tr" | "uk" | "ur" | "vi" | "zh-Hans" | "zh-Hant";
 
 export type PublisherRelType = "imprint" | "label" | "subsidiary";
 
@@ -20,7 +22,7 @@ export type StaffRole = "artist" | "author" | "editor" | "translator";
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type UserRole = "admin" | "moderator" | "user";
+export type UserRole = "admin" | "banned" | "editor" | "moderator" | "unverified" | "user";
 
 export interface AuthSession {
   expires_at: Timestamp;
@@ -29,23 +31,45 @@ export interface AuthSession {
 }
 
 export interface AuthUser {
-  email: string;
-  hashed_password: string;
   id: string;
+  id_numeric: Generated<number>;
   joined: Generated<Timestamp>;
   role: Generated<UserRole>;
   username: string;
 }
 
+export interface AuthUserCredentials {
+  email: string;
+  hashed_password: string;
+  user_id: string;
+}
+
 export interface Book {
   description: string;
   description_ja: string | null;
+  hidden: boolean;
   id: Generated<number>;
+  image_id: number | null;
+  locked: boolean;
+}
+
+export interface BookHist {
+  change_id: number;
+  description: string;
+  description_ja: string | null;
   image_id: number | null;
 }
 
 export interface BookStaffAlias {
   book_id: number;
+  note: string;
+  role_type: StaffRole;
+  staff_alias_id: number;
+}
+
+export interface BookStaffAliasHist {
+  change_id: number;
+  note: string;
   role_type: StaffRole;
   staff_alias_id: number;
 }
@@ -56,6 +80,26 @@ export interface BookTitle {
   official: boolean;
   romaji: string | null;
   title: string;
+}
+
+export interface BookTitleHist {
+  change_id: number;
+  lang: Language;
+  official: boolean;
+  romaji: string | null;
+  title: string;
+}
+
+export interface Change {
+  added: Generated<Timestamp>;
+  comments: string;
+  id: Generated<number>;
+  ihid: boolean;
+  ilock: boolean;
+  item_id: number;
+  item_name: DbItem;
+  revision: number;
+  user_id: string;
 }
 
 export interface Image {
@@ -163,9 +207,14 @@ export interface UserListLabel {
 export interface DB {
   auth_session: AuthSession;
   auth_user: AuthUser;
+  auth_user_credentials: AuthUserCredentials;
   book: Book;
+  book_hist: BookHist;
   book_staff_alias: BookStaffAlias;
+  book_staff_alias_hist: BookStaffAliasHist;
   book_title: BookTitle;
+  book_title_hist: BookTitleHist;
+  change: Change;
   image: Image;
   publisher: Publisher;
   publisher_relation: PublisherRelation;

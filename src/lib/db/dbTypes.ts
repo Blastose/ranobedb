@@ -1,63 +1,122 @@
 import type { ColumnType } from 'kysely';
 
+export const dbItemArray = ['book', 'publisher', 'release', 'series', 'staff'] as const;
+
+export type DbItem = (typeof dbItemArray)[number];
+
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 	? ColumnType<S, I | undefined, U>
 	: ColumnType<T, T | undefined, T>;
 
 export type DateString = ColumnType<string, string, string>;
 
-export type Language =
-	| 'ar'
-	| 'bg'
-	| 'ca'
-	| 'ck'
-	| 'cs'
-	| 'da'
-	| 'de'
-	| 'el'
-	| 'en'
-	| 'eo'
-	| 'es'
-	| 'eu'
-	| 'fa'
-	| 'fi'
-	| 'fr'
-	| 'ga'
-	| 'gd'
-	| 'he'
-	| 'hi'
-	| 'hr'
-	| 'hu'
-	| 'id'
-	| 'it'
-	| 'iu'
-	| 'ja'
-	| 'ko'
-	| 'la'
-	| 'lt'
-	| 'lv'
-	| 'mk'
-	| 'ms'
-	| 'nl'
-	| 'no'
-	| 'pl'
-	| 'pt-br'
-	| 'pt-pt'
-	| 'ro'
-	| 'ru'
-	| 'sk'
-	| 'sl'
-	| 'sr'
-	| 'sv'
-	| 'ta'
-	| 'th'
-	| 'tr'
-	| 'uk'
-	| 'ur'
-	| 'vi'
-	| 'zh'
-	| 'zh-Hans'
-	| 'zh-Hant';
+export const languagesArray = [
+	'ar',
+	'bg',
+	'ca',
+	'ck',
+	'cs',
+	'da',
+	'de',
+	'el',
+	'en',
+	'eo',
+	'es',
+	'eu',
+	'fa',
+	'fi',
+	'fr',
+	'ga',
+	'gd',
+	'he',
+	'hi',
+	'hr',
+	'hu',
+	'id',
+	'it',
+	'iu',
+	'ja',
+	'ko',
+	'la',
+	'lt',
+	'lv',
+	'mk',
+	'ms',
+	'nl',
+	'no',
+	'pl',
+	'pt-br',
+	'pt-pt',
+	'ro',
+	'ru',
+	'sk',
+	'sl',
+	'sr',
+	'sv',
+	'ta',
+	'th',
+	'tr',
+	'uk',
+	'ur',
+	'vi',
+	'zh-Hans',
+	'zh-Hant'
+] as const;
+
+export const languageNames: Record<Language, string> = {
+	ar: 'Arabic',
+	bg: 'Bulgarian',
+	ca: 'Catalan',
+	ck: 'Chukchi',
+	cs: 'Czech',
+	da: 'Danish',
+	de: 'German',
+	el: 'Greek',
+	en: 'English',
+	eo: 'Esperanto',
+	es: 'Spanish',
+	eu: 'Basque',
+	fa: 'Persian',
+	fi: 'Finnish',
+	fr: 'French',
+	ga: 'Irish',
+	gd: 'Scottish Gaelic',
+	he: 'Hebrew',
+	hi: 'Hindi',
+	hr: 'Croatian',
+	hu: 'Hungarian',
+	id: 'Indonesian',
+	it: 'Italian',
+	iu: 'Inuktitut',
+	ja: 'Japanese',
+	ko: 'Korean',
+	la: 'Latin',
+	lt: 'Lithuanian',
+	lv: 'Latvian',
+	mk: 'Macedonian',
+	ms: 'Malay',
+	nl: 'Dutch',
+	no: 'Norwegian',
+	pl: 'Polish',
+	'pt-br': 'Portuguese (Brazil)',
+	'pt-pt': 'Portuguese (Portugal)',
+	ro: 'Romanian',
+	ru: 'Russian',
+	sk: 'Slovak',
+	sl: 'Slovenian',
+	sr: 'Serbian',
+	sv: 'Swedish',
+	ta: 'Tamil',
+	th: 'Thai',
+	tr: 'Turkish',
+	uk: 'Ukrainian',
+	ur: 'Urdu',
+	vi: 'Vietnamese',
+	'zh-Hans': 'Chinese (Simplified)',
+	'zh-Hant': 'Chinese (Traditional)'
+};
+
+export type Language = (typeof languagesArray)[number];
 
 export type PublisherRelType = 'imprint' | 'label' | 'subsidiary';
 
@@ -69,11 +128,13 @@ export type ReleaseType = 'complete' | 'partial';
 
 export type SeriesStatus = 'cancelled' | 'completed' | 'ongoing' | 'unknown';
 
-export type StaffRole = 'artist' | 'author' | 'editor' | 'translator';
+export const staffRolesArray = ['artist', 'author', 'editor', 'translator'] as const;
+
+export type StaffRole = (typeof staffRolesArray)[number];
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type UserRole = 'admin' | 'moderator' | 'user';
+export type UserRole = 'admin' | 'banned' | 'editor' | 'moderator' | 'unverified' | 'user';
 
 export interface AuthSession {
 	expires_at: Timestamp;
@@ -82,23 +143,45 @@ export interface AuthSession {
 }
 
 export interface AuthUser {
-	email: string;
-	hashed_password: string;
 	id: string;
+	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;
 	role: Generated<UserRole>;
 	username: string;
 }
 
+export interface AuthUserCredentials {
+	email: string;
+	hashed_password: string;
+	user_id: string;
+}
+
 export interface Book {
 	description: string;
 	description_ja: string | null;
+	hidden: boolean;
 	id: Generated<number>;
+	image_id: number | null;
+	locked: boolean;
+}
+
+export interface BookHist {
+	change_id: number;
+	description: string;
+	description_ja: string | null;
 	image_id: number | null;
 }
 
 export interface BookStaffAlias {
 	book_id: number;
+	note: string;
+	role_type: StaffRole;
+	staff_alias_id: number;
+}
+
+export interface BookStaffAliasHist {
+	change_id: number;
+	note: string;
 	role_type: StaffRole;
 	staff_alias_id: number;
 }
@@ -109,6 +192,26 @@ export interface BookTitle {
 	official: boolean;
 	romaji: string | null;
 	title: string;
+}
+
+export interface BookTitleHist {
+	change_id: number;
+	lang: Language;
+	official: boolean;
+	romaji: string | null;
+	title: string;
+}
+
+export interface Change {
+	added: Generated<Timestamp>;
+	comments: string;
+	id: Generated<number>;
+	ihid: boolean;
+	ilock: boolean;
+	item_id: number;
+	item_name: DbItem;
+	revision: number;
+	user_id: string;
 }
 
 export interface Image {
@@ -216,9 +319,14 @@ export interface UserListLabel {
 export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
+	auth_user_credentials: AuthUserCredentials;
 	book: Book;
+	book_hist: BookHist;
 	book_staff_alias: BookStaffAlias;
+	book_staff_alias_hist: BookStaffAliasHist;
 	book_title: BookTitle;
+	book_title_hist: BookTitleHist;
+	change: Change;
 	image: Image;
 	publisher: Publisher;
 	publisher_relation: PublisherRelation;

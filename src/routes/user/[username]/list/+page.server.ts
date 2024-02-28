@@ -23,8 +23,7 @@ export const load = async ({ url, params, locals }) => {
 
 	const userLabelCounts = await getUserLabelCounts(listUser.id).execute();
 
-	let k = getBooksRL(listUser.id);
-
+	let k = getBooksRL(listUser.id).where('cte_book.hidden', '=', false);
 	if (query) {
 		k = k.where('cte_book.title', 'ilike', `%${query}%`);
 	}

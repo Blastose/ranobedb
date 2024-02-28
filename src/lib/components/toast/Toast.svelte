@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { createProgress, melt, type Toast, type ToastsElements } from '@melt-ui/svelte';
 	import { fly } from 'svelte/transition';
-	import type { ToastData } from './Toaster.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { writable } from 'svelte/store';
 	import { onMount } from 'svelte';
+	import type { ToastData } from './toast';
 
 	export let elements: ToastsElements;
 	$: ({ content, title, description, close } = elements);
