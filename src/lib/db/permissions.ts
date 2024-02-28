@@ -17,3 +17,6 @@ export function hasVisibilityPerms(user: User) {
 export function hasEditPerms(user: User) {
 	return permissions[user.role].includes('edit');
 }
+export function hasAddPerms(user: User) {
+	return permissions[user.role].includes('add');
+}

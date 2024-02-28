@@ -5,7 +5,7 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
-import { permissions } from '$lib/db/permissions';
+import { hasAddPerms, permissions } from '$lib/db/permissions';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {
@@ -38,15 +38,13 @@ export const actions = {
 		if (!locals.user) redirect(302, '/');
 
 		const form = await superValidate(request, zod(bookSchema));
-		if (!permissions[locals.user.role].includes('add')) {
+		if (!hasAddPerms(locals.user)) {
 			return fail(403, { form });
 		}
 
 		if (!form.valid) {
 			return fail(400, { form });
 		}
-
-		console.log(form.data);
 
 		let newBookId: number | undefined = undefined;
 		try {
