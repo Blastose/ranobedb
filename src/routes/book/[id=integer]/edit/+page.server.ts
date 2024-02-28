@@ -7,7 +7,7 @@ import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { hasEditPerms, hasVisibilityPerms, permissions } from '$lib/db/permissions';
+import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 
@@ -58,18 +58,16 @@ export const load = async ({ params, locals, url }) => {
 export const actions = {
 	default: async ({ request, locals, params, cookies }) => {
 		const id = Number(params.id);
-		if (!locals.user) redirect(302, '/');
+		if (!locals.user) return fail(401);
 
 		const form = await superValidate(request, zod(bookSchema));
-		if (!permissions[locals.user.role].includes('edit')) {
+		if (!hasEditPerms(locals.user)) {
 			return fail(403, { form });
 		}
 
 		if (!form.valid) {
 			return fail(400, { form });
 		}
-
-		console.log(form.data);
 
 		let success = false;
 		try {

@@ -66,7 +66,6 @@
 			</div>
 		</div>
 
-		<!-- TODO move this section somewhere else -->
 		{#if user && hasVisibilityPerms(user)}
 			<section>
 				<h2 class="font-bold text-lg">Visibility</h2>
