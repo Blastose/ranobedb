@@ -86,22 +86,24 @@ export async function editStaff(
 				.execute();
 		}
 
-		const valid_aids = (
-			await trx
-				.selectFrom('staff_alias')
-				.where(
-					'staff_alias.id',
-					'in',
-					data.staff.aliases.filter((item) => Boolean(item.aid)).map((item) => item.aid!)
-				)
-				.select('staff_alias.id')
-				.execute()
-		).map((item) => item.id);
+		const aliases_with_aids = data.staff.aliases
+			.filter((item) => Boolean(item.aid))
+			.map((item) => item.aid!);
+		const valid_aids =
+			aliases_with_aids.length > 0
+				? (
+						await trx
+							.selectFrom('staff_alias')
+							.where('staff_alias.id', 'in', aliases_with_aids)
+							.select('staff_alias.id')
+							.execute()
+				  ).map((item) => item.id)
+				: [];
 		console.log('valid_aids');
 		console.log(valid_aids);
 
 		console.log(data.staff.aliases);
-		data.staff.aliases = data.staff.aliases.map((item) => {
+		const staff_aliases = data.staff.aliases.map((item) => {
 			if (item.aid && valid_aids.includes(item.aid)) {
 				return {
 					main_alias: item.main_alias,
@@ -118,8 +120,14 @@ export async function editStaff(
 			};
 		});
 
-		console.log(data.staff.aliases);
-		const aliases_to_update = data.staff.aliases.filter((item) => Boolean(item.aid));
+		console.log(staff_aliases);
+		if (staff_aliases.filter((item) => Boolean(item.aid)).length < 1) {
+			// Throw to prevent user from deleting existing aids and making a new one
+			// instead of just renaming it or something
+			throw new Error('Invalid aid');
+		}
+
+		const aliases_to_update = staff_aliases.filter((item) => Boolean(item.aid));
 		console.log('aliases_to_update');
 		console.log(aliases_to_update);
 		for (const item of aliases_to_update) {
@@ -133,12 +141,13 @@ export async function editStaff(
 				.where('staff_alias.id', '=', item.aid!)
 				.execute();
 		}
-		const aliases_to_add = data.staff.aliases.filter((item) => !item.aid);
+		const aliases_to_add = staff_aliases.filter((item) => !item.aid);
 		console.log('aliases_to_add');
 		console.log(aliases_to_add);
-		if (aliases_to_add.filter((item) => item.main_alias).length + 1 > 1) {
-			throw new Error('Too many main aliases');
-		}
+		// TODO check if only one main alias?
+		// if (aliases_to_add.filter((item) => item.main_alias).length + 1 > 1) {
+		// 	throw new Error('Too many main aliases');
+		// }
 		let aliases_to_add_with_aid;
 		const batched_aliases_to_add = aliases_to_add.map((item) => {
 			return {
@@ -177,7 +186,9 @@ export async function editStaff(
 		}) satisfies Insertable<StaffAliasHist>[];
 		console.log('batched_aliases_to_add_to_hist');
 		console.log(batched_aliases_to_add_to_hist);
-		await trx.insertInto('staff_alias_hist').values(batched_aliases_to_add_to_hist).execute();
+		if (batched_aliases_to_add_to_hist.length > 0) {
+			await trx.insertInto('staff_alias_hist').values(batched_aliases_to_add_to_hist).execute();
+		}
 	});
 }
 

@@ -37,9 +37,9 @@ export const getStaffOne = (id: number) => {
 					.innerJoin('staff_alias', (join) =>
 						join
 							.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
-							.onRef('staff_alias.id', '=', 'staff.id')
+							.onRef('staff_alias.staff_id', '=', 'staff.id')
 					)
-					.whereRef('staff_alias.id', '=', 'staff.id')
+					.whereRef('staff_alias.staff_id', '=', 'staff.id')
 					.select([
 						'cte_book.id',
 						'staff_alias.name',
@@ -93,9 +93,9 @@ export const getStaffHistOne = (options: { id: number; revision: number }) => {
 					.innerJoin('staff_alias', (join) =>
 						join
 							.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
-							.on('staff_alias.id', '=', options.id)
+							.on('staff_alias.staff_id', '=', options.id)
 					)
-					.where('staff_alias.id', '=', options.id)
+					.where('staff_alias.staff_id', '=', options.id)
 					.select([
 						'cte_book.id',
 						'staff_alias.name',
@@ -127,13 +127,16 @@ export const getStaffOneEdit = (id: number) => {
 			jsonArrayFrom(
 				eb
 					.selectFrom('staff_alias as all_aliases')
+					.leftJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'all_aliases.id')
 					.whereRef('all_aliases.staff_id', '=', 'staff.id')
+					.distinctOn('all_aliases.id')
 					.select([
 						'all_aliases.id as aid',
 						'all_aliases.staff_id',
 						'all_aliases.main_alias',
 						'all_aliases.name',
-						'all_aliases.romaji'
+						'all_aliases.romaji',
+						'book_staff_alias.book_id as ref_book_id'
 					])
 			).as('aliases')
 		)
@@ -156,15 +159,16 @@ export const getStaffHistOneEdit = (params: { id: number; revision: number }) =>
 			jsonArrayFrom(
 				eb
 					.selectFrom('staff_alias_hist as all_aliases')
-					.leftJoin('staff', 'staff.id', 'all_aliases.aid')
+					.leftJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'all_aliases.aid')
 					.whereRef('all_aliases.change_id', '=', 'staff_hist.change_id')
+					.distinctOn('all_aliases.aid')
 					.select([
 						'all_aliases.change_id as staff_id',
 						'all_aliases.aid',
 						'all_aliases.main_alias',
 						'all_aliases.name',
 						'all_aliases.romaji',
-						'staff.id as staff_id_real'
+						'book_staff_alias.book_id as ref_book_id'
 					])
 			).as('aliases')
 		)

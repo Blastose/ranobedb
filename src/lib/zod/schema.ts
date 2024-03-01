@@ -126,7 +126,7 @@ export const staffSchema = z.object({
 		.array(
 			z.object({
 				aid: z.number().max(2000000).nullish(),
-				// staff_id: z.number().max(2000000).nullish(),
+				ref_book_id: z.number().max(2000000).nullish(),
 				main_alias: z.boolean(),
 				name: z.string().min(1).max(2000),
 				romaji: z.string().max(2000).nullish()
@@ -136,7 +136,7 @@ export const staffSchema = z.object({
 		.max(50)
 		.refine((staffs) => {
 			const countMainAlias = staffs.filter((item) => item.main_alias).length;
-			if (countMainAlias > 1 || countMainAlias < 0) {
+			if (countMainAlias !== 1) {
 				return false;
 			}
 			return true;
