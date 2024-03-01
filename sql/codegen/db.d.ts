@@ -170,7 +170,9 @@ export interface SeriesTitle {
 export interface Staff {
   bookwalker_id: number | null;
   description: string;
+  hidden: boolean;
   id: Generated<number>;
+  locked: boolean;
 }
 
 export interface StaffAlias {
@@ -179,6 +181,20 @@ export interface StaffAlias {
   name: string;
   romaji: string | null;
   staff_id: number;
+}
+
+export interface StaffAliasHist {
+  aid: number;
+  change_id: number;
+  main_alias: boolean;
+  name: string;
+  romaji: string | null;
+}
+
+export interface StaffHist {
+  bookwalker_id: number | null;
+  change_id: number;
+  description: string;
 }
 
 export interface UserListBook {
@@ -226,6 +242,8 @@ export interface DB {
   series_title: SeriesTitle;
   staff: Staff;
   staff_alias: StaffAlias;
+  staff_alias_hist: StaffAliasHist;
+  staff_hist: StaffHist;
   user_list_book: UserListBook;
   user_list_book_label: UserListBookLabel;
   user_list_label: UserListLabel;

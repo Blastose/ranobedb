@@ -5,17 +5,17 @@
 	export let data;
 
 	$: changes = data.changes;
-	$: book = data.book;
+	$: staff = data.staff;
 
-	$: title = `Edit history of ${book.title ?? book.title_orig ?? ''}`;
+	$: title = `Edit history of ${staff.name ?? ''}`;
 
 	function buildRevisionLink(item_id: number, revision: number) {
-		return `/book/${item_id}/revision/${revision}`;
+		return `/staff/${item_id}/revision/${revision}`;
 	}
 </script>
 
 <PageTitle {title} />
 
 <main class="container-rndb">
-	<History {changes} {title} {buildRevisionLink} prefix="b" />
+	<History {changes} {title} {buildRevisionLink} prefix="st" />
 </main>
