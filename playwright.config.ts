@@ -2,7 +2,7 @@ import type { PlaywrightTestConfig } from '@playwright/test';
 
 const config: PlaywrightTestConfig = {
 	webServer: {
-		command: 'npm run build && npm run preview',
+		command: 'npm run db-seed && npm run build:test && npm run preview',
 		port: 4173
 	},
 	testDir: 'tests',

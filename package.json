@@ -5,6 +5,7 @@
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
+		"build:test": "vite build --mode testing",
 		"preview": "vite preview",
 		"test": "npm run test:integration && npm run test:unit",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -13,7 +14,8 @@
 		"format": "prettier --plugin-search-dir . --write .",
 		"test:integration": "playwright test",
 		"test:unit": "vitest",
-		"db-gen": "kysely-codegen --dialect postgres --schema public --include-pattern public.* --out-file ./sql/codegen/db.d.ts"
+		"db-gen": "kysely-codegen --dialect postgres --schema public --include-pattern public.* --out-file ./sql/codegen/db.d.ts",
+		"db-seed": "pg_restore --clean -U postgres -d rndb-testing db-seed.dump"
 	},
 	"devDependencies": {
 		"@lucia-auth/adapter-postgresql": "^3.1.0",

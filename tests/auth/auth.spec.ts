@@ -5,7 +5,7 @@ import pkg from 'pg';
 const { Pool } = pkg;
 import type { DB } from '$lib/db/dbTypes';
 
-dotenv.config();
+dotenv.config({ path: '.env.testing' });
 
 const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
