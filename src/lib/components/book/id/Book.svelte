@@ -8,6 +8,7 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import Description from '$lib/components/book/Description.svelte';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
+	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -58,6 +59,10 @@
 				<p class="opacity-60">{book.romaji_orig ?? ''}</p>
 
 				<section class="pt-4">
+					<VisibilityDisplay item={book} type="book" {user} />
+				</section>
+
+				<section class="pt-4">
 					<h2 class="font-bold text-lg">Description</h2>
 					{#if book.description_ja}
 						<Description description={book.description_ja} />
@@ -72,9 +77,6 @@
 				<p>Hidden: {book.hidden}</p>
 				<p>Locked: {book.locked}</p>
 			</section>
-		{/if}
-		{#if book.locked}
-			<p>This book is locked from editing</p>
 		{/if}
 
 		<section class="mt-4">

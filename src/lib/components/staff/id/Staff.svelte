@@ -1,32 +1,66 @@
 <script lang="ts">
+	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
+	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 	import type { Staff } from '$lib/server/db/staff/staff';
+	import type { User } from 'lucia';
 
 	export let staff: Staff;
+	export let user: User | null;
 </script>
 
 <section>
 	<p class="font-medium opacity-80">Staff</p>
-	<h1 class="text-2xl font-bold">{staff.name}</h1>
+	<div class="flex justify-between items-center">
+		<div class="flex flex-col">
+			<h1 class="text-2xl font-bold">
+				{staff.name}
+			</h1>
+			{#if staff.romaji}
+				<p class="opacity-75">{staff.romaji}</p>
+			{/if}
+		</div>
 
-	<section>
-		<h2>Other names</h2>
+		<section class="pt-4 whitespace-nowrap">
+			<VisibilityDisplay item={staff} type="staff" {user} />
+		</section>
+	</div>
 
-		{#each staff.aliases as alias}
-			<p>{alias.name}</p>
-		{:else}
-			<p>No other names</p>
-		{/each}
-	</section>
+	{#if staff.aliases.length > 0}
+		<section class="mt-2">
+			<h2 class="text-lg font-bold">Other names</h2>
 
-	<p>{staff.description}</p>
-
-	<h2 class="text-lg font-bold">Books</h2>
-	{#if staff.books}
-		{#each staff.books as book}
-			<p><a href="/book/{book.id}">{book.title} - {book.role_type}</a></p>
-		{/each}
+			{#each staff.aliases as alias}
+				<p>{alias.name}</p>
+			{:else}
+				<p>No other names</p>
+			{/each}
+		</section>
 	{/if}
 
-	<p><a href="/staff/{staff.id}/edit">Edit</a></p>
-	<p><a href="/staff/{staff.id}/history">History</a></p>
+	<section class="mt-2">
+		<h2 class="text-lg font-bold">Biography</h2>
+		{#if staff.description}
+			<MarkdownToHtml markdown={staff.description} type="full" />
+		{:else}
+			<p class="italic">No biography added</p>
+		{/if}
+	</section>
+
+	<section class="mt-2">
+		<h2 class="text-lg font-bold">Links</h2>
+		{#if staff.bookwalker_id}
+			<a class="link" target="_blank" href="https://bookwalker.jp/author/{staff.bookwalker_id}"
+				>Bookwalker</a
+			>
+		{/if}
+	</section>
+
+	<section class="mt-2">
+		<h2 class="text-lg font-bold">Books</h2>
+		{#if staff.books}
+			{#each staff.books as book}
+				<p><a href="/book/{book.id}">{book.title} - {book.role_type} - as {book.name}</a></p>
+			{/each}
+		{/if}
+	</section>
 </section>

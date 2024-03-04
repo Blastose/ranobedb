@@ -44,29 +44,43 @@
 	<div class="flex flex-col gap-2">
 		{#each $values as staff, i}
 			<div class="flex gap-2 flex-wrap">
-				<label class="flex flex-col gap-2">
-					<span>Name (in original script)</span>
-					<input
-						name="name"
-						class="input"
-						type="text"
-						placeholder="Name"
-						bind:value={$values[i].name}
-					/>
-				</label>
-				<label class="flex flex-col gap-2">
-					<span>Romanization</span>
-					<input
-						name="romaji"
-						class="input"
-						type="text"
-						placeholder="Romanization"
-						bind:value={$values[i].romaji}
-					/>
-				</label>
+				<div class="flex flex-col gap-2 w-[256px]">
+					<label class="flex flex-col gap-2">
+						<span>Name (in original script)</span>
+						<input
+							name="name"
+							class="input"
+							type="text"
+							placeholder="Name"
+							bind:value={$values[i].name}
+							class:error={$valueErrors[i]?.name}
+							aria-invalid={$valueErrors[i]?.name ? 'true' : undefined}
+						/>
+					</label>
+					{#if $valueErrors[i]?.name}
+						<span class="error-text-color">{$valueErrors[i]?.name}</span>
+					{/if}
+				</div>
+				<div class="flex flex-col gap-2 w-[256px]">
+					<label class="flex flex-col gap-2">
+						<span>Romanization</span>
+						<input
+							name="romaji"
+							class="input"
+							type="text"
+							placeholder="Romanization"
+							bind:value={$values[i].romaji}
+							class:error={$valueErrors[i]?.romaji}
+							aria-invalid={$valueErrors[i]?.romaji ? 'true' : undefined}
+						/>
+					</label>
+					{#if $valueErrors[i]?.romaji}
+						<span class="error-text-color">{$valueErrors[i]?.romaji}</span>
+					{/if}
+				</div>
 				<label class="flex flex-col gap-2">
 					<span>Primary name?</span>
-					<span class="h-full flex items-center justify-center"
+					<span class="h-[40px] flex items-center justify-center"
 						><input
 							name="main-alias"
 							checked={$values[i].main_alias}

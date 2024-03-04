@@ -128,7 +128,7 @@ export const staffSchema = z.object({
 				aid: z.number().max(2000000).nullish(),
 				ref_book_id: z.number().max(2000000).nullish(),
 				main_alias: z.boolean(),
-				name: z.string().min(1).max(2000),
+				name: z.string().min(1, { message: 'Name must be at least 1 character' }).max(2000),
 				romaji: z.string().max(2000).nullish()
 			})
 		)
