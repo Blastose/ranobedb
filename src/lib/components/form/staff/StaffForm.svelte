@@ -49,10 +49,14 @@
 
 	<section>
 		<h2>Links</h2>
-		{#if $form.bookwalker_id}
-			<p>Bookwaller: {$form.bookwalker_id}</p>
-			<a href="https://bookwalker.jp/author/{$form.bookwalker_id}" class="link">Link</a>
-		{/if}
+		<div class="flex flex-col gap-2">
+			<TextField type="number" form={sForm} field="bookwalker_id" label="Bookwalker ID" />
+			{#if $form.bookwalker_id}
+				<a target="_blank" href="https://bookwalker.jp/author/{$form.bookwalker_id}" class="link"
+					>Preview link</a
+				>
+			{/if}
+		</div>
 	</section>
 
 	<Hr />
@@ -61,9 +65,9 @@
 		form={sForm}
 		type="textarea"
 		field="description"
-		label="Description"
+		label="Biography"
 		textareaRows={4}
-		placeholder="Description"
+		placeholder="Biography"
 	/>
 
 	<Hr />

@@ -12,6 +12,7 @@
 	}
 
 	function handleAddAlias(_: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) {
+		if ($values.length > 20) return;
 		$values.push({
 			staff_id: undefined,
 			main_alias: false,
@@ -21,31 +22,78 @@
 		});
 		$values = $values;
 	}
+
+	function handleCheckboxClick(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+		const checkboxes = document.querySelectorAll<HTMLInputElement>(
+			'input[type="radio"][name="main-alias"]'
+		);
+		for (const [index, c] of checkboxes.entries()) {
+			if (e.currentTarget !== c) {
+				c.checked = false;
+				$values[index].main_alias = false;
+			} else {
+				c.checked = true;
+				$values[index].main_alias = true;
+			}
+		}
+	}
 </script>
 
 <section class="flex flex-col gap-2">
 	<h2 class="font-bold text-lg">Names</h2>
-	<div class="grid grid-cols-5 gap-2">
-		<div class="bg-neutral-500">Orig</div>
-		<div class="bg-neutral-500">Romaji</div>
-		<div class="bg-neutral-500">Is Primary</div>
-		<div class="bg-neutral-500">remove</div>
-		<div class="bg-neutral-500">Reffed?</div>
+	<div class="flex flex-col gap-2">
 		{#each $values as staff, i}
-			<div><input class="input" placeholder="Name" type="text" bind:value={$values[i].name} /></div>
-			<div>
-				<input class="input" placeholder="Romaji" type="text" bind:value={$values[i].romaji} />
+			<div class="flex gap-2 flex-wrap">
+				<label class="flex flex-col gap-2">
+					<span>Name (in original script)</span>
+					<input
+						name="name"
+						class="input"
+						type="text"
+						placeholder="Name"
+						bind:value={$values[i].name}
+					/>
+				</label>
+				<label class="flex flex-col gap-2">
+					<span>Romanization</span>
+					<input
+						name="romaji"
+						class="input"
+						type="text"
+						placeholder="Romanization"
+						bind:value={$values[i].romaji}
+					/>
+				</label>
+				<label class="flex flex-col gap-2">
+					<span>Primary name?</span>
+					<span class="h-full flex items-center justify-center"
+						><input
+							name="main-alias"
+							checked={$values[i].main_alias}
+							on:change={handleCheckboxClick}
+							type="radio"
+						/></span
+					>
+				</label>
+				<div class="flex flex-col gap-2">
+					<span class="invisible">Hidden for padding</span>
+					<button
+						disabled={Boolean($values[i].ref_book_id) || $values[i].main_alias}
+						class="sub-btn h-fit"
+						class:loading={Boolean($values[i].ref_book_id) || $values[i].main_alias}
+						type="button"
+						on:click={() => {
+							handleRemoveAlias(i);
+						}}
+						>{$values[i].main_alias
+							? 'Primary'
+							: Boolean($values[i].ref_book_id)
+							? 'Referenced'
+							: 'Remove'}</button
+					>
+				</div>
 			</div>
-			<div><input type="checkbox" bind:checked={$values[i].main_alias} />{staff.main_alias}</div>
-			<button
-				disabled={Boolean($values[i].ref_book_id)}
-				type="button"
-				on:click={() => {
-					handleRemoveAlias(i);
-				}}>Remove</button
-			>
-			<div>{Boolean($values[i].ref_book_id)}</div>
 		{/each}
+		<button class="primary-btn mt-2 w-fit" type="button" on:click={handleAddAlias}>Add name</button>
 	</div>
-	<button type="button" on:click={handleAddAlias}>Add name</button>
 </section>
