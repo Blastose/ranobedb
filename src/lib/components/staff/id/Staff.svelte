@@ -1,11 +1,13 @@
 <script lang="ts">
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
+	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 	import type { Staff } from '$lib/server/db/staff/staff';
 	import type { User } from 'lucia';
 
 	export let staff: Staff;
 	export let user: User | null;
+	export let isRevision: boolean;
 </script>
 
 <section>
@@ -20,10 +22,16 @@
 			{/if}
 		</div>
 
-		<section class="pt-4 whitespace-nowrap">
-			<VisibilityDisplay item={staff} type="staff" {user} />
-		</section>
+		{#if !isRevision}
+			<section class="whitespace-nowrap">
+				<VisibilityDisplay item={staff} type="staff" {user} />
+			</section>
+		{/if}
 	</div>
+
+	<section class="mt-2">
+		<VisibilityDisplayPerm item={staff} {user} />
+	</section>
 
 	{#if staff.aliases.length > 0}
 		<section class="mt-2">
@@ -57,10 +65,10 @@
 
 	<section class="mt-2">
 		<h2 class="text-lg font-bold">Books</h2>
-		{#if staff.books}
-			{#each staff.books as book}
-				<p><a href="/book/{book.id}">{book.title} - {book.role_type} - as {book.name}</a></p>
-			{/each}
-		{/if}
+		{#each staff.books as book}
+			<p><a href="/book/{book.id}">{book.title} - {book.role_type} - as {book.name}</a></p>
+		{:else}
+			<p class="italic">None</p>
+		{/each}
 	</section>
 </section>

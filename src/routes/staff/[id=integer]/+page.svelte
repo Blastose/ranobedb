@@ -12,5 +12,5 @@
 <PageTitle title={staff.name} />
 
 <DbRouteShell theme={$themeStore ?? data.theme} imageBgStyle={null}>
-	<Staff {staff} user={data.user} />
+	<Staff {staff} user={data.user} isRevision={false} />
 </DbRouteShell>

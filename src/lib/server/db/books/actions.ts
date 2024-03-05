@@ -6,7 +6,8 @@ import { addChange } from '../change/change';
 import type { Insertable } from 'kysely';
 import type { BookStaffAlias, BookStaffAliasHist, BookTitle, BookTitleHist } from '$lib/db/dbTypes';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
-import { ChangePermissionError } from '../errors/errors';
+import { ChangePermissionError, HasRelationsError } from '../errors/errors';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
 export async function editBook(data: { book: Infer<typeof bookSchema>; id: number }, user: User) {
 	await db.transaction().execute(async (trx) => {
@@ -14,7 +15,34 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 			.selectFrom('book')
 			.where('book.id', '=', data.id)
 			.select(['book.hidden', 'book.locked'])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('staff_alias')
+						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+						.whereRef('book_staff_alias.book_id', '=', 'book.id')
+						.select('staff_alias.id')
+						.limit(1)
+				).as('staff'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('release')
+						.innerJoin('release_book', 'release.id', 'release_book.release_id')
+						.whereRef('release_book.book_id', '=', 'book.id')
+						.select('release.id')
+						.limit(1)
+				).as('releases'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series')
+						.innerJoin('series_book', 'series.id', 'series_book.series_id')
+						.whereRef('series_book.book_id', '=', 'book.id')
+						.select('series.id')
+						.limit(1)
+				).as('series')
+			])
 			.executeTakeFirstOrThrow();
+
 		const userHasVisibilityPerms = hasVisibilityPerms(user);
 		const hidden = userHasVisibilityPerms ? data.book.hidden : currentBook.hidden;
 		const locked = userHasVisibilityPerms ? data.book.locked : currentBook.locked;
@@ -22,6 +50,12 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 		if (currentBook.hidden || currentBook.locked) {
 			if (!userHasVisibilityPerms) {
 				throw new ChangePermissionError('');
+			}
+		}
+
+		if (data.book.hidden) {
+			if (currentBook.releases.length + currentBook.series.length + currentBook.staff.length > 0) {
+				throw new HasRelationsError('');
 			}
 		}
 

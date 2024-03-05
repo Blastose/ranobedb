@@ -34,12 +34,16 @@
 <section>
 	<h2 class="font-bold text-lg">Visibility</h2>
 	<label class="flex gap-1"
-		><input type="checkbox" bind:checked={$hiddenValue}  /><span>Hidden</span
-		></label
+		><input type="checkbox" bind:checked={$hiddenValue} /><span>Hidden</span></label
 	>
+	{#if $hiddenErrors}
+		<span class="error-text-color">{$hiddenErrors}</span>
+	{/if}
 
 	<label class="flex gap-1"
-		><input type="checkbox" bind:checked={$lockedValue} /><span>Locked</span
-		></label
+		><input type="checkbox" bind:checked={$lockedValue} /><span>Locked</span></label
 	>
+	{#if $lockedErrors}
+		<span class="error-text-color">{$lockedErrors}</span>
+	{/if}
 </section>

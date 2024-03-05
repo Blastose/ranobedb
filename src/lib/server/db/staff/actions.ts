@@ -230,6 +230,46 @@ export async function addStaff(data: { staff: Infer<typeof staffSchema> }, user:
 			})
 			.executeTakeFirstOrThrow();
 
+		let aliases_to_add_with_aid;
+		const batched_aliases_to_add = data.staff.aliases.map((item) => {
+			return {
+				main_alias: item.main_alias,
+				name: item.name,
+				romaji: item.romaji,
+				staff_id: insertedStaff.id
+			};
+		}) satisfies Insertable<StaffAlias>[];
+		if (batched_aliases_to_add.length > 0) {
+			aliases_to_add_with_aid = await trx
+				.insertInto('staff_alias')
+				.values(batched_aliases_to_add)
+				.returningAll()
+				.execute();
+		}
+		const aliases_to_add_to_hist = [];
+		if (aliases_to_add_with_aid) {
+			for (const item of aliases_to_add_with_aid) {
+				aliases_to_add_to_hist.push({
+					main_alias: item.main_alias,
+					name: item.name,
+					aid: item.id,
+					romaji: item.romaji
+				});
+			}
+		}
+		const batched_aliases_to_add_to_hist = aliases_to_add_to_hist.map((item) => {
+			return {
+				aid: item.aid!,
+				change_id: change.change_id,
+				main_alias: item.main_alias,
+				name: item.name,
+				romaji: item.romaji
+			};
+		}) satisfies Insertable<StaffAliasHist>[];
+		if (batched_aliases_to_add_to_hist.length > 0) {
+			await trx.insertInto('staff_alias_hist').values(batched_aliases_to_add_to_hist).execute();
+		}
+
 		return insertedStaff.id;
 	});
 }

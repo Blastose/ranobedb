@@ -9,6 +9,7 @@
 	import Description from '$lib/components/book/Description.svelte';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
+	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -58,8 +59,14 @@
 				<h1 class="font-bold text-3xl sm:text-4xl">{book.title}</h1>
 				<p class="opacity-60">{book.romaji_orig ?? ''}</p>
 
-				<section class="pt-4">
-					<VisibilityDisplay item={book} type="book" {user} />
+				{#if !isRevision}
+					<section class="pt-4">
+						<VisibilityDisplay item={book} type="book" {user} />
+					</section>
+				{/if}
+
+				<section class="mt-2">
+					<VisibilityDisplayPerm item={book} {user} />
 				</section>
 
 				<section class="pt-4">
@@ -132,13 +139,6 @@
 		<section>
 			<h2 class="font-bold text-lg">User stats</h2>
 		</section>
-
-		{#if !isRevision}
-			<section>
-				<a class="block font-bold text-lg" href="/book/{book.id}/edit">Edit book</a>
-				<a class="block font-bold text-lg" href="/book/{book.id}/history">History</a>
-			</section>
-		{/if}
 	</div>
 </main>
 
