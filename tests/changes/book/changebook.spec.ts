@@ -36,7 +36,7 @@ test.describe('edit book editor invalid permissions locked', () => {
 
 	test('Editor cannot edit locked book due to invalid permissions', async ({ page }) => {
 		await page.goto('/book/2');
-		await expect(page.getByText('This book is locked from editing')).toBeVisible();
+		await expect(page.getByText('Locked')).toBeVisible();
 		await page.goto('/book/2/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
 	});

@@ -1,5 +1,5 @@
 import { staffSchema } from '$lib/zod/schema.js';
-import { fail, redirect } from '@sveltejs/kit';
+import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
@@ -11,6 +11,10 @@ import { addStaff } from '$lib/server/db/staff/actions.js';
 
 export const load = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/login');
+
+	if (!hasAddPerms(locals.user)) {
+		error(403);
+	}
 
 	const form = await superValidate(
 		{

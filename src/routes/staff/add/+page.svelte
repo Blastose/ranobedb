@@ -8,5 +8,5 @@
 <PageTitle title="Adding staff" />
 
 <main class="container-rndb">
-	<StaffForm staff={undefined} staffForm={data.form} type="edit" user={data.user} />
+	<StaffForm staff={undefined} staffForm={data.form} type="add" user={data.user} />
 </main>
