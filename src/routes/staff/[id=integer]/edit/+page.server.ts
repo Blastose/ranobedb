@@ -3,10 +3,10 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
-import { superValidate } from 'sveltekit-superforms';
+import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
-import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
+import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { getStaffHistOneEdit, getStaffOneEdit } from '$lib/server/db/staff/staff.js';
 import { editStaff } from '$lib/server/db/staff/actions.js';
@@ -83,6 +83,12 @@ export const actions = {
 				//
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
+			} else if (e instanceof HasRelationsError) {
+				return setError(
+					form,
+					'hidden',
+					'Cannot hide book. Remove any relations to the book and try again.'
+				);
 			}
 			console.log(e);
 		}

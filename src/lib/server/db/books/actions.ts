@@ -53,7 +53,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 			}
 		}
 
-		if (data.book.hidden) {
+		if (!currentBook.hidden && data.book.hidden) {
 			if (currentBook.releases.length + currentBook.series.length + currentBook.staff.length > 0) {
 				throw new HasRelationsError('');
 			}
