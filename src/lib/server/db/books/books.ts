@@ -168,6 +168,8 @@ export const getBook = (id: number) => {
 				eb
 					.selectFrom('staff_alias')
 					.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+					.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+					.where('staff.hidden', '=', false)
 					.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
 					.select([
 						'book_staff_alias.role_type',
@@ -244,6 +246,8 @@ export const getBookHist = (id: number, revision: number) => {
 						'book_staff_alias_hist.staff_alias_id',
 						'staff_alias.id'
 					)
+					.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+					.where('staff.hidden', '=', false)
 					.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
 					.select([
 						'book_staff_alias_hist.role_type',

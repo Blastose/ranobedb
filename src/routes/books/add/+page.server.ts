@@ -5,13 +5,13 @@ import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
-import { hasAddPerms, permissions } from '$lib/db/permissions';
+import { hasAddPerms } from '$lib/db/permissions';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/login');
 
-	if (!permissions[locals.user.role].includes('add')) {
+	if (!hasAddPerms(locals.user)) {
 		error(403);
 	}
 

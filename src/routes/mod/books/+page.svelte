@@ -21,7 +21,7 @@
 				<div>
 					<a href="/book/{book.id}">{book.title}</a>
 					<p>Hidden: {book.hidden}</p>
-					<p>Hidden: {book.locked}</p>
+					<p>Locked: {book.locked}</p>
 				</div>
 			{/each}
 		</div>

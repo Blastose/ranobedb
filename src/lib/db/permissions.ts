@@ -11,12 +11,15 @@ export const permissions: Record<UserRole, Perm[]> = {
 	banned: []
 };
 
-export function hasVisibilityPerms(user: User) {
+export function hasVisibilityPerms(user: User | null) {
+	if (!user) return false;
 	return permissions[user.role].includes('visibility');
 }
-export function hasEditPerms(user: User) {
+export function hasEditPerms(user: User | null) {
+	if (!user) return false;
 	return permissions[user.role].includes('edit');
 }
-export function hasAddPerms(user: User) {
+export function hasAddPerms(user: User | null) {
+	if (!user) return false;
 	return permissions[user.role].includes('add');
 }

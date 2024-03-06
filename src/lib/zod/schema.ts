@@ -92,11 +92,9 @@ export const bookSchema = z.object({
 				romaji: z.string().max(2000).nullish()
 			})
 		)
+		.min(1)
 		.max(50)
 		.refine((titles) => {
-			if (titles.length === 0) {
-				return false;
-			}
 			if (!titles.some((v) => v.lang === 'ja')) {
 				return false;
 			}
@@ -115,6 +113,34 @@ export const bookSchema = z.object({
 		)
 		.max(50),
 
+	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
+});
+
+export const staffSchema = z.object({
+	hidden: z.boolean(),
+	locked: z.boolean(),
+	description: z.string().max(2000).nullish(),
+	bookwalker_id: z.number().nullish(),
+
+	aliases: z
+		.array(
+			z.object({
+				aid: z.number().max(2000000).nullish(),
+				ref_book_id: z.number().max(2000000).nullish(),
+				main_alias: z.boolean(),
+				name: z.string().min(1, { message: 'Name must be at least 1 character' }).max(2000),
+				romaji: z.string().max(2000).nullish()
+			})
+		)
+		.min(1)
+		.max(50)
+		.refine((staffs) => {
+			const countMainAlias = staffs.filter((item) => item.main_alias).length;
+			if (countMainAlias !== 1) {
+				return false;
+			}
+			return true;
+		}),
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
 });
 

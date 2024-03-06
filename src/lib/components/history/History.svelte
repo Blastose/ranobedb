@@ -4,6 +4,7 @@
 
 	export let changes: Change[];
 	export let title: string;
+	export let prefix: string;
 	export let buildRevisionLink: (item_id: number, revision: number) => string;
 </script>
 
@@ -26,7 +27,7 @@
 					<tr>
 						<td
 							><a class="link" href={buildRevisionLink(change.item_id, change.revision)}
-								>b{change.item_id}.{change.revision}</a
+								>{prefix}{change.item_id}.{change.revision}</a
 							></td
 						>
 						<td class="table-date">{new Date(change.added).toLocaleString()}</td>

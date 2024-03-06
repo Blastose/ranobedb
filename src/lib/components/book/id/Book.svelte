@@ -8,6 +8,8 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import Description from '$lib/components/book/Description.svelte';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
+	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
+	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -57,6 +59,16 @@
 				<h1 class="font-bold text-3xl sm:text-4xl">{book.title}</h1>
 				<p class="opacity-60">{book.romaji_orig ?? ''}</p>
 
+				{#if !isRevision}
+					<section class="pt-4">
+						<VisibilityDisplay item={book} type="book" {user} />
+					</section>
+				{/if}
+
+				<section class="mt-2">
+					<VisibilityDisplayPerm item={book} {user} />
+				</section>
+
 				<section class="pt-4">
 					<h2 class="font-bold text-lg">Description</h2>
 					{#if book.description_ja}
@@ -65,17 +77,6 @@
 				</section>
 			</div>
 		</div>
-
-		{#if user && hasVisibilityPerms(user)}
-			<section>
-				<h2 class="font-bold text-lg">Visibility</h2>
-				<p>Hidden: {book.hidden}</p>
-				<p>Locked: {book.locked}</p>
-			</section>
-		{/if}
-		{#if book.locked}
-			<p>This book is locked from editing</p>
-		{/if}
 
 		<section class="mt-4">
 			<h2 class="font-bold text-lg">Titles</h2>
@@ -130,13 +131,6 @@
 		<section>
 			<h2 class="font-bold text-lg">User stats</h2>
 		</section>
-
-		{#if !isRevision}
-			<section>
-				<a class="block font-bold text-lg" href="/book/{book.id}/edit">Edit book</a>
-				<a class="block font-bold text-lg" href="/book/{book.id}/history">History</a>
-			</section>
-		{/if}
 	</div>
 </main>
 

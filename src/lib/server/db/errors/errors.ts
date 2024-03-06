@@ -3,3 +3,9 @@ export class ChangePermissionError extends Error {
 		super(message);
 	}
 }
+
+export class HasRelationsError extends Error {
+	constructor(message: string) {
+		super(message);
+	}
+}

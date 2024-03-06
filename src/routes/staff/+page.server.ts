@@ -7,10 +7,16 @@ export const load = async ({ url }) => {
 		result: staff,
 		count,
 		totalPages
-	} = await paginationBuilderExecuteWithCount(getStaff.orderBy('staff_alias.name'), {
-		limit: 40,
-		page: currentPage
-	});
+	} = await paginationBuilderExecuteWithCount(
+		getStaff
+			.where('staff.hidden', '=', false)
+			.where('staff.locked', '=', false)
+			.orderBy('staff_alias.name'),
+		{
+			limit: 40,
+			page: currentPage
+		}
+	);
 
 	return {
 		staff,
