@@ -118,7 +118,9 @@ export const languageNames: Record<Language, string> = {
 
 export type Language = (typeof languagesArray)[number];
 
-export type PublisherRelType = 'imprint' | 'label' | 'subsidiary';
+export const publisherRelTypeArray = ['imprint', 'label', 'subsidiary'] as const;
+
+export type PublisherRelType = (typeof publisherRelTypeArray)[number];
 
 export type ReleaseFormat = 'audio' | 'digital' | 'print';
 
@@ -224,7 +226,16 @@ export interface Image {
 
 export interface Publisher {
 	description: string;
+	hidden: boolean;
 	id: Generated<number>;
+	locked: boolean;
+	name: string;
+	romaji: string | null;
+}
+
+export interface PublisherHist {
+	change_id: number;
+	description: string;
 	name: string;
 	romaji: string | null;
 }
@@ -232,6 +243,12 @@ export interface Publisher {
 export interface PublisherRelation {
 	id_child: number;
 	id_parent: number;
+	relation_type: PublisherRelType;
+}
+
+export interface PublisherRelationHist {
+	change_id: number;
+	id_child: number;
 	relation_type: PublisherRelType;
 }
 
@@ -345,7 +362,9 @@ export interface DB {
 	change: Change;
 	image: Image;
 	publisher: Publisher;
+	publisher_hist: PublisherHist;
 	publisher_relation: PublisherRelation;
+	publisher_relation_hist: PublisherRelationHist;
 	release: Release;
 	release_book: ReleaseBook;
 	release_publisher: ReleasePublisher;

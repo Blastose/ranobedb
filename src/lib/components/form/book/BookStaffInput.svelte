@@ -63,7 +63,7 @@
 				>
 			</div>
 		{/each}
-		<ComboboxInput handleAdd={handleAddStaff} {search} />
+		<ComboboxInput handleAdd={handleAddStaff} {search} title="Add staff" />
 	</div>
 	{#if $errors}
 		<p class="error-text-color">{$errors}</p>
