@@ -56,23 +56,7 @@ export const getPublisher = (id: number) =>
 						'publisher_relation.relation_type'
 					])
 					.where('publisher_relation.id_parent', '=', id)
-			).as('child_publishers'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('publisher_relation')
-					.innerJoin(
-						'publisher as parent_publisher',
-						'parent_publisher.id',
-						'publisher_relation.id_parent'
-					)
-					.select([
-						'parent_publisher.name',
-						'parent_publisher.romaji',
-						'parent_publisher.id',
-						'publisher_relation.relation_type'
-					])
-					.where('publisher_relation.id_child', '=', id)
-			).as('parent_publishers')
+			).as('child_publishers')
 		])
 		.where('publisher.id', '=', id);
 
@@ -104,36 +88,20 @@ export const getPublisherHist = (options: { id: number; revision: number }) =>
 			).as('releases'),
 			jsonArrayFrom(
 				eb
-					.selectFrom('publisher_relation')
+					.selectFrom('publisher_relation_hist')
 					.innerJoin(
 						'publisher as child_publisher',
 						'child_publisher.id',
-						'publisher_relation.id_child'
+						'publisher_relation_hist.id_child'
 					)
 					.select([
 						'child_publisher.name',
 						'child_publisher.romaji',
 						'child_publisher.id',
-						'publisher_relation.relation_type'
+						'publisher_relation_hist.relation_type'
 					])
-					.where('publisher_relation.id_parent', '=', options.id)
-			).as('child_publishers'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('publisher_relation')
-					.innerJoin(
-						'publisher as parent_publisher',
-						'parent_publisher.id',
-						'publisher_relation.id_parent'
-					)
-					.select([
-						'parent_publisher.name',
-						'parent_publisher.romaji',
-						'parent_publisher.id',
-						'publisher_relation.relation_type'
-					])
-					.where('publisher_relation.id_child', '=', options.id)
-			).as('parent_publishers')
+					.whereRef('publisher_relation_hist.change_id', '=', 'change.id')
+			).as('child_publishers')
 		])
 		.where('change.item_id', '=', options.id)
 		.where('change.item_name', '=', 'publisher')
@@ -184,7 +152,7 @@ export const getPublisherHistEdit = (params: { id: number; revision: number }) =
 			).as('child_publishers')
 		)
 		.where('change.item_id', '=', params.id)
-		.where('change.item_name', '=', 'staff')
+		.where('change.item_name', '=', 'publisher')
 		.where('change.revision', '=', params.revision);
 
 export type Publisher = InferResult<ReturnType<typeof getPublisher>>[number];

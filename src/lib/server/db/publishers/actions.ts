@@ -16,18 +16,11 @@ import {
 import type { Insertable, Transaction } from 'kysely';
 import { arrayDiff, arrayIntersection } from '$lib/db/array';
 
-async function updateReversePublisherRelations(params: {
+async function getPublishersForReverseRelation(params: {
 	trx: Transaction<DB>;
-	id: number;
-	og_change: { revision: number };
-	publishers: {
-		id: number;
-		name: string;
-		relation_type: PublisherRelType;
-		romaji?: string | null | undefined;
-	}[];
+	publisher_ids: number[];
 }) {
-	const pubs = await params.trx
+	return await params.trx
 		.selectFrom('publisher')
 		.select((eb) =>
 			jsonArrayFrom(
@@ -45,12 +38,25 @@ async function updateReversePublisherRelations(params: {
 			).as('child_publishers')
 		)
 		.select(['publisher.id', 'publisher.description', 'publisher.name', 'publisher.romaji'])
-		.where(
-			'publisher.id',
-			'in',
-			params.publishers.map((i) => i.id)
-		)
+		.where('publisher.id', 'in', params.publisher_ids)
 		.execute();
+}
+
+async function updateReversePublisherRelations(params: {
+	trx: Transaction<DB>;
+	id: number;
+	og_change: { revision: number };
+	publishers: {
+		id: number;
+		name: string;
+		relation_type: PublisherRelType;
+		romaji?: string | null | undefined;
+	}[];
+}) {
+	const pubs = await getPublishersForReverseRelation({
+		trx: params.trx,
+		publisher_ids: params.publishers.map((i) => i.id)
+	});
 
 	for (const publisher of params.publishers) {
 		const publisher_to_update = pubs.find((item) => item.id === publisher.id);
@@ -108,26 +114,10 @@ async function removeReversePublisherRelations(params: {
 	og_change: { revision: number };
 	publisher_ids: number[];
 }) {
-	const pubs = await params.trx
-		.selectFrom('publisher')
-		.select((eb) =>
-			jsonArrayFrom(
-				eb
-					.selectFrom('publisher_relation')
-					.innerJoin('publisher', 'publisher.id', 'publisher_relation.id_child')
-					.select([
-						'publisher_relation.id_parent',
-						'publisher_relation.id_child',
-						'publisher_relation.relation_type'
-					])
-					.select(['publisher.description', 'publisher.name', 'publisher.romaji'])
-					.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
-					.where('publisher.hidden', '=', false)
-			).as('child_publishers')
-		)
-		.select(['publisher.id', 'publisher.description', 'publisher.name', 'publisher.romaji'])
-		.where('publisher.id', 'in', params.publisher_ids)
-		.execute();
+	const pubs = await getPublishersForReverseRelation({
+		trx: params.trx,
+		publisher_ids: params.publisher_ids
+	});
 
 	for (const id of params.publisher_ids) {
 		const publisher_to_remove = pubs.find((item) => item.id === id);
@@ -186,30 +176,10 @@ async function addReversePublisherRelations(params: {
 		romaji?: string | null | undefined;
 	}[];
 }) {
-	const pubs = await params.trx
-		.selectFrom('publisher')
-		.select((eb) =>
-			jsonArrayFrom(
-				eb
-					.selectFrom('publisher_relation')
-					.innerJoin('publisher', 'publisher.id', 'publisher_relation.id_child')
-					.select([
-						'publisher_relation.id_parent',
-						'publisher_relation.id_child',
-						'publisher_relation.relation_type'
-					])
-					.select(['publisher.description', 'publisher.name', 'publisher.romaji'])
-					.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
-					.where('publisher.hidden', '=', false)
-			).as('child_publishers')
-		)
-		.select(['publisher.id', 'publisher.description', 'publisher.name', 'publisher.romaji'])
-		.where(
-			'publisher.id',
-			'in',
-			params.publishers.map((i) => i.id)
-		)
-		.execute();
+	const pubs = await getPublishersForReverseRelation({
+		trx: params.trx,
+		publisher_ids: params.publishers.map((i) => i.id)
+	});
 
 	for (const publisher of params.publishers) {
 		const publisher_to_add = pubs.find((item) => item.id === publisher.id);
@@ -351,18 +321,18 @@ export async function editPublisher(
 			})
 			.executeTakeFirstOrThrow();
 
-		// current pub rels
-		// new pub rels
+		// publisher_relation_hist
+		const publisher_relations_hist = data.publisher.child_publishers.map((item) => {
+			return {
+				change_id: change.change_id,
+				id_child: item.id,
+				relation_type: item.relation_type
+			};
+		}) satisfies Insertable<PublisherRelationHist>[];
+		if (publisher_relations_hist.length > 0) {
+			await trx.insertInto('publisher_relation_hist').values(publisher_relations_hist).execute();
+		}
 
-		// => find out which are current are not in new
-		// 		=> delete those
-		// 		=> remove reverse pub rels
-		// => find out which new are not in current
-		//    => add those
-		// 		=> add reverse pub rels
-		// => update - find out which are in the same
-		//    => update those
-		//    => update reverse pub rels
 		const currentDiff = arrayDiff(
 			currentPublisher.child_publishers,
 			data.publisher.child_publishers
@@ -415,28 +385,11 @@ export async function editPublisher(
 		}
 
 		const newDiff = arrayDiff(data.publisher.child_publishers, currentPublisher.child_publishers);
-		console.log('currentDiff');
-		console.log(currentDiff);
-		console.log('newDiff');
-		console.log(newDiff);
-
 		const publisher_relations = newDiff.map((item) => {
 			return { id_parent: data.id, id_child: item.id, relation_type: item.relation_type };
 		}) satisfies Insertable<PublisherRelation>[];
 		if (publisher_relations.length > 0) {
 			await trx.insertInto('publisher_relation').values(publisher_relations).execute();
-		}
-
-		// publisher_relation_hist
-		const publisher_relations_hist = data.publisher.child_publishers.map((item) => {
-			return {
-				change_id: change.change_id,
-				id_child: item.id,
-				relation_type: item.relation_type
-			};
-		}) satisfies Insertable<PublisherRelationHist>[];
-		if (publisher_relations_hist.length > 0) {
-			await trx.insertInto('publisher_relation_hist').values(publisher_relations_hist).execute();
 		}
 
 		// add reverse relations
@@ -500,6 +453,17 @@ export async function addPublisher(data: { publisher: Infer<typeof publisherSche
 		if (publisher_relations.length > 0) {
 			await trx.insertInto('publisher_relation').values(publisher_relations).execute();
 		}
+
+		// add reverse pub rels
+		if (data.publisher.child_publishers.length > 0) {
+			await addReversePublisherRelations({
+				trx,
+				id: insertedPublisher.id,
+				og_change: change,
+				publishers: data.publisher.child_publishers
+			});
+		}
+
 		return insertedPublisher.id;
 	});
 }
