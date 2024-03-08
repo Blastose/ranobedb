@@ -118,7 +118,19 @@ export const languageNames: Record<Language, string> = {
 
 export type Language = (typeof languagesArray)[number];
 
-export const publisherRelTypeArray = ['imprint', 'label', 'subsidiary'] as const;
+export const publisherRelTypeArray = [
+	'imprint',
+	'parent brand',
+	'parent company',
+	'subsidiary'
+] as const;
+
+export const publisherTypeReverseMap: Record<PublisherRelType, PublisherRelType> = {
+	imprint: 'parent brand',
+	subsidiary: 'parent company',
+	'parent brand': 'imprint',
+	'parent company': 'subsidiary'
+};
 
 export type PublisherRelType = (typeof publisherRelTypeArray)[number];
 

@@ -8,7 +8,7 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 
 export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "en" | "eo" | "es" | "eu" | "fa" | "fi" | "fr" | "ga" | "gd" | "he" | "hi" | "hr" | "hu" | "id" | "it" | "iu" | "ja" | "ko" | "la" | "lt" | "lv" | "mk" | "ms" | "nl" | "no" | "pl" | "pt-br" | "pt-pt" | "ro" | "ru" | "sk" | "sl" | "sr" | "sv" | "ta" | "th" | "tr" | "uk" | "ur" | "vi" | "zh-Hans" | "zh-Hant";
 
-export type PublisherRelType = "imprint" | "label" | "subsidiary";
+export type PublisherRelType = "imprint" | "parent brand" | "parent company" | "subsidiary";
 
 export type ReleaseFormat = "audio" | "digital" | "print";
 

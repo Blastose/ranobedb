@@ -40,7 +40,39 @@ export const getPublisher = (id: number) =>
 					])
 					.orderBy('release.release_date desc')
 					.orderBy('release.title')
-			).as('releases')
+			).as('releases'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('publisher_relation')
+					.innerJoin(
+						'publisher as child_publisher',
+						'child_publisher.id',
+						'publisher_relation.id_child'
+					)
+					.select([
+						'child_publisher.name',
+						'child_publisher.romaji',
+						'child_publisher.id',
+						'publisher_relation.relation_type'
+					])
+					.where('publisher_relation.id_parent', '=', id)
+			).as('child_publishers'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('publisher_relation')
+					.innerJoin(
+						'publisher as parent_publisher',
+						'parent_publisher.id',
+						'publisher_relation.id_parent'
+					)
+					.select([
+						'parent_publisher.name',
+						'parent_publisher.romaji',
+						'parent_publisher.id',
+						'publisher_relation.relation_type'
+					])
+					.where('publisher_relation.id_child', '=', id)
+			).as('parent_publishers')
 		])
 		.where('publisher.id', '=', id);
 
@@ -69,7 +101,39 @@ export const getPublisherHist = (options: { id: number; revision: number }) =>
 					])
 					.orderBy('release.release_date desc')
 					.orderBy('release.title')
-			).as('releases')
+			).as('releases'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('publisher_relation')
+					.innerJoin(
+						'publisher as child_publisher',
+						'child_publisher.id',
+						'publisher_relation.id_child'
+					)
+					.select([
+						'child_publisher.name',
+						'child_publisher.romaji',
+						'child_publisher.id',
+						'publisher_relation.relation_type'
+					])
+					.where('publisher_relation.id_parent', '=', options.id)
+			).as('child_publishers'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('publisher_relation')
+					.innerJoin(
+						'publisher as parent_publisher',
+						'parent_publisher.id',
+						'publisher_relation.id_parent'
+					)
+					.select([
+						'parent_publisher.name',
+						'parent_publisher.romaji',
+						'parent_publisher.id',
+						'publisher_relation.relation_type'
+					])
+					.where('publisher_relation.id_child', '=', options.id)
+			).as('parent_publishers')
 		])
 		.where('change.item_id', '=', options.id)
 		.where('change.item_name', '=', 'publisher')
