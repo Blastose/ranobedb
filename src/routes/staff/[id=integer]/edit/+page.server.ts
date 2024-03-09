@@ -10,6 +10,7 @@ import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { getStaffHistOneEdit, getStaffOneEdit } from '$lib/server/db/staff/staff.js';
 import { editStaff } from '$lib/server/db/staff/actions.js';
+import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -48,7 +49,7 @@ export const load = async ({ params, locals, url }) => {
 
 	const prefilledComment =
 		revision.valid && url.searchParams.get('revision')
-			? `Reverted to revision ${revision.data.revision}`
+			? revertedRevisionMarkdown('st', 'staff', staffId, revision.data.revision)
 			: undefined;
 
 	const form = await superValidate({ ...staff, comment: prefilledComment }, zod(staffSchema), {
