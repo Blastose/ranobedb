@@ -12,7 +12,7 @@
 </script>
 
 {#if error}
-	<PageTitle title="Error" />
+	<PageTitle title={error.message} />
 
 	<main class="container-rndb">
 		{#if error.dbItemDeleted && status === 403}
