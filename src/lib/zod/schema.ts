@@ -21,7 +21,9 @@ const zUsername = z
 	.regex(
 		USERNAME_REGEX,
 		'Username must only contain alphanumeric characters, dash (-), and underscore (_)'
-	);
+	)
+	.min(3, { message: 'Username must be between 3 and 36 characters' })
+	.max(36, { message: 'Username must be between 3 and 36 characters' });
 function isValidISO8601Date(dateString: string): boolean {
 	const isoDateRegex = /^\d{4,5}-\d{2}-\d{2}$/;
 	if (!isoDateRegex.test(dateString)) {
@@ -40,9 +42,9 @@ export const zISODate = z
 	.refine((v) => isValidISO8601Date(v), { message: 'Date must be a valid ISO date' });
 
 export const loginSchema = z.object({
-	email: z
-		.string({ required_error: 'Email is required' })
-		.email({ message: 'Invalid email address' }),
+	usernameemail: z
+		.string({ required_error: 'Username or email is required' })
+		.max(255, { message: 'Username or email too long' }),
 	password: z
 		.string({ required_error: 'Password is required' })
 		.max(255, { message: 'Password too long' })
@@ -51,7 +53,8 @@ export const loginSchema = z.object({
 export const signupSchema = z.object({
 	email: z
 		.string({ required_error: 'Email is required' })
-		.email({ message: 'Invalid email address' }),
+		.email({ message: 'Invalid email address' })
+		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
 	username: zUsername,
 	password: z
 		.string({ required_error: 'Password is required' })

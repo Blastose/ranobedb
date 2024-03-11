@@ -3,11 +3,16 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import AuthFormShell from '$lib/components/form/AuthFormShell.svelte';
 	import { superForm } from 'sveltekit-superforms';
+	import { addToast } from '$lib/components/toast/Toaster.svelte';
 
 	export let data;
 
 	$: form = superForm(data.form);
-	$: ({ enhance, delayed, submitting } = form);
+	$: ({ enhance, delayed, submitting, message } = form);
+
+	$: if (!$delayed && $message) {
+		addToast({ data: { title: $message.text, type: $message.type } });
+	}
 </script>
 
 <PageTitle title="Sign up" />
@@ -20,10 +25,6 @@
 		submitText="Sign up"
 		{enhance}
 	>
-		<svelte:fragment slot="alert">
-			<!-- TOOD -->
-		</svelte:fragment>
-
 		<svelte:fragment slot="form">
 			<TextField {form} field={'email'} placeholder="Email" label="Email" />
 			<TextField {form} field={'username'} placeholder="Username" label="Username" />
@@ -38,19 +39,8 @@
 
 		<svelte:fragment slot="bottom">
 			<p>
-				Already have an account? <a href="/login" class="login-text">Log in</a> now!
+				Already have an account? <a href="/login" class="link">Log in</a> now!
 			</p>
 		</svelte:fragment>
 	</AuthFormShell>
 </main>
-
-<style>
-	.login-text {
-		color: var(--primary-600);
-		text-decoration: underline;
-	}
-
-	:global(.dark) .login-text {
-		color: var(--primary-400);
-	}
-</style>

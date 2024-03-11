@@ -1,6 +1,6 @@
 import { loginSchema } from '$lib/zod/schema';
 import { fail, redirect } from '@sveltejs/kit';
-import { getUserByEmail, lucia } from '$lib/server/lucia';
+import { getUser, lucia } from '$lib/server/lucia';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { Argon2id } from 'oslo/password';
@@ -21,10 +21,10 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const email = form.data.email;
+		const usernameemail = form.data.usernameemail;
 		const password = form.data.password;
 
-		const user = await getUserByEmail(email);
+		const user = await getUser(usernameemail);
 		if (!user) {
 			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
 		}
