@@ -43,7 +43,7 @@ export async function createUser(user: {
 		await trx
 			.insertInto('auth_user_credentials')
 			.values({
-				email: user.email,
+				email: user.email.toLowerCase(),
 				hashed_password: user.hashed_password,
 				user_id: user.id
 			})
@@ -57,7 +57,7 @@ async function getUserByEmail(email: string) {
 	return await db
 		.selectFrom('auth_user')
 		.innerJoin('auth_user_credentials', 'auth_user.id', 'auth_user_credentials.user_id')
-		.where('auth_user_credentials.email', '=', email)
+		.where('auth_user_credentials.email', '=', email.toLowerCase())
 		.selectAll()
 		.executeTakeFirst();
 }
