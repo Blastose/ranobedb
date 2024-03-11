@@ -1,4 +1,4 @@
-import { languagesArray, staffRolesArray } from '$lib/db/dbTypes';
+import { languagesArray, publisherRelTypeArray, staffRolesArray } from '$lib/db/dbTypes';
 import { z } from 'zod';
 
 export const defaultUserListLabelsArray = [
@@ -141,6 +141,28 @@ export const staffSchema = z.object({
 			}
 			return true;
 		}),
+	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
+});
+
+export const publisherSchema = z.object({
+	hidden: z.boolean(),
+	locked: z.boolean(),
+
+	name: z.string().max(2000),
+	romaji: z.string().max(2000).nullish(),
+	description: z.string().max(2000).nullish(),
+
+	child_publishers: z
+		.array(
+			z.object({
+				name: z.string(),
+				romaji: z.string().nullish(),
+				id: z.number().max(100000),
+				relation_type: z.enum(publisherRelTypeArray)
+			})
+		)
+		.max(50),
+
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
 });
 

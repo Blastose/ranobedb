@@ -10,6 +10,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
+import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -45,7 +46,7 @@ export const load = async ({ params, locals, url }) => {
 
 	const prefilledComment =
 		revision.valid && url.searchParams.get('revision')
-			? `Reverted to revision ${revision.data.revision}`
+			? revertedRevisionMarkdown('b', 'book', bookId, revision.data.revision)
 			: undefined;
 
 	const form = await superValidate({ ...book, comment: prefilledComment }, zod(bookSchema), {

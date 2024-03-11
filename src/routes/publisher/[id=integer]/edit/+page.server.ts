@@ -1,4 +1,4 @@
-import { revisionSchema, staffSchema } from '$lib/zod/schema.js';
+import { publisherSchema, revisionSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
@@ -8,35 +8,35 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
-import { getStaffHistOneEdit, getStaffOneEdit } from '$lib/server/db/staff/staff.js';
-import { editStaff } from '$lib/server/db/staff/actions.js';
+import { getPublisherEdit, getPublisherHistEdit } from '$lib/server/db/publishers/publishers.js';
+import { editPublisher } from '$lib/server/db/publishers/actions.js';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
 
 	const id = params.id;
-	const staffId = Number(id);
-	let staff;
+	const publisherId = Number(id);
+	let publisher;
 
 	const revision = await superValidate(url, zod(revisionSchema));
 	// We need to check if the url search params contains `revision`
 	// because the .valid property will be false if it doesn't,
 	// but that's find since we'll just use the "current" revision
 	if (revision.valid && url.searchParams.get('revision')) {
-		staff = await getStaffHistOneEdit({
-			id: staffId,
+		publisher = await getPublisherHistEdit({
+			id: publisherId,
 			revision: revision.data.revision
 		}).executeTakeFirst();
 	} else {
-		staff = await getStaffOneEdit(staffId).executeTakeFirst();
+		publisher = await getPublisherEdit(publisherId).executeTakeFirst();
 	}
 
-	if (!staff) {
+	if (!publisher) {
 		error(404);
 	}
 
-	const visibilityStatus = getCurrentVisibilityStatus(staff);
+	const visibilityStatus = getCurrentVisibilityStatus(publisher);
 
 	if (visibilityStatus.locked || visibilityStatus.hidden) {
 		if (!hasVisibilityPerms(locals.user)) {
@@ -49,14 +49,18 @@ export const load = async ({ params, locals, url }) => {
 
 	const prefilledComment =
 		revision.valid && url.searchParams.get('revision')
-			? revertedRevisionMarkdown('st', 'staff', staffId, revision.data.revision)
+			? revertedRevisionMarkdown('p', 'publisher', publisherId, revision.data.revision)
 			: undefined;
 
-	const form = await superValidate({ ...staff, comment: prefilledComment }, zod(staffSchema), {
-		errors: false
-	});
+	const form = await superValidate(
+		{ ...publisher, comment: prefilledComment },
+		zod(publisherSchema),
+		{
+			errors: false
+		}
+	);
 
-	return { staff, form };
+	return { publisher, form };
 };
 
 export const actions = {
@@ -64,12 +68,10 @@ export const actions = {
 		const id = Number(params.id);
 		if (!locals.user) return fail(401);
 
-		const form = await superValidate(request, zod(staffSchema));
+		const form = await superValidate(request, zod(publisherSchema));
 		if (!hasEditPerms(locals.user)) {
 			return fail(403, { form });
 		}
-
-		console.dir(form, { depth: null });
 
 		if (!form.valid) {
 			return fail(400, { form });
@@ -77,28 +79,38 @@ export const actions = {
 
 		let success = false;
 		try {
-			await editStaff({ staff: form.data, id }, locals.user);
+			await editPublisher({ publisher: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
+			console.log(e);
 			if (e instanceof DatabaseError) {
-				//
+				if (
+					e.code === '23505' &&
+					e.table === 'publisher_relation' &&
+					e.constraint === 'publisher_relation_pkey'
+				) {
+					return setError(
+						form,
+						'child_publishers._errors',
+						'Duplicate publishers in form. Remove duplicates and try again'
+					);
+				}
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
 			} else if (e instanceof HasRelationsError) {
 				return setError(
 					form,
 					'hidden',
-					'Cannot hide staff. Remove any relations to the staff and try again.'
+					'Cannot hide publisher. Remove any relations to the publisher and try again.'
 				);
 			}
-			console.log(e);
 		}
 
 		if (success) {
 			flashRedirect(
 				303,
-				`/staff/${id}`,
-				{ type: 'success', message: 'Successfully edited staff!' },
+				`/publisher/${id}`,
+				{ type: 'success', message: 'Successfully edited publisher!' },
 				cookies
 			);
 		}

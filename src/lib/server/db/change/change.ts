@@ -1,6 +1,5 @@
 import type { DB, DbItem } from '$lib/db/dbTypes';
 import type { InferResult, Transaction } from 'kysely';
-import type { User } from 'lucia';
 import { db } from '../db';
 
 export type Change = InferResult<ReturnType<typeof getChanges>>[number];
@@ -27,7 +26,7 @@ export async function addChange(
 		locked: boolean;
 		hidden: boolean;
 	},
-	user: User
+	user: { id: string }
 ) {
 	const revision = await trx
 		.selectFrom('change')

@@ -7,6 +7,7 @@
 	import { fly } from 'svelte/transition';
 	import Icon from '../icon/Icon.svelte';
 
+	export let title: string;
 	export let handleAdd: (item: T) => void;
 	export let search: (input: string) => Promise<T[]>;
 
@@ -57,12 +58,12 @@
 <div class="flex flex-col gap-1">
 	<!-- svelte-ignore a11y-label-has-associated-control - $label contains the 'for' attribute -->
 	<label use:melt={$label}>
-		<span>Add staff</span>
+		<span>{title}</span>
 	</label>
 
 	<div class="relative w-fit">
 		<div class="absolute left-2 top-1/2 -translate-y-1/2"><Icon name="search" /></div>
-		<input use:melt={$input} class="input w-full !pl-10 !pr-8" placeholder="Staff name" />
+		<input use:melt={$input} class="input w-full !pl-10 !pr-8" placeholder="Name" />
 		<div class="absolute right-2 top-1/2 z-10 -translate-y-1/2 text-magnum-900">
 			{#if $open && $inputValue.length > 0}
 				<Icon name="chevronUp" />
