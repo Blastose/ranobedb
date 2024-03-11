@@ -34,9 +34,9 @@
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if publisher}
-		<h1 class="font-bold text-xl">Editing {publisher.name ?? 'staff'}</h1>
+		<h1 class="font-bold text-xl">Editing {publisher.name ?? 'publisher'}</h1>
 	{:else}
-		<h1 class="font-bold text-xl">Add staff</h1>
+		<h1 class="font-bold text-xl">Add publisher</h1>
 	{/if}
 
 	{#if user && hasVisibilityPerms(user)}
