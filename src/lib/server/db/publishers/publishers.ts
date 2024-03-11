@@ -1,6 +1,7 @@
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { db } from '$lib/server/db/db';
 import type { InferResult } from 'kysely';
+import { withBookTitleCte } from '../books/books';
 
 export const getPublishers = db
 	.selectFrom('publisher')
@@ -24,6 +25,7 @@ export const getPublishers = db
 
 export const getPublisher = (id: number) =>
 	db
+		.with('cte_book', withBookTitleCte())
 		.selectFrom('publisher')
 		.selectAll('publisher')
 		.select((eb) => [
@@ -37,6 +39,15 @@ export const getPublisher = (id: number) =>
 						'release_publisher.publisher_type',
 						'release.id',
 						'release.release_date'
+					])
+					.select((eb) => [
+						jsonArrayFrom(
+							eb
+								.selectFrom('cte_book')
+								.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
+								.whereRef('release_book.release_id', '=', 'release.id')
+								.select(['cte_book.id', 'cte_book.title'])
+						).as('book_releases')
 					])
 					.orderBy('release.release_date desc')
 					.orderBy('release.title')
@@ -62,6 +73,7 @@ export const getPublisher = (id: number) =>
 
 export const getPublisherHist = (options: { id: number; revision: number }) =>
 	db
+		.with('cte_book', withBookTitleCte())
 		.selectFrom('publisher_hist')
 		.innerJoin('change', 'change.id', 'publisher_hist.change_id')
 		.select([
@@ -82,6 +94,15 @@ export const getPublisherHist = (options: { id: number; revision: number }) =>
 						'release_publisher.publisher_type',
 						'release.id',
 						'release.release_date'
+					])
+					.select((eb) => [
+						jsonArrayFrom(
+							eb
+								.selectFrom('cte_book')
+								.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
+								.whereRef('release_book.release_id', '=', 'release.id')
+								.select(['cte_book.id', 'cte_book.title'])
+						).as('book_releases')
 					])
 					.orderBy('release.release_date desc')
 					.orderBy('release.title')

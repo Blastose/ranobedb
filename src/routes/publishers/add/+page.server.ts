@@ -46,7 +46,7 @@ export const actions = {
 					return setError(
 						form,
 						'child_publishers._errors',
-						'Duplicate children publishers in form. Remove duplicates and try again'
+						'Duplicate publishers in form. Remove duplicates and try again'
 					);
 				}
 			}

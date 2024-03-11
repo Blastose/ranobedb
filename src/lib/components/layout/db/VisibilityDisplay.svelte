@@ -1,5 +1,5 @@
 <script lang="ts" context="module">
-	type Rec = { hidden: boolean; locked: boolean; id: number };
+	export type Rec = { hidden: boolean; locked: boolean; id: number };
 </script>
 
 <script lang="ts" generics="T extends Rec">

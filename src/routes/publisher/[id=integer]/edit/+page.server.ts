@@ -82,6 +82,7 @@ export const actions = {
 			await editPublisher({ publisher: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
+			console.log(e);
 			if (e instanceof DatabaseError) {
 				if (
 					e.code === '23505' &&
@@ -91,7 +92,7 @@ export const actions = {
 					return setError(
 						form,
 						'child_publishers._errors',
-						'Duplicate children publishers in form. Remove duplicates and try again'
+						'Duplicate publishers in form. Remove duplicates and try again'
 					);
 				}
 			} else if (e instanceof ChangePermissionError) {
@@ -103,7 +104,6 @@ export const actions = {
 					'Cannot hide publisher. Remove any relations to the publisher and try again.'
 				);
 			}
-			console.log(e);
 		}
 
 		if (success) {

@@ -12,5 +12,5 @@
 <PageTitle title={publisher.name} />
 
 <DbRouteShell theme={$themeStore ?? data.theme} imageBgStyle={null}>
-	<Publisher {publisher} />
+	<Publisher {publisher} isRevision={false} user={data.user} />
 </DbRouteShell>
