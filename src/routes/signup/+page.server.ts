@@ -50,7 +50,11 @@ export const actions = {
 				if (error.code === '23505' && error.detail?.includes('Key (email)')) {
 					return setError(form, 'email', 'Email is already in use. Please use a different email');
 				}
-				if (error.code === '23505' && error.detail?.includes('Key (username)')) {
+				if (
+					error.code === '23505' &&
+					(error.detail?.includes('Key (username)') ||
+						error.detail?.includes('Key (username_lowercase)'))
+				) {
 					return setError(
 						form,
 						'username',

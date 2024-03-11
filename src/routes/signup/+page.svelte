@@ -38,19 +38,8 @@
 
 		<svelte:fragment slot="bottom">
 			<p>
-				Already have an account? <a href="/login" class="login-text">Log in</a> now!
+				Already have an account? <a href="/login" class="link">Log in</a> now!
 			</p>
 		</svelte:fragment>
 	</AuthFormShell>
 </main>
-
-<style>
-	.login-text {
-		color: var(--primary-600);
-		text-decoration: underline;
-	}
-
-	:global(.dark) .login-text {
-		color: var(--primary-400);
-	}
-</style>

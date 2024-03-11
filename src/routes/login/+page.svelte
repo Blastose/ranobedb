@@ -32,16 +32,16 @@
 		<svelte:fragment slot="form">
 			<TextField
 				{form}
-				field={'email'}
-				placeholder="Email"
-				label="Email"
+				field={'usernameemail'}
+				placeholder=""
+				label="Username or email"
 				showRequiredSymbolIfRequired={false}
 			/>
 			<TextField
 				{form}
 				field={'password'}
 				type="password"
-				placeholder="Password"
+				placeholder=""
 				label="Password"
 				showRequiredSymbolIfRequired={false}
 			/>
@@ -49,19 +49,8 @@
 
 		<svelte:fragment slot="bottom">
 			<p>
-				Don't have an account? <a href="/signup" class="login-text">Sign up</a> now!
+				Don't have an account? <a href="/signup" class="link">Sign up</a> now!
 			</p>
 		</svelte:fragment>
 	</AuthFormShell>
 </main>
-
-<style>
-	.login-text {
-		color: var(--primary-600);
-		text-decoration: underline;
-	}
-
-	:global(.dark) .login-text {
-		color: var(--primary-400);
-	}
-</style>

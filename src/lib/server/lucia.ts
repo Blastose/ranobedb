@@ -36,6 +36,7 @@ export async function createUser(user: {
 			.insertInto('auth_user')
 			.values({
 				username: user.username,
+				username_lowercase: user.username.toLowerCase(),
 				id: user.id
 			})
 			.execute();
@@ -52,13 +53,30 @@ export async function createUser(user: {
 	});
 }
 
-export async function getUserByEmail(email: string) {
+async function getUserByEmail(email: string) {
 	return await db
 		.selectFrom('auth_user')
 		.innerJoin('auth_user_credentials', 'auth_user.id', 'auth_user_credentials.user_id')
 		.where('auth_user_credentials.email', '=', email)
 		.selectAll()
 		.executeTakeFirst();
+}
+
+async function getUserByUsername(username: string) {
+	return await db
+		.selectFrom('auth_user')
+		.innerJoin('auth_user_credentials', 'auth_user.id', 'auth_user_credentials.user_id')
+		.where('auth_user.username_lowercase', '=', username.toLowerCase())
+		.selectAll()
+		.executeTakeFirst();
+}
+
+export async function getUser(usernameemail: string) {
+	if (usernameemail.includes('@')) {
+		return await getUserByEmail(usernameemail);
+	} else {
+		return await getUserByUsername(usernameemail);
+	}
 }
 
 declare module 'lucia' {
@@ -70,6 +88,7 @@ declare module 'lucia' {
 
 interface DatabaseUserAttributes {
 	username: string;
+	username_lowercase: string;
 	id_numeric: number;
 	role: UserRole;
 }

@@ -23,6 +23,7 @@ test.describe('auth', () => {
 			.insertInto('auth_user')
 			.values({
 				username: 'username',
+				username_lowercase: 'username',
 				id: userId
 			})
 			.returning('id')
@@ -88,7 +89,7 @@ test.describe('auth', () => {
 
 	test('user can login and logout', async ({ page }) => {
 		await page.goto('/login');
-		await page.getByLabel('email').fill('fake@email.com');
+		await page.getByLabel('username or email').fill('fake@email.com');
 		await page.getByLabel('password').fill('password');
 		await page.getByRole('button', { name: 'Log In' }).click();
 
@@ -96,6 +97,14 @@ test.describe('auth', () => {
 
 		await page.getByRole('button', { name: 'Sign Out' }).click();
 		await expect(page).toHaveURL('/login');
+	});
+
+	test('user can login with username', async ({ page }) => {
+		await page.goto('/login');
+		await page.getByLabel('username or email').fill('username');
+		await page.getByLabel('password').fill('password');
+		await page.getByRole('button', { name: 'Log In' }).click();
+		await expect(page).toHaveURL('/');
 	});
 
 	test('user can create an account', async ({ page }) => {
@@ -110,7 +119,7 @@ test.describe('auth', () => {
 
 	test('user cannot login with invalid credentials', async ({ page }) => {
 		await page.goto('/login');
-		await page.getByLabel('email').fill('fake@fake.ca');
+		await page.getByLabel('username or email').fill('fake@fake.ca');
 		await page.getByLabel('password').fill('password');
 		await page.getByRole('button', { name: 'Log In' }).click();
 
@@ -144,6 +153,20 @@ test.describe('auth', () => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill('not@email.com');
 		await page.getByLabel('username').fill('username');
+		await page.getByLabel('password').fill('aejdjsldjlsee');
+		await page.getByRole('button', { name: 'Sign Up' }).click();
+
+		await expect(
+			page.getByText('Username is already in use. Please use a different username')
+		).toBeVisible();
+	});
+
+	test('user cannot create an account with same username but in different case', async ({
+		page
+	}) => {
+		await page.goto('/signup');
+		await page.getByLabel('email').fill('not@email.com');
+		await page.getByLabel('username').fill('UsErNaMe');
 		await page.getByLabel('password').fill('aejdjsldjlsee');
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 

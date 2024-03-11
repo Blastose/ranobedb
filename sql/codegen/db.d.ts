@@ -36,6 +36,7 @@ export interface AuthUser {
   joined: Generated<Timestamp>;
   role: Generated<UserRole>;
   username: string;
+  username_lowercase: string;
 }
 
 export interface AuthUserCredentials {
