@@ -48,18 +48,16 @@ export const actions = {
 		} catch (error) {
 			if (error instanceof DatabaseError) {
 				if (error.code === '23505' && error.detail?.includes('Key (email)')) {
-					return setError(form, 'email', 'Email is already in use. Please use a different email');
+					setError(form, 'email', 'Email is already in use. Please use a different email');
+					return message(form, { type: 'error', text: 'Invalid form entries' }, { status: 400 });
 				}
 				if (
 					error.code === '23505' &&
 					(error.detail?.includes('Key (username)') ||
 						error.detail?.includes('Key (username_lowercase)'))
 				) {
-					return setError(
-						form,
-						'username',
-						'Username is already in use. Please use a different username'
-					);
+					setError(form, 'username', 'Username is already in use. Please use a different username');
+					return message(form, { type: 'error', text: 'Invalid form entries' }, { status: 400 });
 				}
 			}
 			console.error(error);

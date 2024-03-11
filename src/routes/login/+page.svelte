@@ -3,12 +3,16 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import AuthFormShell from '$lib/components/form/AuthFormShell.svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import Alert from '$lib/components/layout/Alert.svelte';
+	import { addToast } from '$lib/components/toast/Toaster.svelte';
 
 	export let data;
 
 	$: form = superForm(data.form);
 	$: ({ enhance, message, delayed, submitting } = form);
+
+	$: if (!$delayed && $message) {
+		addToast({ data: { title: $message.text, type: $message.type } });
+	}
 </script>
 
 <PageTitle title="Log in" />
@@ -21,14 +25,6 @@
 		submitText="Log in"
 		{enhance}
 	>
-		<svelte:fragment slot="alert">
-			{#if !$delayed && $message}
-				<Alert type={$message.type}>
-					<p>{$message.text}</p>
-				</Alert>
-			{/if}
-		</svelte:fragment>
-
 		<svelte:fragment slot="form">
 			<TextField
 				{form}
