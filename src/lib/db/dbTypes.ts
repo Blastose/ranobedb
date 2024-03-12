@@ -134,11 +134,17 @@ export const publisherTypeReverseMap: Record<PublisherRelType, PublisherRelType>
 
 export type PublisherRelType = (typeof publisherRelTypeArray)[number];
 
-export type ReleaseFormat = 'audio' | 'digital' | 'print';
+export const releaseFormatArray = ['audio', 'digital', 'print'] as const;
 
-export type ReleasePublisherType = 'label' | 'publisher';
+export type ReleaseFormat = (typeof releaseFormatArray)[number];
 
-export type ReleaseType = 'complete' | 'partial';
+export const releasePublisherTypeArray = ['label', 'publisher'] as const;
+
+export type ReleasePublisherType = (typeof releasePublisherTypeArray)[number];
+
+export const releaseTypeArray = ['complete', 'partial'] as const;
+
+export type ReleaseType = (typeof releaseTypeArray)[number];
 
 export type SeriesStatus = 'cancelled' | 'completed' | 'ongoing' | 'unknown';
 
@@ -268,9 +274,11 @@ export interface PublisherRelationHist {
 export interface Release {
 	description: string;
 	format: ReleaseFormat;
+	hidden: boolean;
 	id: Generated<number>;
 	isbn13: string | null;
 	lang: Language;
+	locked: boolean;
 	pages: number | null;
 	release_date: number;
 	romaji: string | null;
@@ -283,10 +291,34 @@ export interface ReleaseBook {
 	rtype: ReleaseType;
 }
 
+export interface ReleaseBookHist {
+	book_id: number;
+	change_id: number;
+	rtype: ReleaseType;
+}
+
+export interface ReleaseHist {
+	change_id: number;
+	description: string;
+	format: ReleaseFormat;
+	isbn13: string | null;
+	lang: Language;
+	pages: number | null;
+	release_date: number;
+	romaji: string | null;
+	title: string;
+}
+
 export interface ReleasePublisher {
 	publisher_id: number;
 	publisher_type: ReleasePublisherType;
 	release_id: number;
+}
+
+export interface ReleasePublisherHist {
+	change_id: number;
+	publisher_id: number;
+	publisher_type: ReleasePublisherType;
 }
 
 export interface Series {
@@ -380,7 +412,10 @@ export interface DB {
 	publisher_relation_hist: PublisherRelationHist;
 	release: Release;
 	release_book: ReleaseBook;
+	release_book_hist: ReleaseBookHist;
+	release_hist: ReleaseHist;
 	release_publisher: ReleasePublisher;
+	release_publisher_hist: ReleasePublisherHist;
 	series: Series;
 	series_book: SeriesBook;
 	series_title: SeriesTitle;

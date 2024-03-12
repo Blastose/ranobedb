@@ -1,4 +1,11 @@
-import { languagesArray, publisherRelTypeArray, staffRolesArray } from '$lib/db/dbTypes';
+import {
+	languagesArray,
+	publisherRelTypeArray,
+	releaseFormatArray,
+	releasePublisherTypeArray,
+	releaseTypeArray,
+	staffRolesArray
+} from '$lib/db/dbTypes';
 import { z } from 'zod';
 
 export const defaultUserListLabelsArray = [
@@ -165,6 +172,38 @@ export const publisherSchema = z.object({
 			})
 		)
 		.max(50),
+
+	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
+});
+
+export const releaseSchema = z.object({
+	hidden: z.boolean(),
+	locked: z.boolean(),
+
+	title: z.string().max(2000),
+	romaji: z.string().max(2000).nullish(),
+	description: z.string().max(2000).nullish(),
+
+	format: z.enum(releaseFormatArray),
+	lang: z.enum(languagesArray),
+	release_date: z.number().min(10000101).max(99991212),
+	pages: z.number().min(1).max(200000).nullish(),
+	isbn13: z.string().min(13).max(13).nullish(),
+
+	books: z.array(
+		z.object({
+			id: z.number().max(200000),
+			title: z.string().nullish(),
+			rtype: z.enum(releaseTypeArray)
+		})
+	),
+	publishers: z.array(
+		z.object({
+			id: z.number().max(200000),
+			name: z.string(),
+			publisher_type: z.enum(releasePublisherTypeArray)
+		})
+	),
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
 });
