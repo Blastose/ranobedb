@@ -12,6 +12,7 @@
 	export let selectedValue: string;
 	export let dropdownOptions: ReadonlyArray<DropdownOption> | Array<DropdownOption>;
 	export let showRequiredSymbolIfRequired: boolean = true;
+	export let resetPadding: boolean = false;
 
 	const { value, errors, constraints } = formFieldProxy(form, field);
 </script>
@@ -27,6 +28,7 @@
 		<select
 			name={field}
 			class="input"
+			class:reset-padding={resetPadding}
 			class:error={$errors}
 			aria-invalid={$errors ? 'true' : undefined}
 			bind:value={$value}

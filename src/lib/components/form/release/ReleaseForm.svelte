@@ -12,6 +12,8 @@
 	import ReleasePublisherInput from './ReleasePublisherInput.svelte';
 	import ReleaseBookInput from './ReleaseBookInput.svelte';
 	import ReleaseDateInput from './ReleaseDateInput.svelte';
+	import SelectField from '../SelectField.svelte';
+	import { languageNames, languagesArray, releaseFormatArray } from '$lib/db/dbTypes';
 
 	export let release: ReleaseEdit | undefined;
 	export let releaseForm: SuperValidated<Infer<typeof releaseSchema>>;
@@ -53,6 +55,28 @@
 		label="Romanization"
 		placeholder="Romanization"
 	/>
+
+	<div class="flex gap-4">
+		<SelectField
+			form={sForm}
+			field="lang"
+			dropdownOptions={languagesArray.map((item) => ({
+				display: languageNames[item],
+				value: item
+			}))}
+			selectedValue={release?.lang ?? 'ja'}
+			label="Language"
+			resetPadding={true}
+		/>
+		<SelectField
+			form={sForm}
+			field="format"
+			dropdownOptions={releaseFormatArray.map((item) => ({ display: item, value: item }))}
+			selectedValue={release?.format ?? 'digital'}
+			label="Format"
+			resetPadding={true}
+		/>
+	</div>
 
 	<div class="flex gap-4">
 		<TextField form={sForm} type="text" field="isbn13" label="ISBN 13" placeholder="ISBN 13" />

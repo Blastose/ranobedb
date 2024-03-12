@@ -107,7 +107,7 @@ export const actions = {
 				return setError(
 					form,
 					'hidden',
-					'Cannot hide publisher. Remove any relations to the publisher and try again.'
+					'Cannot hide release. Remove any relations to the release and try again.'
 				);
 			}
 		}
@@ -115,8 +115,8 @@ export const actions = {
 		if (success) {
 			flashRedirect(
 				303,
-				`/publisher/${id}`,
-				{ type: 'success', message: 'Successfully edited publisher!' },
+				`/release/${id}`,
+				{ type: 'success', message: 'Successfully edited release!' },
 				cookies
 			);
 		}
