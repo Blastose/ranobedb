@@ -47,7 +47,12 @@ export async function editRelease(
 
 		const userHasVisibilityPerms = hasVisibilityPerms(user);
 		const hidden = userHasVisibilityPerms ? data.release.hidden : currentRelease.hidden;
-		const locked = userHasVisibilityPerms ? data.release.locked : currentRelease.locked;
+		const locked = userHasVisibilityPerms
+			? data.release.hidden || data.release.locked
+			: currentRelease.locked;
+
+		console.log(locked);
+		console.log(data.release.hidden ?? data.release.locked);
 
 		if (currentRelease.hidden || currentRelease.locked) {
 			if (!userHasVisibilityPerms) {
@@ -206,7 +211,7 @@ export async function addRelease(data: { release: Infer<typeof releaseSchema> },
 	return await db.transaction().execute(async (trx) => {
 		const canChangeVisibility = permissions[user.role].includes('visibility');
 		const hidden = canChangeVisibility ? data.release.hidden : false;
-		const locked = canChangeVisibility ? data.release.locked : false;
+		const locked = canChangeVisibility ? data.release.hidden || data.release.locked : false;
 
 		const insertedRelease = await trx
 			.insertInto('release')

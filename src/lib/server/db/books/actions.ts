@@ -45,7 +45,9 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 
 		const userHasVisibilityPerms = hasVisibilityPerms(user);
 		const hidden = userHasVisibilityPerms ? data.book.hidden : currentBook.hidden;
-		const locked = userHasVisibilityPerms ? data.book.locked : currentBook.locked;
+		const locked = userHasVisibilityPerms
+			? data.book.hidden || data.book.locked
+			: currentBook.locked;
 
 		if (currentBook.hidden || currentBook.locked) {
 			if (!userHasVisibilityPerms) {
@@ -152,7 +154,7 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 	return await db.transaction().execute(async (trx) => {
 		const canChangeVisibility = permissions[user.role].includes('visibility');
 		const hidden = canChangeVisibility ? data.book.hidden : false;
-		const locked = canChangeVisibility ? data.book.locked : false;
+		const locked = canChangeVisibility ? data.book.hidden || data.book.locked : false;
 
 		const insertedBook = await trx
 			.insertInto('book')
