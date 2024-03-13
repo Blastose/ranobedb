@@ -70,6 +70,7 @@ export const actions = {
 		}
 
 		if (!form.valid) {
+			console.log(form.errors);
 			return fail(400, { form });
 		}
 

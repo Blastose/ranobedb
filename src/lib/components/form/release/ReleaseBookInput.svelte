@@ -31,7 +31,7 @@
 
 <section class="flex flex-col gap-2">
 	<h2 class="text-lg font-bold">Book Relations</h2>
-	<div class="flex gap-4 flex-col">
+	<div class="flex gap-2 flex-col">
 		{#each $values as book, i}
 			<div class="flex flex-wrap gap-2 items-center">
 				<a class="link w-fit" target="_blank" rel="noreferrer" href="/publisher/{book.id}"

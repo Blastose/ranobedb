@@ -70,17 +70,21 @@ export const getReleaseHist = (options: { id: number; revision: number }) => {
 			jsonArrayFrom(
 				eb
 					.selectFrom('publisher')
-					.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
-					.where('release_publisher.release_id', '=', options.id)
+					.innerJoin(
+						'release_publisher_hist',
+						'release_publisher_hist.publisher_id',
+						'publisher.id'
+					)
+					.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
 					.select(['publisher.name', 'publisher_type', 'publisher.id'])
 			).as('publishers'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('cte_book')
-					.innerJoin('release_book', (join) =>
+					.innerJoin('release_book_hist', (join) =>
 						join
-							.onRef('release_book.book_id', '=', 'cte_book.id')
-							.on('release_book.release_id', '=', options.id)
+							.onRef('release_book_hist.book_id', '=', 'cte_book.id')
+							.onRef('release_book_hist.change_id', '=', 'release_hist.change_id')
 					)
 					.select([
 						'cte_book.id',
@@ -163,17 +167,21 @@ export function getReleaseHistEdit(params: { id: number; revision: number }) {
 			jsonArrayFrom(
 				eb
 					.selectFrom('publisher')
-					.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
-					.where('release_publisher.release_id', '=', params.id)
+					.innerJoin(
+						'release_publisher_hist',
+						'release_publisher_hist.publisher_id',
+						'publisher.id'
+					)
+					.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
 					.select(['publisher.name', 'publisher_type', 'publisher.id'])
 			).as('publishers'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('cte_book')
-					.innerJoin('release_book', (join) =>
+					.innerJoin('release_book_hist', (join) =>
 						join
-							.onRef('release_book.book_id', '=', 'cte_book.id')
-							.on('release_book.release_id', '=', params.id)
+							.onRef('release_book_hist.book_id', '=', 'cte_book.id')
+							.onRef('release_book_hist.change_id', '=', 'release_hist.change_id')
 					)
 					.select([
 						'cte_book.id',
@@ -181,7 +189,7 @@ export function getReleaseHistEdit(params: { id: number; revision: number }) {
 						'cte_book.title_orig',
 						'cte_book.romaji',
 						'cte_book.romaji_orig',
-						'release_book.rtype'
+						'release_book_hist.rtype'
 					])
 			).as('books')
 		])

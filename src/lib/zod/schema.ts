@@ -186,7 +186,7 @@ export const releaseSchema = z.object({
 
 	format: z.enum(releaseFormatArray),
 	lang: z.enum(languagesArray),
-	release_date: z.number().min(10000101).max(99991212),
+	release_date: z.number().min(10000101).max(99999999),
 	pages: z.number().min(1).max(200000).nullish(),
 	isbn13: z.string().min(13).max(13).nullish(),
 
