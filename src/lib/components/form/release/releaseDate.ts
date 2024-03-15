@@ -54,4 +54,28 @@ export class DateNumber {
 		this.date = year * 10000 + month * 100 + newDay;
 		return this.date;
 	}
+
+	getDateFormatted() {
+		const { year, month, day } = this.extractYearMonthDay();
+		if (year === 9999) {
+			return 'TBA';
+		}
+		if (month === 99) {
+			return `${year}`;
+		}
+		let monthFormatted: string | number = month;
+		if (month < 10) {
+			monthFormatted = `0${month}`;
+		}
+		let dayFormatted: string | number = day;
+		if (day < 10) {
+			dayFormatted = `0${day}`;
+		}
+
+		if (day === 99) {
+			return `${year}-${monthFormatted}`;
+		}
+
+		return `${year}-${monthFormatted}-${dayFormatted}`;
+	}
 }

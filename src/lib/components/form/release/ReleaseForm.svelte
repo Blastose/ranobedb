@@ -95,9 +95,9 @@
 		form={sForm}
 		type="textarea"
 		field="description"
-		label="Description"
+		label="Note"
 		textareaRows={4}
-		placeholder="Description"
+		placeholder="Note"
 	/>
 
 	<Hr />
