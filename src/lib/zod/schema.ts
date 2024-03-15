@@ -1,3 +1,4 @@
+import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
 	languagesArray,
 	publisherRelTypeArray,
@@ -7,6 +8,9 @@ import {
 	staffRolesArray
 } from '$lib/db/dbTypes';
 import { z } from 'zod';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 
 export const defaultUserListLabelsArray = [
 	'Reading',
@@ -186,7 +190,26 @@ export const releaseSchema = z.object({
 
 	format: z.enum(releaseFormatArray),
 	lang: z.enum(languagesArray),
-	release_date: z.number().min(10000101).max(99999999),
+	release_date: z
+		.number()
+		.min(10000101)
+		.max(99999999)
+		.refine((val) => {
+			const dateNumber = new DateNumber(val);
+			if (dateNumber.isFullDate()) {
+				return dayjs(dateNumber.getDateFormatted(), 'YYYY-MM-DD', true).isValid();
+			}
+
+			const { month, day } = dateNumber.extractYearMonthDay();
+			if (month > 12 && month !== 99) {
+				return false;
+			}
+			if (day > 31 && day !== 99) {
+				return false;
+			}
+
+			return true;
+		}, 'Release date must have correct format.'),
 	pages: z.number().min(1).max(200000).nullish(),
 	isbn13: z.string().min(13).max(13).nullish(),
 

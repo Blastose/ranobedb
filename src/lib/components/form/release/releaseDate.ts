@@ -21,6 +21,10 @@ export class DateNumber {
 		};
 	}
 
+	isFullDate() {
+		return this.getDateFormatted().length === 10;
+	}
+
 	getYear() {
 		return Math.floor(this.date / 10000);
 	}

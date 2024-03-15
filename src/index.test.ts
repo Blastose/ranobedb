@@ -51,4 +51,12 @@ describe.only('date number', () => {
 		const dateNumber6 = new DateNumber(20231203);
 		expect(dateNumber6.getDateFormatted()).toBe('2023-12-03');
 	});
+	it('is a full date', () => {
+		const dateNumber1 = new DateNumber(20231212);
+		expect(dateNumber1.isFullDate()).toBe(true);
+		const dateNumber2 = new DateNumber(20239999);
+		expect(dateNumber2.isFullDate()).toBe(false);
+		const dateNumber3 = new DateNumber(99999999);
+		expect(dateNumber3.isFullDate()).toBe(false);
+	});
 });
