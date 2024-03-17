@@ -1,5 +1,16 @@
-import { languagesArray, publisherRelTypeArray, staffRolesArray } from '$lib/db/dbTypes';
+import { DateNumber } from '$lib/components/form/release/releaseDate';
+import {
+	languagesArray,
+	publisherRelTypeArray,
+	releaseFormatArray,
+	releasePublisherTypeArray,
+	releaseTypeArray,
+	staffRolesArray
+} from '$lib/db/dbTypes';
 import { z } from 'zod';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+dayjs.extend(customParseFormat);
 
 export const defaultUserListLabelsArray = [
 	'Reading',
@@ -165,6 +176,57 @@ export const publisherSchema = z.object({
 			})
 		)
 		.max(50),
+
+	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
+});
+
+export const releaseSchema = z.object({
+	hidden: z.boolean(),
+	locked: z.boolean(),
+
+	title: z.string().max(2000),
+	romaji: z.string().max(2000).nullish(),
+	description: z.string().max(2000).nullish(),
+
+	format: z.enum(releaseFormatArray),
+	lang: z.enum(languagesArray),
+	release_date: z
+		.number()
+		.min(10000101)
+		.max(99999999)
+		.refine((val) => {
+			const dateNumber = new DateNumber(val);
+			if (dateNumber.isFullDate()) {
+				return dayjs(dateNumber.getDateFormatted(), 'YYYY-MM-DD', true).isValid();
+			}
+
+			const { month, day } = dateNumber.extractYearMonthDay();
+			if (month > 12 && month !== 99) {
+				return false;
+			}
+			if (day > 31 && day !== 99) {
+				return false;
+			}
+
+			return true;
+		}, 'Release date must have correct format.'),
+	pages: z.number().min(1).max(200000).nullish(),
+	isbn13: z.string().min(13).max(13).nullish(),
+
+	books: z.array(
+		z.object({
+			id: z.number().max(200000),
+			title: z.string().nullish(),
+			rtype: z.enum(releaseTypeArray)
+		})
+	),
+	publishers: z.array(
+		z.object({
+			id: z.number().max(200000),
+			name: z.string(),
+			publisher_type: z.enum(releasePublisherTypeArray)
+		})
+	),
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
 });

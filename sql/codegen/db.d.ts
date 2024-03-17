@@ -142,9 +142,11 @@ export interface PublisherRelationHist {
 export interface Release {
   description: string;
   format: ReleaseFormat;
+  hidden: boolean;
   id: Generated<number>;
   isbn13: string | null;
   lang: Language;
+  locked: boolean;
   pages: number | null;
   release_date: number;
   romaji: string | null;
@@ -157,10 +159,34 @@ export interface ReleaseBook {
   rtype: ReleaseType;
 }
 
+export interface ReleaseBookHist {
+  book_id: number;
+  change_id: number;
+  rtype: ReleaseType;
+}
+
+export interface ReleaseHist {
+  change_id: number;
+  description: string;
+  format: ReleaseFormat;
+  isbn13: string | null;
+  lang: Language;
+  pages: number | null;
+  release_date: number;
+  romaji: string | null;
+  title: string;
+}
+
 export interface ReleasePublisher {
   publisher_id: number;
   publisher_type: ReleasePublisherType;
   release_id: number;
+}
+
+export interface ReleasePublisherHist {
+  change_id: number;
+  publisher_id: number;
+  publisher_type: ReleasePublisherType;
 }
 
 export interface Series {
@@ -254,7 +280,10 @@ export interface DB {
   publisher_relation_hist: PublisherRelationHist;
   release: Release;
   release_book: ReleaseBook;
+  release_book_hist: ReleaseBookHist;
+  release_hist: ReleaseHist;
   release_publisher: ReleasePublisher;
+  release_publisher_hist: ReleasePublisherHist;
   series: Series;
   series_book: SeriesBook;
   series_title: SeriesTitle;

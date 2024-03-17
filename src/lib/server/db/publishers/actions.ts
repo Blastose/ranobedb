@@ -270,7 +270,9 @@ export async function editPublisher(
 
 		const userHasVisibilityPerms = hasVisibilityPerms(user);
 		const hidden = userHasVisibilityPerms ? data.publisher.hidden : currentPublisher.hidden;
-		const locked = userHasVisibilityPerms ? data.publisher.locked : currentPublisher.locked;
+		const locked = userHasVisibilityPerms
+			? data.publisher.hidden || data.publisher.locked
+			: currentPublisher.locked;
 
 		if (currentPublisher.hidden || currentPublisher.locked) {
 			if (!userHasVisibilityPerms) {
@@ -408,7 +410,7 @@ export async function addPublisher(data: { publisher: Infer<typeof publisherSche
 	return await db.transaction().execute(async (trx) => {
 		const canChangeVisibility = permissions[user.role].includes('visibility');
 		const hidden = canChangeVisibility ? data.publisher.hidden : false;
-		const locked = canChangeVisibility ? data.publisher.locked : false;
+		const locked = canChangeVisibility ? data.publisher.hidden || data.publisher.locked : false;
 
 		const insertedPublisher = await trx
 			.insertInto('publisher')

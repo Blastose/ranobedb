@@ -30,7 +30,9 @@ export async function editStaff(
 
 		const userHasVisibilityPerms = hasVisibilityPerms(user);
 		const hidden = userHasVisibilityPerms ? data.staff.hidden : currentStaff.hidden;
-		const locked = userHasVisibilityPerms ? data.staff.locked : currentStaff.locked;
+		const locked = userHasVisibilityPerms
+			? data.staff.hidden || data.staff.locked
+			: currentStaff.locked;
 
 		if (currentStaff.hidden || currentStaff.locked) {
 			if (!userHasVisibilityPerms) {
@@ -202,7 +204,7 @@ export async function addStaff(data: { staff: Infer<typeof staffSchema> }, user:
 	return await db.transaction().execute(async (trx) => {
 		const canChangeVisibility = permissions[user.role].includes('visibility');
 		const hidden = canChangeVisibility ? data.staff.hidden : false;
-		const locked = canChangeVisibility ? data.staff.locked : false;
+		const locked = canChangeVisibility ? data.staff.hidden || data.staff.locked : false;
 
 		const insertedStaff = await trx
 			.insertInto('staff')

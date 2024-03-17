@@ -9,7 +9,15 @@
 </script>
 
 <div class="flex flex-col gap-2">
-	<p class="font-bold text-lg">Revision {changes.change.revision} of {title}</p>
+	<div>
+		<p class="font-bold text-lg">Revision {changes.change.revision} of {title}</p>
+		<div class="flex gap-4">
+			<a class="link" href="{buildBaseLink()}/history">View history</a><a
+				class="link"
+				href={buildBaseLink()}>View current</a
+			>
+		</div>
+	</div>
 
 	{#if (changes.change.ihid || changes.change.ilock) && !changes.nextChange}
 		<div>

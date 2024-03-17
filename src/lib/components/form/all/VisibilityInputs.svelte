@@ -29,19 +29,35 @@
 		form,
 		'locked' as FormPathLeaves<T, boolean>
 	) satisfies FormFieldProxy<boolean>;
+
+	function handleLockChange(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+		if (!e.currentTarget.checked) {
+			$hiddenValue = false;
+		}
+	}
+
+	function handleHiddenChange(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
+		if (e.currentTarget.checked) {
+			$lockedValue = true;
+		}
+	}
 </script>
 
 <section>
 	<h2 class="font-bold text-lg">Visibility</h2>
 	<label class="flex gap-1"
-		><input type="checkbox" bind:checked={$hiddenValue} /><span>Hidden</span></label
+		><input type="checkbox" bind:checked={$hiddenValue} on:change={handleHiddenChange} /><span
+			>Hidden</span
+		></label
 	>
 	{#if $hiddenErrors}
 		<span class="error-text-color">{$hiddenErrors}</span>
 	{/if}
 
 	<label class="flex gap-1"
-		><input type="checkbox" bind:checked={$lockedValue} /><span>Locked</span></label
+		><input type="checkbox" bind:checked={$lockedValue} on:change={handleLockChange} /><span
+			>Locked</span
+		></label
 	>
 	{#if $lockedErrors}
 		<span class="error-text-color">{$lockedErrors}</span>
