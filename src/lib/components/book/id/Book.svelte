@@ -10,6 +10,7 @@
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
+	import { DateNumber } from '$lib/components/form/release/releaseDate';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -106,7 +107,9 @@
 				{#each book.releases as release}
 					<p>
 						<a href="/release/{release.id}"
-							>{release.title} - {release.lang} - {release.release_date}</a
+							>{release.title} - {release.lang} - {release.format} - {new DateNumber(
+								release.release_date
+							).getDateFormatted()}</a
 						>
 					</p>
 				{/each}

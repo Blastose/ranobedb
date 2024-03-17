@@ -34,12 +34,12 @@
 	<div class="flex gap-2 flex-col">
 		{#each $values as book, i}
 			<div class="flex flex-wrap gap-2 items-center">
-				<a class="link w-fit" target="_blank" rel="noreferrer" href="/publisher/{book.id}"
+				<a class="link w-fit" target="_blank" rel="noreferrer" href="/book/{book.id}"
 					><span class="text-sm">#{book.id}:</span> {book.title}</a
 				>
 				<label class="flex gap-2 items-center"
 					><span>Type: </span>
-					<select name="publisher-role" class="input reset-padding" bind:value={$values[i].rtype}>
+					<select name="book-type" class="input reset-padding" bind:value={$values[i].rtype}>
 						{#each releaseTypeArray as rel_type}
 							<option value={rel_type} selected={rel_type === $values[i].rtype}>{rel_type}</option>
 						{/each}
