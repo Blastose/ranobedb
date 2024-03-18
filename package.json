@@ -37,7 +37,7 @@
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.30.0",
-		"kysely": "^0.26.3",
+		"kysely": "^0.27.3",
 		"kysely-codegen": "^0.11.0",
 		"lucia": "^3.0.1",
 		"pg": "^8.11.3",

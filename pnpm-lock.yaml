@@ -65,11 +65,11 @@ devDependencies:
     specifier: ^2.30.0
     version: 2.35.0(eslint@8.53.0)(svelte@4.2.3)
   kysely:
-    specifier: ^0.26.3
-    version: 0.26.3
+    specifier: ^0.27.3
+    version: 0.27.3
   kysely-codegen:
     specifier: ^0.11.0
-    version: 0.11.0(kysely@0.26.3)(pg@8.11.3)
+    version: 0.11.0(kysely@0.27.3)(pg@8.11.3)
   lucia:
     specifier: ^3.0.1
     version: 3.0.1
@@ -2949,7 +2949,7 @@ packages:
     resolution: {integrity: sha512-Ne7wqW7/9Cz54PDt4I3tcV+hAyat8ypyOGzYRJQfdxnnjeWsTxt1cy8pjvvKeI5kfXuyvULyeeAvwvvtAX3ayQ==}
     dev: true
 
-  /kysely-codegen@0.11.0(kysely@0.26.3)(pg@8.11.3):
+  /kysely-codegen@0.11.0(kysely@0.27.3)(pg@8.11.3):
     resolution: {integrity: sha512-8aklzXygjANshk5BoGSQ0BWukKIoPL4/k1iFWyteGUQ/VtB1GlyrELBZv1GglydjLGECSSVDpsOgEXyWQmuksg==}
     hasBin: true
     peerDependencies:
@@ -2971,14 +2971,14 @@ packages:
       chalk: 4.1.2
       dotenv: 16.3.1
       git-diff: 2.0.6
-      kysely: 0.26.3
+      kysely: 0.27.3
       micromatch: 4.0.5
       minimist: 1.2.8
       pg: 8.11.3
     dev: true
 
-  /kysely@0.26.3:
-    resolution: {integrity: sha512-yWSgGi9bY13b/W06DD2OCDDHQmq1kwTGYlQ4wpZkMOJqMGCstVCFIvxCCVG4KfY1/3G0MhDAcZsip/Lw8/vJWw==}
+  /kysely@0.27.3:
+    resolution: {integrity: sha512-lG03Ru+XyOJFsjH3OMY6R/9U38IjDPfnOfDgO3ynhbDr+Dz8fak+X6L62vqu3iybQnj+lG84OttBuU9KY3L9kA==}
     engines: {node: '>=14.0.0'}
     dev: true
 

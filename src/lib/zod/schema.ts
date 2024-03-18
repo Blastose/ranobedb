@@ -5,6 +5,8 @@ import {
 	releaseFormatArray,
 	releasePublisherTypeArray,
 	releaseTypeArray,
+	seriesRelTypeArray,
+	seriesStatusArray,
 	staffRolesArray
 } from '$lib/db/dbTypes';
 import { z } from 'zod';
@@ -213,20 +215,72 @@ export const releaseSchema = z.object({
 	pages: z.number().min(1).max(200000).nullish(),
 	isbn13: z.string().min(13).max(13).nullish(),
 
-	books: z.array(
-		z.object({
-			id: z.number().max(200000),
-			title: z.string().nullish(),
-			rtype: z.enum(releaseTypeArray)
-		})
-	),
-	publishers: z.array(
-		z.object({
-			id: z.number().max(200000),
-			name: z.string(),
-			publisher_type: z.enum(releasePublisherTypeArray)
-		})
-	),
+	books: z
+		.array(
+			z.object({
+				id: z.number().max(200000),
+				title: z.string().nullish(),
+				rtype: z.enum(releaseTypeArray)
+			})
+		)
+		.max(50),
+	publishers: z
+		.array(
+			z.object({
+				id: z.number().max(200000),
+				name: z.string(),
+				publisher_type: z.enum(releasePublisherTypeArray)
+			})
+		)
+		.max(50),
+
+	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
+});
+
+export const seriesSchema = z.object({
+	hidden: z.boolean(),
+	locked: z.boolean(),
+
+	bookwalker_id: z.number().max(200000).nullish(),
+	publication_status: z.enum(seriesStatusArray),
+
+	books: z
+		.array(
+			z.object({
+				title: z.string().nullish(),
+				romaji: z.string().nullish(),
+				id: z.number().max(100000),
+				sort_order: z.number().max(2000)
+			})
+		)
+		.max(200),
+	series: z
+		.array(
+			z.object({
+				title: z.string().nullish(),
+				romaji: z.string().nullish(),
+				id: z.number().max(100000),
+				relation_type: z.enum(seriesRelTypeArray)
+			})
+		)
+		.max(200),
+	titles: z
+		.array(
+			z.object({
+				lang: z.enum(languagesArray),
+				official: z.boolean(),
+				title: z.string().min(1, { message: 'Title must be at least 1 character' }).max(2000),
+				romaji: z.string().max(2000).nullish()
+			})
+		)
+		.min(1)
+		.max(50)
+		.refine((titles) => {
+			if (!titles.some((v) => v.lang === 'ja')) {
+				return false;
+			}
+			return true;
+		}),
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000)
 });
