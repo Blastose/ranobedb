@@ -257,7 +257,7 @@ export const getSeriesOneEdit = (id: number) =>
 						'series_relation.relation_type'
 					])
 					.whereRef('series_relation.id_parent', '=', 'cte_series.id')
-			).as('series')
+			).as('child_series')
 		])
 		.where('cte_series.id', '=', id);
 
@@ -322,7 +322,7 @@ export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =
 						'series_relation_hist.relation_type'
 					])
 					.whereRef('series_relation_hist.change_id', '=', 'cte_series.id')
-			).as('series')
+			).as('child_series')
 		])
 		.where('change.item_id', '=', params.id)
 		.where('change.item_name', '=', 'series')

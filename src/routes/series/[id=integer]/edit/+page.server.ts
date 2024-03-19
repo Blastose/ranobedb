@@ -10,6 +10,7 @@ import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { getSeriesHistOneEdit, getSeriesOneEdit } from '$lib/server/db/series/series.js';
+import { editSeries } from '$lib/server/db/series/actions.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -76,11 +77,41 @@ export const actions = {
 
 		let success = false;
 		try {
-			// await editSeries({ series: form.data, id }, locals.user);
+			await editSeries({ series: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				//
+				if (
+					e.code === '23505' &&
+					e.table === 'series_book' &&
+					e.constraint === 'series_book_pkey'
+				) {
+					return setError(
+						form,
+						'books._errors',
+						'Duplicate books in form. Remove duplicates and try again'
+					);
+				} else if (
+					e.code === '23505' &&
+					e.table === 'series_title' &&
+					e.constraint === 'series_title_pkey'
+				) {
+					return setError(
+						form,
+						'titles._errors',
+						'Duplicate titles in form. Remove duplicates and try again'
+					);
+				} else if (
+					e.code === '23505' &&
+					e.table === 'series_relation' &&
+					e.constraint === 'series_relation_pkey'
+				) {
+					return setError(
+						form,
+						'child_series._errors',
+						'Duplicate series relations in form. Remove duplicates and try again'
+					);
+				}
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
 			} else if (e instanceof HasRelationsError) {

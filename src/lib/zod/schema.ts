@@ -241,7 +241,7 @@ export const seriesSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
 
-	bookwalker_id: z.number().max(200000).nullish(),
+	bookwalker_id: z.number().max(20000000).nullish(),
 	publication_status: z.enum(seriesStatusArray),
 
 	books: z
@@ -254,7 +254,7 @@ export const seriesSchema = z.object({
 			})
 		)
 		.max(200),
-	series: z
+	child_series: z
 		.array(
 			z.object({
 				title: z.string().nullish(),

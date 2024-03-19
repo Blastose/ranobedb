@@ -13,7 +13,7 @@
 	dbItem="series"
 	{isRevision}
 	name={series.title ?? ''}
-	subName={series.romaji}
+	subName={series.romaji || series.title_orig}
 	{user}
 	item={series}
 >
@@ -27,4 +27,6 @@
 			<p class="italic">None</p>
 		{/each}
 	</section>
+
+	<p>Status: {series.publication_status}</p>
 </DBItemShell>

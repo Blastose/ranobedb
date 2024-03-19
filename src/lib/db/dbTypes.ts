@@ -166,7 +166,7 @@ export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
 
 export type SeriesRelType = (typeof seriesRelTypeArray)[number];
 
-export const seriesStatusArray = ['cancelled', 'completed', 'ongoing', 'unknown'] as const;
+export const seriesStatusArray = ['ongoing', 'completed', 'cancelled', 'unknown'] as const;
 
 export type SeriesStatus = (typeof seriesStatusArray)[number];
 

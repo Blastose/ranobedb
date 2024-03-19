@@ -9,6 +9,11 @@
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import type { User } from 'lucia';
 	import type { SeriesEdit } from '$lib/server/db/series/series';
+	import SeriesTitlesInput from './SeriesTitlesInput.svelte';
+	import SeriesBookInput from './SeriesBookInput.svelte';
+	import SeriesRelInput from './SeriesRelInput.svelte';
+	import SelectField from '../SelectField.svelte';
+	import { seriesStatusArray } from '$lib/db/dbTypes';
 
 	export let series: SeriesEdit | undefined;
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
@@ -42,7 +47,27 @@
 		<VisibilityInputs form={sForm} />
 	{/if}
 
+	<SeriesTitlesInput form={sForm} />
+
+	<div class="flex">
+		<SelectField
+			form={sForm}
+			field="publication_status"
+			dropdownOptions={seriesStatusArray.map((item) => ({
+				display: item,
+				value: item
+			}))}
+			selectedValue={series?.publication_status ?? 'ongoing'}
+			label="Publication status"
+			resetPadding={true}
+			showRequiredSymbolIfRequired={false}
+		/>
+	</div>
+
 	<Hr />
+
+	<SeriesBookInput form={sForm} />
+	<SeriesRelInput form={sForm} />
 
 	<TextField
 		form={sForm}

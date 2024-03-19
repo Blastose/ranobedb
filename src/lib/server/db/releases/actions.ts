@@ -263,6 +263,12 @@ export async function addRelease(data: { release: Infer<typeof releaseSchema> },
 		if (release_book_add.length > 0) {
 			await trx.insertInto('release_book').values(release_book_add).execute();
 		}
+		const release_book_add_hist = data.release.books.map((item) => {
+			return { book_id: item.id, change_id: change.change_id, rtype: item.rtype };
+		}) satisfies Insertable<ReleaseBookHist>[];
+		if (release_book_add.length > 0) {
+			await trx.insertInto('release_book_hist').values(release_book_add_hist).execute();
+		}
 		// release_publisher
 		const release_publisher_add = data.release.publishers.map((item) => {
 			return {
@@ -273,6 +279,16 @@ export async function addRelease(data: { release: Infer<typeof releaseSchema> },
 		}) satisfies Insertable<ReleasePublisher>[];
 		if (release_publisher_add.length > 0) {
 			await trx.insertInto('release_publisher').values(release_publisher_add).execute();
+		}
+		const release_publisher_add_hist = data.release.publishers.map((item) => {
+			return {
+				publisher_id: item.id,
+				publisher_type: item.publisher_type,
+				change_id: change.change_id
+			};
+		}) satisfies Insertable<ReleasePublisherHist>[];
+		if (release_publisher_add.length > 0) {
+			await trx.insertInto('release_publisher_hist').values(release_publisher_add_hist).execute();
 		}
 
 		return insertedRelease.id;
