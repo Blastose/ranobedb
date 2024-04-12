@@ -114,7 +114,7 @@ export const getSeries = db
 				.where('book_title.lang', '=', 'ja')
 				.where('book_title.official', '=', true)
 				.select(['book_title.title', 'book.id'])
-				.orderBy('sort_order desc')
+				.orderBy('sort_order asc')
 		).as('books'),
 		jsonArrayFrom(
 			eb
@@ -156,7 +156,7 @@ export const getSeriesOne = (id: number) =>
 						'cte_book.image_id',
 						'series_book.sort_order'
 					])
-					.orderBy('sort_order desc')
+					.orderBy('sort_order asc')
 			).as('books')
 		])
 		.where('cte_series.id', '=', id);
@@ -183,8 +183,8 @@ export const getSeriesHistOne = (options: { id: number; revision: number }) =>
 			jsonArrayFrom(
 				eb
 					.selectFrom('cte_book')
-					.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
-					.whereRef('series_book.series_id', '=', 'cte_series.id')
+					.innerJoin('series_book_hist', 'series_book_hist.book_id', 'cte_book.id')
+					.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
 					.select([
 						'cte_book.id',
 						'cte_book.title',
@@ -192,9 +192,9 @@ export const getSeriesHistOne = (options: { id: number; revision: number }) =>
 						'cte_book.romaji',
 						'cte_book.romaji_orig',
 						'cte_book.image_id',
-						'series_book.sort_order'
+						'series_book_hist.sort_order'
 					])
-					.orderBy('sort_order desc')
+					.orderBy('sort_order asc')
 			).as('books')
 		])
 		.where('change.item_id', '=', options.id)
@@ -233,7 +233,7 @@ export const getSeriesOneEdit = (id: number) =>
 						'cte_book.image_id',
 						'series_book.sort_order'
 					])
-					.orderBy('sort_order desc')
+					.orderBy('sort_order asc')
 			).as('books'),
 			jsonArrayFrom(
 				eb
@@ -294,7 +294,7 @@ export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =
 						'cte_book.image_id',
 						'series_book_hist.sort_order'
 					])
-					.orderBy('sort_order desc')
+					.orderBy('sort_order asc')
 			).as('books'),
 			jsonArrayFrom(
 				eb

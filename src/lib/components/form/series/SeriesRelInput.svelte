@@ -32,7 +32,7 @@
 
 <section class="flex flex-col gap-2">
 	<h2 class="text-lg font-bold">Series Relations</h2>
-	<div class="flex gap-6 flex-wrap">
+	<div class="flex flex-col gap-2 flex-wrap">
 		{#each $values as series, i}
 			<div class="flex flex-col gap-2 flex-wrap">
 				<a class="link w-fit" target="_blank" rel="noreferrer" href="/series/{series.id}"

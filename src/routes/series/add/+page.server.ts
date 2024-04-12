@@ -54,6 +54,7 @@ export const actions = {
 		try {
 			newSeriesId = await addSeries({ series: form.data }, locals.user);
 		} catch (e) {
+			console.log(e);
 			if (e instanceof DatabaseError) {
 				if (
 					e.code === '23505' &&

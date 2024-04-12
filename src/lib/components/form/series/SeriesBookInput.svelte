@@ -3,6 +3,7 @@
 	import ComboboxInput from '../ComboboxInput.svelte';
 
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
+	import BookDragDrop from './BookDragDrop.svelte';
 
 	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
 
@@ -13,12 +14,20 @@
 	}
 
 	function handleAddBook(book: { id: number; name: string }) {
+		if ($values.some((item) => item.id === book.id)) return;
 		$values.push({
 			title: book.name,
 			id: book.id,
 			romaji: '',
 			sort_order: $values.length
 		});
+		$values = $values;
+	}
+
+	function updateSortOrder() {
+		for (const [index, item] of $values.entries()) {
+			item.sort_order = index;
+		}
 		$values = $values;
 	}
 
@@ -32,20 +41,7 @@
 <section class="flex flex-col gap-2">
 	<h2 class="text-lg font-bold">Book Relations</h2>
 	<div class="flex gap-2 flex-col">
-		{#each $values as book, i}
-			<div class="flex flex-wrap gap-2 items-center">
-				<a class="link w-fit" target="_blank" rel="noreferrer" href="/book/{book.id}"
-					><span class="text-sm">#{book.id}:</span> {book.title}</a
-				>
-				<button
-					on:click={() => {
-						handleRemoveBook(i);
-					}}
-					type="button"
-					class="sub-btn w-fit">Remove</button
-				>
-			</div>
-		{/each}
+		<BookDragDrop items={$values} remove={handleRemoveBook} {updateSortOrder} />
 		<ComboboxInput handleAdd={handleAddBook} {search} title="Add book" />
 	</div>
 	{#if $errors}

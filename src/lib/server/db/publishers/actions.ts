@@ -62,6 +62,7 @@ async function updateReversePublisherRelations(params: {
 		const publisher_to_update = pubs.find((item) => item.id === publisher.id);
 		if (!publisher_to_update) continue;
 
+		// TODO skip if same
 		const reverseRelChange = await addChange(
 			params.trx,
 			{

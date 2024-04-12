@@ -52,6 +52,12 @@ body {
 	height: 100%;
 }
 
+.link {
+	color: rgb(80, 80, 211);
+}
+.dark .link {
+	color: rgb(169, 170, 245);
+}
 a.link {
 	color: rgb(80, 80, 211);
 }

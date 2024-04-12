@@ -61,6 +61,12 @@ async function updateReverseSeriesRelations(params: {
 		const series_to_update = rev_rel_series.find((item) => item.id === series.id);
 		if (!series_to_update) continue;
 
+		const newRelationType = seriesRelTypeReverseMap[series.relation_type];
+		// Don't update reverse if relation type doesn't change
+
+		if (series.relation_type === newRelationType) {
+			// TODO skip
+		}
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
@@ -76,7 +82,7 @@ async function updateReverseSeriesRelations(params: {
 		await params.trx
 			.updateTable('series_relation')
 			.set({
-				relation_type: seriesRelTypeReverseMap[series.relation_type]
+				relation_type: newRelationType
 			})
 			.where('series_relation.id_parent', '=', series.id)
 			.where('series_relation.id_child', '=', params.id)
@@ -242,10 +248,11 @@ export async function editSeries(
 				).as('child_series'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('series_book')
-						.innerJoin('book', 'book.id', 'series_book.book_id')
-						.select(['series.id', 'series_book.sort_order'])
-						.where('series_book.series_id', '=', data.id)
+						.selectFrom('book')
+						.innerJoin('series_book', 'series_book.book_id', 'book.id')
+						.whereRef('series_book.series_id', '=', 'series.id')
+						.select(['book.id', 'series_book.sort_order'])
+						.orderBy('sort_order desc')
 				).as('books')
 			])
 			.executeTakeFirstOrThrow();
@@ -365,20 +372,11 @@ export async function editSeries(
 				.execute();
 		}
 		const booksNewDiff = arrayDiff(data.series.books, currentSeries.books);
-		console.log(booksNewDiff);
-		console.log(data.series);
-		console.log(currentSeries.books);
 		const series_book_add = booksNewDiff.map((item) => {
 			return { book_id: item.id, series_id: data.id, sort_order: item.sort_order };
 		}) satisfies Insertable<SeriesBook>[];
 		if (series_book_add.length > 0) {
 			await trx.insertInto('series_book').values(series_book_add).execute();
-		}
-		const series_book_add_hist = data.series.books.map((item) => {
-			return { book_id: item.id, change_id: change.change_id, sort_order: item.sort_order };
-		}) satisfies Insertable<SeriesBookHist>[];
-		if (series_book_add.length > 0) {
-			await trx.insertInto('series_book_hist').values(series_book_add_hist).execute();
 		}
 
 		// series_relation_hist
