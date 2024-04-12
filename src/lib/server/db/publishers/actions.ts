@@ -14,8 +14,11 @@ import {
 	type PublisherRelType
 } from '$lib/db/dbTypes';
 import type { Insertable, Transaction } from 'kysely';
-import { arrayDiff, arrayIntersection } from '$lib/db/array';
+import { arrayDiff } from '$lib/db/array';
 
+// Why is this needed?
+// We need to add the publisher to the changes hist,
+// which should have everything, so we need the previous ones
 async function getPublishersForReverseRelation(params: {
 	trx: Transaction<DB>;
 	publisher_ids: number[];
@@ -26,15 +29,19 @@ async function getPublishersForReverseRelation(params: {
 			jsonArrayFrom(
 				eb
 					.selectFrom('publisher_relation')
-					.innerJoin('publisher', 'publisher.id', 'publisher_relation.id_child')
+					.innerJoin(
+						'publisher as publisher_child',
+						'publisher_child.id',
+						'publisher_relation.id_child'
+					)
 					.select([
 						'publisher_relation.id_parent',
 						'publisher_relation.id_child',
 						'publisher_relation.relation_type'
 					])
-					.select(['publisher.description', 'publisher.name', 'publisher.romaji'])
+					.select(['publisher_child.name'])
 					.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
-					.where('publisher.hidden', '=', false)
+					.where('publisher_child.hidden', '=', false)
 			).as('child_publishers')
 		)
 		.select(['publisher.id', 'publisher.description', 'publisher.name', 'publisher.romaji'])
@@ -44,7 +51,7 @@ async function getPublishersForReverseRelation(params: {
 
 async function updateReversePublisherRelations(params: {
 	trx: Transaction<DB>;
-	id: number;
+	main_id: number;
 	og_change: { revision: number };
 	publishers: {
 		id: number;
@@ -53,20 +60,19 @@ async function updateReversePublisherRelations(params: {
 		romaji?: string | null | undefined;
 	}[];
 }) {
-	const pubs = await getPublishersForReverseRelation({
+	const reverse_publishers = await getPublishersForReverseRelation({
 		trx: params.trx,
 		publisher_ids: params.publishers.map((i) => i.id)
 	});
 
 	for (const publisher of params.publishers) {
-		const publisher_to_update = pubs.find((item) => item.id === publisher.id);
+		const publisher_to_update = reverse_publishers.find((item) => item.id === publisher.id);
 		if (!publisher_to_update) continue;
 
-		// TODO skip if same
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [p${params.id}.${params.og_change.revision}](/publisher/${params.id}/revision/${params.og_change.revision})`,
+				comments: `Reverse relation update caused by revision [p${params.main_id}.${params.og_change.revision}](/publisher/${params.main_id}/revision/${params.og_change.revision})`,
 				hidden: false,
 				locked: false,
 				item_id: publisher.id,
@@ -81,18 +87,20 @@ async function updateReversePublisherRelations(params: {
 				relation_type: publisherTypeReverseMap[publisher.relation_type]
 			})
 			.where('publisher_relation.id_parent', '=', publisher.id)
-			.where('publisher_relation.id_child', '=', params.id)
+			.where('publisher_relation.id_child', '=', params.main_id)
 			.execute();
 
-		const batch_add = current.map((item) => ({
-			change_id: reverseRelChange.change_id,
-			id_child: item.id_child,
-			relation_type: item.relation_type
-		})) satisfies Insertable<PublisherRelationHist>[];
+		const batch_add = current
+			.filter((item) => item.id_child !== params.main_id)
+			.map((item) => ({
+				change_id: reverseRelChange.change_id,
+				id_child: item.id_child,
+				relation_type: item.relation_type
+			})) satisfies Insertable<PublisherRelationHist>[];
 		batch_add.push({
 			change_id: reverseRelChange.change_id,
 			relation_type: publisherTypeReverseMap[publisher.relation_type],
-			id_child: params.id
+			id_child: params.main_id
 		});
 		await params.trx
 			.insertInto('publisher_hist')
@@ -111,23 +119,23 @@ async function updateReversePublisherRelations(params: {
 
 async function removeReversePublisherRelations(params: {
 	trx: Transaction<DB>;
-	id: number;
+	main_id: number;
 	og_change: { revision: number };
 	publisher_ids: number[];
 }) {
-	const pubs = await getPublishersForReverseRelation({
+	const reverse_publishers = await getPublishersForReverseRelation({
 		trx: params.trx,
 		publisher_ids: params.publisher_ids
 	});
 
 	for (const id of params.publisher_ids) {
-		const publisher_to_remove = pubs.find((item) => item.id === id);
+		const publisher_to_remove = reverse_publishers.find((item) => item.id === id);
 		if (!publisher_to_remove) continue;
 
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [p${params.id}.${params.og_change.revision}](/publisher/${params.id}/revision/${params.og_change.revision})`,
+				comments: `Reverse relation update caused by revision [p${params.main_id}.${params.og_change.revision}](/publisher/${params.main_id}/revision/${params.og_change.revision})`,
 				hidden: false,
 				locked: false,
 				item_id: id,
@@ -138,7 +146,7 @@ async function removeReversePublisherRelations(params: {
 		let current = publisher_to_remove.child_publishers;
 		await params.trx
 			.deleteFrom('publisher_relation')
-			.where('id_child', '=', params.id)
+			.where('id_child', '=', params.main_id)
 			.where('id_parent', '=', id)
 			.execute();
 		await params.trx
@@ -168,7 +176,7 @@ async function removeReversePublisherRelations(params: {
 
 async function addReversePublisherRelations(params: {
 	trx: Transaction<DB>;
-	id: number;
+	main_id: number;
 	og_change: { revision: number };
 	publishers: {
 		id: number;
@@ -177,13 +185,13 @@ async function addReversePublisherRelations(params: {
 		romaji?: string | null | undefined;
 	}[];
 }) {
-	const pubs = await getPublishersForReverseRelation({
+	const reverse_publishers = await getPublishersForReverseRelation({
 		trx: params.trx,
 		publisher_ids: params.publishers.map((i) => i.id)
 	});
 
 	for (const publisher of params.publishers) {
-		const publisher_to_add = pubs.find((item) => item.id === publisher.id);
+		const publisher_to_add = reverse_publishers.find((item) => item.id === publisher.id);
 		if (!publisher_to_add) {
 			continue;
 		}
@@ -191,7 +199,7 @@ async function addReversePublisherRelations(params: {
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [p${params.id}.${params.og_change.revision}](/publisher/${params.id}/revision/${params.og_change.revision})`,
+				comments: `Reverse relation update caused by revision [p${params.main_id}.${params.og_change.revision}](/publisher/${params.main_id}/revision/${params.og_change.revision})`,
 				hidden: false,
 				locked: false,
 				item_id: publisher.id,
@@ -201,7 +209,7 @@ async function addReversePublisherRelations(params: {
 		);
 		const current = publisher_to_add.child_publishers;
 		const newRelation = {
-			id_child: params.id,
+			id_child: params.main_id,
 			id_parent: publisher.id,
 			relation_type: publisherTypeReverseMap[publisher.relation_type]
 		};
@@ -215,7 +223,7 @@ async function addReversePublisherRelations(params: {
 		batch_add.push({
 			change_id: reverseRelChange.change_id,
 			relation_type: publisherTypeReverseMap[publisher.relation_type],
-			id_child: params.id
+			id_child: params.main_id
 		});
 		await params.trx
 			.insertInto('publisher_hist')
@@ -263,7 +271,7 @@ export async function editPublisher(
 					eb
 						.selectFrom('release_publisher')
 						.innerJoin('release', 'release.id', 'release_publisher.release_id')
-						.select('publisher.id')
+						.select('release.id as release_id')
 						.where('release_publisher.publisher_id', '=', data.id)
 				).as('release_publisher')
 			])
@@ -356,15 +364,16 @@ export async function editPublisher(
 		if (currentDiff.length > 0) {
 			await removeReversePublisherRelations({
 				trx,
-				id: data.id,
+				main_id: data.id,
 				og_change: change,
 				publisher_ids: currentDiff.map((i) => i.id)
 			});
 		}
 
-		const toUpdate = arrayIntersection(
-			data.publisher.child_publishers,
-			currentPublisher.child_publishers
+		const toUpdate = data.publisher.child_publishers.filter((item1) =>
+			currentPublisher.child_publishers.some(
+				(item2) => item2.id === item1.id && item1.relation_type !== item2.relation_type
+			)
 		);
 
 		for (const item of toUpdate) {
@@ -381,7 +390,7 @@ export async function editPublisher(
 		if (toUpdate.length > 0) {
 			await updateReversePublisherRelations({
 				trx,
-				id: data.id,
+				main_id: data.id,
 				og_change: change,
 				publishers: toUpdate
 			});
@@ -399,7 +408,7 @@ export async function editPublisher(
 		if (newDiff.length > 0) {
 			await addReversePublisherRelations({
 				trx,
-				id: data.id,
+				main_id: data.id,
 				og_change: change,
 				publishers: newDiff
 			});
@@ -456,12 +465,22 @@ export async function addPublisher(data: { publisher: Infer<typeof publisherSche
 		if (publisher_relations.length > 0) {
 			await trx.insertInto('publisher_relation').values(publisher_relations).execute();
 		}
+		const publisher_relations_hist = data.publisher.child_publishers.map((item) => {
+			return {
+				change_id: change.change_id,
+				id_child: item.id,
+				relation_type: item.relation_type
+			};
+		}) satisfies Insertable<PublisherRelationHist>[];
+		if (publisher_relations.length > 0) {
+			await trx.insertInto('publisher_relation_hist').values(publisher_relations_hist).execute();
+		}
 
 		// add reverse pub rels
 		if (data.publisher.child_publishers.length > 0) {
 			await addReversePublisherRelations({
 				trx,
-				id: insertedPublisher.id,
+				main_id: insertedPublisher.id,
 				og_change: change,
 				publishers: data.publisher.child_publishers
 			});
