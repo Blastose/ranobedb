@@ -51,9 +51,6 @@ export async function editRelease(
 			? data.release.hidden || data.release.locked
 			: currentRelease.locked;
 
-		console.log(locked);
-		console.log(data.release.hidden ?? data.release.locked);
-
 		if (currentRelease.hidden || currentRelease.locked) {
 			if (!userHasVisibilityPerms) {
 				throw new ChangePermissionError('');

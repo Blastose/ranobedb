@@ -55,7 +55,11 @@
 			/>
 		</div>
 	{:else}
-		<RevisionInfo change={changes.change} {buildBaseLink} isLatestRevision={true} />
+		<RevisionInfo
+			change={changes.change}
+			{buildBaseLink}
+			isLatestRevision={!Boolean(changes.nextChange)}
+		/>
 	{/if}
 
 	{#if diff}

@@ -15,6 +15,9 @@
 	export let updateSortOrder: () => void;
 
 	function swap<T>(arr: T[], indexL: number, indexR: number) {
+		if (indexL < 0 || indexR < 0) return;
+		if (indexL > arr.length - 1 || indexR > arr.length - 1) return;
+
 		[arr[indexR], arr[indexL]] = [arr[indexL], arr[indexR]];
 		updateSortOrder();
 		items = items;

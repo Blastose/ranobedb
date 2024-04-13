@@ -23,54 +23,88 @@ import { arrayDiff, arrayIntersection } from '$lib/db/array';
 async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; series_ids: number[] }) {
 	return await params.trx
 		.selectFrom('series')
-		.select((eb) =>
+		.select((eb) => [
 			jsonArrayFrom(
 				eb
 					.selectFrom('series_relation')
-					.innerJoin('series', 'series.id', 'series_relation.id_child')
+					.innerJoin('series as series_child', 'series_child.id', 'series_relation.id_child')
 					.select([
 						'series_relation.id_parent',
 						'series_relation.id_child',
 						'series_relation.relation_type'
 					])
-					.select(['series.id'])
+					.select(['series_child.id'])
 					.whereRef('series_relation.id_parent', '=', 'series.id')
 					.where('series.hidden', '=', false)
-			).as('child_series')
-		)
+			).as('child_series'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('book')
+					.innerJoin('series_book', 'series_book.book_id', 'book.id')
+					.whereRef('series_book.series_id', '=', 'series.id')
+					.select(['series_book.book_id', 'series_book.series_id', 'series_book.sort_order'])
+			).as('books'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('series_title')
+					.whereRef('series_title.series_id', '=', 'series.id')
+					.selectAll('series_title')
+			).as('titles')
+		])
 		.select(['series.id', 'series.publication_status'])
 		.where('series.id', 'in', params.series_ids)
 		.execute();
 }
 
+async function addMiscSeriesRelations(params: {
+	trx: Transaction<DB>;
+	series: Awaited<ReturnType<typeof getSeriesForReverseRelation>>[number];
+	change_id: number;
+}) {
+	const batch_add_books = params.series.books.map((item) => ({
+		book_id: item.book_id,
+		change_id: params.change_id,
+		sort_order: item.sort_order
+	})) satisfies Insertable<SeriesBookHist>[];
+	if (batch_add_books.length > 0) {
+		await params.trx.insertInto('series_book_hist').values(batch_add_books).execute();
+	}
+	const batch_add_titles = params.series.titles.map((item) => ({
+		change_id: params.change_id,
+		lang: item.lang,
+		official: item.official,
+		title: item.title,
+		romaji: item.romaji
+	})) satisfies Insertable<SeriesTitleHist>[];
+	if (batch_add_titles.length > 0) {
+		await params.trx.insertInto('series_title_hist').values(batch_add_titles).execute();
+	}
+}
+
 async function updateReverseSeriesRelations(params: {
 	trx: Transaction<DB>;
-	id: number;
+	main_id: number;
 	og_change: { revision: number };
 	series: {
 		id: number;
 		relation_type: SeriesRelType;
 	}[];
 }) {
-	const rev_rel_series = await getSeriesForReverseRelation({
+	const reverse_series = await getSeriesForReverseRelation({
 		trx: params.trx,
 		series_ids: params.series.map((i) => i.id)
 	});
 
 	for (const series of params.series) {
-		const series_to_update = rev_rel_series.find((item) => item.id === series.id);
+		const series_to_update = reverse_series.find((item) => item.id === series.id);
 		if (!series_to_update) continue;
 
 		const newRelationType = seriesRelTypeReverseMap[series.relation_type];
-		// Don't update reverse if relation type doesn't change
 
-		if (series.relation_type === newRelationType) {
-			// TODO skip
-		}
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [s${params.id}.${params.og_change.revision}](/series/${params.id}/revision/${params.og_change.revision})`,
+				comments: `Reverse relation update caused by revision [s${params.main_id}.${params.og_change.revision}](/series/${params.main_id}/revision/${params.og_change.revision})`,
 				hidden: false,
 				locked: false,
 				item_id: series.id,
@@ -85,18 +119,20 @@ async function updateReverseSeriesRelations(params: {
 				relation_type: newRelationType
 			})
 			.where('series_relation.id_parent', '=', series.id)
-			.where('series_relation.id_child', '=', params.id)
+			.where('series_relation.id_child', '=', params.main_id)
 			.execute();
 
-		const batch_add = current.map((item) => ({
-			change_id: reverseRelChange.change_id,
-			id_child: item.id_child,
-			relation_type: item.relation_type
-		})) satisfies Insertable<SeriesRelationHist>[];
+		const batch_add = current
+			.filter((item) => item.id_child !== params.main_id)
+			.map((item) => ({
+				change_id: reverseRelChange.change_id,
+				id_child: item.id_child,
+				relation_type: item.relation_type
+			})) satisfies Insertable<SeriesRelationHist>[];
 		batch_add.push({
 			change_id: reverseRelChange.change_id,
 			relation_type: seriesRelTypeReverseMap[series.relation_type],
-			id_child: params.id
+			id_child: params.main_id
 		});
 		await params.trx
 			.insertInto('series_hist')
@@ -108,28 +144,34 @@ async function updateReverseSeriesRelations(params: {
 		if (batch_add.length > 0) {
 			await params.trx.insertInto('series_relation_hist').values(batch_add).execute();
 		}
+
+		await addMiscSeriesRelations({
+			trx: params.trx,
+			change_id: reverseRelChange.change_id,
+			series: series_to_update
+		});
 	}
 }
 
 async function removeReverseSeriesRelations(params: {
 	trx: Transaction<DB>;
-	id: number;
+	main_id: number;
 	og_change: { revision: number };
 	series_ids: number[];
 }) {
-	const rev_rel_series = await getSeriesForReverseRelation({
+	const reverse_series = await getSeriesForReverseRelation({
 		trx: params.trx,
 		series_ids: params.series_ids
 	});
 
 	for (const id of params.series_ids) {
-		const series_to_remove = rev_rel_series.find((item) => item.id === id);
+		const series_to_remove = reverse_series.find((item) => item.id === id);
 		if (!series_to_remove) continue;
 
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [s${params.id}.${params.og_change.revision}](/series/${params.id}/revision/${params.og_change.revision})`,
+				comments: `Reverse relation update caused by revision [s${params.main_id}.${params.og_change.revision}](/series/${params.main_id}/revision/${params.og_change.revision})`,
 				hidden: false,
 				locked: false,
 				item_id: id,
@@ -140,7 +182,7 @@ async function removeReverseSeriesRelations(params: {
 		let current = series_to_remove.child_series;
 		await params.trx
 			.deleteFrom('series_relation')
-			.where('id_child', '=', params.id)
+			.where('id_child', '=', params.main_id)
 			.where('id_parent', '=', id)
 			.execute();
 		await params.trx
@@ -163,25 +205,30 @@ async function removeReverseSeriesRelations(params: {
 				)
 				.execute();
 		}
+		await addMiscSeriesRelations({
+			trx: params.trx,
+			change_id: reverseRelChange.change_id,
+			series: series_to_remove
+		});
 	}
 }
 
 async function addReverseSeriesRelations(params: {
 	trx: Transaction<DB>;
-	id: number;
+	main_id: number;
 	og_change: { revision: number };
 	series: {
 		id: number;
 		relation_type: SeriesRelType;
 	}[];
 }) {
-	const rev_rel_series = await getSeriesForReverseRelation({
+	const reverse_series = await getSeriesForReverseRelation({
 		trx: params.trx,
 		series_ids: params.series.map((i) => i.id)
 	});
 
 	for (const series of params.series) {
-		const series_to_add = rev_rel_series.find((item) => item.id === series.id);
+		const series_to_add = reverse_series.find((item) => item.id === series.id);
 		if (!series_to_add) {
 			continue;
 		}
@@ -189,7 +236,7 @@ async function addReverseSeriesRelations(params: {
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [s${params.id}.${params.og_change.revision}](/series/${params.id}/revision/${params.og_change.revision})`,
+				comments: `Reverse relation update caused by revision [s${params.main_id}.${params.og_change.revision}](/series/${params.main_id}/revision/${params.og_change.revision})`,
 				hidden: false,
 				locked: false,
 				item_id: series.id,
@@ -199,7 +246,7 @@ async function addReverseSeriesRelations(params: {
 		);
 		const current = series_to_add.child_series;
 		const newRelation = {
-			id_child: params.id,
+			id_child: params.main_id,
 			id_parent: series.id,
 			relation_type: seriesRelTypeReverseMap[series.relation_type]
 		};
@@ -213,7 +260,7 @@ async function addReverseSeriesRelations(params: {
 		batch_add.push({
 			change_id: reverseRelChange.change_id,
 			relation_type: seriesRelTypeReverseMap[series.relation_type],
-			id_child: params.id
+			id_child: params.main_id
 		});
 		await params.trx
 			.insertInto('series_hist')
@@ -225,6 +272,11 @@ async function addReverseSeriesRelations(params: {
 		if (batch_add.length > 0) {
 			await params.trx.insertInto('series_relation_hist').values(batch_add).execute();
 		}
+		await addMiscSeriesRelations({
+			trx: params.trx,
+			change_id: reverseRelChange.change_id,
+			series: series_to_add
+		});
 	}
 }
 
@@ -408,13 +460,17 @@ export async function editSeries(
 		if (currentDiff.length > 0) {
 			await removeReverseSeriesRelations({
 				trx,
-				id: data.id,
+				main_id: data.id,
 				og_change: change,
 				series_ids: currentDiff.map((i) => i.id)
 			});
 		}
 
-		const toUpdate = arrayIntersection(data.series.child_series, currentSeries.child_series);
+		const toUpdate = data.series.child_series.filter((item1) =>
+			currentSeries.child_series.some(
+				(item2) => item2.id === item1.id && item1.relation_type !== item2.relation_type
+			)
+		);
 
 		for (const item of toUpdate) {
 			await trx
@@ -430,7 +486,7 @@ export async function editSeries(
 		if (toUpdate.length > 0) {
 			await updateReverseSeriesRelations({
 				trx,
-				id: data.id,
+				main_id: data.id,
 				og_change: change,
 				series: toUpdate
 			});
@@ -448,7 +504,7 @@ export async function editSeries(
 		if (newDiff.length > 0) {
 			await addReverseSeriesRelations({
 				trx,
-				id: data.id,
+				main_id: data.id,
 				og_change: change,
 				series: newDiff
 			});
@@ -508,7 +564,7 @@ export async function addSeries(data: { series: Infer<typeof seriesSchema> }, us
 		if (data.series.child_series.length > 0) {
 			await addReverseSeriesRelations({
 				trx,
-				id: insertedSeries.id,
+				main_id: insertedSeries.id,
 				og_change: change,
 				series: data.series.child_series
 			});

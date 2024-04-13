@@ -157,7 +157,19 @@ export const getSeriesOne = (id: number) =>
 						'series_book.sort_order'
 					])
 					.orderBy('sort_order asc')
-			).as('books')
+			).as('books'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('series_relation')
+					.innerJoin('cte_series as child_series', 'child_series.id', 'series_relation.id_child')
+					.select([
+						'child_series.id',
+						'child_series.title',
+						'child_series.romaji',
+						'series_relation.relation_type'
+					])
+					.whereRef('series_relation.id_parent', '=', 'cte_series.id')
+			).as('child_series')
 		])
 		.where('cte_series.id', '=', id);
 
@@ -165,6 +177,7 @@ export const getSeriesHistOne = (options: { id: number; revision: number }) =>
 	db
 		.with('cte_book', withBookTitleCte())
 		.with('cte_series', withSeriesHistTitleCte())
+		.with('cte_series_non_hist', withSeriesTitleCte())
 		.selectFrom('cte_series')
 		.innerJoin('change', 'change.id', 'cte_series.id')
 		.select([
@@ -195,7 +208,23 @@ export const getSeriesHistOne = (options: { id: number; revision: number }) =>
 						'series_book_hist.sort_order'
 					])
 					.orderBy('sort_order asc')
-			).as('books')
+			).as('books'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('series_relation_hist')
+					.innerJoin(
+						'cte_series_non_hist as child_series',
+						'child_series.id',
+						'series_relation_hist.id_child'
+					)
+					.select([
+						'child_series.id',
+						'child_series.title',
+						'child_series.romaji',
+						'series_relation_hist.relation_type'
+					])
+					.whereRef('series_relation_hist.change_id', '=', 'change.id')
+			).as('child_series')
 		])
 		.where('change.item_id', '=', options.id)
 		.where('change.item_name', '=', 'series')
@@ -265,6 +294,7 @@ export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =
 	db
 		.with('cte_book', withBookTitleCte())
 		.with('cte_series', withSeriesHistTitleCte())
+		.with('cte_series_non_hist', withSeriesTitleCte())
 		.selectFrom('cte_series')
 		.innerJoin('change', 'change.id', 'cte_series.id')
 		.select([
@@ -311,7 +341,7 @@ export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =
 				eb
 					.selectFrom('series_relation_hist')
 					.innerJoin(
-						'cte_series as child_series',
+						'cte_series_non_hist as child_series',
 						'child_series.id',
 						'series_relation_hist.id_child'
 					)
