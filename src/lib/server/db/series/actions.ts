@@ -192,7 +192,7 @@ async function removeReverseSeriesRelations(params: {
 				publication_status: series_to_remove.publication_status
 			})
 			.execute();
-		current = current.filter((item2) => item2.id_parent !== id);
+		current = current.filter((item) => item.id_child !== params.main_id);
 		if (current.length > 0) {
 			await params.trx
 				.insertInto('series_relation_hist')

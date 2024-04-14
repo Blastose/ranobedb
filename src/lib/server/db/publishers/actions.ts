@@ -158,7 +158,7 @@ async function removeReversePublisherRelations(params: {
 				romaji: publisher_to_remove.romaji
 			})
 			.execute();
-		current = current.filter((item2) => item2.id_parent !== id);
+		current = current.filter((item) => item.id_child !== params.main_id);
 		if (current.length > 0) {
 			await params.trx
 				.insertInto('publisher_relation_hist')
