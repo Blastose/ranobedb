@@ -52,14 +52,8 @@ export function getCountFromPaginatedQuery(queryResults: { count: string }[]) {
 }
 
 export function getCurrentVisibilityStatus<T extends { hidden: boolean; locked: boolean }>(
-	item: T & { latest_change?: { hidden: boolean; locked: boolean } | null }
+	item: T
 ) {
-	if (item.latest_change) {
-		return {
-			hidden: item.latest_change.hidden,
-			locked: item.latest_change.locked
-		};
-	}
 	return {
 		hidden: item.hidden,
 		locked: item.locked

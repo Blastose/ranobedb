@@ -16,6 +16,9 @@ import {
 import type { Insertable, Transaction } from 'kysely';
 import { arrayDiff } from '$lib/db/array';
 
+// TODO For reverse relations, we might be able to just insert them
+// with a insert into from select sql
+
 // Why is this needed?
 // We need to add the publisher to the changes hist,
 // which should have everything, so we need the previous ones
