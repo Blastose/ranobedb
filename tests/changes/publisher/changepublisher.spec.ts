@@ -12,6 +12,30 @@ test.describe('edit publisher mod', () => {
 		await expect(page.locator('.toast-container')).toHaveText('Successfully edited publisher!');
 	});
 
+	test('Mod can edit publisher with publisher relations', async ({ page }) => {
+		await page.goto('/publisher/3/edit');
+
+		await page.getByLabel('Add publisher').click();
+		await page.getByLabel('Add publisher').fill('kado');
+		await page.getByText('#4 KADOKAWA').click();
+		await page.getByLabel('Edit summary').fill('Add KADOKAWA');
+		await page.getByRole('button', { name: 'Submit edit' }).click();
+		await expect(page.locator('.toast-container').first()).toHaveText(
+			'Successfully edited publisher!'
+		);
+		await page.getByRole('link', { name: 'Edit' }).click();
+		await page
+			.getByLabel('Relation type: imprintparent brandparent companysubsidiary')
+			.selectOption('parent brand');
+		await page.getByLabel('Edit summary').fill('Change relation type');
+		await page.getByRole('button', { name: 'Submit edit' }).click();
+
+		await expect(page).toHaveURL('/publisher/3');
+		await expect(page.locator('.toast-container').first()).toHaveText(
+			'Successfully edited publisher!'
+		);
+	});
+
 	test('Mod can edit locked publisher', async ({ page }) => {
 		await page.goto('/publisher/1/edit');
 		await page.getByLabel('Edit summary').fill('Add change');

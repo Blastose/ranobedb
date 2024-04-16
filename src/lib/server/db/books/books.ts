@@ -1,12 +1,10 @@
-import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
-import { type InferResult, expressionBuilder, type ExpressionWrapper, QueryCreator } from 'kysely';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { type InferResult, type ExpressionBuilder, expressionBuilder } from 'kysely';
 import { db } from '$lib/server/db/db';
 import type { DB } from '$lib/db/dbTypes';
 import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
 
-function titleCaseBuilder(langPrios: LanguagePriority[]) {
-	const eb = expressionBuilder<DB, 'book_title'>();
-
+function titleCaseBuilder(eb: ExpressionBuilder<DB, 'book_title'>, langPrios: LanguagePriority[]) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
 	// so we need to make it as any
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,14 +17,13 @@ function titleCaseBuilder(langPrios: LanguagePriority[]) {
 	}
 	// Fallback to jp title if there are no matches
 	cb = cb.when('book_title.lang', '=', 'ja').then(maxCount);
-	cb = cb.else(maxCount + 1).end();
-
-	return cb as ExpressionWrapper<DB, 'book_title', number>;
+	return cb.else(maxCount + 1).end();
 }
 
-function titleHistCaseBuilder(langPrios: LanguagePriority[]) {
-	const eb = expressionBuilder<DB, 'book_title_hist'>();
-
+function titleHistCaseBuilder(
+	eb: ExpressionBuilder<DB, 'book_title_hist'>,
+	langPrios: LanguagePriority[]
+) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
 	// so we need to make it as any
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -39,13 +36,12 @@ function titleHistCaseBuilder(langPrios: LanguagePriority[]) {
 	}
 	// Fallback to jp title if there are no matches
 	cb = cb.when('book_title_hist.lang', '=', 'ja').then(maxCount);
-	cb = cb.else(maxCount + 1).end();
-
-	return cb as ExpressionWrapper<DB, 'book_title_hist', number>;
+	return cb.else(maxCount + 1).end();
 }
 
 export function withBookTitleCte() {
-	return (eb: QueryCreator<DB>) => {
+	const eb = expressionBuilder<DB, 'book'>();
+	return () => {
 		return eb
 			.selectFrom('book')
 			.leftJoin('book_title', 'book_title.book_id', 'book.id')
@@ -58,12 +54,13 @@ export function withBookTitleCte() {
 			.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
 			.orderBy('book.id')
 			.orderBy('book.id')
-			.orderBy(titleCaseBuilder(defaultLangPrio));
+			.orderBy((eb) => titleCaseBuilder(eb, defaultLangPrio));
 	};
 }
 
 export function withBookHistTitleCte() {
-	return (eb: QueryCreator<DB>) => {
+	const eb = expressionBuilder<DB, 'book_hist'>();
+	return () => {
 		return eb
 			.selectFrom('book_hist')
 			.leftJoin('book_title_hist', 'book_title_hist.change_id', 'book_hist.change_id')
@@ -86,7 +83,7 @@ export function withBookHistTitleCte() {
 			])
 			.orderBy('book_hist.change_id')
 			.orderBy('id')
-			.orderBy(titleHistCaseBuilder(defaultLangPrio));
+			.orderBy((eb) => titleHistCaseBuilder(eb, defaultLangPrio));
 	};
 }
 
@@ -218,14 +215,6 @@ export const getBookHist = (id: number, revision: number) => {
 			'image.filename'
 		])
 		.select((eb) => [
-			jsonObjectFrom(
-				eb
-					.selectFrom('change')
-					.where('change.item_id', '=', id)
-					.select(['change.ihid as hidden', 'change.ilock as locked'])
-					.orderBy('change.revision desc')
-					.limit(1)
-			).as('latest_change'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('book_title_hist')

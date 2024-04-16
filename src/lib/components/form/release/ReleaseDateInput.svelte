@@ -7,11 +7,8 @@
 
 	const { value, errors, constraints } = formFieldProxy(form, 'release_date');
 
-	const years: ('TBA' | number)[] = [
-		'TBA',
-		...Array.from({ length: 131 }, (_, index) => 2030 - index)
-	] as const;
-	const months: string[] = [
+	const years = ['TBA', ...Array.from({ length: 131 }, (_, index) => 2030 - index)] as const;
+	const months = [
 		'-month-',
 		'Jan.',
 		'Feb.',
@@ -26,10 +23,7 @@
 		'Nov.',
 		'Dec.'
 	] as const;
-	const days: ('-day-' | number)[] = [
-		'-day-',
-		...Array.from({ length: 31 }, (_, index) => index + 1)
-	] as const;
+	const days = ['-day-', ...Array.from({ length: 31 }, (_, index) => index + 1)] as const;
 
 	function resetMonthOptions() {
 		const monthOptions = selectContainer.querySelectorAll<HTMLOptionElement>('.month-option');

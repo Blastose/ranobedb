@@ -16,6 +16,8 @@ export type ReleasePublisherType = "label" | "publisher";
 
 export type ReleaseType = "complete" | "partial";
 
+export type SeriesRelType = "main story" | "parent story" | "prequel" | "sequel" | "side story" | "spin-off";
+
 export type SeriesStatus = "cancelled" | "completed" | "ongoing" | "unknown";
 
 export type StaffRole = "artist" | "author" | "editor" | "translator";
@@ -191,7 +193,9 @@ export interface ReleasePublisherHist {
 
 export interface Series {
   bookwalker_id: number | null;
+  hidden: boolean;
   id: Generated<number>;
+  locked: boolean;
   publication_status: SeriesStatus;
 }
 
@@ -201,11 +205,43 @@ export interface SeriesBook {
   sort_order: number;
 }
 
+export interface SeriesBookHist {
+  book_id: number;
+  change_id: number;
+  sort_order: number;
+}
+
+export interface SeriesHist {
+  bookwalker_id: number | null;
+  change_id: number;
+  publication_status: SeriesStatus;
+}
+
+export interface SeriesRelation {
+  id_child: number;
+  id_parent: number;
+  relation_type: SeriesRelType;
+}
+
+export interface SeriesRelationHist {
+  change_id: number;
+  id_child: number;
+  relation_type: SeriesRelType;
+}
+
 export interface SeriesTitle {
   lang: Language;
   official: boolean;
   romaji: string | null;
   series_id: number;
+  title: string;
+}
+
+export interface SeriesTitleHist {
+  change_id: number;
+  lang: Language;
+  official: boolean;
+  romaji: string | null;
   title: string;
 }
 
@@ -286,7 +322,12 @@ export interface DB {
   release_publisher_hist: ReleasePublisherHist;
   series: Series;
   series_book: SeriesBook;
+  series_book_hist: SeriesBookHist;
+  series_hist: SeriesHist;
+  series_relation: SeriesRelation;
+  series_relation_hist: SeriesRelationHist;
   series_title: SeriesTitle;
+  series_title_hist: SeriesTitleHist;
   staff: Staff;
   staff_alias: StaffAlias;
   staff_alias_hist: StaffAliasHist;

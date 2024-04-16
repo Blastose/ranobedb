@@ -1,37 +1,7 @@
 import { expect, test } from '@playwright/test';
-import dotenv from 'dotenv';
-import { Kysely, PostgresDialect } from 'kysely';
-import pkg from 'pg';
-const { Pool } = pkg;
-import type { DB } from '$lib/db/dbTypes';
-
-dotenv.config({ path: '.env.testing' });
-
-const db = new Kysely<DB>({
-	dialect: new PostgresDialect({
-		pool: new Pool({
-			connectionString: process.env.DATABASE_URL
-		})
-	})
-});
 
 test.describe('add/edit/remove books from reading list', () => {
 	test.use({ storageState: 'storage-state/storageStateMod.json' });
-
-	test.afterAll(async () => {
-		await db.transaction().execute(async (trx) => {
-			await trx
-				.deleteFrom('user_list_book_label')
-				.where('book_id', '=', 1)
-				.where('user_id', '=', 'q5tphufdf9pdlyo')
-				.execute();
-			await trx
-				.deleteFrom('user_list_book')
-				.where('book_id', '=', 1)
-				.where('user_id', '=', 'q5tphufdf9pdlyo')
-				.execute();
-		});
-	});
 
 	test('user can add, update, and remove books from reading list', async ({ page }) => {
 		await page.goto('/book/1');

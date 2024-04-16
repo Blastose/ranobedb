@@ -146,7 +146,29 @@ export const releaseTypeArray = ['complete', 'partial'] as const;
 
 export type ReleaseType = (typeof releaseTypeArray)[number];
 
-export type SeriesStatus = 'cancelled' | 'completed' | 'ongoing' | 'unknown';
+export const seriesRelTypeArray = [
+	'parent story',
+	'prequel',
+	'sequel',
+	'side story',
+	'main story',
+	'spin-off'
+] as const;
+
+export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
+	prequel: 'sequel',
+	sequel: 'prequel',
+	'side story': 'main story',
+	'main story': 'side story',
+	'spin-off': 'parent story',
+	'parent story': 'spin-off'
+};
+
+export type SeriesRelType = (typeof seriesRelTypeArray)[number];
+
+export const seriesStatusArray = ['ongoing', 'completed', 'cancelled', 'unknown'] as const;
+
+export type SeriesStatus = (typeof seriesStatusArray)[number];
 
 export const staffRolesArray = ['artist', 'author', 'editor', 'translator'] as const;
 
@@ -323,7 +345,9 @@ export interface ReleasePublisherHist {
 
 export interface Series {
 	bookwalker_id: number | null;
+	hidden: boolean;
 	id: Generated<number>;
+	locked: boolean;
 	publication_status: SeriesStatus;
 }
 
@@ -331,6 +355,29 @@ export interface SeriesBook {
 	book_id: number;
 	series_id: number;
 	sort_order: number;
+}
+export interface SeriesBookHist {
+	book_id: number;
+	change_id: number;
+	sort_order: number;
+}
+
+export interface SeriesHist {
+	bookwalker_id: number | null;
+	change_id: number;
+	publication_status: SeriesStatus;
+}
+
+export interface SeriesRelation {
+	id_child: number;
+	id_parent: number;
+	relation_type: SeriesRelType;
+}
+
+export interface SeriesRelationHist {
+	change_id: number;
+	id_child: number;
+	relation_type: SeriesRelType;
 }
 
 export interface SeriesTitle {
@@ -341,6 +388,13 @@ export interface SeriesTitle {
 	title: string;
 }
 
+export interface SeriesTitleHist {
+	change_id: number;
+	lang: Language;
+	official: boolean;
+	romaji: string | null;
+	title: string;
+}
 export interface Staff {
 	bookwalker_id: number | null;
 	description: string;
@@ -418,7 +472,12 @@ export interface DB {
 	release_publisher_hist: ReleasePublisherHist;
 	series: Series;
 	series_book: SeriesBook;
+	series_book_hist: SeriesBookHist;
+	series_hist: SeriesHist;
+	series_relation: SeriesRelation;
+	series_relation_hist: SeriesRelationHist;
 	series_title: SeriesTitle;
+	series_title_hist: SeriesTitleHist;
 	staff: Staff;
 	staff_alias: StaffAlias;
 	staff_hist: StaffHist;
