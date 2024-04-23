@@ -33,7 +33,7 @@ test.describe('edit series mod', () => {
 		await page.getByLabel('Edit summary').fill('Add relations');
 		await page.getByRole('button', { name: 'Submit edit' }).click();
 		await expect(page.locator('.toast-container').first()).toHaveText(
-			'Successfully edited series!'
+			'Successfully edited series!',
 		);
 		await page.getByRole('link', { name: 'Edit' }).click();
 		await page
@@ -45,7 +45,7 @@ test.describe('edit series mod', () => {
 
 		await expect(page).toHaveURL('/series/3');
 		await expect(page.locator('.toast-container').first()).toHaveText(
-			'Successfully edited series!'
+			'Successfully edited series!',
 		);
 	});
 });

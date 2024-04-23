@@ -9,7 +9,7 @@ export function arrayIntersection<T extends { id: number }>(a: T[], b: T[]) {
 // From https://github.com/jimmywarting/groupby-polyfill/blob/main/lib/polyfill.js
 export function groupBy<T, K extends string | number | symbol>(
 	iterable: Iterable<T>,
-	callbackfn: (arg0: T, arg1: number) => K
+	callbackfn: (arg0: T, arg1: number) => K,
 ): { [s: string]: T[] } {
 	const obj = Object.assign({});
 	let i = 0;

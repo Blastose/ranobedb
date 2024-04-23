@@ -21,14 +21,14 @@ export const load = async ({ locals }) => {
 			aliases: [
 				{
 					main_alias: true,
-					name: ''
-				}
-			]
+					name: '',
+				},
+			],
 		},
 		zod(staffSchema),
 		{
-			errors: false
-		}
+			errors: false,
+		},
 	);
 
 	return { form };
@@ -68,9 +68,9 @@ export const actions = {
 				303,
 				`/staff/${insertedStaffId}`,
 				{ type: 'success', message: 'Successfully added staff!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

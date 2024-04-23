@@ -22,7 +22,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
 						.whereRef('book_staff_alias.book_id', '=', 'book.id')
 						.select('staff_alias.id')
-						.limit(1)
+						.limit(1),
 				).as('staff'),
 				jsonArrayFrom(
 					eb
@@ -30,7 +30,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 						.innerJoin('release_book', 'release.id', 'release_book.release_id')
 						.whereRef('release_book.book_id', '=', 'book.id')
 						.select('release.id')
-						.limit(1)
+						.limit(1),
 				).as('releases'),
 				jsonArrayFrom(
 					eb
@@ -38,8 +38,8 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 						.innerJoin('series_book', 'series.id', 'series_book.series_id')
 						.whereRef('series_book.book_id', '=', 'book.id')
 						.select('series.id')
-						.limit(1)
-				).as('series')
+						.limit(1),
+				).as('series'),
 			])
 			.executeTakeFirstOrThrow();
 
@@ -68,9 +68,9 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 				hidden,
 				locked,
 				item_id: data.id,
-				item_name: 'book'
+				item_name: 'book',
 			},
-			user
+			user,
 		);
 
 		await trx
@@ -80,7 +80,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 				description_ja: data.book.description_ja,
 				hidden,
 				locked,
-				image_id: data.book.image_id
+				image_id: data.book.image_id,
 			})
 			.where('book.id', '=', data.id)
 			.executeTakeFirstOrThrow();
@@ -91,7 +91,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 				description: data.book.description ?? '',
 				description_ja: data.book.description_ja,
 				change_id: change.change_id,
-				image_id: data.book.image_id
+				image_id: data.book.image_id,
 			})
 			.executeTakeFirstOrThrow();
 
@@ -102,7 +102,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 				lang: item.lang,
 				official: item.official,
 				title: item.title,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<BookTitle>[];
 		if (bookTitleInsert.length > 0) {
@@ -114,7 +114,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 				lang: item.lang,
 				official: item.official,
 				title: item.title,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<BookTitleHist>[];
 		if (bookTitleHistInsert.length > 0) {
@@ -130,7 +130,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 				book_id: data.id,
 				staff_alias_id: item.staff_alias_id,
 				role_type: item.role_type,
-				note: item.note
+				note: item.note,
 			};
 		}) satisfies Insertable<BookStaffAlias>[];
 		if (bookStaffAliases.length > 0) {
@@ -141,7 +141,7 @@ export async function editBook(data: { book: Infer<typeof bookSchema>; id: numbe
 				change_id: change.change_id,
 				staff_alias_id: item.staff_alias_id,
 				role_type: item.role_type,
-				note: item.note
+				note: item.note,
 			};
 		}) satisfies Insertable<BookStaffAliasHist>[];
 		if (bookStaffAliasesHist.length > 0) {
@@ -163,7 +163,7 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 				description_ja: data.book.description_ja,
 				hidden,
 				locked,
-				image_id: data.book.image_id
+				image_id: data.book.image_id,
 			})
 			.returning('book.id')
 			.executeTakeFirstOrThrow();
@@ -175,9 +175,9 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 				hidden,
 				locked,
 				item_id: insertedBook.id,
-				item_name: 'book'
+				item_name: 'book',
 			},
-			user
+			user,
 		);
 
 		await trx
@@ -186,7 +186,7 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 				description: data.book.description ?? '',
 				description_ja: data.book.description_ja,
 				change_id: change.change_id,
-				image_id: data.book.image_id
+				image_id: data.book.image_id,
 			})
 			.executeTakeFirstOrThrow();
 		const bookTitleInsert = data.book.titles.map((item) => {
@@ -195,7 +195,7 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 				lang: item.lang,
 				official: item.official,
 				title: item.title,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<BookTitle>[];
 		if (bookTitleInsert.length > 0) {
@@ -207,7 +207,7 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 				lang: item.lang,
 				official: item.official,
 				title: item.title,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<BookTitleHist>[];
 		if (bookTitleHistInsert.length > 0) {
@@ -219,7 +219,7 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 				book_id: insertedBook.id,
 				staff_alias_id: item.staff_alias_id,
 				role_type: item.role_type,
-				note: item.note
+				note: item.note,
 			};
 		}) satisfies Insertable<BookStaffAlias>[];
 		if (bookStaffAliases.length > 0) {
@@ -230,7 +230,7 @@ export async function addBook(data: { book: Infer<typeof bookSchema> }, user: Us
 				change_id: change.change_id,
 				staff_alias_id: item.staff_alias_id,
 				role_type: item.role_type,
-				note: item.note
+				note: item.note,
 			};
 		}) satisfies Insertable<BookStaffAliasHist>[];
 		if (bookStaffAliasesHist.length > 0) {

@@ -6,7 +6,7 @@ export const load = async ({ url }) => {
 	const {
 		result: staff,
 		count,
-		totalPages
+		totalPages,
 	} = await paginationBuilderExecuteWithCount(
 		getStaff
 			.where('staff.hidden', '=', false)
@@ -14,14 +14,14 @@ export const load = async ({ url }) => {
 			.orderBy('staff_alias.name'),
 		{
 			limit: 40,
-			page: currentPage
-		}
+			page: currentPage,
+		},
 	);
 
 	return {
 		staff,
 		count,
 		currentPage,
-		totalPages
+		totalPages,
 	};
 };

@@ -35,7 +35,7 @@ export const actions = {
 				email,
 				hashed_password,
 				id: userId,
-				username
+				username,
 			});
 
 			const session = await lucia.createSession(userId, {});
@@ -43,7 +43,7 @@ export const actions = {
 
 			cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
-				...sessionCookie.attributes
+				...sessionCookie.attributes,
 			});
 		} catch (error) {
 			if (error instanceof DatabaseError) {
@@ -64,11 +64,11 @@ export const actions = {
 			return message(
 				form,
 				{ type: 'error', text: 'An unknown error has occurred' },
-				{ status: 500 }
+				{ status: 500 },
 			);
 		}
 
 		console.log(form);
 		return message(form, { text: 'Valid form', type: 'success' });
-	}
+	},
 };

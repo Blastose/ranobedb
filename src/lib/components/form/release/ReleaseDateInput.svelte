@@ -21,7 +21,7 @@
 		'Sep.',
 		'Oct.',
 		'Nov.',
-		'Dec.'
+		'Dec.',
 	] as const;
 	const days = ['-day-', ...Array.from({ length: 31 }, (_, index) => index + 1)] as const;
 
@@ -126,7 +126,7 @@
 						{@const maxNumberOfDays = new Date(
 							currentDateNumber.getYear(),
 							currentDateNumber.getMonth(),
-							0
+							0,
 						).getDate()}
 						{#if index - 1 < maxNumberOfDays}
 							<option

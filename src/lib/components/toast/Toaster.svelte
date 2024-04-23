@@ -3,7 +3,7 @@
 		elements,
 		helpers,
 		states: { toasts },
-		actions: { portal }
+		actions: { portal },
 	} = createToaster<ToastData>();
 
 	export const addToast = helpers.addToast;

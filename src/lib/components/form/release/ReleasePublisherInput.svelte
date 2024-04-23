@@ -17,7 +17,7 @@
 		$values.push({
 			name: publisher.name,
 			id: publisher.id,
-			romaji: ''
+			romaji: '',
 		});
 		$values = $values;
 	}

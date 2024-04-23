@@ -10,9 +10,9 @@ dotenv.config({ path: '.env.testing' });
 const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
 		pool: new Pool({
-			connectionString: process.env.DATABASE_URL
-		})
-	})
+			connectionString: process.env.DATABASE_URL,
+		}),
+	}),
 });
 
 let id: string;
@@ -24,7 +24,7 @@ test.describe('auth', () => {
 			.values({
 				username: 'username',
 				username_lowercase: 'username',
-				id: userId
+				id: userId,
 			})
 			.returning('id')
 			.executeTakeFirstOrThrow();
@@ -35,7 +35,7 @@ test.describe('auth', () => {
 				// Unhashed password is `password`
 				hashed_password:
 					'$argon2id$v=19$m=19456,t=2,p=1$KXosrnaI50U0xiXDxyoGxA$axycEXkr/fz3OhsPJafCaAaj7I7vM1bBUPfZuRfWzvQ',
-				user_id: userId
+				user_id: userId,
 			})
 			.execute();
 
@@ -51,8 +51,8 @@ test.describe('auth', () => {
 					eb
 						.selectFrom('auth_user')
 						.select('auth_user.id')
-						.where('auth_user.username', '=', 'usernameDelAfter')
-				)
+						.where('auth_user.username', '=', 'usernameDelAfter'),
+				),
 			)
 			.execute();
 		await db.deleteFrom('auth_session').where('user_id', '=', id).execute();
@@ -65,8 +65,8 @@ test.describe('auth', () => {
 					eb
 						.selectFrom('auth_user')
 						.select('auth_user.id')
-						.where('auth_user.username', '=', 'usernameDelAfter')
-				)
+						.where('auth_user.username', '=', 'usernameDelAfter'),
+				),
 			)
 			.execute();
 		await db.deleteFrom('auth_user_credentials').where('user_id', '=', id).execute();
@@ -79,8 +79,8 @@ test.describe('auth', () => {
 					eb
 						.selectFrom('auth_user')
 						.select('auth_user.id')
-						.where('auth_user.username', '=', 'usernameDelAfter')
-				)
+						.where('auth_user.username', '=', 'usernameDelAfter'),
+				),
 			)
 			.execute();
 		await db.deleteFrom('auth_user').where('username', '=', 'username').execute();
@@ -145,7 +145,7 @@ test.describe('auth', () => {
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(
-			page.getByText('Email is already in use. Please use a different email')
+			page.getByText('Email is already in use. Please use a different email'),
 		).toBeVisible();
 	});
 
@@ -157,12 +157,12 @@ test.describe('auth', () => {
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(
-			page.getByText('Username is already in use. Please use a different username')
+			page.getByText('Username is already in use. Please use a different username'),
 		).toBeVisible();
 	});
 
 	test('user cannot create an account with same username but in different case', async ({
-		page
+		page,
 	}) => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill('not@email.com');
@@ -171,7 +171,7 @@ test.describe('auth', () => {
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(
-			page.getByText('Username is already in use. Please use a different username')
+			page.getByText('Username is already in use. Please use a different username'),
 		).toBeVisible();
 	});
 

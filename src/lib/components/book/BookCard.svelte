@@ -7,7 +7,7 @@
 
 	const prio: { lang: Language; romaji: boolean }[] = [
 		{ lang: 'en', romaji: false },
-		{ lang: 'ja', romaji: true }
+		{ lang: 'ja', romaji: true },
 	];
 
 	function getFirstLang(languages: (typeof book)['titles']) {

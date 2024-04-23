@@ -8,7 +8,7 @@
 	$: series = data.series;
 </script>
 
-<PageTitle title={series.title ?? ""}  />
+<PageTitle title={series.title ?? ''} />
 
 <DbRouteShell theme={$themeStore ?? data.theme} imageBgStyle={null}>
 	<Series isRevision={false} {series} user={data.user} />

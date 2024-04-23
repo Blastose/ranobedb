@@ -46,7 +46,7 @@
 		return {
 			destroy: () => {
 				node.removeEventListener('dragend', reorderItem);
-			}
+			},
 		};
 	}
 </script>

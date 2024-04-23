@@ -27,7 +27,7 @@
 			if (!f.valid) {
 				addToast({ data: { title: 'Error in form!', type: 'error' } });
 			}
-		}
+		},
 	});
 	$: ({ form, enhance, delayed, submitting } = sForm);
 
@@ -55,7 +55,7 @@
 			field="publication_status"
 			dropdownOptions={seriesStatusArray.map((item) => ({
 				display: item,
-				value: item
+				value: item,
 			}))}
 			selectedValue={series?.publication_status ?? 'ongoing'}
 			label="Publication status"

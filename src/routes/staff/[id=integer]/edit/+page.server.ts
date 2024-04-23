@@ -26,7 +26,7 @@ export const load = async ({ params, locals, url }) => {
 	if (revision.valid && url.searchParams.get('revision')) {
 		staff = await getStaffHistOneEdit({
 			id: staffId,
-			revision: revision.data.revision
+			revision: revision.data.revision,
 		}).executeTakeFirst();
 	} else {
 		staff = await getStaffOneEdit(staffId).executeTakeFirst();
@@ -53,7 +53,7 @@ export const load = async ({ params, locals, url }) => {
 			: undefined;
 
 	const form = await superValidate({ ...staff, comment: prefilledComment }, zod(staffSchema), {
-		errors: false
+		errors: false,
 	});
 
 	return { staff, form };
@@ -88,7 +88,7 @@ export const actions = {
 				return setError(
 					form,
 					'hidden',
-					'Cannot hide staff. Remove any relations to the staff and try again.'
+					'Cannot hide staff. Remove any relations to the staff and try again.',
 				);
 			}
 			console.log(e);
@@ -99,9 +99,9 @@ export const actions = {
 				303,
 				`/staff/${id}`,
 				{ type: 'success', message: 'Successfully edited staff!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

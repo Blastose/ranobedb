@@ -37,7 +37,7 @@ function createThemeStore() {
 				} else {
 					return 'dark';
 				}
-			})
+			}),
 	};
 }
 

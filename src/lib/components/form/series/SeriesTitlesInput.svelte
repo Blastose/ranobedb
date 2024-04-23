@@ -20,7 +20,7 @@
 			lang: e.currentTarget.value as Language,
 			official: false,
 			title: '',
-			romaji: ''
+			romaji: '',
 		});
 		$values = $values;
 		e.currentTarget.selectedIndex = 0;

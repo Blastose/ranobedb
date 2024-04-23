@@ -19,7 +19,7 @@
 				spoilerTextElements.forEach((element) => {
 					element.removeEventListener('click', addRevealedClass);
 				});
-			}
+			},
 		};
 	}
 

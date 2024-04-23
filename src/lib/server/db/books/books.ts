@@ -22,7 +22,7 @@ function titleCaseBuilder(eb: ExpressionBuilder<DB, 'book_title'>, langPrios: La
 
 function titleHistCaseBuilder(
 	eb: ExpressionBuilder<DB, 'book_title_hist'>,
-	langPrios: LanguagePriority[]
+	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
 	// so we need to make it as any
@@ -46,7 +46,7 @@ export function withBookTitleCte() {
 			.selectFrom('book')
 			.leftJoin('book_title', 'book_title.book_id', 'book.id')
 			.leftJoin('book_title as book_title_orig', (join) =>
-				join.onRef('book_title_orig.book_id', '=', 'book.id').on('book_title_orig.lang', '=', 'ja')
+				join.onRef('book_title_orig.book_id', '=', 'book.id').on('book_title_orig.lang', '=', 'ja'),
 			)
 			.distinctOn('book.id')
 			.selectAll('book')
@@ -67,19 +67,19 @@ export function withBookHistTitleCte() {
 			.leftJoin('book_title_hist as book_title_hist_orig', (join) =>
 				join
 					.onRef('book_title_hist_orig.change_id', '=', 'book_hist.change_id')
-					.on('book_title_hist_orig.lang', '=', 'ja')
+					.on('book_title_hist_orig.lang', '=', 'ja'),
 			)
 			.distinctOn('book_hist.change_id')
 			.select([
 				'book_hist.change_id as id',
 				'book_hist.description',
 				'book_hist.description_ja',
-				'book_hist.image_id'
+				'book_hist.image_id',
 			])
 			.select(['book_title_hist.lang', 'book_title_hist.romaji', 'book_title_hist.title'])
 			.select([
 				'book_title_hist_orig.title as title_orig',
-				'book_title_hist_orig.romaji as romaji_orig'
+				'book_title_hist_orig.romaji as romaji_orig',
 			])
 			.orderBy('book_hist.change_id')
 			.orderBy('id')
@@ -103,7 +103,7 @@ export const getBooks2 = db
 		'cte_book.romaji_orig',
 		'cte_book.title',
 		'cte_book.title_orig',
-		'image.filename'
+		'image.filename',
 	])
 	.select((eb) => eb.fn.min('release.release_date').as('date'))
 	.select((eb) => [
@@ -111,15 +111,15 @@ export const getBooks2 = db
 			eb
 				.selectFrom('book_title')
 				.whereRef('book_title.book_id', '=', 'cte_book.id')
-				.selectAll('book_title')
+				.selectAll('book_title'),
 		).as('titles'),
 		jsonArrayFrom(
 			eb
 				.selectFrom('staff_alias')
 				.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
 				.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
-				.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id'])
-		).as('staff')
+				.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id']),
+		).as('staff'),
 	])
 	.groupBy([
 		'cte_book.description',
@@ -131,7 +131,7 @@ export const getBooks2 = db
 		'cte_book.romaji_orig',
 		'cte_book.title',
 		'cte_book.title_orig',
-		'image.filename'
+		'image.filename',
 	])
 	.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
 
@@ -152,14 +152,14 @@ export const getBook = (id: number) => {
 			'cte_book.title_orig',
 			'cte_book.locked',
 			'cte_book.hidden',
-			'image.filename'
+			'image.filename',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
 				eb
 					.selectFrom('book_title')
 					.whereRef('book_title.book_id', '=', 'cte_book.id')
-					.selectAll('book_title')
+					.selectAll('book_title'),
 			).as('titles'),
 			jsonArrayFrom(
 				eb
@@ -173,23 +173,23 @@ export const getBook = (id: number) => {
 						'staff_alias.name',
 						'staff_alias.staff_id',
 						'staff_alias.id as staff_alias_id',
-						'book_staff_alias.note'
-					])
+						'book_staff_alias.note',
+					]),
 			).as('staff'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('release')
 					.innerJoin('release_book', 'release.id', 'release_book.release_id')
 					.whereRef('release_book.book_id', '=', 'cte_book.id')
-					.selectAll('release')
+					.selectAll('release'),
 			).as('releases'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('series')
 					.innerJoin('series_book', 'series.id', 'series_book.series_id')
 					.whereRef('series_book.book_id', '=', 'cte_book.id')
-					.selectAll('series')
-			).as('series')
+					.selectAll('series'),
+			).as('series'),
 		])
 		.where('cte_book.id', '=', id);
 };
@@ -212,7 +212,7 @@ export const getBookHist = (id: number, revision: number) => {
 			'cte_book.title_orig',
 			'change.ilock as locked',
 			'change.ihid as hidden',
-			'image.filename'
+			'image.filename',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -224,8 +224,8 @@ export const getBookHist = (id: number, revision: number) => {
 						'book_title_hist.lang',
 						'book_title_hist.official',
 						'book_title_hist.romaji',
-						'book_title_hist.title'
-					])
+						'book_title_hist.title',
+					]),
 			).as('titles'),
 			jsonArrayFrom(
 				eb
@@ -233,7 +233,7 @@ export const getBookHist = (id: number, revision: number) => {
 					.innerJoin(
 						'book_staff_alias_hist',
 						'book_staff_alias_hist.staff_alias_id',
-						'staff_alias.id'
+						'staff_alias.id',
 					)
 					.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
 					.where('staff.hidden', '=', false)
@@ -243,23 +243,23 @@ export const getBookHist = (id: number, revision: number) => {
 						'staff_alias.name',
 						'staff_alias.staff_id',
 						'staff_alias.id as staff_alias_id',
-						'book_staff_alias_hist.note'
-					])
+						'book_staff_alias_hist.note',
+					]),
 			).as('staff'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('release')
 					.innerJoin('release_book', 'release.id', 'release_book.release_id')
 					.where('release_book.book_id', '=', id)
-					.selectAll('release')
+					.selectAll('release'),
 			).as('releases'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('series')
 					.innerJoin('series_book', 'series.id', 'series_book.series_id')
 					.where('series_book.book_id', '=', id)
-					.selectAll('series')
-			).as('series')
+					.selectAll('series'),
+			).as('series'),
 		])
 		.where('change.item_id', '=', id)
 		.where('change.item_name', '=', 'book')

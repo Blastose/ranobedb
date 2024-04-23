@@ -7,7 +7,7 @@
 		formFieldProxy,
 		type FormFieldProxy,
 		type SuperForm,
-		type FormPathLeaves
+		type FormPathLeaves,
 	} from 'sveltekit-superforms';
 
 	export let form: SuperForm<T>;
@@ -15,19 +15,19 @@
 	const {
 		value: hiddenValue,
 		errors: hiddenErrors,
-		constraints: hiddenContraints
+		constraints: hiddenContraints,
 	} = formFieldProxy(
 		form,
-		'hidden' as FormPathLeaves<T, boolean>
+		'hidden' as FormPathLeaves<T, boolean>,
 	) satisfies FormFieldProxy<boolean>;
 
 	const {
 		value: lockedValue,
 		errors: lockedErrors,
-		constraints: lockedContraints
+		constraints: lockedContraints,
 	} = formFieldProxy(
 		form,
-		'locked' as FormPathLeaves<T, boolean>
+		'locked' as FormPathLeaves<T, boolean>,
 	) satisfies FormFieldProxy<boolean>;
 
 	function handleLockChange(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {

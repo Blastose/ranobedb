@@ -14,10 +14,10 @@
 	const {
 		elements: { menu, input, option, label },
 		states: { open, inputValue, touchedInput, selected },
-		helpers: { isSelected }
+		helpers: { isSelected },
 	} = createCombobox<T>({
 		forceVisible: true,
-		preventScroll: false
+		preventScroll: false,
 	});
 
 	let debounceTimer: ReturnType<typeof setTimeout>;
@@ -93,7 +93,7 @@
 					<li
 						use:melt={$option({
 							value: book,
-							label: book.name
+							label: book.name,
 						})}
 						class="relative cursor-pointer scroll-my-2 rounded-md py-2 px-2
         data-[highlighted]:bg-gray-300 data-[highlighted]:text-gray-900

@@ -7,22 +7,22 @@ import { insertDefaultUserListLabels } from './db/user/user';
 
 const adapter = new NodePostgresAdapter(pool, {
 	session: 'auth_session',
-	user: 'auth_user'
+	user: 'auth_user',
 });
 
 export const lucia = new Lucia(adapter, {
 	sessionCookie: {
 		attributes: {
-			secure: !dev
-		}
+			secure: !dev,
+		},
 	},
 	getUserAttributes: (attributes) => {
 		return {
 			username: attributes.username,
 			role: attributes.role,
-			id_numeric: attributes.id_numeric
+			id_numeric: attributes.id_numeric,
 		};
-	}
+	},
 });
 
 export async function createUser(user: {
@@ -37,7 +37,7 @@ export async function createUser(user: {
 			.values({
 				username: user.username,
 				username_lowercase: user.username.toLowerCase(),
-				id: user.id
+				id: user.id,
 			})
 			.execute();
 		await trx
@@ -45,7 +45,7 @@ export async function createUser(user: {
 			.values({
 				email: user.email.toLowerCase(),
 				hashed_password: user.hashed_password,
-				user_id: user.id
+				user_id: user.id,
 			})
 			.execute();
 

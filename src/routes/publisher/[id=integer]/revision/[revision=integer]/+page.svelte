@@ -22,6 +22,6 @@
 	</div>
 
 	<div class="container-rndb">
-		<Publisher {publisher} isRevision={true} user={data.user}/>
+		<Publisher {publisher} isRevision={true} user={data.user} />
 	</div>
 </div>

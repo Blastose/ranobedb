@@ -4,6 +4,6 @@ export const load = loadFlash(async ({ locals, url }) => {
 	return {
 		user: locals.user,
 		url: url.pathname,
-		theme: locals.theme
+		theme: locals.theme,
 	};
 });

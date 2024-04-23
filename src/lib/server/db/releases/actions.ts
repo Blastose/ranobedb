@@ -12,12 +12,12 @@ import type {
 	ReleaseBook,
 	ReleaseBookHist,
 	ReleasePublisher,
-	ReleasePublisherHist
+	ReleasePublisherHist,
 } from '$lib/db/dbTypes';
 
 export async function editRelease(
 	data: { release: Infer<typeof releaseSchema>; id: number },
-	user: User
+	user: User,
 ) {
 	await db.transaction().execute(async (trx) => {
 		const currentRelease = await trx
@@ -29,7 +29,7 @@ export async function editRelease(
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id'])
+						.select(['publisher.name', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -37,10 +37,10 @@ export async function editRelease(
 						.innerJoin('release_book', (join) =>
 							join
 								.onRef('release_book.book_id', '=', 'book.id')
-								.onRef('release_book.release_id', '=', 'release.id')
+								.onRef('release_book.release_id', '=', 'release.id'),
 						)
-						.select(['book.id', 'release_book.rtype'])
-				).as('books')
+						.select(['book.id', 'release_book.rtype']),
+				).as('books'),
 			])
 			.where('release.id', '=', data.id)
 			.executeTakeFirstOrThrow();
@@ -70,9 +70,9 @@ export async function editRelease(
 				hidden,
 				locked,
 				item_id: data.id,
-				item_name: 'release'
+				item_name: 'release',
 			},
-			user
+			user,
 		);
 
 		await trx
@@ -87,7 +87,7 @@ export async function editRelease(
 				pages: data.release.pages,
 				release_date: data.release.release_date,
 				romaji: data.release.romaji,
-				title: data.release.title
+				title: data.release.title,
 			})
 			.where('release.id', '=', data.id)
 			.executeTakeFirstOrThrow();
@@ -102,7 +102,7 @@ export async function editRelease(
 				release_date: data.release.release_date,
 				romaji: data.release.romaji,
 				title: data.release.title,
-				change_id: change.change_id
+				change_id: change.change_id,
 			})
 			.executeTakeFirstOrThrow();
 
@@ -112,7 +112,7 @@ export async function editRelease(
 			return {
 				change_id: change.change_id,
 				rtype: item.rtype,
-				book_id: item.id
+				book_id: item.id,
 			};
 		}) satisfies Insertable<ReleaseBookHist>[];
 		if (release_book_hist.length > 0) {
@@ -127,7 +127,7 @@ export async function editRelease(
 				.where(
 					'book_id',
 					'in',
-					booksCurrentDiff.map((item) => item.id)
+					booksCurrentDiff.map((item) => item.id),
 				)
 				.where('release_book.release_id', '=', data.id)
 				.execute();
@@ -137,7 +137,7 @@ export async function editRelease(
 			await trx
 				.updateTable('release_book')
 				.set({
-					rtype: item.rtype
+					rtype: item.rtype,
 				})
 				.where('release_book.release_id', '=', data.id)
 				.where('release_book.book_id', '=', item.id)
@@ -160,7 +160,7 @@ export async function editRelease(
 			return {
 				change_id: change.change_id,
 				publisher_id: item.id,
-				publisher_type: item.publisher_type
+				publisher_type: item.publisher_type,
 			};
 		}) satisfies Insertable<ReleasePublisherHist>[];
 		if (release_publisher_hist.length > 0) {
@@ -175,20 +175,20 @@ export async function editRelease(
 				.where(
 					'publisher_id',
 					'in',
-					publishersCurrentDiff.map((item) => item.id)
+					publishersCurrentDiff.map((item) => item.id),
 				)
 				.where('release_id', '=', data.id)
 				.execute();
 		}
 		const publishersToUpdate = arrayIntersection(
 			data.release.publishers,
-			currentRelease.publishers
+			currentRelease.publishers,
 		);
 		for (const item of publishersToUpdate) {
 			await trx
 				.updateTable('release_publisher')
 				.set({
-					publisher_type: item.publisher_type
+					publisher_type: item.publisher_type,
 				})
 				.where('release_publisher.release_id', '=', data.id)
 				.where('release_publisher.publisher_id', '=', item.id)
@@ -222,7 +222,7 @@ export async function addRelease(data: { release: Infer<typeof releaseSchema> },
 				pages: data.release.pages,
 				release_date: data.release.release_date,
 				romaji: data.release.romaji,
-				title: data.release.title
+				title: data.release.title,
 			})
 			.returning('release.id')
 			.executeTakeFirstOrThrow();
@@ -234,9 +234,9 @@ export async function addRelease(data: { release: Infer<typeof releaseSchema> },
 				hidden,
 				locked,
 				item_id: insertedRelease.id,
-				item_name: 'release'
+				item_name: 'release',
 			},
-			user
+			user,
 		);
 		await trx
 			.insertInto('release_hist')
@@ -249,7 +249,7 @@ export async function addRelease(data: { release: Infer<typeof releaseSchema> },
 				release_date: data.release.release_date,
 				romaji: data.release.romaji,
 				title: data.release.title,
-				change_id: change.change_id
+				change_id: change.change_id,
 			})
 			.executeTakeFirstOrThrow();
 
@@ -271,7 +271,7 @@ export async function addRelease(data: { release: Infer<typeof releaseSchema> },
 			return {
 				publisher_id: item.id,
 				publisher_type: item.publisher_type,
-				release_id: insertedRelease.id
+				release_id: insertedRelease.id,
 			};
 		}) satisfies Insertable<ReleasePublisher>[];
 		if (release_publisher_add.length > 0) {
@@ -281,7 +281,7 @@ export async function addRelease(data: { release: Infer<typeof releaseSchema> },
 			return {
 				publisher_id: item.id,
 				publisher_type: item.publisher_type,
-				change_id: change.change_id
+				change_id: change.change_id,
 			};
 		}) satisfies Insertable<ReleasePublisherHist>[];
 		if (release_publisher_add.length > 0) {

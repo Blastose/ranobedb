@@ -38,10 +38,10 @@ export const actions = {
 		const sessionCookie = lucia.createSessionCookie(session.id);
 		cookies.set(sessionCookie.name, sessionCookie.value, {
 			path: '.',
-			...sessionCookie.attributes
+			...sessionCookie.attributes,
 		});
 
 		console.log(form);
 		return message(form, { text: 'Valid form', type: 'success' });
-	}
+	},
 };

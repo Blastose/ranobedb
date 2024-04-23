@@ -22,7 +22,7 @@ test.describe.skip('user is redirected after logging in', () => {
 	});
 
 	test('user is redirected to page after logging in with a redirect search param', async ({
-		page
+		page,
 	}) => {
 		await page.goto('/login?redirect=/book/1031');
 		await page.getByLabel('email').fill('aa@aa.com');

@@ -20,7 +20,7 @@
 
 		<p>
 			By <a class="link" href="/user/{change.username}">{change.username}</a> on {new Date(
-				change.added ?? 0
+				change.added ?? 0,
 			).toLocaleString()}
 		</p>
 		<MarkdownToHtml markdown={change.comments} type="full" />

@@ -46,7 +46,7 @@ export const actions = {
 					return setError(
 						form,
 						'child_publishers._errors',
-						'Duplicate publishers in form. Remove duplicates and try again'
+						'Duplicate publishers in form. Remove duplicates and try again',
 					);
 				}
 			}
@@ -57,9 +57,9 @@ export const actions = {
 				303,
 				`/publisher/${newPublisherId}`,
 				{ type: 'success', message: 'Successfully added publisher!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

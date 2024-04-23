@@ -7,7 +7,7 @@ import { withBookTitleCte } from '../books/books';
 
 function titleCaseBuilder(
 	eb: ExpressionBuilder<DB, 'series_title'>,
-	langPrios: LanguagePriority[]
+	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
 	// so we need to make it as any
@@ -26,7 +26,7 @@ function titleCaseBuilder(
 
 function titleHistCaseBuilder(
 	eb: ExpressionBuilder<DB, 'series_title_hist'>,
-	langPrios: LanguagePriority[]
+	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
 	// so we need to make it as any
@@ -53,7 +53,7 @@ export function withSeriesTitleCte() {
 			.leftJoin('series_title as series_title_orig', (join) =>
 				join
 					.onRef('series_title_orig.series_id', '=', 'series.id')
-					.on('series_title_orig.lang', '=', 'ja')
+					.on('series_title_orig.lang', '=', 'ja'),
 			)
 			.distinctOn('series.id')
 			.select([
@@ -61,7 +61,7 @@ export function withSeriesTitleCte() {
 				'series.hidden',
 				'series.locked',
 				'series.publication_status',
-				'series.bookwalker_id'
+				'series.bookwalker_id',
 			])
 			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
 			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
@@ -81,18 +81,18 @@ export function withSeriesHistTitleCte() {
 			.leftJoin('series_title_hist as series_title_hist_orig', (join) =>
 				join
 					.onRef('series_title_hist_orig.change_id', '=', 'series_hist.change_id')
-					.on('series_title_hist_orig.lang', '=', 'ja')
+					.on('series_title_hist_orig.lang', '=', 'ja'),
 			)
 			.distinctOn('series_hist.change_id')
 			.select([
 				'series_hist.change_id as id',
 				'series_hist.bookwalker_id',
-				'series_hist.publication_status'
+				'series_hist.publication_status',
 			])
 			.select(['series_title_hist.lang', 'series_title_hist.romaji', 'series_title_hist.title'])
 			.select([
 				'series_title_hist_orig.title as title_orig',
-				'series_title_hist_orig.romaji as romaji_orig'
+				'series_title_hist_orig.romaji as romaji_orig',
 			])
 			.orderBy('series_hist.change_id')
 			.orderBy('id')
@@ -114,14 +114,14 @@ export const getSeries = db
 				.where('book_title.lang', '=', 'ja')
 				.where('book_title.official', '=', true)
 				.select(['book_title.title', 'book.id'])
-				.orderBy('sort_order asc')
+				.orderBy('sort_order asc'),
 		).as('books'),
 		jsonArrayFrom(
 			eb
 				.selectFrom('series_title')
 				.whereRef('series_title.series_id', '=', 'cte_series.id')
-				.select(['series_title.title', 'series_title.lang', 'series_title.official'])
-		).as('titles')
+				.select(['series_title.title', 'series_title.lang', 'series_title.official']),
+		).as('titles'),
 	]);
 
 export const getSeriesOne = (id: number) =>
@@ -139,7 +139,7 @@ export const getSeriesOne = (id: number) =>
 			'cte_series.romaji',
 			'cte_series.romaji_orig',
 			'cte_series.title',
-			'cte_series.title_orig'
+			'cte_series.title_orig',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -154,9 +154,9 @@ export const getSeriesOne = (id: number) =>
 						'cte_book.romaji',
 						'cte_book.romaji_orig',
 						'cte_book.image_id',
-						'series_book.sort_order'
+						'series_book.sort_order',
 					])
-					.orderBy('sort_order asc')
+					.orderBy('sort_order asc'),
 			).as('books'),
 			jsonArrayFrom(
 				eb
@@ -166,10 +166,10 @@ export const getSeriesOne = (id: number) =>
 						'child_series.id',
 						'child_series.title',
 						'child_series.romaji',
-						'series_relation.relation_type'
+						'series_relation.relation_type',
 					])
-					.whereRef('series_relation.id_parent', '=', 'cte_series.id')
-			).as('child_series')
+					.whereRef('series_relation.id_parent', '=', 'cte_series.id'),
+			).as('child_series'),
 		])
 		.where('cte_series.id', '=', id);
 
@@ -190,7 +190,7 @@ export const getSeriesHistOne = (options: { id: number; revision: number }) =>
 			'cte_series.title',
 			'cte_series.title_orig',
 			'change.ilock as locked',
-			'change.ihid as hidden'
+			'change.ihid as hidden',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -205,9 +205,9 @@ export const getSeriesHistOne = (options: { id: number; revision: number }) =>
 						'cte_book.romaji',
 						'cte_book.romaji_orig',
 						'cte_book.image_id',
-						'series_book_hist.sort_order'
+						'series_book_hist.sort_order',
 					])
-					.orderBy('sort_order asc')
+					.orderBy('sort_order asc'),
 			).as('books'),
 			jsonArrayFrom(
 				eb
@@ -215,16 +215,16 @@ export const getSeriesHistOne = (options: { id: number; revision: number }) =>
 					.innerJoin(
 						'cte_series_non_hist as child_series',
 						'child_series.id',
-						'series_relation_hist.id_child'
+						'series_relation_hist.id_child',
 					)
 					.select([
 						'child_series.id',
 						'child_series.title',
 						'child_series.romaji',
-						'series_relation_hist.relation_type'
+						'series_relation_hist.relation_type',
 					])
-					.whereRef('series_relation_hist.change_id', '=', 'change.id')
-			).as('child_series')
+					.whereRef('series_relation_hist.change_id', '=', 'change.id'),
+			).as('child_series'),
 		])
 		.where('change.item_id', '=', options.id)
 		.where('change.item_name', '=', 'series')
@@ -245,7 +245,7 @@ export const getSeriesOneEdit = (id: number) =>
 			'cte_series.romaji',
 			'cte_series.romaji_orig',
 			'cte_series.title',
-			'cte_series.title_orig'
+			'cte_series.title_orig',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -260,9 +260,9 @@ export const getSeriesOneEdit = (id: number) =>
 						'cte_book.romaji',
 						'cte_book.romaji_orig',
 						'cte_book.image_id',
-						'series_book.sort_order'
+						'series_book.sort_order',
 					])
-					.orderBy('sort_order asc')
+					.orderBy('sort_order asc'),
 			).as('books'),
 			jsonArrayFrom(
 				eb
@@ -272,8 +272,8 @@ export const getSeriesOneEdit = (id: number) =>
 						'series_title.lang',
 						'series_title.official',
 						'series_title.title',
-						'series_title.romaji'
-					])
+						'series_title.romaji',
+					]),
 			).as('titles'),
 			jsonArrayFrom(
 				eb
@@ -283,10 +283,10 @@ export const getSeriesOneEdit = (id: number) =>
 						'child_series.id',
 						'child_series.title',
 						'child_series.romaji',
-						'series_relation.relation_type'
+						'series_relation.relation_type',
 					])
-					.whereRef('series_relation.id_parent', '=', 'cte_series.id')
-			).as('child_series')
+					.whereRef('series_relation.id_parent', '=', 'cte_series.id'),
+			).as('child_series'),
 		])
 		.where('cte_series.id', '=', id);
 
@@ -307,7 +307,7 @@ export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =
 			'cte_series.title',
 			'cte_series.title_orig',
 			'change.ihid as hidden',
-			'change.ilock as locked'
+			'change.ilock as locked',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -322,9 +322,9 @@ export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =
 						'cte_book.romaji',
 						'cte_book.romaji_orig',
 						'cte_book.image_id',
-						'series_book_hist.sort_order'
+						'series_book_hist.sort_order',
 					])
-					.orderBy('sort_order asc')
+					.orderBy('sort_order asc'),
 			).as('books'),
 			jsonArrayFrom(
 				eb
@@ -334,8 +334,8 @@ export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =
 						'series_title_hist.lang',
 						'series_title_hist.official',
 						'series_title_hist.title',
-						'series_title_hist.romaji'
-					])
+						'series_title_hist.romaji',
+					]),
 			).as('titles'),
 			jsonArrayFrom(
 				eb
@@ -343,16 +343,16 @@ export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =
 					.innerJoin(
 						'cte_series_non_hist as child_series',
 						'child_series.id',
-						'series_relation_hist.id_child'
+						'series_relation_hist.id_child',
 					)
 					.select([
 						'child_series.id',
 						'child_series.title',
 						'child_series.romaji',
-						'series_relation_hist.relation_type'
+						'series_relation_hist.relation_type',
 					])
-					.whereRef('series_relation_hist.change_id', '=', 'cte_series.id')
-			).as('child_series')
+					.whereRef('series_relation_hist.change_id', '=', 'cte_series.id'),
+			).as('child_series'),
 		])
 		.where('change.item_id', '=', params.id)
 		.where('change.item_name', '=', 'series')

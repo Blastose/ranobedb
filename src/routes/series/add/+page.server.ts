@@ -23,14 +23,14 @@ export const load = async ({ locals }) => {
 					lang: 'ja',
 					official: true,
 					title: '',
-					romaji: ''
-				}
-			]
+					romaji: '',
+				},
+			],
 		},
 		zod(seriesSchema),
 		{
-			errors: false
-		}
+			errors: false,
+		},
 	);
 
 	return { form };
@@ -64,7 +64,7 @@ export const actions = {
 					return setError(
 						form,
 						'books._errors',
-						'Duplicate books in form. Remove duplicates and try again'
+						'Duplicate books in form. Remove duplicates and try again',
 					);
 				} else if (
 					e.code === '23505' &&
@@ -74,7 +74,7 @@ export const actions = {
 					return setError(
 						form,
 						'titles._errors',
-						'Duplicate titles in form. Remove duplicates and try again'
+						'Duplicate titles in form. Remove duplicates and try again',
 					);
 				} else if (
 					e.code === '23505' &&
@@ -84,7 +84,7 @@ export const actions = {
 					return setError(
 						form,
 						'child_series._errors',
-						'Duplicate series relations in form. Remove duplicates and try again'
+						'Duplicate series relations in form. Remove duplicates and try again',
 					);
 				}
 			} else if (e instanceof ChangePermissionError) {
@@ -93,7 +93,7 @@ export const actions = {
 				return setError(
 					form,
 					'hidden',
-					'Cannot hide series. Remove any relations to the series and try again.'
+					'Cannot hide series. Remove any relations to the series and try again.',
 				);
 			}
 			console.log(e);
@@ -104,9 +104,9 @@ export const actions = {
 				303,
 				`/series/${newSeriesId}`,
 				{ type: 'success', message: 'Successfully added series!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

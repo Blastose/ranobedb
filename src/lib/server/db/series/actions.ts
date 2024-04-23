@@ -15,7 +15,7 @@ import {
 	type SeriesBookHist,
 	type SeriesBook,
 	type SeriesTitle,
-	type SeriesTitleHist
+	type SeriesTitleHist,
 } from '$lib/db/dbTypes';
 import type { Insertable, Transaction } from 'kysely';
 import { arrayDiff, arrayIntersection } from '$lib/db/array';
@@ -31,25 +31,25 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 					.select([
 						'series_relation.id_parent',
 						'series_relation.id_child',
-						'series_relation.relation_type'
+						'series_relation.relation_type',
 					])
 					.select(['series_child.id'])
 					.whereRef('series_relation.id_parent', '=', 'series.id')
-					.where('series.hidden', '=', false)
+					.where('series.hidden', '=', false),
 			).as('child_series'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('book')
 					.innerJoin('series_book', 'series_book.book_id', 'book.id')
 					.whereRef('series_book.series_id', '=', 'series.id')
-					.select(['series_book.book_id', 'series_book.series_id', 'series_book.sort_order'])
+					.select(['series_book.book_id', 'series_book.series_id', 'series_book.sort_order']),
 			).as('books'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('series_title')
 					.whereRef('series_title.series_id', '=', 'series.id')
-					.selectAll('series_title')
-			).as('titles')
+					.selectAll('series_title'),
+			).as('titles'),
 		])
 		.select(['series.id', 'series.publication_status'])
 		.where('series.id', 'in', params.series_ids)
@@ -64,7 +64,7 @@ async function addMiscSeriesRelations(params: {
 	const batch_add_books = params.series.books.map((item) => ({
 		book_id: item.book_id,
 		change_id: params.change_id,
-		sort_order: item.sort_order
+		sort_order: item.sort_order,
 	})) satisfies Insertable<SeriesBookHist>[];
 	if (batch_add_books.length > 0) {
 		await params.trx.insertInto('series_book_hist').values(batch_add_books).execute();
@@ -74,7 +74,7 @@ async function addMiscSeriesRelations(params: {
 		lang: item.lang,
 		official: item.official,
 		title: item.title,
-		romaji: item.romaji
+		romaji: item.romaji,
 	})) satisfies Insertable<SeriesTitleHist>[];
 	if (batch_add_titles.length > 0) {
 		await params.trx.insertInto('series_title_hist').values(batch_add_titles).execute();
@@ -92,7 +92,7 @@ async function updateReverseSeriesRelations(params: {
 }) {
 	const reverse_series = await getSeriesForReverseRelation({
 		trx: params.trx,
-		series_ids: params.series.map((i) => i.id)
+		series_ids: params.series.map((i) => i.id),
 	});
 
 	for (const series of params.series) {
@@ -108,15 +108,15 @@ async function updateReverseSeriesRelations(params: {
 				hidden: false,
 				locked: false,
 				item_id: series.id,
-				item_name: 'series'
+				item_name: 'series',
 			},
-			{ id: 'RanobeBot' }
+			{ id: 'RanobeBot' },
 		);
 		const current = series_to_update.child_series;
 		await params.trx
 			.updateTable('series_relation')
 			.set({
-				relation_type: newRelationType
+				relation_type: newRelationType,
 			})
 			.where('series_relation.id_parent', '=', series.id)
 			.where('series_relation.id_child', '=', params.main_id)
@@ -127,18 +127,18 @@ async function updateReverseSeriesRelations(params: {
 			.map((item) => ({
 				change_id: reverseRelChange.change_id,
 				id_child: item.id_child,
-				relation_type: item.relation_type
+				relation_type: item.relation_type,
 			})) satisfies Insertable<SeriesRelationHist>[];
 		batch_add.push({
 			change_id: reverseRelChange.change_id,
 			relation_type: seriesRelTypeReverseMap[series.relation_type],
-			id_child: params.main_id
+			id_child: params.main_id,
 		});
 		await params.trx
 			.insertInto('series_hist')
 			.values({
 				change_id: reverseRelChange.change_id,
-				publication_status: series_to_update.publication_status
+				publication_status: series_to_update.publication_status,
 			})
 			.execute();
 		if (batch_add.length > 0) {
@@ -148,7 +148,7 @@ async function updateReverseSeriesRelations(params: {
 		await addMiscSeriesRelations({
 			trx: params.trx,
 			change_id: reverseRelChange.change_id,
-			series: series_to_update
+			series: series_to_update,
 		});
 	}
 }
@@ -161,7 +161,7 @@ async function removeReverseSeriesRelations(params: {
 }) {
 	const reverse_series = await getSeriesForReverseRelation({
 		trx: params.trx,
-		series_ids: params.series_ids
+		series_ids: params.series_ids,
 	});
 
 	for (const id of params.series_ids) {
@@ -175,9 +175,9 @@ async function removeReverseSeriesRelations(params: {
 				hidden: false,
 				locked: false,
 				item_id: id,
-				item_name: 'series'
+				item_name: 'series',
 			},
-			{ id: 'RanobeBot' }
+			{ id: 'RanobeBot' },
 		);
 		let current = series_to_remove.child_series;
 		await params.trx
@@ -189,7 +189,7 @@ async function removeReverseSeriesRelations(params: {
 			.insertInto('series_hist')
 			.values({
 				change_id: reverseRelChange.change_id,
-				publication_status: series_to_remove.publication_status
+				publication_status: series_to_remove.publication_status,
 			})
 			.execute();
 		current = current.filter((item) => item.id_child !== params.main_id);
@@ -200,15 +200,15 @@ async function removeReverseSeriesRelations(params: {
 					current.map((c) => ({
 						change_id: reverseRelChange.change_id,
 						id_child: c.id_child,
-						relation_type: c.relation_type
-					}))
+						relation_type: c.relation_type,
+					})),
 				)
 				.execute();
 		}
 		await addMiscSeriesRelations({
 			trx: params.trx,
 			change_id: reverseRelChange.change_id,
-			series: series_to_remove
+			series: series_to_remove,
 		});
 	}
 }
@@ -224,7 +224,7 @@ async function addReverseSeriesRelations(params: {
 }) {
 	const reverse_series = await getSeriesForReverseRelation({
 		trx: params.trx,
-		series_ids: params.series.map((i) => i.id)
+		series_ids: params.series.map((i) => i.id),
 	});
 
 	for (const series of params.series) {
@@ -240,33 +240,33 @@ async function addReverseSeriesRelations(params: {
 				hidden: false,
 				locked: false,
 				item_id: series.id,
-				item_name: 'series'
+				item_name: 'series',
 			},
-			{ id: 'RanobeBot' }
+			{ id: 'RanobeBot' },
 		);
 		const current = series_to_add.child_series;
 		const newRelation = {
 			id_child: params.main_id,
 			id_parent: series.id,
-			relation_type: seriesRelTypeReverseMap[series.relation_type]
+			relation_type: seriesRelTypeReverseMap[series.relation_type],
 		};
 		await params.trx.insertInto('series_relation').values(newRelation).execute();
 
 		const batch_add = current.map((item) => ({
 			change_id: reverseRelChange.change_id,
 			id_child: item.id_child,
-			relation_type: item.relation_type
+			relation_type: item.relation_type,
 		})) satisfies Insertable<SeriesRelationHist>[];
 		batch_add.push({
 			change_id: reverseRelChange.change_id,
 			relation_type: seriesRelTypeReverseMap[series.relation_type],
-			id_child: params.main_id
+			id_child: params.main_id,
 		});
 		await params.trx
 			.insertInto('series_hist')
 			.values({
 				change_id: reverseRelChange.change_id,
-				publication_status: series_to_add.publication_status
+				publication_status: series_to_add.publication_status,
 			})
 			.execute();
 		if (batch_add.length > 0) {
@@ -275,14 +275,14 @@ async function addReverseSeriesRelations(params: {
 		await addMiscSeriesRelations({
 			trx: params.trx,
 			change_id: reverseRelChange.change_id,
-			series: series_to_add
+			series: series_to_add,
 		});
 	}
 }
 
 export async function editSeries(
 	data: { series: Infer<typeof seriesSchema>; id: number },
-	user: User
+	user: User,
 ) {
 	await db.transaction().execute(async (trx) => {
 		const currentSeries = await trx
@@ -296,7 +296,7 @@ export async function editSeries(
 						.innerJoin('series', 'series.id', 'series_relation.id_child')
 						.select(['series_relation.id_child as id', 'series_relation.relation_type'])
 						.where('series_relation.id_parent', '=', data.id)
-						.where('series.hidden', '=', false)
+						.where('series.hidden', '=', false),
 				).as('child_series'),
 				jsonArrayFrom(
 					eb
@@ -304,8 +304,8 @@ export async function editSeries(
 						.innerJoin('series_book', 'series_book.book_id', 'book.id')
 						.whereRef('series_book.series_id', '=', 'series.id')
 						.select(['book.id', 'series_book.sort_order'])
-						.orderBy('sort_order desc')
-				).as('books')
+						.orderBy('sort_order desc'),
+				).as('books'),
 			])
 			.executeTakeFirstOrThrow();
 
@@ -334,9 +334,9 @@ export async function editSeries(
 				hidden,
 				locked,
 				item_id: data.id,
-				item_name: 'series'
+				item_name: 'series',
 			},
-			user
+			user,
 		);
 
 		await trx
@@ -345,7 +345,7 @@ export async function editSeries(
 				bookwalker_id: data.series.bookwalker_id,
 				publication_status: data.series.publication_status,
 				hidden,
-				locked
+				locked,
 			})
 			.where('series.id', '=', data.id)
 			.executeTakeFirstOrThrow();
@@ -355,7 +355,7 @@ export async function editSeries(
 			.values({
 				publication_status: data.series.publication_status,
 				bookwalker_id: data.series.bookwalker_id,
-				change_id: change.change_id
+				change_id: change.change_id,
 			})
 			.executeTakeFirstOrThrow();
 
@@ -367,7 +367,7 @@ export async function editSeries(
 				lang: item.lang,
 				official: item.official,
 				title: item.title,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<SeriesTitle>[];
 		if (series_title_add.length > 0) {
@@ -379,7 +379,7 @@ export async function editSeries(
 				lang: item.lang,
 				official: item.official,
 				title: item.title,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<SeriesTitleHist>[];
 		if (series_title_hist_add.length > 0) {
@@ -392,7 +392,7 @@ export async function editSeries(
 			return {
 				change_id: change.change_id,
 				book_id: item.id,
-				sort_order: item.sort_order
+				sort_order: item.sort_order,
 			};
 		}) satisfies Insertable<SeriesBookHist>[];
 		if (series_book_hist.length > 0) {
@@ -407,7 +407,7 @@ export async function editSeries(
 				.where(
 					'book_id',
 					'in',
-					booksCurrentDiff.map((item) => item.id)
+					booksCurrentDiff.map((item) => item.id),
 				)
 				.where('series_book.series_id', '=', data.id)
 				.execute();
@@ -417,7 +417,7 @@ export async function editSeries(
 			await trx
 				.updateTable('series_book')
 				.set({
-					sort_order: item.sort_order
+					sort_order: item.sort_order,
 				})
 				.where('series_book.series_id', '=', data.id)
 				.where('series_book.book_id', '=', item.id)
@@ -436,7 +436,7 @@ export async function editSeries(
 			return {
 				change_id: change.change_id,
 				id_child: item.id,
-				relation_type: item.relation_type
+				relation_type: item.relation_type,
 			};
 		}) satisfies Insertable<SeriesRelationHist>[];
 		if (series_relations_hist.length > 0) {
@@ -451,7 +451,7 @@ export async function editSeries(
 				.where(
 					'series_relation.id_child',
 					'in',
-					currentDiff.map((item) => item.id)
+					currentDiff.map((item) => item.id),
 				)
 				.where('series_relation.id_parent', '=', data.id)
 				.execute();
@@ -462,21 +462,21 @@ export async function editSeries(
 				trx,
 				main_id: data.id,
 				og_change: change,
-				series_ids: currentDiff.map((i) => i.id)
+				series_ids: currentDiff.map((i) => i.id),
 			});
 		}
 
 		const toUpdate = data.series.child_series.filter((item1) =>
 			currentSeries.child_series.some(
-				(item2) => item2.id === item1.id && item1.relation_type !== item2.relation_type
-			)
+				(item2) => item2.id === item1.id && item1.relation_type !== item2.relation_type,
+			),
 		);
 
 		for (const item of toUpdate) {
 			await trx
 				.updateTable('series_relation')
 				.set({
-					relation_type: item.relation_type
+					relation_type: item.relation_type,
 				})
 				.where('series_relation.id_parent', '=', data.id)
 				.where('series_relation.id_child', '=', item.id)
@@ -488,7 +488,7 @@ export async function editSeries(
 				trx,
 				main_id: data.id,
 				og_change: change,
-				series: toUpdate
+				series: toUpdate,
 			});
 		}
 
@@ -506,7 +506,7 @@ export async function editSeries(
 				trx,
 				main_id: data.id,
 				og_change: change,
-				series: newDiff
+				series: newDiff,
 			});
 		}
 	});
@@ -524,7 +524,7 @@ export async function addSeries(data: { series: Infer<typeof seriesSchema> }, us
 				publication_status: data.series.publication_status,
 				bookwalker_id: data.series.bookwalker_id,
 				hidden,
-				locked
+				locked,
 			})
 			.returning('series.id')
 			.executeTakeFirstOrThrow();
@@ -536,9 +536,9 @@ export async function addSeries(data: { series: Infer<typeof seriesSchema> }, us
 				hidden,
 				locked,
 				item_id: insertedSeries.id,
-				item_name: 'series'
+				item_name: 'series',
 			},
-			user
+			user,
 		);
 
 		await trx
@@ -546,14 +546,14 @@ export async function addSeries(data: { series: Infer<typeof seriesSchema> }, us
 			.values({
 				publication_status: data.series.publication_status,
 				bookwalker_id: data.series.bookwalker_id,
-				change_id: change.change_id
+				change_id: change.change_id,
 			})
 			.executeTakeFirstOrThrow();
 		const series_relations = data.series.child_series.map((item) => {
 			return {
 				id_parent: insertedSeries.id,
 				id_child: item.id,
-				relation_type: item.relation_type
+				relation_type: item.relation_type,
 			};
 		}) satisfies Insertable<SeriesRelation>[];
 		if (series_relations.length > 0) {
@@ -566,7 +566,7 @@ export async function addSeries(data: { series: Infer<typeof seriesSchema> }, us
 				trx,
 				main_id: insertedSeries.id,
 				og_change: change,
-				series: data.series.child_series
+				series: data.series.child_series,
 			});
 		}
 
@@ -577,7 +577,7 @@ export async function addSeries(data: { series: Infer<typeof seriesSchema> }, us
 				lang: item.lang,
 				official: item.official,
 				title: item.title,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<SeriesTitle>[];
 		if (series_title_add.length > 0) {
@@ -589,7 +589,7 @@ export async function addSeries(data: { series: Infer<typeof seriesSchema> }, us
 				lang: item.lang,
 				official: item.official,
 				title: item.title,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<SeriesTitleHist>[];
 		if (series_title_hist_add.length > 0) {

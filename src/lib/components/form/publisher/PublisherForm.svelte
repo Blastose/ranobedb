@@ -23,7 +23,7 @@
 			if (!f.valid) {
 				addToast({ data: { title: 'Error in form!', type: 'error' } });
 			}
-		}
+		},
 	});
 	$: ({ form, enhance, delayed, submitting } = sForm);
 

@@ -15,7 +15,7 @@ export const load = async ({ params, locals }) => {
 	const changesPromise = getChanges('book', bookId, [
 		previousRevision,
 		revision,
-		revision + 1
+		revision + 1,
 	]).execute();
 
 	const [book, changes] = await Promise.all([bookPromise, changesPromise]);
@@ -51,6 +51,6 @@ export const load = async ({ params, locals }) => {
 		book,
 		diff,
 		revision: { revision, previousRevision },
-		changes: { prevChange, change, nextChange }
+		changes: { prevChange, change, nextChange },
 	};
 };

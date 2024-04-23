@@ -17,7 +17,7 @@ export class DateNumber {
 		return {
 			year,
 			month,
-			day
+			day,
 		};
 	}
 

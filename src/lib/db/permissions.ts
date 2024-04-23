@@ -8,7 +8,7 @@ export const permissions: Record<UserRole, Perm[]> = {
 	editor: ['edit', 'add'],
 	user: [],
 	unverified: [],
-	banned: []
+	banned: [],
 };
 
 export function hasVisibilityPerms(user: User | null) {

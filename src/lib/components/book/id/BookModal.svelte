@@ -32,21 +32,21 @@
 			addToast({
 				data: {
 					title: form.message?.text ?? 'Success',
-					type: 'success'
-				}
+					type: 'success',
+				},
 			});
 		},
-		taintedMessage: null
+		taintedMessage: null,
 	});
 
 	$: ({ form, enhance, delayed, submitting } = sForm);
 
 	const {
 		elements: { trigger, overlay, content, title, close, portalled },
-		states: { open }
+		states: { open },
 	} = createDialog({
 		forceVisible: true,
-		preventScroll: false
+		preventScroll: false,
 	});
 
 	const {
@@ -57,9 +57,9 @@
 			title: titleNested,
 			description: descriptionNested,
 			close: closeNested,
-			portalled: portalledNested
+			portalled: portalledNested,
 		},
-		states: { open: openNested }
+		states: { open: openNested },
 	} = createDialog({ forceVisible: true, preventScroll: false });
 
 	$: modalTitle = $form.type === 'add' ? 'Add book to reading list' : 'Update book in reading list';
@@ -77,7 +77,7 @@
 			<div
 				transition:fly={{
 					duration: 250,
-					y: 8
+					y: 8,
 				}}
 				use:melt={$content}
 				class="modal-content-inner no-pt"
@@ -160,7 +160,7 @@
 								class="modal-content-inner confirm-modal"
 								transition:fly={{
 									duration: 250,
-									y: 8
+									y: 8,
 								}}
 								use:melt={$contentNested}
 							>

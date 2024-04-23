@@ -26,7 +26,7 @@ export const load = async ({ params, locals, url }) => {
 	if (revision.valid && url.searchParams.get('revision')) {
 		release = await getReleaseHistEdit({
 			id: releaseId,
-			revision: revision.data.revision
+			revision: revision.data.revision,
 		}).executeTakeFirst();
 	} else {
 		release = await getReleaseEdit(releaseId).executeTakeFirst();
@@ -53,7 +53,7 @@ export const load = async ({ params, locals, url }) => {
 			: undefined;
 
 	const form = await superValidate({ ...release, comment: prefilledComment }, zod(releaseSchema), {
-		errors: false
+		errors: false,
 	});
 
 	return { release, form };
@@ -89,7 +89,7 @@ export const actions = {
 					return setError(
 						form,
 						'books._errors',
-						'Duplicate books in form. Remove duplicates and try again'
+						'Duplicate books in form. Remove duplicates and try again',
 					);
 				} else if (
 					e.code === '23505' &&
@@ -99,7 +99,7 @@ export const actions = {
 					return setError(
 						form,
 						'publishers._errors',
-						'Duplicate publishers in form. Remove duplicates and try again'
+						'Duplicate publishers in form. Remove duplicates and try again',
 					);
 				}
 			} else if (e instanceof ChangePermissionError) {
@@ -108,7 +108,7 @@ export const actions = {
 				return setError(
 					form,
 					'hidden',
-					'Cannot hide release. Remove any relations to the release and try again.'
+					'Cannot hide release. Remove any relations to the release and try again.',
 				);
 			}
 		}
@@ -118,9 +118,9 @@ export const actions = {
 				303,
 				`/release/${id}`,
 				{ type: 'success', message: 'Successfully edited release!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

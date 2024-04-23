@@ -11,11 +11,11 @@
 
 	const {
 		elements: { trigger, menu, item, separator, arrow },
-		states: { open }
+		states: { open },
 	} = createDropdownMenu({
 		forceVisible: true,
 		preventScroll: false,
-		positioning: { placement: 'bottom-end', gutter: 16 }
+		positioning: { placement: 'bottom-end', gutter: 16 },
 	});
 </script>
 

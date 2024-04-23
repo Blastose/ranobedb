@@ -7,7 +7,7 @@ export async function insertDefaultUserListLabels(trx: Transaction<DB>, userId: 
 		return {
 			...v,
 			private: false,
-			user_id: userId
+			user_id: userId,
 		};
 	});
 	await trx

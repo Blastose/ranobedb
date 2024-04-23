@@ -13,14 +13,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 			const sessionCookie = lucia.createSessionCookie(session.id);
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
-				...sessionCookie.attributes
+				...sessionCookie.attributes,
 			});
 		}
 		if (!session) {
 			const sessionCookie = lucia.createBlankSessionCookie();
 			event.cookies.set(sessionCookie.name, sessionCookie.value, {
 				path: '.',
-				...sessionCookie.attributes
+				...sessionCookie.attributes,
 			});
 		}
 		event.locals.user = user;
@@ -37,6 +37,6 @@ export const handle: Handle = async ({ event, resolve }) => {
 	return await resolve(event, {
 		transformPageChunk: ({ html }) => {
 			return html.replace('<html lang="en">', `<html lang="en" class="${theme}">`);
-		}
+		},
 	});
 };

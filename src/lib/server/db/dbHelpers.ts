@@ -5,12 +5,12 @@ import type { Language } from '$lib/db/dbTypes';
 export type LanguagePriority = { lang: Language; romaji: boolean };
 export const defaultLangPrio: LanguagePriority[] = [
 	{ lang: 'en', romaji: false },
-	{ lang: 'ja', romaji: true }
+	{ lang: 'ja', romaji: true },
 ];
 
 export function paginationBuilder<O, DB, TB extends keyof DB>(
 	query: SelectQueryBuilder<DB, TB, O>,
-	pageOptions: { limit: number; page: number }
+	pageOptions: { limit: number; page: number },
 ) {
 	let newQuery = query;
 	newQuery = newQuery
@@ -23,7 +23,7 @@ export function paginationBuilder<O, DB, TB extends keyof DB>(
 
 export async function paginationBuilderExecute<O, DB, TB extends keyof DB>(
 	query: SelectQueryBuilder<DB, TB, O>,
-	pageOptions: { limit: number; page: number }
+	pageOptions: { limit: number; page: number },
 ) {
 	const pagedQuery = paginationBuilder(query, pageOptions);
 	const result = await pagedQuery.execute();
@@ -32,7 +32,7 @@ export async function paginationBuilderExecute<O, DB, TB extends keyof DB>(
 
 export async function paginationBuilderExecuteWithCount<O, DB, TB extends keyof DB>(
 	query: SelectQueryBuilder<DB, TB, O>,
-	pageOptions: { limit: number; page: number }
+	pageOptions: { limit: number; page: number },
 ) {
 	const pagedQuery = paginationBuilder(query, pageOptions);
 	const baseResult = await pagedQuery.execute();
@@ -41,7 +41,7 @@ export async function paginationBuilderExecuteWithCount<O, DB, TB extends keyof 
 	return {
 		result,
 		count,
-		totalPages: Math.ceil(count / pageOptions.limit)
+		totalPages: Math.ceil(count / pageOptions.limit),
 	};
 }
 
@@ -52,10 +52,10 @@ export function getCountFromPaginatedQuery(queryResults: { count: string }[]) {
 }
 
 export function getCurrentVisibilityStatus<T extends { hidden: boolean; locked: boolean }>(
-	item: T
+	item: T,
 ) {
 	return {
 		hidden: item.hidden,
-		locked: item.locked
+		locked: item.locked,
 	};
 }

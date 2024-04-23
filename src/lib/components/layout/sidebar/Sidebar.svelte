@@ -35,7 +35,7 @@
 		return {
 			destroy() {
 				node.removeEventListener('click', handleAClick);
-			}
+			},
 		};
 	}
 </script>

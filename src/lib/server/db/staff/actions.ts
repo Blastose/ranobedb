@@ -11,7 +11,7 @@ import type { Insertable } from 'kysely';
 
 export async function editStaff(
 	data: { staff: Infer<typeof staffSchema>; id: number },
-	user: User
+	user: User,
 ) {
 	await db.transaction().execute(async (trx) => {
 		const currentStaff = await trx
@@ -23,8 +23,8 @@ export async function editStaff(
 					eb
 						.selectFrom('staff_alias as all_aliases')
 						.whereRef('all_aliases.staff_id', '=', 'staff.id')
-						.selectAll('all_aliases')
-				).as('aliases')
+						.selectAll('all_aliases'),
+				).as('aliases'),
 			)
 			.executeTakeFirstOrThrow();
 
@@ -53,9 +53,9 @@ export async function editStaff(
 				hidden,
 				locked,
 				item_id: data.id,
-				item_name: 'staff'
+				item_name: 'staff',
 			},
-			user
+			user,
 		);
 
 		await trx
@@ -64,7 +64,7 @@ export async function editStaff(
 				bookwalker_id: data.staff.bookwalker_id,
 				description: data.staff.description ?? '',
 				hidden,
-				locked
+				locked,
 			})
 			.where('staff.id', '=', data.id)
 			.executeTakeFirstOrThrow();
@@ -74,12 +74,12 @@ export async function editStaff(
 			.values({
 				description: data.staff.description ?? '',
 				bookwalker_id: data.staff.bookwalker_id,
-				change_id: change.change_id
+				change_id: change.change_id,
 			})
 			.executeTakeFirstOrThrow();
 
 		const aliases_to_delete = currentStaff.aliases.filter(
-			({ id: id1 }) => !data.staff.aliases.some(({ aid: id2 }) => id2 === id1)
+			({ id: id1 }) => !data.staff.aliases.some(({ aid: id2 }) => id2 === id1),
 		);
 		console.log('aliases_to_delete');
 		console.log(aliases_to_delete);
@@ -89,7 +89,7 @@ export async function editStaff(
 				.where(
 					'staff_alias.id',
 					'in',
-					aliases_to_delete.map((item) => item.id)
+					aliases_to_delete.map((item) => item.id),
 				)
 				.execute();
 		}
@@ -117,14 +117,14 @@ export async function editStaff(
 					main_alias: item.main_alias,
 					name: item.name,
 					aid: item.aid,
-					romaji: item.romaji
+					romaji: item.romaji,
 				};
 			}
 			return {
 				main_alias: item.main_alias,
 				name: item.name,
 				aid: undefined,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		});
 
@@ -144,7 +144,7 @@ export async function editStaff(
 				.set({
 					main_alias: item.main_alias,
 					name: item.name,
-					romaji: item.romaji
+					romaji: item.romaji,
 				})
 				.where('staff_alias.id', '=', item.aid!)
 				.execute();
@@ -162,7 +162,7 @@ export async function editStaff(
 				main_alias: item.main_alias,
 				name: item.name,
 				romaji: item.romaji,
-				staff_id: data.id
+				staff_id: data.id,
 			};
 		}) satisfies Insertable<StaffAlias>[];
 		if (batched_aliases_to_add.length > 0) {
@@ -179,7 +179,7 @@ export async function editStaff(
 					main_alias: item.main_alias,
 					name: item.name,
 					aid: item.id,
-					romaji: item.romaji
+					romaji: item.romaji,
 				});
 			}
 		}
@@ -189,7 +189,7 @@ export async function editStaff(
 				change_id: change.change_id,
 				main_alias: item.main_alias,
 				name: item.name,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<StaffAliasHist>[];
 		console.log('batched_aliases_to_add_to_hist');
@@ -212,7 +212,7 @@ export async function addStaff(data: { staff: Infer<typeof staffSchema> }, user:
 				description: data.staff.description ?? '',
 				bookwalker_id: data.staff.bookwalker_id,
 				hidden,
-				locked
+				locked,
 			})
 			.returning('staff.id')
 			.executeTakeFirstOrThrow();
@@ -224,9 +224,9 @@ export async function addStaff(data: { staff: Infer<typeof staffSchema> }, user:
 				hidden,
 				locked,
 				item_id: insertedStaff.id,
-				item_name: 'staff'
+				item_name: 'staff',
 			},
-			user
+			user,
 		);
 
 		await trx
@@ -234,7 +234,7 @@ export async function addStaff(data: { staff: Infer<typeof staffSchema> }, user:
 			.values({
 				description: data.staff.description ?? '',
 				bookwalker_id: data.staff.bookwalker_id,
-				change_id: change.change_id
+				change_id: change.change_id,
 			})
 			.executeTakeFirstOrThrow();
 
@@ -244,7 +244,7 @@ export async function addStaff(data: { staff: Infer<typeof staffSchema> }, user:
 				main_alias: item.main_alias,
 				name: item.name,
 				romaji: item.romaji,
-				staff_id: insertedStaff.id
+				staff_id: insertedStaff.id,
 			};
 		}) satisfies Insertable<StaffAlias>[];
 		if (batched_aliases_to_add.length > 0) {
@@ -261,7 +261,7 @@ export async function addStaff(data: { staff: Infer<typeof staffSchema> }, user:
 					main_alias: item.main_alias,
 					name: item.name,
 					aid: item.id,
-					romaji: item.romaji
+					romaji: item.romaji,
 				});
 			}
 		}
@@ -271,7 +271,7 @@ export async function addStaff(data: { staff: Infer<typeof staffSchema> }, user:
 				change_id: change.change_id,
 				main_alias: item.main_alias,
 				name: item.name,
-				romaji: item.romaji
+				romaji: item.romaji,
 			};
 		}) satisfies Insertable<StaffAliasHist>[];
 		if (batched_aliases_to_add_to_hist.length > 0) {

@@ -6,19 +6,19 @@ export const load = async ({ url }) => {
 	const {
 		result: publishers,
 		count,
-		totalPages
+		totalPages,
 	} = await paginationBuilderExecuteWithCount(
 		getPublishers.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 		{
 			limit: 40,
-			page: currentPage
-		}
+			page: currentPage,
+		},
 	);
 
 	return {
 		publishers,
 		count,
 		currentPage,
-		totalPages
+		totalPages,
 	};
 };

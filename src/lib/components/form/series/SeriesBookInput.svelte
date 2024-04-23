@@ -19,7 +19,7 @@
 			title: book.name,
 			id: book.id,
 			romaji: '',
-			sort_order: $values.length
+			sort_order: $values.length,
 		});
 		$values = $values;
 	}

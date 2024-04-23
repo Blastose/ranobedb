@@ -27,7 +27,7 @@
 			if (!f.valid) {
 				addToast({ data: { title: 'Error in form!', type: 'error' } });
 			}
-		}
+		},
 	});
 	$: ({ form, enhance, delayed, submitting } = sForm);
 
@@ -62,7 +62,7 @@
 			field="lang"
 			dropdownOptions={languagesArray.map((item) => ({
 				display: languageNames[item],
-				value: item
+				value: item,
 			}))}
 			selectedValue={release?.lang ?? 'ja'}
 			label="Language"

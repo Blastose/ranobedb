@@ -11,11 +11,11 @@
 	const customOpen = writable(false);
 
 	const {
-		elements: { trigger, overlay, content, close, portalled, title }
+		elements: { trigger, overlay, content, close, portalled, title },
 	} = createDialog({
 		forceVisible: true,
 		preventScroll: false,
-		open: customOpen
+		open: customOpen,
 	});
 
 	function handleNavigation() {
@@ -37,7 +37,7 @@
 				x: -256,
 				duration: 450,
 				opacity: 1,
-				easing: quintOut
+				easing: quintOut,
 			}}
 		>
 			<button use:melt={$close} aria-label="Close" class="close-btn btn">

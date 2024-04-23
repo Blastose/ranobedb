@@ -15,18 +15,18 @@ export function getBooksRL(userId: string) {
 		.innerJoin('user_list_book', (join) =>
 			join
 				.onRef('user_list_book.book_id', '=', 'cte_book.id')
-				.on('user_list_book.user_id', '=', userId)
+				.on('user_list_book.user_id', '=', userId),
 		)
 		.innerJoin('user_list_book_label', (join) =>
 			join
 				.onRef('user_list_book_label.book_id', '=', 'cte_book.id')
-				.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id')
+				.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id'),
 		)
 		.innerJoin('user_list_label', (join) =>
 			join
 				.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
 				.on((eb) => eb.between('user_list_label.id', 1, 10))
-				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id')
+				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
 		)
 		.select([
 			'cte_book.description',
@@ -40,7 +40,7 @@ export function getBooksRL(userId: string) {
 			'cte_book.title_orig',
 			'image.filename',
 			'user_list_label.id as label_id',
-			'user_list_label.label'
+			'user_list_label.label',
 		])
 		.select((eb) => eb.fn.min('release.release_date').as('date'))
 		.select((eb) => [
@@ -48,15 +48,15 @@ export function getBooksRL(userId: string) {
 				eb
 					.selectFrom('book_title')
 					.whereRef('book_title.book_id', '=', 'cte_book.id')
-					.selectAll('book_title')
+					.selectAll('book_title'),
 			).as('titles'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('staff_alias')
 					.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
 					.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
-					.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id'])
-			).as('staff')
+					.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id']),
+			).as('staff'),
 		])
 		.groupBy([
 			'cte_book.description',
@@ -70,7 +70,7 @@ export function getBooksRL(userId: string) {
 			'cte_book.title_orig',
 			'image.filename',
 			'user_list_label.id',
-			'user_list_label.label'
+			'user_list_label.label',
 		])
 		.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
 }
@@ -82,19 +82,19 @@ export function getUserLabelCounts(userId: string) {
 			join
 				.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id')
 				.onRef('user_list_book_label.book_id', '=', 'user_list_book.book_id')
-				.on('user_list_book.user_id', '=', userId)
+				.on('user_list_book.user_id', '=', userId),
 		)
 		.fullJoin('user_list_label', (join) =>
 			join
 				.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
-				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id')
+				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
 		)
 		.leftJoin('book', 'book.id', 'user_list_book.book_id')
 		.select((eb) => eb.fn.coalesce('user_list_label.label', sql<string>`'No label'`).as('label'))
 		.select((eb) => eb.fn.count('user_list_book.book_id').as('book_count'))
 		.select((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`9999`).as('label_id'))
 		.where((eb) =>
-			eb.or([eb('user_list_book.user_id', '=', userId), eb('user_list_book.user_id', 'is', null)])
+			eb.or([eb('user_list_book.user_id', '=', userId), eb('user_list_book.user_id', 'is', null)]),
 		)
 		.where('user_list_label.user_id', '=', userId)
 		.where((eb) => eb.or([eb('book.hidden', '=', false), eb('book.hidden', 'is', null)]))
@@ -113,12 +113,12 @@ export function getUserListBookWithLabels(userId: string, bookId: number) {
 					.innerJoin('user_list_label', (join) =>
 						join
 							.onRef('user_list_label.user_id', '=', 'user_list_book_label.user_id')
-							.onRef('user_list_label.id', '=', 'user_list_book_label.label_id')
+							.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
 					)
 					.select(['user_list_label.label', 'user_list_label.id'])
 					.whereRef('user_list_book_label.book_id', '=', 'user_list_book.book_id')
-					.whereRef('user_list_book_label.user_id', '=', 'user_list_book.user_id')
-			).as('labels')
+					.whereRef('user_list_book_label.user_id', '=', 'user_list_book.user_id'),
+			).as('labels'),
 		])
 		.where('user_list_book.user_id', '=', userId)
 		.where('user_list_book.book_id', '=', bookId)
@@ -126,7 +126,7 @@ export function getUserListBookWithLabels(userId: string, bookId: number) {
 			'user_list_book.started',
 			'user_list_book.finished',
 			'user_list_book.notes',
-			'user_list_book.score'
+			'user_list_book.score',
 		]);
 }
 
@@ -153,7 +153,7 @@ export async function addBookToList(params: {
 				user_id: params.userId,
 				started: params.started,
 				finished: params.finished,
-				notes: params.notes ?? ''
+				notes: params.notes ?? '',
 			})
 			.execute();
 
@@ -162,7 +162,7 @@ export async function addBookToList(params: {
 			return {
 				book_id: params.bookId,
 				user_id: params.userId,
-				label_id: labelId
+				label_id: labelId,
 			};
 		});
 		if (userListBookLabels.length > 0) {
@@ -206,7 +206,7 @@ export async function editBookInList(params: {
 				user_id: params.userId,
 				started: params.started,
 				finished: params.finished,
-				notes: params.notes ?? ''
+				notes: params.notes ?? '',
 			})
 			.where('book_id', '=', params.bookId)
 			.where('user_id', '=', params.userId)
@@ -221,8 +221,8 @@ export async function editBookInList(params: {
 					eb.and([
 						eb('book_id', '=', params.bookId),
 						eb('user_id', '=', params.userId),
-						eb('label_id', 'in', toRemove)
-					])
+						eb('label_id', 'in', toRemove),
+					]),
 				)
 				.execute();
 		}
@@ -232,7 +232,7 @@ export async function editBookInList(params: {
 			return {
 				book_id: params.bookId,
 				user_id: params.userId,
-				label_id: labelId
+				label_id: labelId,
 			};
 		});
 		if (toAddLabels.length > 0) {

@@ -11,9 +11,9 @@ export const actions: Actions = {
 		const sessionCookie = lucia.createBlankSessionCookie();
 		cookies.set(sessionCookie.name, sessionCookie.value, {
 			path: '.',
-			...sessionCookie.attributes
+			...sessionCookie.attributes,
 		});
 
 		redirect(302, '/login');
-	}
+	},
 };

@@ -18,14 +18,14 @@
 			main_alias: false,
 			name: '',
 			romaji: undefined,
-			aid: undefined
+			aid: undefined,
 		});
 		$values = $values;
 	}
 
 	function handleCheckboxClick(e: Event & { currentTarget: EventTarget & HTMLInputElement }) {
 		const checkboxes = document.querySelectorAll<HTMLInputElement>(
-			'input[type="radio"][name="main-alias"]'
+			'input[type="radio"][name="main-alias"]',
 		);
 		for (const [index, c] of checkboxes.entries()) {
 			if (e.currentTarget !== c) {

@@ -42,10 +42,10 @@ export const load = async ({ url, params, locals }) => {
 	const {
 		result: books,
 		count,
-		totalPages
+		totalPages,
 	} = await paginationBuilderExecuteWithCount(k, {
 		limit: 24,
-		page: currentPage
+		page: currentPage,
 	});
 
 	return {
@@ -55,6 +55,6 @@ export const load = async ({ url, params, locals }) => {
 		totalPages,
 		userLabelCounts,
 		isMyList: user?.username === listUserUsername,
-		listUser
+		listUser,
 	};
 };

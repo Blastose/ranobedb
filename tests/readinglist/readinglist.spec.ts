@@ -28,7 +28,7 @@ test.describe('add/edit/remove books from reading list', () => {
 		await page.getByRole('dialog').getByRole('button', { name: 'Remove from list' }).click();
 		await page.getByRole('button', { name: 'Delete' }).click();
 		await expect(page.locator('main button[aria-haspopup="dialog"]')).toHaveText(
-			'Add to reading list'
+			'Add to reading list',
 		);
 	});
 });

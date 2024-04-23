@@ -15,7 +15,7 @@ export const load = async ({ params, locals }) => {
 	const changesPromise = getChanges('series', seriesId, [
 		previousRevision,
 		revision,
-		revision + 1
+		revision + 1,
 	]).execute();
 
 	const [series, changes] = await Promise.all([seriesPromise, changesPromise]);
@@ -41,7 +41,7 @@ export const load = async ({ params, locals }) => {
 	if (previousRevision > 0) {
 		const prevSeries = await getSeriesHistOne({
 			id: seriesId,
-			revision: previousRevision
+			revision: previousRevision,
 		}).executeTakeFirst();
 		if (!prevSeries) {
 			error(404);
@@ -55,6 +55,6 @@ export const load = async ({ params, locals }) => {
 		series,
 		diff,
 		revision: { revision, previousRevision },
-		changes: { prevChange, change, nextChange }
+		changes: { prevChange, change, nextChange },
 	};
 };

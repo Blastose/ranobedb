@@ -15,10 +15,10 @@
 	const percentage = writable(0);
 	const {
 		elements: { root: progress },
-		options: { max }
+		options: { max },
 	} = createProgress({
 		max: 100,
-		value: percentage
+		value: percentage,
 	});
 
 	onMount(() => {

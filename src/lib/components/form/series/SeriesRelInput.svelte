@@ -18,7 +18,7 @@
 			title: series.name,
 			id: series.id,
 			romaji: '',
-			relation_type: 'parent story'
+			relation_type: 'parent story',
 		});
 		$values = $values;
 	}

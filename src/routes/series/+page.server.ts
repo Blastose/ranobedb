@@ -6,16 +6,16 @@ export const load = async ({ url }) => {
 	const {
 		result: series,
 		count,
-		totalPages
+		totalPages,
 	} = await paginationBuilderExecuteWithCount(getSeries, {
 		limit: 24,
-		page: currentPage
+		page: currentPage,
 	});
 
 	return {
 		series,
 		count,
 		currentPage,
-		totalPages
+		totalPages,
 	};
 };

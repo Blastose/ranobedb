@@ -22,12 +22,12 @@ export const load = async ({ locals }) => {
 					lang: 'ja',
 					official: true,
 					title: '',
-					romaji: ''
-				}
-			]
+					romaji: '',
+				},
+			],
 		},
 		zod(bookSchema),
-		{ errors: false }
+		{ errors: false },
 	);
 
 	return { form };
@@ -59,7 +59,7 @@ export const actions = {
 					return setError(
 						form,
 						'staff._errors',
-						'Duplicate staff member with same roles in form. Remove duplicates and try again.'
+						'Duplicate staff member with same roles in form. Remove duplicates and try again.',
 					);
 				}
 			}
@@ -70,9 +70,9 @@ export const actions = {
 				303,
 				`/book/${newBookId}`,
 				{ type: 'success', message: 'Successfully added book!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

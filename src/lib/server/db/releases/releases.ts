@@ -12,8 +12,8 @@ export const getReleases = db
 				.selectFrom('publisher')
 				.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 				.whereRef('release_publisher.release_id', '=', 'release.id')
-				.select(['publisher.name', 'publisher_type'])
-		).as('publishers')
+				.select(['publisher.name', 'publisher_type']),
+		).as('publishers'),
 	]);
 
 export function getRelease(id: number) {
@@ -27,7 +27,7 @@ export function getRelease(id: number) {
 					.selectFrom('publisher')
 					.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 					.whereRef('release_publisher.release_id', '=', 'release.id')
-					.select(['publisher.name', 'publisher_type', 'publisher.id'])
+					.select(['publisher.name', 'publisher_type', 'publisher.id']),
 			).as('publishers'),
 			jsonArrayFrom(
 				eb
@@ -35,16 +35,16 @@ export function getRelease(id: number) {
 					.innerJoin('release_book', (join) =>
 						join
 							.onRef('release_book.book_id', '=', 'cte_book.id')
-							.onRef('release_book.release_id', '=', 'release.id')
+							.onRef('release_book.release_id', '=', 'release.id'),
 					)
 					.select([
 						'cte_book.id',
 						'cte_book.title',
 						'cte_book.title_orig',
 						'cte_book.romaji',
-						'cte_book.romaji_orig'
-					])
-			).as('books')
+						'cte_book.romaji_orig',
+					]),
+			).as('books'),
 		])
 		.where('release.id', '=', id);
 }
@@ -63,7 +63,7 @@ export const getReleaseHist = (options: { id: number; revision: number }) => {
 			'release_hist.pages',
 			'release_hist.release_date',
 			'release_hist.romaji',
-			'release_hist.title'
+			'release_hist.title',
 		])
 		.select(['change.ihid as hidden', 'change.ilock as locked'])
 		.select((eb) => [
@@ -73,10 +73,10 @@ export const getReleaseHist = (options: { id: number; revision: number }) => {
 					.innerJoin(
 						'release_publisher_hist',
 						'release_publisher_hist.publisher_id',
-						'publisher.id'
+						'publisher.id',
 					)
 					.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
-					.select(['publisher.name', 'publisher_type', 'publisher.id'])
+					.select(['publisher.name', 'publisher_type', 'publisher.id']),
 			).as('publishers'),
 			jsonArrayFrom(
 				eb
@@ -84,16 +84,16 @@ export const getReleaseHist = (options: { id: number; revision: number }) => {
 					.innerJoin('release_book_hist', (join) =>
 						join
 							.onRef('release_book_hist.book_id', '=', 'cte_book.id')
-							.onRef('release_book_hist.change_id', '=', 'release_hist.change_id')
+							.onRef('release_book_hist.change_id', '=', 'release_hist.change_id'),
 					)
 					.select([
 						'cte_book.id',
 						'cte_book.title',
 						'cte_book.title_orig',
 						'cte_book.romaji',
-						'cte_book.romaji_orig'
-					])
-			).as('books')
+						'cte_book.romaji_orig',
+					]),
+			).as('books'),
 		])
 		.where('change.item_id', '=', options.id)
 		.where('change.item_name', '=', 'release')
@@ -115,7 +115,7 @@ export function getReleaseEdit(id: number) {
 			'release.romaji',
 			'release.title',
 			'release.hidden',
-			'release.locked'
+			'release.locked',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -123,7 +123,7 @@ export function getReleaseEdit(id: number) {
 					.selectFrom('publisher')
 					.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 					.whereRef('release_publisher.release_id', '=', 'release.id')
-					.select(['publisher.name', 'publisher_type', 'publisher.id'])
+					.select(['publisher.name', 'publisher_type', 'publisher.id']),
 			).as('publishers'),
 			jsonArrayFrom(
 				eb
@@ -131,7 +131,7 @@ export function getReleaseEdit(id: number) {
 					.innerJoin('release_book', (join) =>
 						join
 							.onRef('release_book.book_id', '=', 'cte_book.id')
-							.onRef('release_book.release_id', '=', 'release.id')
+							.onRef('release_book.release_id', '=', 'release.id'),
 					)
 					.select([
 						'cte_book.id',
@@ -139,9 +139,9 @@ export function getReleaseEdit(id: number) {
 						'cte_book.title_orig',
 						'cte_book.romaji',
 						'cte_book.romaji_orig',
-						'release_book.rtype'
-					])
-			).as('books')
+						'release_book.rtype',
+					]),
+			).as('books'),
 		])
 		.where('release.id', '=', id);
 }
@@ -160,7 +160,7 @@ export function getReleaseHistEdit(params: { id: number; revision: number }) {
 			'release_hist.pages',
 			'release_hist.release_date',
 			'release_hist.romaji',
-			'release_hist.title'
+			'release_hist.title',
 		])
 		.select(['change.ihid as hidden', 'change.ilock as locked'])
 		.select((eb) => [
@@ -170,10 +170,10 @@ export function getReleaseHistEdit(params: { id: number; revision: number }) {
 					.innerJoin(
 						'release_publisher_hist',
 						'release_publisher_hist.publisher_id',
-						'publisher.id'
+						'publisher.id',
 					)
 					.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
-					.select(['publisher.name', 'publisher_type', 'publisher.id'])
+					.select(['publisher.name', 'publisher_type', 'publisher.id']),
 			).as('publishers'),
 			jsonArrayFrom(
 				eb
@@ -181,7 +181,7 @@ export function getReleaseHistEdit(params: { id: number; revision: number }) {
 					.innerJoin('release_book_hist', (join) =>
 						join
 							.onRef('release_book_hist.book_id', '=', 'cte_book.id')
-							.onRef('release_book_hist.change_id', '=', 'release_hist.change_id')
+							.onRef('release_book_hist.change_id', '=', 'release_hist.change_id'),
 					)
 					.select([
 						'cte_book.id',
@@ -189,9 +189,9 @@ export function getReleaseHistEdit(params: { id: number; revision: number }) {
 						'cte_book.title_orig',
 						'cte_book.romaji',
 						'cte_book.romaji_orig',
-						'release_book_hist.rtype'
-					])
-			).as('books')
+						'release_book_hist.rtype',
+					]),
+			).as('books'),
 		])
 		.where('change.item_id', '=', params.id)
 		.where('change.item_name', '=', 'release')

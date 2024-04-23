@@ -26,7 +26,7 @@ export const load = async ({ params, locals, url }) => {
 	if (revision.valid && url.searchParams.get('revision')) {
 		series = await getSeriesHistOneEdit({
 			id: seriesId,
-			revision: revision.data.revision
+			revision: revision.data.revision,
 		}).executeTakeFirst();
 	} else {
 		series = await getSeriesOneEdit(seriesId).executeTakeFirst();
@@ -53,7 +53,7 @@ export const load = async ({ params, locals, url }) => {
 			: undefined;
 
 	const form = await superValidate({ ...series, comment: prefilledComment }, zod(seriesSchema), {
-		errors: false
+		errors: false,
 	});
 
 	return { series, form };
@@ -87,7 +87,7 @@ export const actions = {
 					return setError(
 						form,
 						'books._errors',
-						'Duplicate books in form. Remove duplicates and try again'
+						'Duplicate books in form. Remove duplicates and try again',
 					);
 				} else if (
 					e.code === '23505' &&
@@ -97,7 +97,7 @@ export const actions = {
 					return setError(
 						form,
 						'titles._errors',
-						'Duplicate titles in form. Remove duplicates and try again'
+						'Duplicate titles in form. Remove duplicates and try again',
 					);
 				} else if (
 					e.code === '23505' &&
@@ -107,7 +107,7 @@ export const actions = {
 					return setError(
 						form,
 						'child_series._errors',
-						'Duplicate series relations in form. Remove duplicates and try again'
+						'Duplicate series relations in form. Remove duplicates and try again',
 					);
 				}
 			} else if (e instanceof ChangePermissionError) {
@@ -116,7 +116,7 @@ export const actions = {
 				return setError(
 					form,
 					'hidden',
-					'Cannot hide series. Remove any relations to the series and try again.'
+					'Cannot hide series. Remove any relations to the series and try again.',
 				);
 			}
 			console.log(e);
@@ -127,9 +127,9 @@ export const actions = {
 				303,
 				`/series/${id}`,
 				{ type: 'success', message: 'Successfully edited series!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

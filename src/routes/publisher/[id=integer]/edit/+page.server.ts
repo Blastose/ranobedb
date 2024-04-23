@@ -26,7 +26,7 @@ export const load = async ({ params, locals, url }) => {
 	if (revision.valid && url.searchParams.get('revision')) {
 		publisher = await getPublisherHistEdit({
 			id: publisherId,
-			revision: revision.data.revision
+			revision: revision.data.revision,
 		}).executeTakeFirst();
 	} else {
 		publisher = await getPublisherEdit(publisherId).executeTakeFirst();
@@ -56,8 +56,8 @@ export const load = async ({ params, locals, url }) => {
 		{ ...publisher, comment: prefilledComment },
 		zod(publisherSchema),
 		{
-			errors: false
-		}
+			errors: false,
+		},
 	);
 
 	return { publisher, form };
@@ -92,7 +92,7 @@ export const actions = {
 					return setError(
 						form,
 						'child_publishers._errors',
-						'Duplicate publishers in form. Remove duplicates and try again'
+						'Duplicate publishers in form. Remove duplicates and try again',
 					);
 				}
 			} else if (e instanceof ChangePermissionError) {
@@ -101,7 +101,7 @@ export const actions = {
 				return setError(
 					form,
 					'hidden',
-					'Cannot hide publisher. Remove any relations to the publisher and try again.'
+					'Cannot hide publisher. Remove any relations to the publisher and try again.',
 				);
 			}
 		}
@@ -111,9 +111,9 @@ export const actions = {
 				303,
 				`/publisher/${id}`,
 				{ type: 'success', message: 'Successfully edited publisher!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

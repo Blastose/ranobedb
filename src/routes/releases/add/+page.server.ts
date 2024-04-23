@@ -19,8 +19,8 @@ export const load = async ({ locals }) => {
 		{ lang: 'ja', format: 'digital', release_date: 99999999 },
 		zod(releaseSchema),
 		{
-			errors: false
-		}
+			errors: false,
+		},
 	);
 
 	return { form };
@@ -52,7 +52,7 @@ export const actions = {
 					return setError(
 						form,
 						'books._errors',
-						'Duplicate books in form. Remove duplicates and try again'
+						'Duplicate books in form. Remove duplicates and try again',
 					);
 				} else if (
 					e.code === '23505' &&
@@ -62,7 +62,7 @@ export const actions = {
 					return setError(
 						form,
 						'publishers._errors',
-						'Duplicate publishers in form. Remove duplicates and try again'
+						'Duplicate publishers in form. Remove duplicates and try again',
 					);
 				}
 			}
@@ -73,9 +73,9 @@ export const actions = {
 				303,
 				`/release/${newReleaseId}`,
 				{ type: 'success', message: 'Successfully added release!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

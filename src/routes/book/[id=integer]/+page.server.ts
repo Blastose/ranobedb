@@ -2,7 +2,7 @@ import { getBook } from '$lib/server/db/books/books';
 import { getChanges } from '$lib/server/db/change/change.js';
 import {
 	getUserListBookWithLabels,
-	type UserListBookWithLabels
+	type UserListBookWithLabels,
 } from '$lib/server/db/user/list.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { userListBookSchema, type ReadingStatus, type UserListFormType } from '$lib/zod/schema.js';
@@ -33,8 +33,8 @@ export const load = async ({ params, locals }) => {
 			error(403, {
 				dbItemDeleted: {
 					reason: change.comments,
-					title: book.title
-				}
+					title: book.title,
+				},
 			});
 		}
 	}
@@ -54,11 +54,11 @@ export const load = async ({ params, locals }) => {
 	const userListForm = await superValidate(
 		{ ...userListBook, readingStatus, type: formType },
 		zod(userListBookSchema),
-		{ errors: false }
+		{ errors: false },
 	);
 
 	return {
 		book,
-		userListForm
+		userListForm,
 	};
 };

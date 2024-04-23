@@ -19,7 +19,7 @@
 			note: '',
 			role_type: 'artist',
 			staff_alias_id: staff.alt_id ?? staff.id,
-			staff_id: staff.id
+			staff_id: staff.id,
 		});
 		$values = $values;
 	}

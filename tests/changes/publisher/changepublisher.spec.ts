@@ -21,7 +21,7 @@ test.describe('edit publisher mod', () => {
 		await page.getByLabel('Edit summary').fill('Add KADOKAWA');
 		await page.getByRole('button', { name: 'Submit edit' }).click();
 		await expect(page.locator('.toast-container').first()).toHaveText(
-			'Successfully edited publisher!'
+			'Successfully edited publisher!',
 		);
 		await page.getByRole('link', { name: 'Edit' }).click();
 		await page
@@ -32,7 +32,7 @@ test.describe('edit publisher mod', () => {
 
 		await expect(page).toHaveURL('/publisher/3');
 		await expect(page.locator('.toast-container').first()).toHaveText(
-			'Successfully edited publisher!'
+			'Successfully edited publisher!',
 		);
 	});
 

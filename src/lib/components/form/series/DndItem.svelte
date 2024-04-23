@@ -33,7 +33,7 @@
 				node.removeEventListener('dragstart', dragStart);
 				node.removeEventListener('dragend', dragEnd);
 				node.removeEventListener('dragover', dragOver);
-			}
+			},
 		};
 	}
 </script>

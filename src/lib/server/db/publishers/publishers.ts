@@ -16,11 +16,11 @@ export const getPublishers = db
 					'release.title',
 					'release_publisher.publisher_type',
 					'release.id',
-					'release.release_date'
+					'release.release_date',
 				])
 				.orderBy('release.release_date desc')
-				.orderBy('release.title')
-		).as('releases')
+				.orderBy('release.title'),
+		).as('releases'),
 	]);
 
 export const getPublisher = (id: number) =>
@@ -38,7 +38,7 @@ export const getPublisher = (id: number) =>
 						'release.title',
 						'release_publisher.publisher_type',
 						'release.id',
-						'release.release_date'
+						'release.release_date',
 					])
 					.select((eb) => [
 						jsonArrayFrom(
@@ -46,11 +46,11 @@ export const getPublisher = (id: number) =>
 								.selectFrom('cte_book')
 								.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
 								.whereRef('release_book.release_id', '=', 'release.id')
-								.select(['cte_book.id', 'cte_book.title'])
-						).as('book_releases')
+								.select(['cte_book.id', 'cte_book.title']),
+						).as('book_releases'),
 					])
 					.orderBy('release.release_date desc')
-					.orderBy('release.title')
+					.orderBy('release.title'),
 			).as('releases'),
 			jsonArrayFrom(
 				eb
@@ -58,16 +58,16 @@ export const getPublisher = (id: number) =>
 					.innerJoin(
 						'publisher as child_publisher',
 						'child_publisher.id',
-						'publisher_relation.id_child'
+						'publisher_relation.id_child',
 					)
 					.select([
 						'child_publisher.name',
 						'child_publisher.romaji',
 						'child_publisher.id',
-						'publisher_relation.relation_type'
+						'publisher_relation.relation_type',
 					])
-					.where('publisher_relation.id_parent', '=', id)
-			).as('child_publishers')
+					.where('publisher_relation.id_parent', '=', id),
+			).as('child_publishers'),
 		])
 		.where('publisher.id', '=', id);
 
@@ -80,7 +80,7 @@ export const getPublisherHist = (options: { id: number; revision: number }) =>
 			'publisher_hist.change_id as id',
 			'publisher_hist.description',
 			'publisher_hist.name',
-			'publisher_hist.romaji'
+			'publisher_hist.romaji',
 		])
 		.select(['change.ihid as hidden', 'change.ilock as locked'])
 		.select((eb) => [
@@ -93,7 +93,7 @@ export const getPublisherHist = (options: { id: number; revision: number }) =>
 						'release.title',
 						'release_publisher.publisher_type',
 						'release.id',
-						'release.release_date'
+						'release.release_date',
 					])
 					.select((eb) => [
 						jsonArrayFrom(
@@ -101,11 +101,11 @@ export const getPublisherHist = (options: { id: number; revision: number }) =>
 								.selectFrom('cte_book')
 								.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
 								.whereRef('release_book.release_id', '=', 'release.id')
-								.select(['cte_book.id', 'cte_book.title'])
-						).as('book_releases')
+								.select(['cte_book.id', 'cte_book.title']),
+						).as('book_releases'),
 					])
 					.orderBy('release.release_date desc')
-					.orderBy('release.title')
+					.orderBy('release.title'),
 			).as('releases'),
 			jsonArrayFrom(
 				eb
@@ -113,16 +113,16 @@ export const getPublisherHist = (options: { id: number; revision: number }) =>
 					.innerJoin(
 						'publisher as child_publisher',
 						'child_publisher.id',
-						'publisher_relation_hist.id_child'
+						'publisher_relation_hist.id_child',
 					)
 					.select([
 						'child_publisher.name',
 						'child_publisher.romaji',
 						'child_publisher.id',
-						'publisher_relation_hist.relation_type'
+						'publisher_relation_hist.relation_type',
 					])
-					.whereRef('publisher_relation_hist.change_id', '=', 'change.id')
-			).as('child_publishers')
+					.whereRef('publisher_relation_hist.change_id', '=', 'change.id'),
+			).as('child_publishers'),
 		])
 		.where('change.item_id', '=', options.id)
 		.where('change.item_name', '=', 'publisher')
@@ -137,7 +137,7 @@ export const getPublisherEdit = (id: number) =>
 			'publisher.name',
 			'publisher.romaji',
 			'publisher.locked',
-			'publisher.hidden'
+			'publisher.hidden',
 		])
 		.select((eb) =>
 			jsonArrayFrom(
@@ -146,8 +146,8 @@ export const getPublisherEdit = (id: number) =>
 					.innerJoin('publisher as child_pub', 'child_pub.id', 'publisher_relation.id_child')
 					.select(['child_pub.name', 'child_pub.romaji', 'child_pub.id'])
 					.select('publisher_relation.relation_type')
-					.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
-			).as('child_publishers')
+					.whereRef('publisher_relation.id_parent', '=', 'publisher.id'),
+			).as('child_publishers'),
 		)
 		.where('publisher.id', '=', id);
 
@@ -159,7 +159,7 @@ export const getPublisherHistEdit = (params: { id: number; revision: number }) =
 			'publisher_hist.change_id as id',
 			'publisher_hist.description',
 			'publisher_hist.name',
-			'publisher_hist.romaji'
+			'publisher_hist.romaji',
 		])
 		.select(['change.ihid as hidden', 'change.ilock as locked'])
 		.select((eb) =>
@@ -169,8 +169,8 @@ export const getPublisherHistEdit = (params: { id: number; revision: number }) =
 					.innerJoin('publisher as child_pub', 'child_pub.id', 'publisher_relation_hist.id_child')
 					.select(['child_pub.name', 'child_pub.romaji', 'child_pub.id'])
 					.select('publisher_relation_hist.relation_type')
-					.whereRef('publisher_relation_hist.change_id', '=', 'publisher_hist.change_id')
-			).as('child_publishers')
+					.whereRef('publisher_relation_hist.change_id', '=', 'publisher_hist.change_id'),
+			).as('child_publishers'),
 		)
 		.where('change.item_id', '=', params.id)
 		.where('change.item_name', '=', 'publisher')

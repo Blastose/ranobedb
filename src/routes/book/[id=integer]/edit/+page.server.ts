@@ -50,7 +50,7 @@ export const load = async ({ params, locals, url }) => {
 			: undefined;
 
 	const form = await superValidate({ ...book, comment: prefilledComment }, zod(bookSchema), {
-		errors: false
+		errors: false,
 	});
 
 	return { book, form };
@@ -84,7 +84,7 @@ export const actions = {
 					return setError(
 						form,
 						'staff._errors',
-						'Duplicate staff member with same roles in form. Remove duplicates and try again.'
+						'Duplicate staff member with same roles in form. Remove duplicates and try again.',
 					);
 				}
 			} else if (e instanceof ChangePermissionError) {
@@ -93,7 +93,7 @@ export const actions = {
 				return setError(
 					form,
 					'hidden',
-					'Cannot hide book. Remove any relations to the book and try again.'
+					'Cannot hide book. Remove any relations to the book and try again.',
 				);
 			}
 		}
@@ -103,9 +103,9 @@ export const actions = {
 				303,
 				`/book/${id}`,
 				{ type: 'success', message: 'Successfully edited book!' },
-				cookies
+				cookies,
 			);
 		}
 		return fail(400, { form });
-	}
+	},
 };

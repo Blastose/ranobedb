@@ -108,7 +108,7 @@
 					<p>
 						<a href="/release/{release.id}"
 							>{release.title} - {release.lang} - {release.format} - {new DateNumber(
-								release.release_date
+								release.release_date,
 							).getDateFormatted()}</a
 						>
 					</p>

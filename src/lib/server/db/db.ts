@@ -9,11 +9,11 @@ types.setTypeParser(types.builtins.DATE, (value: string) => {
 });
 
 export const pool = new Pool({
-	connectionString: DATABASE_URL
+	connectionString: DATABASE_URL,
 });
 
 export const db = new Kysely<DB>({
 	dialect: new PostgresDialect({
-		pool
-	})
+		pool,
+	}),
 });

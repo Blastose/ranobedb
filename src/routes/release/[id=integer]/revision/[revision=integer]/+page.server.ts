@@ -13,12 +13,12 @@ export const load = async ({ params, locals }) => {
 
 	const releasePromise = getReleaseHist({
 		id: releaseId,
-		revision: revision
+		revision: revision,
 	}).executeTakeFirst();
 	const changesPromise = getChanges('release', releaseId, [
 		previousRevision,
 		revision,
-		revision + 1
+		revision + 1,
 	]).execute();
 
 	const [release, changes] = await Promise.all([releasePromise, changesPromise]);
@@ -43,7 +43,7 @@ export const load = async ({ params, locals }) => {
 	if (previousRevision > 0) {
 		const prevRelease = await getReleaseHist({
 			id: releaseId,
-			revision: previousRevision
+			revision: previousRevision,
 		}).executeTakeFirst();
 		if (!prevRelease) {
 			error(404);
@@ -57,6 +57,6 @@ export const load = async ({ params, locals }) => {
 		release,
 		diff,
 		revision: { revision, previousRevision },
-		changes: { prevChange, change, nextChange }
+		changes: { prevChange, change, nextChange },
 	};
 };

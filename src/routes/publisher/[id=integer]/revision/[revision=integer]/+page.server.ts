@@ -13,12 +13,12 @@ export const load = async ({ params, locals }) => {
 
 	const publisherPromise = getPublisherHist({
 		id: publisherId,
-		revision: revision
+		revision: revision,
 	}).executeTakeFirst();
 	const changesPromise = getChanges('publisher', publisherId, [
 		previousRevision,
 		revision,
-		revision + 1
+		revision + 1,
 	]).execute();
 
 	const [publisher, changes] = await Promise.all([publisherPromise, changesPromise]);
@@ -43,7 +43,7 @@ export const load = async ({ params, locals }) => {
 	if (previousRevision > 0) {
 		const prevPublisher = await getPublisherHist({
 			id: publisherId,
-			revision: previousRevision
+			revision: previousRevision,
 		}).executeTakeFirst();
 		if (!prevPublisher) {
 			error(404);
@@ -57,6 +57,6 @@ export const load = async ({ params, locals }) => {
 		publisher,
 		diff,
 		revision: { revision, previousRevision },
-		changes: { prevChange, change, nextChange }
+		changes: { prevChange, change, nextChange },
 	};
 };

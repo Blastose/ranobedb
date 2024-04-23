@@ -10,6 +10,6 @@ export const load = async ({ params }) => {
 	}
 
 	return {
-		series
+		series,
 	};
 };

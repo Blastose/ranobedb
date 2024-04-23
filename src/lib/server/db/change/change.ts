@@ -10,7 +10,7 @@ export function getChanges(item_name: DbItem, item_id: number, revisions?: numbe
 		.where('change.item_name', '=', item_name)
 		.where('change.item_id', '=', item_id)
 		.$if(Boolean(revisions), (qb) =>
-			qb.where((eb) => eb.or(revisions!.map((item) => eb('change.revision', '=', item))))
+			qb.where((eb) => eb.or(revisions!.map((item) => eb('change.revision', '=', item)))),
 		)
 		.selectAll('change')
 		.select('auth_user.username')
@@ -26,7 +26,7 @@ export async function addChange(
 		locked: boolean;
 		hidden: boolean;
 	},
-	user: { id: string }
+	user: { id: string },
 ) {
 	const revision = await trx
 		.selectFrom('change')
@@ -48,7 +48,7 @@ export async function addChange(
 			item_id: changeItem.item_id,
 			revision: revisionNumber,
 			user_id: user.id,
-			comments: changeItem.comments
+			comments: changeItem.comments,
 		})
 		.returning('change.id')
 		.executeTakeFirstOrThrow();

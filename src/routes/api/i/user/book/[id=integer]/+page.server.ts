@@ -29,7 +29,7 @@ export const actions = {
 			score: form.data.score,
 			started: form.data.started || null,
 			finished: form.data.finished || null,
-			notes: form.data.notes
+			notes: form.data.notes,
 		};
 
 		let messageText = '';
@@ -50,5 +50,5 @@ export const actions = {
 		}
 
 		return message(form, { type: 'success', text: messageText });
-	}
+	},
 } satisfies Actions;

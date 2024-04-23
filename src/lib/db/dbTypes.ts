@@ -60,7 +60,7 @@ export const languagesArray = [
 	'ur',
 	'vi',
 	'zh-Hans',
-	'zh-Hant'
+	'zh-Hant',
 ] as const;
 
 export const languageNames: Record<Language, string> = {
@@ -113,7 +113,7 @@ export const languageNames: Record<Language, string> = {
 	ur: 'Urdu',
 	vi: 'Vietnamese',
 	'zh-Hans': 'Chinese (Simplified)',
-	'zh-Hant': 'Chinese (Traditional)'
+	'zh-Hant': 'Chinese (Traditional)',
 };
 
 export type Language = (typeof languagesArray)[number];
@@ -122,14 +122,14 @@ export const publisherRelTypeArray = [
 	'imprint',
 	'parent brand',
 	'parent company',
-	'subsidiary'
+	'subsidiary',
 ] as const;
 
 export const publisherTypeReverseMap: Record<PublisherRelType, PublisherRelType> = {
 	imprint: 'parent brand',
 	subsidiary: 'parent company',
 	'parent brand': 'imprint',
-	'parent company': 'subsidiary'
+	'parent company': 'subsidiary',
 };
 
 export type PublisherRelType = (typeof publisherRelTypeArray)[number];
@@ -152,7 +152,7 @@ export const seriesRelTypeArray = [
 	'sequel',
 	'side story',
 	'main story',
-	'spin-off'
+	'spin-off',
 ] as const;
 
 export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
@@ -161,7 +161,7 @@ export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
 	'side story': 'main story',
 	'main story': 'side story',
 	'spin-off': 'parent story',
-	'parent story': 'spin-off'
+	'parent story': 'spin-off',
 };
 
 export type SeriesRelType = (typeof seriesRelTypeArray)[number];
