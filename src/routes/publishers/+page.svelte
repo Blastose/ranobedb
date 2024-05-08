@@ -10,7 +10,7 @@
 <PageTitle title="Publishers" />
 
 <DbShell
-	name="publisher"
+	name="publishers"
 	currentPage={data.currentPage}
 	totalPages={data.totalPages}
 	results={data.count}

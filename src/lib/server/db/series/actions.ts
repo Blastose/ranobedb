@@ -19,6 +19,7 @@ import {
 } from '$lib/db/dbTypes';
 import type { Insertable, Transaction } from 'kysely';
 import { arrayDiff, arrayIntersection } from '$lib/db/array';
+import { reverseRelationUpdateMarkdown } from '$lib/db/revision';
 
 async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; series_ids: number[] }) {
 	return await params.trx
@@ -104,7 +105,12 @@ async function updateReverseSeriesRelations(params: {
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [s${params.main_id}.${params.og_change.revision}](/series/${params.main_id}/revision/${params.og_change.revision})`,
+				comments: reverseRelationUpdateMarkdown(
+					's',
+					'series',
+					params.main_id,
+					params.og_change.revision,
+				),
 				hidden: false,
 				locked: false,
 				item_id: series.id,
@@ -171,7 +177,12 @@ async function removeReverseSeriesRelations(params: {
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [s${params.main_id}.${params.og_change.revision}](/series/${params.main_id}/revision/${params.og_change.revision})`,
+				comments: reverseRelationUpdateMarkdown(
+					's',
+					'series',
+					params.main_id,
+					params.og_change.revision,
+				),
 				hidden: false,
 				locked: false,
 				item_id: id,
@@ -236,7 +247,12 @@ async function addReverseSeriesRelations(params: {
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [s${params.main_id}.${params.og_change.revision}](/series/${params.main_id}/revision/${params.og_change.revision})`,
+				comments: reverseRelationUpdateMarkdown(
+					's',
+					'series',
+					params.main_id,
+					params.og_change.revision,
+				),
 				hidden: false,
 				locked: false,
 				item_id: series.id,

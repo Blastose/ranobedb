@@ -4,14 +4,12 @@ import { sql, type InferResult } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
 
-// TODO Refactor with getBooks2
+// TODO Refactor with getBooks
 export function getBooksRL(userId: string) {
 	return db
 		.with('cte_book', withBookTitleCte())
 		.selectFrom('cte_book')
 		.leftJoin('image', 'cte_book.image_id', 'image.id')
-		.leftJoin('release_book', 'release_book.book_id', 'cte_book.id')
-		.leftJoin('release', 'release.id', 'release_book.release_id')
 		.innerJoin('user_list_book', (join) =>
 			join
 				.onRef('user_list_book.book_id', '=', 'cte_book.id')
@@ -39,37 +37,9 @@ export function getBooksRL(userId: string) {
 			'cte_book.title',
 			'cte_book.title_orig',
 			'image.filename',
+			'image.height',
+			'image.width',
 			'user_list_label.id as label_id',
-			'user_list_label.label',
-		])
-		.select((eb) => eb.fn.min('release.release_date').as('date'))
-		.select((eb) => [
-			jsonArrayFrom(
-				eb
-					.selectFrom('book_title')
-					.whereRef('book_title.book_id', '=', 'cte_book.id')
-					.selectAll('book_title'),
-			).as('titles'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('staff_alias')
-					.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
-					.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
-					.select(['book_staff_alias.role_type', 'staff_alias.name', 'staff_alias.staff_id']),
-			).as('staff'),
-		])
-		.groupBy([
-			'cte_book.description',
-			'cte_book.description_ja',
-			'cte_book.id',
-			'cte_book.image_id',
-			'cte_book.lang',
-			'cte_book.romaji',
-			'cte_book.romaji_orig',
-			'cte_book.title',
-			'cte_book.title_orig',
-			'image.filename',
-			'user_list_label.id',
 			'user_list_label.label',
 		])
 		.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
@@ -171,6 +141,7 @@ export async function addBookToList(params: {
 	});
 }
 
+// TODO refactor with array diff / intersection functions
 function getToAddAndToRemoveFromArrays(arr1: number[], arr2: number[]) {
 	const toAdd = arr1.filter((x) => !arr2.includes(x));
 	const toRemove = arr2.filter((x) => !arr1.includes(x));

@@ -66,9 +66,11 @@
 	$: modalSubmitText = $form.type === 'add' ? 'Add to reading list' : 'Update';
 </script>
 
-<button use:melt={$trigger} class="primary-btn w-full max-w-xs"
-	>{$form.labels.at(0)?.label ?? 'Add to reading list'}</button
->
+<div class="flex justify-center">
+	<button use:melt={$trigger} class="primary-btn w-full max-w-xs"
+		>{$form.labels.at(0)?.label ?? 'Add to reading list'}</button
+	>
+</div>
 
 <div use:melt={$portalled}>
 	{#if $open}

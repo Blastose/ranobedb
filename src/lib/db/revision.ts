@@ -17,3 +17,17 @@ export function revertedRevisionMarkdown(
 ) {
 	return `Reverted to revision ${buildRevisionMarkdownLink(prefix, dbItem, id, revision)}`;
 }
+
+export function reverseRelationUpdateMarkdown(
+	prefix: string,
+	dbItem: DbItem,
+	id: number,
+	revision: number,
+) {
+	return `Reverse relation update caused by revision ${buildRevisionMarkdownLink(
+		prefix,
+		dbItem,
+		id,
+		revision,
+	)}`;
+}

@@ -103,26 +103,7 @@ export function withSeriesHistTitleCte() {
 export const getSeries = db
 	.with('cte_series', withSeriesTitleCte())
 	.selectFrom('cte_series')
-	.selectAll('cte_series')
-	.select((eb) => [
-		jsonArrayFrom(
-			eb
-				.selectFrom('book')
-				.innerJoin('series_book', 'series_book.book_id', 'book.id')
-				.innerJoin('book_title', 'book_title.book_id', 'book.id')
-				.whereRef('series_book.series_id', '=', 'cte_series.id')
-				.where('book_title.lang', '=', 'ja')
-				.where('book_title.official', '=', true)
-				.select(['book_title.title', 'book.id'])
-				.orderBy('sort_order asc'),
-		).as('books'),
-		jsonArrayFrom(
-			eb
-				.selectFrom('series_title')
-				.whereRef('series_title.series_id', '=', 'cte_series.id')
-				.select(['series_title.title', 'series_title.lang', 'series_title.official']),
-		).as('titles'),
-	]);
+	.selectAll('cte_series');
 
 export const getSeriesOne = (id: number) =>
 	db
