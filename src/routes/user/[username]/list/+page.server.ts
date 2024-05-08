@@ -32,7 +32,7 @@ export const load = async ({ url, params, locals }) => {
 		k = k.where((eb) => {
 			const ors: Expression<SqlBool>[] = [];
 			for (const l of labels) {
-				ors.push(eb('label_id', '=', l));
+				ors.push(eb('user_list_book_label.label_id', '=', l));
 			}
 
 			return eb.or(ors);

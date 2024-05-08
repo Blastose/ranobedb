@@ -23,8 +23,7 @@ export function getBooksRL(userId: string) {
 		.innerJoin('user_list_label', (join) =>
 			join
 				.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
-				// Removed this between because it makes the query really slow for some reason
-				// .on((eb) => eb.between('user_list_label.id', 1, 10))
+				.on((eb) => eb.between('user_list_label.id', 1, 10))
 				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
 		)
 		.select([
