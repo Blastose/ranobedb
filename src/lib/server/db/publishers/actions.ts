@@ -15,6 +15,7 @@ import {
 } from '$lib/db/dbTypes';
 import type { Insertable, Transaction } from 'kysely';
 import { arrayDiff } from '$lib/db/array';
+import { reverseRelationUpdateMarkdown } from '$lib/db/revision';
 
 // TODO For reverse relations, we might be able to just insert them
 // with a insert into from select sql
@@ -75,7 +76,12 @@ async function updateReversePublisherRelations(params: {
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [p${params.main_id}.${params.og_change.revision}](/publisher/${params.main_id}/revision/${params.og_change.revision})`,
+				comments: reverseRelationUpdateMarkdown(
+					'p',
+					'publisher',
+					params.main_id,
+					params.og_change.revision,
+				),
 				hidden: false,
 				locked: false,
 				item_id: publisher.id,
@@ -138,7 +144,12 @@ async function removeReversePublisherRelations(params: {
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [p${params.main_id}.${params.og_change.revision}](/publisher/${params.main_id}/revision/${params.og_change.revision})`,
+				comments: reverseRelationUpdateMarkdown(
+					'p',
+					'publisher',
+					params.main_id,
+					params.og_change.revision,
+				),
 				hidden: false,
 				locked: false,
 				item_id: id,
@@ -202,7 +213,12 @@ async function addReversePublisherRelations(params: {
 		const reverseRelChange = await addChange(
 			params.trx,
 			{
-				comments: `Reverse relation update caused by revision [p${params.main_id}.${params.og_change.revision}](/publisher/${params.main_id}/revision/${params.og_change.revision})`,
+				comments: reverseRelationUpdateMarkdown(
+					'p',
+					'publisher',
+					params.main_id,
+					params.og_change.revision,
+				),
 				hidden: false,
 				locked: false,
 				item_id: publisher.id,
