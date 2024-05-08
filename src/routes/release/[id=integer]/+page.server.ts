@@ -10,7 +10,5 @@ export const load = async ({ params }) => {
 		error(404);
 	}
 
-	console.log(release);
-
 	return { release };
 };
