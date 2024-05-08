@@ -7,10 +7,10 @@
 	import type { userListBookSchema } from '$lib/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import Description from '$lib/components/book/Description.svelte';
-	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
+	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -18,10 +18,11 @@
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
 
+	$: imageUrl = book.filename ? `${PUBLIC_IMAGE_URL}${book.filename}` : null;
 	$: imageBgStyle = book.filename
 		? ($themeStore ?? theme) === 'light'
-			? `background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%), url(/covers_temp/${book.filename}.jpg);`
-			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%), url(/covers_temp/${book.filename}.jpg);`
+			? `background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%), url(${imageUrl});`
+			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%), url(${imageUrl});`
 		: '';
 </script>
 
@@ -35,11 +36,12 @@
 			<div class="flex flex-col items-center gap-4">
 				{#if book.filename}
 					<img
-						width="240"
-						height="360"
+						width={book.width}
+						height={book.height}
 						class="img max-w-[200px] h-fit sm:max-w-[200px] rounded-sm shadow-sm"
-						src="/covers_temp/{book.filename}.jpg"
+						src={imageUrl}
 						alt=""
+						loading="lazy"
 					/>
 				{:else}
 					<div class="bg-neutral-500 w-[240px] h-[360px]">
@@ -49,7 +51,11 @@
 
 				{#if userListForm}
 					{#if user}
-						<BookModal {userListForm} {book} {imageBgStyle} />
+						<!-- This div is needed to prevent the flex from above because the BookModal component has a portal -->
+						<!-- so it will generate an empty gap space before hydration -->
+						<div class="w-full">
+							<BookModal {userListForm} {book} {imageBgStyle} />
+						</div>
 					{:else}
 						<a class="primary-btn w-full max-w-xs" href="/login">Add to reading list</a>
 					{/if}

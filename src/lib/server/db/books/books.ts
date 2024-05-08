@@ -53,7 +53,6 @@ export function withBookTitleCte() {
 			.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
 			.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
 			.orderBy('book.id')
-			.orderBy('book.id')
 			.orderBy((eb) => titleCaseBuilder(eb, defaultLangPrio));
 	};
 }
@@ -86,6 +85,26 @@ export function withBookHistTitleCte() {
 			.orderBy((eb) => titleHistCaseBuilder(eb, defaultLangPrio));
 	};
 }
+
+export const getBooks = db
+	.with('cte_book', withBookTitleCte())
+	.selectFrom('cte_book')
+	.leftJoin('image', 'cte_book.image_id', 'image.id')
+	.select([
+		'cte_book.description',
+		'cte_book.description_ja',
+		'cte_book.id',
+		'cte_book.image_id',
+		'cte_book.lang',
+		'cte_book.romaji',
+		'cte_book.romaji_orig',
+		'cte_book.title',
+		'cte_book.title_orig',
+		'image.filename',
+		'image.height',
+		'image.width',
+	])
+	.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
 
 export const getBooks2 = db
 	.with('cte_book', withBookTitleCte())
@@ -153,6 +172,8 @@ export const getBook = (id: number) => {
 			'cte_book.locked',
 			'cte_book.hidden',
 			'image.filename',
+			'image.height',
+			'image.width',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -213,6 +234,8 @@ export const getBookHist = (id: number, revision: number) => {
 			'change.ilock as locked',
 			'change.ihid as hidden',
 			'image.filename',
+			'image.height',
+			'image.width',
 		])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -267,4 +290,4 @@ export const getBookHist = (id: number, revision: number) => {
 };
 
 export type BookR = InferResult<ReturnType<typeof getBook>>[number];
-export type Book = InferResult<typeof getBooks2>[number];
+export type Book = InferResult<typeof getBooks>[number];

@@ -3,25 +3,7 @@ import { db } from '$lib/server/db/db';
 import type { InferResult } from 'kysely';
 import { withBookTitleCte } from '../books/books';
 
-export const getPublishers = db
-	.selectFrom('publisher')
-	.selectAll('publisher')
-	.select((eb) => [
-		jsonArrayFrom(
-			eb
-				.selectFrom('release')
-				.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
-				.whereRef('release_publisher.publisher_id', '=', 'publisher.id')
-				.select([
-					'release.title',
-					'release_publisher.publisher_type',
-					'release.id',
-					'release.release_date',
-				])
-				.orderBy('release.release_date desc')
-				.orderBy('release.title'),
-		).as('releases'),
-	]);
+export const getPublishers = db.selectFrom('publisher').selectAll('publisher');
 
 export const getPublisher = (id: number) =>
 	db
@@ -40,17 +22,20 @@ export const getPublisher = (id: number) =>
 						'release.id',
 						'release.release_date',
 					])
-					.select((eb) => [
-						jsonArrayFrom(
-							eb
-								.selectFrom('cte_book')
-								.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
-								.whereRef('release_book.release_id', '=', 'release.id')
-								.select(['cte_book.id', 'cte_book.title']),
-						).as('book_releases'),
-					])
+					// Removed because nested `jsonArrayFrom`s are really slow
+					// .select((eb) => [
+					// 	jsonArrayFrom(
+					// 		eb
+					// 			.selectFrom('cte_book')
+					// 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
+					// 			.whereRef('release_book.release_id', '=', 'release.id')
+					// 			.select(['cte_book.id', 'cte_book.title'])
+					// 			.limit(10),
+					// 	).as('book_releases'),
+					// ])
 					.orderBy('release.release_date desc')
-					.orderBy('release.title'),
+					.orderBy('release.title')
+					.limit(100),
 			).as('releases'),
 			jsonArrayFrom(
 				eb

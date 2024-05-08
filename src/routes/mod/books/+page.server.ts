@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import { hasVisibilityPerms } from '$lib/db/permissions';
-import { getBooks2 } from '$lib/server/db/books/books.js';
+import { getBooks } from '$lib/server/db/books/books.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
 
 export const load = async ({ locals, url }) => {
@@ -10,9 +10,8 @@ export const load = async ({ locals, url }) => {
 		error(403);
 	}
 
-	const query = getBooks2
+	const query = getBooks
 		.select(['cte_book.hidden', 'cte_book.locked'])
-		.groupBy(['cte_book.hidden', 'cte_book.locked'])
 		.where((eb) => eb.or([eb('cte_book.locked', '=', true), eb('cte_book.hidden', '=', true)]));
 
 	const currentPage = Number(url.searchParams.get('page')) || 1;
