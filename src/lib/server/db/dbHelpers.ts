@@ -30,7 +30,7 @@ export async function paginationBuilderExecute<O, DB, TB extends keyof DB>(
 	return result as Array<(typeof result)[number] & { count: string }>;
 }
 
-export async function paginationBuilderExecuteWithCount<O, DB, TB extends keyof DB>(
+export async function paginationBuilderExecuteWithCountSameQuery<O, DB, TB extends keyof DB>(
 	query: SelectQueryBuilder<DB, TB, O>,
 	pageOptions: { limit: number; page: number },
 ) {
@@ -42,6 +42,37 @@ export async function paginationBuilderExecuteWithCount<O, DB, TB extends keyof 
 		result,
 		count,
 		totalPages: Math.ceil(count / pageOptions.limit),
+	};
+}
+
+interface PageResult<O> {
+	result: O[];
+	count: number;
+	totalPages: number;
+}
+export async function paginationBuilderExecuteWithCount<O>(
+	// We need to use any here because we clear the select for the count
+	// The type of the query doesn't matter anyways, since we don't need it for anything
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	query: SelectQueryBuilder<any, any, O>,
+	pageOptions: { limit: number; page: number },
+): Promise<PageResult<O>> {
+	const [res, total] = await Promise.all([
+		query
+			.limit(pageOptions.limit)
+			.offset(pageOptions.limit * (pageOptions.page - 1))
+			.execute(),
+		query
+			.clearSelect()
+			.clearOrderBy()
+			.select((eb) => [eb.fn.countAll<number>().as('count')])
+			.executeTakeFirstOrThrow(),
+	]);
+
+	return {
+		result: res,
+		count: total.count,
+		totalPages: Math.ceil(total.count / pageOptions.limit),
 	};
 }
 
