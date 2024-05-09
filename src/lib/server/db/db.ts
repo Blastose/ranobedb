@@ -3,6 +3,7 @@ import { Kysely, PostgresDialect } from 'kysely';
 import pkg from 'pg';
 const { types, Pool } = pkg;
 import type { DB } from '$lib/db/dbTypes';
+import type { User } from 'lucia';
 
 types.setTypeParser(types.builtins.DATE, (value: string) => {
 	return value;
@@ -17,3 +18,13 @@ export const db = new Kysely<DB>({
 		pool,
 	}),
 });
+
+export class RanobeDB {
+	db: Kysely<DB>;
+	user?: User | null;
+
+	constructor(db: Kysely<DB>, user?: User | null) {
+		this.db = db;
+		this.user = user;
+	}
+}

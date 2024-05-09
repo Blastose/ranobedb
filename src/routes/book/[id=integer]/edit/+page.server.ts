@@ -1,5 +1,5 @@
 import { editBook } from '$lib/server/db/books/actions.js';
-import { getBook, getBookHist } from '$lib/server/db/books/books';
+import { DBBooks } from '$lib/server/db/books/books';
 import { bookSchema, revisionSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
@@ -11,6 +11,7 @@ import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -19,14 +20,16 @@ export const load = async ({ params, locals, url }) => {
 	const bookId = Number(id);
 	let book;
 
+	const user = locals.user;
+	const dbBooks = DBBooks.fromDB(db, user);
 	const revision = await superValidate(url, zod(revisionSchema));
 	// We need to check if the url search params contains `revision`
 	// because the .valid property will be false if it doesn't,
 	// but that's find since we'll just use the "current" revision
 	if (revision.valid && url.searchParams.get('revision')) {
-		book = await getBookHist(bookId, revision.data.revision).executeTakeFirst();
+		book = await dbBooks.getBookHist(bookId, revision.data.revision).executeTakeFirst();
 	} else {
-		book = await getBook(bookId).executeTakeFirst();
+		book = await dbBooks.getBook(bookId).executeTakeFirst();
 	}
 
 	if (!book) {
@@ -36,11 +39,11 @@ export const load = async ({ params, locals, url }) => {
 	const visibilityStatus = getCurrentVisibilityStatus(book);
 
 	if (visibilityStatus.locked || visibilityStatus.hidden) {
-		if (!hasVisibilityPerms(locals.user)) {
+		if (!hasVisibilityPerms(user)) {
 			error(403);
 		}
 	}
-	if (!hasEditPerms(locals.user)) {
+	if (!hasEditPerms(user)) {
 		error(403);
 	}
 

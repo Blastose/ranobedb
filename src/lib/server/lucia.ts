@@ -21,6 +21,7 @@ export const lucia = new Lucia(adapter, {
 			username: attributes.username,
 			role: attributes.role,
 			id_numeric: attributes.id_numeric,
+			title_prefs: attributes.title_prefs,
 		};
 	},
 });
@@ -91,4 +92,5 @@ interface DatabaseUserAttributes {
 	username_lowercase: string;
 	id_numeric: number;
 	role: UserRole;
+	title_prefs: undefined;
 }

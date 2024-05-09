@@ -1,11 +1,14 @@
-import { getBooks } from '$lib/server/db/books/books.js';
+import { DBBooks } from '$lib/server/db/books/books.js';
+import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
 
-export const load = async ({ url }) => {
+export const load = async ({ url, locals }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const query = url.searchParams.get('q');
 
-	let k = getBooks;
+	const user = locals.user;
+	const dbBooks = DBBooks.fromDB(db, user);
+	let k = dbBooks.getBooks();
 	k = k.where('cte_book.hidden', '=', false);
 	if (query) {
 		k = k.where('cte_book.title', 'ilike', `%${query}%`);
