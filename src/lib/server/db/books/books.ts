@@ -1,6 +1,6 @@
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
-import { RanobeDB, db } from '$lib/server/db/db';
+import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/db/dbTypes';
 import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
 import type { User } from 'lucia';
@@ -100,7 +100,7 @@ export class DBBooks {
 	}
 
 	getBook(id: number) {
-		return db
+		return this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
@@ -161,7 +161,7 @@ export class DBBooks {
 	}
 
 	getBookHist(id: number, revision: number) {
-		return db
+		return this.ranobeDB.db
 			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
