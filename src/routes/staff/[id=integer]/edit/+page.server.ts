@@ -8,9 +8,10 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
-import { getStaffHistOneEdit, getStaffOneEdit } from '$lib/server/db/staff/staff.js';
-import { editStaff } from '$lib/server/db/staff/actions.js';
+import { DBStaff } from '$lib/server/db/staff/staff.js';
+import { DBStaffActions } from '$lib/server/db/staff/actions.js';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -19,17 +20,20 @@ export const load = async ({ params, locals, url }) => {
 	const staffId = Number(id);
 	let staff;
 
+	const dbStaff = DBStaff.fromDB(db, locals.user);
 	const revision = await superValidate(url, zod(revisionSchema));
 	// We need to check if the url search params contains `revision`
 	// because the .valid property will be false if it doesn't,
 	// but that's find since we'll just use the "current" revision
 	if (revision.valid && url.searchParams.get('revision')) {
-		staff = await getStaffHistOneEdit({
-			id: staffId,
-			revision: revision.data.revision,
-		}).executeTakeFirst();
+		staff = await dbStaff
+			.getStaffHistOneEdit({
+				id: staffId,
+				revision: revision.data.revision,
+			})
+			.executeTakeFirst();
 	} else {
-		staff = await getStaffOneEdit(staffId).executeTakeFirst();
+		staff = await dbStaff.getStaffOneEdit(staffId).executeTakeFirst();
 	}
 
 	if (!staff) {
@@ -76,8 +80,9 @@ export const actions = {
 		}
 
 		let success = false;
+		const dbStaffActions = DBStaffActions.fromDB(db);
 		try {
-			await editStaff({ staff: form.data, id }, locals.user);
+			await dbStaffActions.editStaff({ staff: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {

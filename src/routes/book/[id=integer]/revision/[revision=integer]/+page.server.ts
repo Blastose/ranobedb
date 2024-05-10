@@ -1,9 +1,10 @@
-import { getBookHist } from '$lib/server/db/books/books.js';
+import { DBBooks } from '$lib/server/db/books/books.js';
 import { getChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -11,7 +12,9 @@ export const load = async ({ params, locals }) => {
 	const revision = Number(params.revision);
 	const previousRevision = revision - 1;
 
-	const bookPromise = getBookHist(bookId, revision).executeTakeFirst();
+	const user = locals.user;
+	const dbBooks = DBBooks.fromDB(db, user);
+	const bookPromise = dbBooks.getBookHist(bookId, revision).executeTakeFirst();
 	const changesPromise = getChanges('book', bookId, [
 		previousRevision,
 		revision,
@@ -38,7 +41,7 @@ export const load = async ({ params, locals }) => {
 	}
 	let diff;
 	if (previousRevision > 0) {
-		const prevBook = await getBookHist(bookId, previousRevision).executeTakeFirst();
+		const prevBook = await dbBooks.getBookHist(bookId, previousRevision).executeTakeFirst();
 		if (!prevBook) {
 			error(404);
 		}

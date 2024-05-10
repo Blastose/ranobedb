@@ -3,7 +3,8 @@ import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
-import { getSeriesHistOne } from '$lib/server/db/series/series.js';
+import { DBSeries } from '$lib/server/db/series/series.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -11,7 +12,10 @@ export const load = async ({ params, locals }) => {
 	const revision = Number(params.revision);
 	const previousRevision = revision - 1;
 
-	const seriesPromise = getSeriesHistOne({ id: seriesId, revision: revision }).executeTakeFirst();
+	const dbSeries = DBSeries.fromDB(db, locals.user);
+	const seriesPromise = dbSeries
+		.getSeriesHistOne({ id: seriesId, revision: revision })
+		.executeTakeFirst();
 	const changesPromise = getChanges('series', seriesId, [
 		previousRevision,
 		revision,
@@ -39,10 +43,12 @@ export const load = async ({ params, locals }) => {
 	}
 	let diff;
 	if (previousRevision > 0) {
-		const prevSeries = await getSeriesHistOne({
-			id: seriesId,
-			revision: previousRevision,
-		}).executeTakeFirst();
+		const prevSeries = await dbSeries
+			.getSeriesHistOne({
+				id: seriesId,
+				revision: previousRevision,
+			})
+			.executeTakeFirst();
 		if (!prevSeries) {
 			error(404);
 		}

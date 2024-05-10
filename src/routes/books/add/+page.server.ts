@@ -1,4 +1,4 @@
-import { addBook } from '$lib/server/db/books/actions';
+import { DBBooksActions } from '$lib/server/db/books/actions';
 import { bookSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
@@ -6,6 +6,7 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasAddPerms } from '$lib/db/permissions';
+import { db } from '$lib/server/db/db.js';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {
@@ -47,8 +48,10 @@ export const actions = {
 		}
 
 		let newBookId: number | undefined = undefined;
+		const dbBooksActions = DBBooksActions.fromDB(db);
+
 		try {
-			newBookId = await addBook({ book: form.data }, locals.user);
+			newBookId = await dbBooksActions.addBook({ book: form.data }, locals.user);
 		} catch (e) {
 			if (e instanceof DatabaseError) {
 				if (

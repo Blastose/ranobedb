@@ -5,8 +5,9 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasAddPerms } from '$lib/db/permissions';
-import { addSeries } from '$lib/server/db/series/actions.js';
+import { DBSeriesActions } from '$lib/server/db/series/actions.js';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
+import { db } from '$lib/server/db/db.js';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {
@@ -51,8 +52,9 @@ export const actions = {
 		}
 
 		let newSeriesId: number | undefined = undefined;
+		const dbSeriesActions = DBSeriesActions.fromDB(db);
 		try {
-			newSeriesId = await addSeries({ series: form.data }, locals.user);
+			newSeriesId = await dbSeriesActions.addSeries({ series: form.data }, locals.user);
 		} catch (e) {
 			console.log(e);
 			if (e instanceof DatabaseError) {

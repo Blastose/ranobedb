@@ -1,4 +1,4 @@
-import { getBook } from '$lib/server/db/books/books';
+import { DBBooks } from '$lib/server/db/books/books';
 import { getChanges } from '$lib/server/db/change/change.js';
 import {
 	getUserListBookWithLabels,
@@ -9,6 +9,7 @@ import { userListBookSchema, type ReadingStatus, type UserListFormType } from '$
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -20,7 +21,8 @@ export const load = async ({ params, locals }) => {
 		userListBook = await getUserListBookWithLabels(user.id, bookId).executeTakeFirst();
 	}
 
-	const book = await getBook(bookId).executeTakeFirst();
+	const dbBooks = DBBooks.fromDB(db, user);
+	const book = await dbBooks.getBook(bookId).executeTakeFirstOrThrow();
 	if (!book) {
 		error(404);
 	}

@@ -5,7 +5,8 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasAddPerms } from '$lib/db/permissions';
-import { addPublisher } from '$lib/server/db/publishers/actions.js';
+import { DBPublisherActions } from '$lib/server/db/publishers/actions.js';
+import { db } from '$lib/server/db/db.js';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals }) => {
@@ -34,8 +35,9 @@ export const actions = {
 		}
 
 		let newPublisherId: number | undefined = undefined;
+		const dbPublisherActions = DBPublisherActions.fromDB(db);
 		try {
-			newPublisherId = await addPublisher({ publisher: form.data }, locals.user);
+			newPublisherId = await dbPublisherActions.addPublisher({ publisher: form.data }, locals.user);
 		} catch (e) {
 			if (e instanceof DatabaseError) {
 				if (

@@ -1,7 +1,8 @@
 import { error, redirect } from '@sveltejs/kit';
 import { hasVisibilityPerms } from '$lib/db/permissions';
-import { getBooks } from '$lib/server/db/books/books.js';
+import { DBBooks } from '$lib/server/db/books/books.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -10,7 +11,10 @@ export const load = async ({ locals, url }) => {
 		error(403);
 	}
 
-	const query = getBooks
+	const user = locals.user;
+	const dbBooks = DBBooks.fromDB(db, user);
+	const query = dbBooks
+		.getBooks()
 		.select(['cte_book.hidden', 'cte_book.locked'])
 		.where((eb) => eb.or([eb('cte_book.locked', '=', true), eb('cte_book.hidden', '=', true)]));
 

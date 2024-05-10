@@ -3,7 +3,8 @@ import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
-import { getPublisherHist } from '$lib/server/db/publishers/publishers.js';
+import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -11,10 +12,13 @@ export const load = async ({ params, locals }) => {
 	const revision = Number(params.revision);
 	const previousRevision = revision - 1;
 
-	const publisherPromise = getPublisherHist({
-		id: publisherId,
-		revision: revision,
-	}).executeTakeFirst();
+	const dbPublishers = DBPublishers.fromDB(db, locals.user);
+	const publisherPromise = dbPublishers
+		.getPublisherHist({
+			id: publisherId,
+			revision: revision,
+		})
+		.executeTakeFirst();
 	const changesPromise = getChanges('publisher', publisherId, [
 		previousRevision,
 		revision,
@@ -41,10 +45,12 @@ export const load = async ({ params, locals }) => {
 	}
 	let diff;
 	if (previousRevision > 0) {
-		const prevPublisher = await getPublisherHist({
-			id: publisherId,
-			revision: previousRevision,
-		}).executeTakeFirst();
+		const prevPublisher = await dbPublishers
+			.getPublisherHist({
+				id: publisherId,
+				revision: previousRevision,
+			})
+			.executeTakeFirst();
 		if (!prevPublisher) {
 			error(404);
 		}
