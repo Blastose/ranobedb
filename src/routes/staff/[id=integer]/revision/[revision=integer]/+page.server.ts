@@ -3,7 +3,8 @@ import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
-import { getStaffHistOne } from '$lib/server/db/staff/staff.js';
+import { DBStaff } from '$lib/server/db/staff/staff.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -11,7 +12,10 @@ export const load = async ({ params, locals }) => {
 	const revision = Number(params.revision);
 	const previousRevision = revision - 1;
 
-	const staffPromise = getStaffHistOne({ id: staffId, revision: revision }).executeTakeFirst();
+	const dbStaff = DBStaff.fromDB(db, locals.user);
+	const staffPromise = dbStaff
+		.getStaffHistOne({ id: staffId, revision: revision })
+		.executeTakeFirst();
 	const changesPromise = getChanges('staff', staffId, [
 		previousRevision,
 		revision,
@@ -39,10 +43,12 @@ export const load = async ({ params, locals }) => {
 	}
 	let diff;
 	if (previousRevision > 0) {
-		const prevStaff = await getStaffHistOne({
-			id: staffId,
-			revision: previousRevision,
-		}).executeTakeFirst();
+		const prevStaff = await dbStaff
+			.getStaffHistOne({
+				id: staffId,
+				revision: previousRevision,
+			})
+			.executeTakeFirst();
 		if (!prevStaff) {
 			error(404);
 		}
