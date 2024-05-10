@@ -1,9 +1,10 @@
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
-import { type InferResult, type ExpressionBuilder, expressionBuilder } from 'kysely';
-import { db } from '$lib/server/db/db';
+import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
+import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/db/dbTypes';
 import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
 import { withBookTitleCte } from '../books/books';
+import type { User } from 'lucia';
 
 function titleCaseBuilder(
 	eb: ExpressionBuilder<DB, 'series_title'>,
@@ -43,7 +44,7 @@ function titleHistCaseBuilder(
 	return cb.else(maxCount + 1).end();
 }
 
-export function withSeriesTitleCte() {
+export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 	const eb = expressionBuilder<DB, 'series'>();
 
 	return () => {
@@ -67,11 +68,11 @@ export function withSeriesTitleCte() {
 			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
 			.orderBy('series.id')
 			.orderBy('series.id')
-			.orderBy((eb) => titleCaseBuilder(eb, defaultLangPrio));
+			.orderBy((eb) => titleCaseBuilder(eb, langPrios ?? defaultLangPrio));
 	};
 }
 
-export function withSeriesHistTitleCte() {
+export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 	const eb = expressionBuilder<DB, 'series_hist'>();
 
 	return () => {
@@ -96,248 +97,272 @@ export function withSeriesHistTitleCte() {
 			])
 			.orderBy('series_hist.change_id')
 			.orderBy('id')
-			.orderBy((eb) => titleHistCaseBuilder(eb, defaultLangPrio));
+			.orderBy((eb) => titleHistCaseBuilder(eb, langPrios ?? defaultLangPrio));
 	};
 }
 
-export const getSeries = db
-	.with('cte_series', withSeriesTitleCte())
-	.selectFrom('cte_series')
-	.selectAll('cte_series');
+export class DBSeries {
+	ranobeDB: RanobeDB;
 
-export const getSeriesOne = (id: number) =>
-	db
-		.with('cte_book', withBookTitleCte())
-		.with('cte_series', withSeriesTitleCte())
-		.selectFrom('cte_series')
-		.select([
-			'cte_series.id',
-			'cte_series.bookwalker_id',
-			'cte_series.hidden',
-			'cte_series.locked',
-			'cte_series.lang',
-			'cte_series.publication_status',
-			'cte_series.romaji',
-			'cte_series.romaji_orig',
-			'cte_series.title',
-			'cte_series.title_orig',
-		])
-		.select((eb) => [
-			jsonArrayFrom(
-				eb
-					.selectFrom('cte_book')
-					.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
-					.whereRef('series_book.series_id', '=', 'cte_series.id')
-					.select([
-						'cte_book.id',
-						'cte_book.title',
-						'cte_book.title_orig',
-						'cte_book.romaji',
-						'cte_book.romaji_orig',
-						'cte_book.image_id',
-						'series_book.sort_order',
-					])
-					.orderBy('sort_order asc'),
-			).as('books'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('series_relation')
-					.innerJoin('cte_series as child_series', 'child_series.id', 'series_relation.id_child')
-					.select([
-						'child_series.id',
-						'child_series.title',
-						'child_series.romaji',
-						'series_relation.relation_type',
-					])
-					.whereRef('series_relation.id_parent', '=', 'cte_series.id'),
-			).as('child_series'),
-		])
-		.where('cte_series.id', '=', id);
+	constructor(ranobeDB: RanobeDB) {
+		this.ranobeDB = ranobeDB;
+	}
 
-export const getSeriesHistOne = (options: { id: number; revision: number }) =>
-	db
-		.with('cte_book', withBookTitleCte())
-		.with('cte_series', withSeriesHistTitleCte())
-		.with('cte_series_non_hist', withSeriesTitleCte())
-		.selectFrom('cte_series')
-		.innerJoin('change', 'change.id', 'cte_series.id')
-		.select([
-			'cte_series.id',
-			'cte_series.bookwalker_id',
-			'cte_series.lang',
-			'cte_series.publication_status',
-			'cte_series.romaji',
-			'cte_series.romaji_orig',
-			'cte_series.title',
-			'cte_series.title_orig',
-			'change.ilock as locked',
-			'change.ihid as hidden',
-		])
-		.select((eb) => [
-			jsonArrayFrom(
-				eb
-					.selectFrom('cte_book')
-					.innerJoin('series_book_hist', 'series_book_hist.book_id', 'cte_book.id')
-					.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
-					.select([
-						'cte_book.id',
-						'cte_book.title',
-						'cte_book.title_orig',
-						'cte_book.romaji',
-						'cte_book.romaji_orig',
-						'cte_book.image_id',
-						'series_book_hist.sort_order',
-					])
-					.orderBy('sort_order asc'),
-			).as('books'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('series_relation_hist')
-					.innerJoin(
-						'cte_series_non_hist as child_series',
-						'child_series.id',
-						'series_relation_hist.id_child',
-					)
-					.select([
-						'child_series.id',
-						'child_series.title',
-						'child_series.romaji',
-						'series_relation_hist.relation_type',
-					])
-					.whereRef('series_relation_hist.change_id', '=', 'change.id'),
-			).as('child_series'),
-		])
-		.where('change.item_id', '=', options.id)
-		.where('change.item_name', '=', 'series')
-		.where('change.revision', '=', options.revision);
+	static fromDB(db: Kysely<DB>, user?: User | null) {
+		const ranobeDB = new RanobeDB(db, user);
+		return new this(ranobeDB);
+	}
 
-export const getSeriesOneEdit = (id: number) =>
-	db
-		.with('cte_book', withBookTitleCte())
-		.with('cte_series', withSeriesTitleCte())
-		.selectFrom('cte_series')
-		.select([
-			'cte_series.id',
-			'cte_series.bookwalker_id',
-			'cte_series.hidden',
-			'cte_series.locked',
-			'cte_series.lang',
-			'cte_series.publication_status',
-			'cte_series.romaji',
-			'cte_series.romaji_orig',
-			'cte_series.title',
-			'cte_series.title_orig',
-		])
-		.select((eb) => [
-			jsonArrayFrom(
-				eb
-					.selectFrom('cte_book')
-					.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
-					.whereRef('series_book.series_id', '=', 'cte_series.id')
-					.select([
-						'cte_book.id',
-						'cte_book.title',
-						'cte_book.title_orig',
-						'cte_book.romaji',
-						'cte_book.romaji_orig',
-						'cte_book.image_id',
-						'series_book.sort_order',
-					])
-					.orderBy('sort_order asc'),
-			).as('books'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('series_title')
-					.whereRef('series_title.series_id', '=', 'cte_series.id')
-					.select([
-						'series_title.lang',
-						'series_title.official',
-						'series_title.title',
-						'series_title.romaji',
-					]),
-			).as('titles'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('series_relation')
-					.innerJoin('cte_series as child_series', 'child_series.id', 'series_relation.id_child')
-					.select([
-						'child_series.id',
-						'child_series.title',
-						'child_series.romaji',
-						'series_relation.relation_type',
-					])
-					.whereRef('series_relation.id_parent', '=', 'cte_series.id'),
-			).as('child_series'),
-		])
-		.where('cte_series.id', '=', id);
+	getSeries() {
+		return this.ranobeDB.db
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.selectFrom('cte_series')
+			.selectAll('cte_series');
+	}
+	getSeriesOne(id: number) {
+		return this.ranobeDB.db
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.selectFrom('cte_series')
+			.select([
+				'cte_series.id',
+				'cte_series.bookwalker_id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.publication_status',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+			])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('cte_book')
+						.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
+						.whereRef('series_book.series_id', '=', 'cte_series.id')
+						.select([
+							'cte_book.id',
+							'cte_book.title',
+							'cte_book.title_orig',
+							'cte_book.romaji',
+							'cte_book.romaji_orig',
+							'cte_book.image_id',
+							'series_book.sort_order',
+						])
+						.orderBy('sort_order asc'),
+				).as('books'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_relation')
+						.innerJoin('cte_series as child_series', 'child_series.id', 'series_relation.id_child')
+						.select([
+							'child_series.id',
+							'child_series.title',
+							'child_series.romaji',
+							'series_relation.relation_type',
+						])
+						.whereRef('series_relation.id_parent', '=', 'cte_series.id'),
+				).as('child_series'),
+			])
+			.where('cte_series.id', '=', id);
+	}
 
-export const getSeriesHistOneEdit = (params: { id: number; revision: number }) =>
-	db
-		.with('cte_book', withBookTitleCte())
-		.with('cte_series', withSeriesHistTitleCte())
-		.with('cte_series_non_hist', withSeriesTitleCte())
-		.selectFrom('cte_series')
-		.innerJoin('change', 'change.id', 'cte_series.id')
-		.select([
-			'cte_series.id',
-			'cte_series.bookwalker_id',
-			'cte_series.lang',
-			'cte_series.publication_status',
-			'cte_series.romaji',
-			'cte_series.romaji_orig',
-			'cte_series.title',
-			'cte_series.title_orig',
-			'change.ihid as hidden',
-			'change.ilock as locked',
-		])
-		.select((eb) => [
-			jsonArrayFrom(
-				eb
-					.selectFrom('cte_book')
-					.innerJoin('series_book_hist', 'series_book_hist.book_id', 'cte_book.id')
-					.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
-					.select([
-						'cte_book.id',
-						'cte_book.title',
-						'cte_book.title_orig',
-						'cte_book.romaji',
-						'cte_book.romaji_orig',
-						'cte_book.image_id',
-						'series_book_hist.sort_order',
-					])
-					.orderBy('sort_order asc'),
-			).as('books'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('series_title_hist')
-					.whereRef('series_title_hist.change_id', '=', 'cte_series.id')
-					.select([
-						'series_title_hist.lang',
-						'series_title_hist.official',
-						'series_title_hist.title',
-						'series_title_hist.romaji',
-					]),
-			).as('titles'),
-			jsonArrayFrom(
-				eb
-					.selectFrom('series_relation_hist')
-					.innerJoin(
-						'cte_series_non_hist as child_series',
-						'child_series.id',
-						'series_relation_hist.id_child',
-					)
-					.select([
-						'child_series.id',
-						'child_series.title',
-						'child_series.romaji',
-						'series_relation_hist.relation_type',
-					])
-					.whereRef('series_relation_hist.change_id', '=', 'cte_series.id'),
-			).as('child_series'),
-		])
-		.where('change.item_id', '=', params.id)
-		.where('change.item_name', '=', 'series')
-		.where('change.revision', '=', params.revision);
+	getSeriesHistOne(options: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series_non_hist', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.selectFrom('cte_series')
+			.innerJoin('change', 'change.id', 'cte_series.id')
+			.select([
+				'cte_series.id',
+				'cte_series.bookwalker_id',
+				'cte_series.lang',
+				'cte_series.publication_status',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+				'change.ilock as locked',
+				'change.ihid as hidden',
+			])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('cte_book')
+						.innerJoin('series_book_hist', 'series_book_hist.book_id', 'cte_book.id')
+						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
+						.select([
+							'cte_book.id',
+							'cte_book.title',
+							'cte_book.title_orig',
+							'cte_book.romaji',
+							'cte_book.romaji_orig',
+							'cte_book.image_id',
+							'series_book_hist.sort_order',
+						])
+						.orderBy('sort_order asc'),
+				).as('books'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_relation_hist')
+						.innerJoin(
+							'cte_series_non_hist as child_series',
+							'child_series.id',
+							'series_relation_hist.id_child',
+						)
+						.select([
+							'child_series.id',
+							'child_series.title',
+							'child_series.romaji',
+							'series_relation_hist.relation_type',
+						])
+						.whereRef('series_relation_hist.change_id', '=', 'change.id'),
+				).as('child_series'),
+			])
+			.where('change.item_id', '=', options.id)
+			.where('change.item_name', '=', 'series');
 
-export type Series = InferResult<ReturnType<typeof getSeriesOne>>[number];
-export type SeriesEdit = InferResult<ReturnType<typeof getSeriesOneEdit>>[number];
+		if (options.revision) {
+			query = query.where('change.revision', '=', options.revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+		return query;
+	}
+
+	getSeriesOneEdit(id: number) {
+		return this.ranobeDB.db
+			.with('cte_book', withBookTitleCte())
+			.with('cte_series', withSeriesTitleCte())
+			.selectFrom('cte_series')
+			.select([
+				'cte_series.id',
+				'cte_series.bookwalker_id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.publication_status',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+			])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('cte_book')
+						.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
+						.whereRef('series_book.series_id', '=', 'cte_series.id')
+						.select([
+							'cte_book.id',
+							'cte_book.title',
+							'cte_book.title_orig',
+							'cte_book.romaji',
+							'cte_book.romaji_orig',
+							'cte_book.image_id',
+							'series_book.sort_order',
+						])
+						.orderBy('sort_order asc'),
+				).as('books'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_title')
+						.whereRef('series_title.series_id', '=', 'cte_series.id')
+						.select([
+							'series_title.lang',
+							'series_title.official',
+							'series_title.title',
+							'series_title.romaji',
+						]),
+				).as('titles'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_relation')
+						.innerJoin('cte_series as child_series', 'child_series.id', 'series_relation.id_child')
+						.select([
+							'child_series.id',
+							'child_series.title',
+							'child_series.romaji',
+							'series_relation.relation_type',
+						])
+						.whereRef('series_relation.id_parent', '=', 'cte_series.id'),
+				).as('child_series'),
+			])
+			.where('cte_series.id', '=', id);
+	}
+
+	getSeriesHistOneEdit(params: { id: number; revision: number }) {
+		return this.ranobeDB.db
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series_non_hist', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.selectFrom('cte_series')
+			.innerJoin('change', 'change.id', 'cte_series.id')
+			.select([
+				'cte_series.id',
+				'cte_series.bookwalker_id',
+				'cte_series.lang',
+				'cte_series.publication_status',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+				'change.ihid as hidden',
+				'change.ilock as locked',
+			])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('cte_book')
+						.innerJoin('series_book_hist', 'series_book_hist.book_id', 'cte_book.id')
+						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
+						.select([
+							'cte_book.id',
+							'cte_book.title',
+							'cte_book.title_orig',
+							'cte_book.romaji',
+							'cte_book.romaji_orig',
+							'cte_book.image_id',
+							'series_book_hist.sort_order',
+						])
+						.orderBy('sort_order asc'),
+				).as('books'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_title_hist')
+						.whereRef('series_title_hist.change_id', '=', 'cte_series.id')
+						.select([
+							'series_title_hist.lang',
+							'series_title_hist.official',
+							'series_title_hist.title',
+							'series_title_hist.romaji',
+						]),
+				).as('titles'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_relation_hist')
+						.innerJoin(
+							'cte_series_non_hist as child_series',
+							'child_series.id',
+							'series_relation_hist.id_child',
+						)
+						.select([
+							'child_series.id',
+							'child_series.title',
+							'child_series.romaji',
+							'series_relation_hist.relation_type',
+						])
+						.whereRef('series_relation_hist.change_id', '=', 'cte_series.id'),
+				).as('child_series'),
+			])
+			.where('change.item_id', '=', params.id)
+			.where('change.item_name', '=', 'series')
+			.where('change.revision', '=', params.revision);
+	}
+}
+
+export type Series = InferResult<ReturnType<DBSeries['getSeriesOne']>>[number];
+export type SeriesEdit = InferResult<ReturnType<DBSeries['getSeriesOneEdit']>>[number];

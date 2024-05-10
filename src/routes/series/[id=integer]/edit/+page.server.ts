@@ -9,8 +9,9 @@ import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
-import { getSeriesHistOneEdit, getSeriesOneEdit } from '$lib/server/db/series/series.js';
+import { DBSeries } from '$lib/server/db/series/series.js';
 import { editSeries } from '$lib/server/db/series/actions.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -19,17 +20,20 @@ export const load = async ({ params, locals, url }) => {
 	const seriesId = Number(id);
 	let series;
 
+	const dbSeries = DBSeries.fromDB(db, locals.user);
 	const revision = await superValidate(url, zod(revisionSchema));
 	// We need to check if the url search params contains `revision`
 	// because the .valid property will be false if it doesn't,
 	// but that's find since we'll just use the "current" revision
 	if (revision.valid && url.searchParams.get('revision')) {
-		series = await getSeriesHistOneEdit({
-			id: seriesId,
-			revision: revision.data.revision,
-		}).executeTakeFirst();
+		series = await dbSeries
+			.getSeriesHistOneEdit({
+				id: seriesId,
+				revision: revision.data.revision,
+			})
+			.executeTakeFirst();
 	} else {
-		series = await getSeriesOneEdit(seriesId).executeTakeFirst();
+		series = await dbSeries.getSeriesOneEdit(seriesId).executeTakeFirst();
 	}
 
 	if (!series) {
