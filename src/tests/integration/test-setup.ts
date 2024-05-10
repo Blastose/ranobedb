@@ -172,6 +172,36 @@ export async function initDatabase(db: Kysely<DB>) {
 		.insertInto('series_title_hist')
 		.values({ lang: 'ja', official: true, change_id: changeSeries.id, title: 'Series Title' })
 		.execute();
+	const series2 = await db
+		.insertInto('series')
+		.values({ hidden: false, locked: false, publication_status: 'unknown' })
+		.returning('id')
+		.executeTakeFirstOrThrow();
+	const changeSeries2 = await db
+		.insertInto('change')
+		.values({
+			comments: 'Automated',
+			ihid: false,
+			ilock: false,
+			item_id: series2.id,
+			item_name: 'series',
+			revision: 1,
+			user_id: ranobeBot.id,
+		})
+		.returning('change.id')
+		.executeTakeFirstOrThrow();
+	await db
+		.insertInto('series_hist')
+		.values({ change_id: changeSeries2.id, publication_status: 'unknown' })
+		.execute();
+	await db
+		.insertInto('series_title')
+		.values({ lang: 'ja', official: true, series_id: series2.id, title: 'Series Title 2' })
+		.execute();
+	await db
+		.insertInto('series_title_hist')
+		.values({ lang: 'ja', official: true, change_id: changeSeries2.id, title: 'Series Title 2' })
+		.execute();
 	const staff = await db
 		.insertInto('staff')
 		.values({ description: '', hidden: false, locked: false })

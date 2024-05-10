@@ -10,7 +10,7 @@ import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
-import { editSeries } from '$lib/server/db/series/actions.js';
+import { DBSeriesActions } from '$lib/server/db/series/actions.js';
 import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals, url }) => {
@@ -78,8 +78,9 @@ export const actions = {
 		}
 
 		let success = false;
+		const dbSeriesActions = DBSeriesActions.fromDB(db);
 		try {
-			await editSeries({ series: form.data, id }, locals.user);
+			await dbSeriesActions.editSeries({ series: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {

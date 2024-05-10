@@ -1,6 +1,6 @@
 import type { seriesSchema } from '$lib/zod/schema';
 import type { Infer } from 'sveltekit-superforms';
-import { db } from '../db';
+import { RanobeDB } from '../db';
 import type { User } from 'lucia';
 import { addChange } from '../change/change';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
@@ -17,7 +17,7 @@ import {
 	type SeriesTitle,
 	type SeriesTitleHist,
 } from '$lib/db/dbTypes';
-import type { Insertable, Transaction } from 'kysely';
+import type { Insertable, Kysely, Transaction } from 'kysely';
 import { arrayDiff, arrayIntersection } from '$lib/db/array';
 import { reverseRelationUpdateMarkdown } from '$lib/db/revision';
 
@@ -296,336 +296,346 @@ async function addReverseSeriesRelations(params: {
 	}
 }
 
-export async function editSeries(
-	data: { series: Infer<typeof seriesSchema>; id: number },
-	user: User,
-) {
-	await db.transaction().execute(async (trx) => {
-		const currentSeries = await trx
-			.selectFrom('series')
-			.where('series.id', '=', data.id)
-			.select(['series.hidden', 'series.locked'])
-			.select((eb) => [
-				jsonArrayFrom(
-					eb
-						.selectFrom('series_relation')
-						.innerJoin('series', 'series.id', 'series_relation.id_child')
-						.select(['series_relation.id_child as id', 'series_relation.relation_type'])
-						.where('series_relation.id_parent', '=', data.id)
-						.where('series.hidden', '=', false),
-				).as('child_series'),
-				jsonArrayFrom(
-					eb
-						.selectFrom('book')
-						.innerJoin('series_book', 'series_book.book_id', 'book.id')
-						.whereRef('series_book.series_id', '=', 'series.id')
-						.select(['book.id', 'series_book.sort_order'])
-						.orderBy('sort_order desc'),
-				).as('books'),
-			])
-			.executeTakeFirstOrThrow();
+export class DBSeriesActions {
+	ranobeDB: RanobeDB;
 
-		const userHasVisibilityPerms = hasVisibilityPerms(user);
-		const hidden = userHasVisibilityPerms ? data.series.hidden : currentSeries.hidden;
-		const locked = userHasVisibilityPerms
-			? data.series.hidden || data.series.locked
-			: currentSeries.locked;
+	constructor(ranobeDB: RanobeDB) {
+		this.ranobeDB = ranobeDB;
+	}
 
-		if (currentSeries.hidden || currentSeries.locked) {
-			if (!userHasVisibilityPerms) {
-				throw new ChangePermissionError('');
+	static fromDB(db: Kysely<DB>) {
+		const ranobeDB = new RanobeDB(db);
+		return new this(ranobeDB);
+	}
+
+	async editSeries(data: { series: Infer<typeof seriesSchema>; id: number }, user: User) {
+		await this.ranobeDB.db.transaction().execute(async (trx) => {
+			const currentSeries = await trx
+				.selectFrom('series')
+				.where('series.id', '=', data.id)
+				.select(['series.hidden', 'series.locked'])
+				.select((eb) => [
+					jsonArrayFrom(
+						eb
+							.selectFrom('series_relation')
+							.innerJoin('series', 'series.id', 'series_relation.id_child')
+							.select(['series_relation.id_child as id', 'series_relation.relation_type'])
+							.where('series_relation.id_parent', '=', data.id)
+							.where('series.hidden', '=', false),
+					).as('child_series'),
+					jsonArrayFrom(
+						eb
+							.selectFrom('book')
+							.innerJoin('series_book', 'series_book.book_id', 'book.id')
+							.whereRef('series_book.series_id', '=', 'series.id')
+							.select(['book.id', 'series_book.sort_order'])
+							.orderBy('sort_order desc'),
+					).as('books'),
+				])
+				.executeTakeFirstOrThrow();
+
+			const userHasVisibilityPerms = hasVisibilityPerms(user);
+			const hidden = userHasVisibilityPerms ? data.series.hidden : currentSeries.hidden;
+			const locked = userHasVisibilityPerms
+				? data.series.hidden || data.series.locked
+				: currentSeries.locked;
+
+			if (currentSeries.hidden || currentSeries.locked) {
+				if (!userHasVisibilityPerms) {
+					throw new ChangePermissionError('');
+				}
 			}
-		}
 
-		if (!currentSeries.hidden && data.series.hidden) {
-			if (currentSeries.child_series.length + currentSeries.books.length > 0) {
-				throw new HasRelationsError('');
+			if (!currentSeries.hidden && data.series.hidden) {
+				if (currentSeries.child_series.length + currentSeries.books.length > 0) {
+					throw new HasRelationsError('');
+				}
 			}
-		}
 
-		const change = await addChange(
-			trx,
-			{
-				comments: data.series.comment,
-				hidden,
-				locked,
-				item_id: data.id,
-				item_name: 'series',
-			},
-			user,
-		);
+			const change = await addChange(
+				trx,
+				{
+					comments: data.series.comment,
+					hidden,
+					locked,
+					item_id: data.id,
+					item_name: 'series',
+				},
+				user,
+			);
 
-		await trx
-			.updateTable('series')
-			.set({
-				bookwalker_id: data.series.bookwalker_id,
-				publication_status: data.series.publication_status,
-				hidden,
-				locked,
-			})
-			.where('series.id', '=', data.id)
-			.executeTakeFirstOrThrow();
-
-		await trx
-			.insertInto('series_hist')
-			.values({
-				publication_status: data.series.publication_status,
-				bookwalker_id: data.series.bookwalker_id,
-				change_id: change.change_id,
-			})
-			.executeTakeFirstOrThrow();
-
-		// series_title
-		await trx.deleteFrom('series_title').where('series_title.series_id', '=', data.id).execute();
-		const series_title_add = data.series.titles.map((item) => {
-			return {
-				series_id: data.id,
-				lang: item.lang,
-				official: item.official,
-				title: item.title,
-				romaji: item.romaji,
-			};
-		}) satisfies Insertable<SeriesTitle>[];
-		if (series_title_add.length > 0) {
-			await trx.insertInto('series_title').values(series_title_add).execute();
-		}
-		const series_title_hist_add = data.series.titles.map((item) => {
-			return {
-				change_id: change.change_id,
-				lang: item.lang,
-				official: item.official,
-				title: item.title,
-				romaji: item.romaji,
-			};
-		}) satisfies Insertable<SeriesTitleHist>[];
-		if (series_title_hist_add.length > 0) {
-			await trx.insertInto('series_title_hist').values(series_title_hist_add).execute();
-		}
-
-		// series_book_hist
-		// add all
-		const series_book_hist = data.series.books.map((item) => {
-			return {
-				change_id: change.change_id,
-				book_id: item.id,
-				sort_order: item.sort_order,
-			};
-		}) satisfies Insertable<SeriesBookHist>[];
-		if (series_book_hist.length > 0) {
-			await trx.insertInto('series_book_hist').values(series_book_hist).execute();
-		}
-
-		// series_book
-		const booksCurrentDiff = arrayDiff(currentSeries.books, data.series.books);
-		if (booksCurrentDiff.length > 0) {
 			await trx
-				.deleteFrom('series_book')
-				.where(
-					'book_id',
-					'in',
-					booksCurrentDiff.map((item) => item.id),
-				)
-				.where('series_book.series_id', '=', data.id)
-				.execute();
-		}
-		const booksToUpdate = arrayIntersection(data.series.books, currentSeries.books);
-		for (const item of booksToUpdate) {
-			await trx
-				.updateTable('series_book')
+				.updateTable('series')
 				.set({
+					bookwalker_id: data.series.bookwalker_id,
+					publication_status: data.series.publication_status,
+					hidden,
+					locked,
+				})
+				.where('series.id', '=', data.id)
+				.executeTakeFirstOrThrow();
+
+			await trx
+				.insertInto('series_hist')
+				.values({
+					publication_status: data.series.publication_status,
+					bookwalker_id: data.series.bookwalker_id,
+					change_id: change.change_id,
+				})
+				.executeTakeFirstOrThrow();
+
+			// series_title
+			await trx.deleteFrom('series_title').where('series_title.series_id', '=', data.id).execute();
+			const series_title_add = data.series.titles.map((item) => {
+				return {
+					series_id: data.id,
+					lang: item.lang,
+					official: item.official,
+					title: item.title,
+					romaji: item.romaji,
+				};
+			}) satisfies Insertable<SeriesTitle>[];
+			if (series_title_add.length > 0) {
+				await trx.insertInto('series_title').values(series_title_add).execute();
+			}
+			const series_title_hist_add = data.series.titles.map((item) => {
+				return {
+					change_id: change.change_id,
+					lang: item.lang,
+					official: item.official,
+					title: item.title,
+					romaji: item.romaji,
+				};
+			}) satisfies Insertable<SeriesTitleHist>[];
+			if (series_title_hist_add.length > 0) {
+				await trx.insertInto('series_title_hist').values(series_title_hist_add).execute();
+			}
+
+			// series_book_hist
+			// add all
+			const series_book_hist = data.series.books.map((item) => {
+				return {
+					change_id: change.change_id,
+					book_id: item.id,
 					sort_order: item.sort_order,
-				})
-				.where('series_book.series_id', '=', data.id)
-				.where('series_book.book_id', '=', item.id)
-				.execute();
-		}
-		const booksNewDiff = arrayDiff(data.series.books, currentSeries.books);
-		const series_book_add = booksNewDiff.map((item) => {
-			return { book_id: item.id, series_id: data.id, sort_order: item.sort_order };
-		}) satisfies Insertable<SeriesBook>[];
-		if (series_book_add.length > 0) {
-			await trx.insertInto('series_book').values(series_book_add).execute();
-		}
+				};
+			}) satisfies Insertable<SeriesBookHist>[];
+			if (series_book_hist.length > 0) {
+				await trx.insertInto('series_book_hist').values(series_book_hist).execute();
+			}
 
-		// series_relation_hist
-		const series_relations_hist = data.series.child_series.map((item) => {
-			return {
-				change_id: change.change_id,
-				id_child: item.id,
-				relation_type: item.relation_type,
-			};
-		}) satisfies Insertable<SeriesRelationHist>[];
-		if (series_relations_hist.length > 0) {
-			await trx.insertInto('series_relation_hist').values(series_relations_hist).execute();
-		}
+			// series_book
+			const booksCurrentDiff = arrayDiff(currentSeries.books, data.series.books);
+			if (booksCurrentDiff.length > 0) {
+				await trx
+					.deleteFrom('series_book')
+					.where(
+						'book_id',
+						'in',
+						booksCurrentDiff.map((item) => item.id),
+					)
+					.where('series_book.series_id', '=', data.id)
+					.execute();
+			}
+			const booksToUpdate = arrayIntersection(data.series.books, currentSeries.books);
+			for (const item of booksToUpdate) {
+				await trx
+					.updateTable('series_book')
+					.set({
+						sort_order: item.sort_order,
+					})
+					.where('series_book.series_id', '=', data.id)
+					.where('series_book.book_id', '=', item.id)
+					.execute();
+			}
+			const booksNewDiff = arrayDiff(data.series.books, currentSeries.books);
+			const series_book_add = booksNewDiff.map((item) => {
+				return { book_id: item.id, series_id: data.id, sort_order: item.sort_order };
+			}) satisfies Insertable<SeriesBook>[];
+			if (series_book_add.length > 0) {
+				await trx.insertInto('series_book').values(series_book_add).execute();
+			}
 
-		const currentDiff = arrayDiff(currentSeries.child_series, data.series.child_series);
-
-		if (currentDiff.length > 0) {
-			await trx
-				.deleteFrom('series_relation')
-				.where(
-					'series_relation.id_child',
-					'in',
-					currentDiff.map((item) => item.id),
-				)
-				.where('series_relation.id_parent', '=', data.id)
-				.execute();
-		}
-		// Remove reverse series rels
-		if (currentDiff.length > 0) {
-			await removeReverseSeriesRelations({
-				trx,
-				main_id: data.id,
-				og_change: change,
-				series_ids: currentDiff.map((i) => i.id),
-			});
-		}
-
-		const toUpdate = data.series.child_series.filter((item1) =>
-			currentSeries.child_series.some(
-				(item2) => item2.id === item1.id && item1.relation_type !== item2.relation_type,
-			),
-		);
-
-		for (const item of toUpdate) {
-			await trx
-				.updateTable('series_relation')
-				.set({
+			// series_relation_hist
+			const series_relations_hist = data.series.child_series.map((item) => {
+				return {
+					change_id: change.change_id,
+					id_child: item.id,
 					relation_type: item.relation_type,
+				};
+			}) satisfies Insertable<SeriesRelationHist>[];
+			if (series_relations_hist.length > 0) {
+				await trx.insertInto('series_relation_hist').values(series_relations_hist).execute();
+			}
+
+			const currentDiff = arrayDiff(currentSeries.child_series, data.series.child_series);
+
+			if (currentDiff.length > 0) {
+				await trx
+					.deleteFrom('series_relation')
+					.where(
+						'series_relation.id_child',
+						'in',
+						currentDiff.map((item) => item.id),
+					)
+					.where('series_relation.id_parent', '=', data.id)
+					.execute();
+			}
+			// Remove reverse series rels
+			if (currentDiff.length > 0) {
+				await removeReverseSeriesRelations({
+					trx,
+					main_id: data.id,
+					og_change: change,
+					series_ids: currentDiff.map((i) => i.id),
+				});
+			}
+
+			const toUpdate = data.series.child_series.filter((item1) =>
+				currentSeries.child_series.some(
+					(item2) => item2.id === item1.id && item1.relation_type !== item2.relation_type,
+				),
+			);
+
+			for (const item of toUpdate) {
+				await trx
+					.updateTable('series_relation')
+					.set({
+						relation_type: item.relation_type,
+					})
+					.where('series_relation.id_parent', '=', data.id)
+					.where('series_relation.id_child', '=', item.id)
+					.execute();
+			}
+			// update reverse series rels
+			if (toUpdate.length > 0) {
+				await updateReverseSeriesRelations({
+					trx,
+					main_id: data.id,
+					og_change: change,
+					series: toUpdate,
+				});
+			}
+
+			const newDiff = arrayDiff(data.series.child_series, currentSeries.child_series);
+			const series_relations = newDiff.map((item) => {
+				return { id_parent: data.id, id_child: item.id, relation_type: item.relation_type };
+			}) satisfies Insertable<SeriesRelation>[];
+			if (series_relations.length > 0) {
+				await trx.insertInto('series_relation').values(series_relations).execute();
+			}
+
+			// add reverse relations
+			if (newDiff.length > 0) {
+				await addReverseSeriesRelations({
+					trx,
+					main_id: data.id,
+					og_change: change,
+					series: newDiff,
+				});
+			}
+		});
+	}
+
+	async addSeries(data: { series: Infer<typeof seriesSchema> }, user: User) {
+		return await this.ranobeDB.db.transaction().execute(async (trx) => {
+			const canChangeVisibility = permissions[user.role].includes('visibility');
+			const hidden = canChangeVisibility ? data.series.hidden : false;
+			const locked = canChangeVisibility ? data.series.hidden || data.series.locked : false;
+
+			const insertedSeries = await trx
+				.insertInto('series')
+				.values({
+					publication_status: data.series.publication_status,
+					bookwalker_id: data.series.bookwalker_id,
+					hidden,
+					locked,
 				})
-				.where('series_relation.id_parent', '=', data.id)
-				.where('series_relation.id_child', '=', item.id)
-				.execute();
-		}
-		// update reverse series rels
-		if (toUpdate.length > 0) {
-			await updateReverseSeriesRelations({
+				.returning('series.id')
+				.executeTakeFirstOrThrow();
+
+			const change = await addChange(
 				trx,
-				main_id: data.id,
-				og_change: change,
-				series: toUpdate,
-			});
-		}
+				{
+					comments: data.series.comment,
+					hidden,
+					locked,
+					item_id: insertedSeries.id,
+					item_name: 'series',
+				},
+				user,
+			);
 
-		const newDiff = arrayDiff(data.series.child_series, currentSeries.child_series);
-		const series_relations = newDiff.map((item) => {
-			return { id_parent: data.id, id_child: item.id, relation_type: item.relation_type };
-		}) satisfies Insertable<SeriesRelation>[];
-		if (series_relations.length > 0) {
-			await trx.insertInto('series_relation').values(series_relations).execute();
-		}
+			await trx
+				.insertInto('series_hist')
+				.values({
+					publication_status: data.series.publication_status,
+					bookwalker_id: data.series.bookwalker_id,
+					change_id: change.change_id,
+				})
+				.executeTakeFirstOrThrow();
+			const series_relations = data.series.child_series.map((item) => {
+				return {
+					id_parent: insertedSeries.id,
+					id_child: item.id,
+					relation_type: item.relation_type,
+				};
+			}) satisfies Insertable<SeriesRelation>[];
+			if (series_relations.length > 0) {
+				await trx.insertInto('series_relation').values(series_relations).execute();
+			}
 
-		// add reverse relations
-		if (newDiff.length > 0) {
-			await addReverseSeriesRelations({
-				trx,
-				main_id: data.id,
-				og_change: change,
-				series: newDiff,
-			});
-		}
-	});
-}
+			// add reverse series rels
+			if (data.series.child_series.length > 0) {
+				await addReverseSeriesRelations({
+					trx,
+					main_id: insertedSeries.id,
+					og_change: change,
+					series: data.series.child_series,
+				});
+			}
 
-export async function addSeries(data: { series: Infer<typeof seriesSchema> }, user: User) {
-	return await db.transaction().execute(async (trx) => {
-		const canChangeVisibility = permissions[user.role].includes('visibility');
-		const hidden = canChangeVisibility ? data.series.hidden : false;
-		const locked = canChangeVisibility ? data.series.hidden || data.series.locked : false;
+			// series_title
+			const series_title_add = data.series.titles.map((item) => {
+				return {
+					series_id: insertedSeries.id,
+					lang: item.lang,
+					official: item.official,
+					title: item.title,
+					romaji: item.romaji,
+				};
+			}) satisfies Insertable<SeriesTitle>[];
+			if (series_title_add.length > 0) {
+				await trx.insertInto('series_title').values(series_title_add).execute();
+			}
+			const series_title_hist_add = data.series.titles.map((item) => {
+				return {
+					change_id: change.change_id,
+					lang: item.lang,
+					official: item.official,
+					title: item.title,
+					romaji: item.romaji,
+				};
+			}) satisfies Insertable<SeriesTitleHist>[];
+			if (series_title_hist_add.length > 0) {
+				await trx.insertInto('series_title_hist').values(series_title_hist_add).execute();
+			}
 
-		const insertedSeries = await trx
-			.insertInto('series')
-			.values({
-				publication_status: data.series.publication_status,
-				bookwalker_id: data.series.bookwalker_id,
-				hidden,
-				locked,
-			})
-			.returning('series.id')
-			.executeTakeFirstOrThrow();
+			// series_book
+			const series_book_add = data.series.books.map((item) => {
+				return { book_id: item.id, series_id: insertedSeries.id, sort_order: item.sort_order };
+			}) satisfies Insertable<SeriesBook>[];
+			if (series_book_add.length > 0) {
+				await trx.insertInto('series_book').values(series_book_add).execute();
+			}
+			const series_book_add_hist = data.series.books.map((item) => {
+				return { book_id: item.id, change_id: change.change_id, sort_order: item.sort_order };
+			}) satisfies Insertable<SeriesBookHist>[];
+			if (series_book_add.length > 0) {
+				await trx.insertInto('series_book_hist').values(series_book_add_hist).execute();
+			}
 
-		const change = await addChange(
-			trx,
-			{
-				comments: data.series.comment,
-				hidden,
-				locked,
-				item_id: insertedSeries.id,
-				item_name: 'series',
-			},
-			user,
-		);
-
-		await trx
-			.insertInto('series_hist')
-			.values({
-				publication_status: data.series.publication_status,
-				bookwalker_id: data.series.bookwalker_id,
-				change_id: change.change_id,
-			})
-			.executeTakeFirstOrThrow();
-		const series_relations = data.series.child_series.map((item) => {
-			return {
-				id_parent: insertedSeries.id,
-				id_child: item.id,
-				relation_type: item.relation_type,
-			};
-		}) satisfies Insertable<SeriesRelation>[];
-		if (series_relations.length > 0) {
-			await trx.insertInto('series_relation').values(series_relations).execute();
-		}
-
-		// add reverse series rels
-		if (data.series.child_series.length > 0) {
-			await addReverseSeriesRelations({
-				trx,
-				main_id: insertedSeries.id,
-				og_change: change,
-				series: data.series.child_series,
-			});
-		}
-
-		// series_title
-		const series_title_add = data.series.titles.map((item) => {
-			return {
-				series_id: insertedSeries.id,
-				lang: item.lang,
-				official: item.official,
-				title: item.title,
-				romaji: item.romaji,
-			};
-		}) satisfies Insertable<SeriesTitle>[];
-		if (series_title_add.length > 0) {
-			await trx.insertInto('series_title').values(series_title_add).execute();
-		}
-		const series_title_hist_add = data.series.titles.map((item) => {
-			return {
-				change_id: change.change_id,
-				lang: item.lang,
-				official: item.official,
-				title: item.title,
-				romaji: item.romaji,
-			};
-		}) satisfies Insertable<SeriesTitleHist>[];
-		if (series_title_hist_add.length > 0) {
-			await trx.insertInto('series_title_hist').values(series_title_hist_add).execute();
-		}
-
-		// series_book
-		const series_book_add = data.series.books.map((item) => {
-			return { book_id: item.id, series_id: insertedSeries.id, sort_order: item.sort_order };
-		}) satisfies Insertable<SeriesBook>[];
-		if (series_book_add.length > 0) {
-			await trx.insertInto('series_book').values(series_book_add).execute();
-		}
-		const series_book_add_hist = data.series.books.map((item) => {
-			return { book_id: item.id, change_id: change.change_id, sort_order: item.sort_order };
-		}) satisfies Insertable<SeriesBookHist>[];
-		if (series_book_add.length > 0) {
-			await trx.insertInto('series_book_hist').values(series_book_add_hist).execute();
-		}
-
-		return insertedSeries.id;
-	});
+			return insertedSeries.id;
+		});
+	}
 }
