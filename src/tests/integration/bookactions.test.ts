@@ -37,7 +37,7 @@ describe('book actions', () => {
 		const dbBooksActions = DBBooksActions.fromDB(db);
 		const staff = await db
 			.selectFrom('staff')
-			.innerJoin('staff_alias', 'staff.id', 'staff_alias.id')
+			.innerJoin('staff_alias', 'staff.id', 'staff_alias.staff_id')
 			.select(['staff.id', 'staff_alias.id as aid'])
 			.executeTakeFirstOrThrow();
 		const addedBookId = await dbBooksActions.addBook(
