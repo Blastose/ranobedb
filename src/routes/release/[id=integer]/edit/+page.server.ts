@@ -10,7 +10,7 @@ import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { DBReleases } from '$lib/server/db/releases/releases.js';
-import { editRelease } from '$lib/server/db/releases/actions.js';
+import { DBReleaseActions } from '$lib/server/db/releases/actions.js';
 import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals, url }) => {
@@ -78,8 +78,9 @@ export const actions = {
 		}
 
 		let success = false;
+		const dbReleaseActions = DBReleaseActions.fromDB(db);
 		try {
-			await editRelease({ release: form.data, id }, locals.user);
+			await dbReleaseActions.editRelease({ release: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
 			console.log(e);
