@@ -7,7 +7,8 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { hasAddPerms } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
-import { addStaff } from '$lib/server/db/staff/actions.js';
+import { DBStaffActions } from '$lib/server/db/staff/actions.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ locals }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -51,8 +52,9 @@ export const actions = {
 
 		let success = false;
 		let insertedStaffId;
+		const dbStaffActions = DBStaffActions.fromDB(db);
 		try {
-			insertedStaffId = await addStaff({ staff: form.data }, locals.user);
+			insertedStaffId = await dbStaffActions.addStaff({ staff: form.data }, locals.user);
 			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {

@@ -164,8 +164,8 @@ export class DBStaff {
 			.where('staff.id', '=', id);
 	}
 
-	getStaffHistOneEdit(params: { id: number; revision: number }) {
-		return this.ranobeDB.db
+	getStaffHistOneEdit(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
 			.selectFrom('staff_hist')
 			.innerJoin('staff_alias_hist', (join) =>
 				join
@@ -194,8 +194,13 @@ export class DBStaff {
 				).as('aliases'),
 			)
 			.where('change.item_id', '=', params.id)
-			.where('change.item_name', '=', 'staff')
-			.where('change.revision', '=', params.revision);
+			.where('change.item_name', '=', 'staff');
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+		return query;
 	}
 }
 

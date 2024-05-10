@@ -9,7 +9,7 @@ import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
-import { editStaff } from '$lib/server/db/staff/actions.js';
+import { DBStaffActions } from '$lib/server/db/staff/actions.js';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { db } from '$lib/server/db/db.js';
 
@@ -80,8 +80,9 @@ export const actions = {
 		}
 
 		let success = false;
+		const dbStaffActions = DBStaffActions.fromDB(db);
 		try {
-			await editStaff({ staff: form.data, id }, locals.user);
+			await dbStaffActions.editStaff({ staff: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {

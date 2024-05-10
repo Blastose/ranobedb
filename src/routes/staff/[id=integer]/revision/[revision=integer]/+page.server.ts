@@ -28,7 +28,6 @@ export const load = async ({ params, locals }) => {
 	const change = changes.find((i) => i.revision === revision)!;
 	const nextChange = changes.find((i) => i.revision === revision + 1);
 
-	console.log(staff);
 	if (!staff) {
 		error(404);
 	}
