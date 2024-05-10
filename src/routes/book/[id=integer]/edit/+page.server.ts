@@ -1,4 +1,4 @@
-import { DBBooksActions } from '$lib/server/db/books/actions.js';
+import { DBBookActions } from '$lib/server/db/books/actions.js';
 import { DBBooks } from '$lib/server/db/books/books';
 import { bookSchema, revisionSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
@@ -73,10 +73,10 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const dbBooksActions = DBBooksActions.fromDB(db);
+		const dbBookActions = DBBookActions.fromDB(db);
 		let success = false;
 		try {
-			await dbBooksActions.editBook({ book: form.data, id }, locals.user);
+			await dbBookActions.editBook({ book: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {
