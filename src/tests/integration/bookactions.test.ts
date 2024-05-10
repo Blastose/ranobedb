@@ -70,5 +70,9 @@ describe('book actions', () => {
 		const addedBook = await dbBooks.getBook(addedBookId).executeTakeFirstOrThrow();
 		expect(addedBook.titles.length).toBe(1);
 		expect(addedBook.staff.length).toBe(1);
+
+		const addedBookHist = await dbBooks.getBookHist(addedBookId).executeTakeFirstOrThrow();
+		expect(addedBookHist.titles.length).toBe(1);
+		expect(addedBookHist.staff.length).toBe(1);
 	});
 });

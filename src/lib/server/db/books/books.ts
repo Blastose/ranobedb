@@ -160,8 +160,8 @@ export class DBBooks {
 			.where('cte_book.id', '=', id);
 	}
 
-	getBookHist(id: number, revision: number) {
-		return this.ranobeDB.db
+	getBookHist(id: number, revision?: number) {
+		let query = this.ranobeDB.db
 			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
@@ -230,8 +230,14 @@ export class DBBooks {
 				).as('series'),
 			])
 			.where('change.item_id', '=', id)
-			.where('change.item_name', '=', 'book')
-			.where('change.revision', '=', revision);
+			.where('change.item_name', '=', 'book');
+
+		if (revision) {
+			query = query.where('change.revision', '=', revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+		return query;
 	}
 
 	getBooks() {

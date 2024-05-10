@@ -83,6 +83,28 @@ export async function initDatabase(db: Kysely<DB>) {
 		.insertInto('publisher_hist')
 		.values({ change_id: changePublisher.id, description: '', name: 'BestBooks' })
 		.execute();
+	const publisher2 = await db
+		.insertInto('publisher')
+		.values({ description: '', hidden: false, locked: false, name: 'GoodBooks' })
+		.returning('id')
+		.executeTakeFirstOrThrow();
+	const changePublisher2 = await db
+		.insertInto('change')
+		.values({
+			comments: 'Automated',
+			ihid: false,
+			ilock: false,
+			item_id: publisher2.id,
+			item_name: 'publisher',
+			revision: 1,
+			user_id: ranobeBot.id,
+		})
+		.returning('change.id')
+		.executeTakeFirstOrThrow();
+	await db
+		.insertInto('publisher_hist')
+		.values({ change_id: changePublisher2.id, description: '', name: 'GoodBooks' })
+		.execute();
 	const release = await db
 		.insertInto('release')
 		.values({

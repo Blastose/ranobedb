@@ -73,8 +73,8 @@ export class DBPublishers {
 			.where('publisher.id', '=', id);
 	}
 
-	getPublisherHist(options: { id: number; revision: number }) {
-		return this.ranobeDB.db
+	getPublisherHist(options: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('publisher_hist')
 			.innerJoin('change', 'change.id', 'publisher_hist.change_id')
@@ -127,8 +127,15 @@ export class DBPublishers {
 				).as('child_publishers'),
 			])
 			.where('change.item_id', '=', options.id)
-			.where('change.item_name', '=', 'publisher')
-			.where('change.revision', '=', options.revision);
+			.where('change.item_name', '=', 'publisher');
+
+		if (options.revision) {
+			query = query.where('change.revision', '=', options.revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+
+		return query;
 	}
 
 	getPublisherEdit(id: number) {
