@@ -8,9 +8,10 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
-import { getPublisherEdit, getPublisherHistEdit } from '$lib/server/db/publishers/publishers.js';
+import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
 import { editPublisher } from '$lib/server/db/publishers/actions.js';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) redirect(302, '/login');
@@ -19,17 +20,20 @@ export const load = async ({ params, locals, url }) => {
 	const publisherId = Number(id);
 	let publisher;
 
+	const dbPublishers = DBPublishers.fromDB(db, locals.user);
 	const revision = await superValidate(url, zod(revisionSchema));
 	// We need to check if the url search params contains `revision`
 	// because the .valid property will be false if it doesn't,
 	// but that's find since we'll just use the "current" revision
 	if (revision.valid && url.searchParams.get('revision')) {
-		publisher = await getPublisherHistEdit({
-			id: publisherId,
-			revision: revision.data.revision,
-		}).executeTakeFirst();
+		publisher = await dbPublishers
+			.getPublisherHistEdit({
+				id: publisherId,
+				revision: revision.data.revision,
+			})
+			.executeTakeFirst();
 	} else {
-		publisher = await getPublisherEdit(publisherId).executeTakeFirst();
+		publisher = await dbPublishers.getPublisherEdit(publisherId).executeTakeFirst();
 	}
 
 	if (!publisher) {
