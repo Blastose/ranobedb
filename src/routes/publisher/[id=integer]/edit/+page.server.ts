@@ -9,7 +9,7 @@ import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
-import { editPublisher } from '$lib/server/db/publishers/actions.js';
+import { DBPublisherActions } from '$lib/server/db/publishers/actions.js';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { db } from '$lib/server/db/db.js';
 
@@ -82,8 +82,9 @@ export const actions = {
 		}
 
 		let success = false;
+		const dbPublisherActions = DBPublisherActions.fromDB(db);
 		try {
-			await editPublisher({ publisher: form.data, id }, locals.user);
+			await dbPublisherActions.editPublisher({ publisher: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
 			console.log(e);
