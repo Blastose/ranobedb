@@ -3,7 +3,8 @@ import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
-import { getReleaseHist } from '$lib/server/db/releases/releases.js';
+import { DBReleases } from '$lib/server/db/releases/releases.js';
+import { db } from '$lib/server/db/db.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -11,10 +12,13 @@ export const load = async ({ params, locals }) => {
 	const revision = Number(params.revision);
 	const previousRevision = revision - 1;
 
-	const releasePromise = getReleaseHist({
-		id: releaseId,
-		revision: revision,
-	}).executeTakeFirst();
+	const dbReleases = DBReleases.fromDB(db, locals.user);
+	const releasePromise = dbReleases
+		.getReleaseHist({
+			id: releaseId,
+			revision: revision,
+		})
+		.executeTakeFirst();
 	const changesPromise = getChanges('release', releaseId, [
 		previousRevision,
 		revision,
@@ -41,10 +45,12 @@ export const load = async ({ params, locals }) => {
 	}
 	let diff;
 	if (previousRevision > 0) {
-		const prevRelease = await getReleaseHist({
-			id: releaseId,
-			revision: previousRevision,
-		}).executeTakeFirst();
+		const prevRelease = await dbReleases
+			.getReleaseHist({
+				id: releaseId,
+				revision: previousRevision,
+			})
+			.executeTakeFirst();
 		if (!prevRelease) {
 			error(404);
 		}
