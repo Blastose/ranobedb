@@ -47,7 +47,7 @@ describe('staff actions', () => {
 						{
 							main_alias: false,
 							name: 'Mary',
-							aid: changedStaff.aliases.find((v) => v.name === 'Mary')?.aid!,
+							aid: changedStaff.aliases.find((v) => v.name === 'Mary')?.aid,
 						},
 						{ main_alias: true, name: 'Bob' },
 						{ main_alias: false, name: 'Jane' },

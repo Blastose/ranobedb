@@ -4,6 +4,7 @@ import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/db/dbTypes';
 import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
 import type { User } from 'lucia';
+import { withSeriesTitleCte } from '../series/series';
 
 function titleCaseBuilder(eb: ExpressionBuilder<DB, 'book_title'>, langPrios: LanguagePriority[]) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
@@ -45,8 +46,8 @@ export function withBookTitleCte(langPrios?: LanguagePriority[]) {
 	return () => {
 		return eb
 			.selectFrom('book')
-			.leftJoin('book_title', 'book_title.book_id', 'book.id')
-			.leftJoin('book_title as book_title_orig', (join) =>
+			.innerJoin('book_title', 'book_title.book_id', 'book.id')
+			.innerJoin('book_title as book_title_orig', (join) =>
 				join.onRef('book_title_orig.book_id', '=', 'book.id').on('book_title_orig.lang', '=', 'ja'),
 			)
 			.distinctOn('book.id')
@@ -63,8 +64,8 @@ export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
 	return () => {
 		return eb
 			.selectFrom('book_hist')
-			.leftJoin('book_title_hist', 'book_title_hist.change_id', 'book_hist.change_id')
-			.leftJoin('book_title_hist as book_title_hist_orig', (join) =>
+			.innerJoin('book_title_hist', 'book_title_hist.change_id', 'book_hist.change_id')
+			.innerJoin('book_title_hist as book_title_hist_orig', (join) =>
 				join
 					.onRef('book_title_hist_orig.change_id', '=', 'book_hist.change_id')
 					.on('book_title_hist_orig.lang', '=', 'ja'),
@@ -102,6 +103,8 @@ export class DBBooks {
 	getBook(id: number) {
 		return this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.select([
@@ -151,10 +154,30 @@ export class DBBooks {
 				).as('releases'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('series')
-						.innerJoin('series_book', 'series.id', 'series_book.series_id')
+						.selectFrom('cte_series')
+						.innerJoin('series_book', 'cte_series.id', 'series_book.series_id')
 						.whereRef('series_book.book_id', '=', 'cte_book.id')
-						.selectAll('series'),
+						.select((eb) =>
+							jsonArrayFrom(
+								eb
+									.selectFrom('cte_book_2')
+									.select([
+										'cte_book_2.id',
+										'cte_book_2.title',
+										'cte_book_2.title_orig',
+										'cte_book_2.romaji',
+										'cte_book_2.romaji_orig',
+										'image.filename',
+										'image.width',
+										'image.height',
+									])
+									.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
+									.innerJoin('image', 'image.id', 'cte_book_2.image_id')
+									.whereRef('series_book.series_id', '=', 'cte_series.id')
+									.orderBy('series_book.sort_order asc'),
+							).as('books'),
+						)
+						.select(['cte_series.title', 'cte_series.romaji', 'cte_series.id']),
 				).as('series'),
 			])
 			.where('cte_book.id', '=', id);
@@ -163,6 +186,8 @@ export class DBBooks {
 	getBookHist(id: number, revision?: number) {
 		let query = this.ranobeDB.db
 			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book_2', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.innerJoin('change', 'change.id', 'cte_book.id')
@@ -223,10 +248,30 @@ export class DBBooks {
 				).as('releases'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('series')
-						.innerJoin('series_book', 'series.id', 'series_book.series_id')
+						.selectFrom('cte_series')
+						.innerJoin('series_book', 'cte_series.id', 'series_book.series_id')
 						.where('series_book.book_id', '=', id)
-						.selectAll('series'),
+						.select((eb) =>
+							jsonArrayFrom(
+								eb
+									.selectFrom('cte_book_2')
+									.select([
+										'cte_book_2.id',
+										'cte_book_2.title',
+										'cte_book_2.title_orig',
+										'cte_book_2.romaji',
+										'cte_book_2.romaji_orig',
+										'image.filename',
+										'image.width',
+										'image.height',
+									])
+									.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
+									.innerJoin('image', 'image.id', 'cte_book_2.image_id')
+									.whereRef('series_book.series_id', '=', 'cte_series.id')
+									.orderBy('series_book.sort_order asc'),
+							).as('books'),
+						)
+						.select(['cte_series.title', 'cte_series.romaji', 'cte_series.id']),
 				).as('series'),
 			])
 			.where('change.item_id', '=', id)
@@ -238,6 +283,113 @@ export class DBBooks {
 			query = query.orderBy('change.revision desc');
 		}
 		return query;
+	}
+
+	getBookEdit(id: number) {
+		return this.ranobeDB.db
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.selectFrom('cte_book')
+			.leftJoin('image', 'cte_book.image_id', 'image.id')
+			.select([
+				'cte_book.description',
+				'cte_book.description_ja',
+				'cte_book.id',
+				'cte_book.image_id',
+				'cte_book.lang',
+				'cte_book.romaji',
+				'cte_book.romaji_orig',
+				'cte_book.title',
+				'cte_book.title_orig',
+				'cte_book.locked',
+				'cte_book.hidden',
+				'image.filename',
+				'image.height',
+				'image.width',
+			])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('book_title')
+						.whereRef('book_title.book_id', '=', 'cte_book.id')
+						.selectAll('book_title'),
+				).as('titles'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('staff_alias')
+						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+						.where('staff.hidden', '=', false)
+						.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
+						.select([
+							'book_staff_alias.role_type',
+							'staff_alias.name',
+							'staff_alias.staff_id',
+							'staff_alias.id as staff_alias_id',
+							'book_staff_alias.note',
+						]),
+				).as('staff'),
+			])
+			.where('cte_book.id', '=', id);
+	}
+
+	getBookHistEdit(id: number, revision: number) {
+		return this.ranobeDB.db
+			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
+			.selectFrom('cte_book')
+			.leftJoin('image', 'cte_book.image_id', 'image.id')
+			.innerJoin('change', 'change.id', 'cte_book.id')
+			.select([
+				'cte_book.description',
+				'cte_book.description_ja',
+				'cte_book.id',
+				'cte_book.image_id',
+				'cte_book.lang',
+				'cte_book.romaji',
+				'cte_book.romaji_orig',
+				'cte_book.title',
+				'cte_book.title_orig',
+				'change.ilock as locked',
+				'change.ihid as hidden',
+				'image.filename',
+				'image.height',
+				'image.width',
+			])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('book_title_hist')
+						.whereRef('book_title_hist.change_id', '=', 'cte_book.id')
+						.select([
+							'book_title_hist.change_id as book_id',
+							'book_title_hist.lang',
+							'book_title_hist.official',
+							'book_title_hist.romaji',
+							'book_title_hist.title',
+						]),
+				).as('titles'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('staff_alias')
+						.innerJoin(
+							'book_staff_alias_hist',
+							'book_staff_alias_hist.staff_alias_id',
+							'staff_alias.id',
+						)
+						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+						.where('staff.hidden', '=', false)
+						.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
+						.select([
+							'book_staff_alias_hist.role_type',
+							'staff_alias.name',
+							'staff_alias.staff_id',
+							'staff_alias.id as staff_alias_id',
+							'book_staff_alias_hist.note',
+						]),
+				).as('staff'),
+			])
+			.where('change.item_id', '=', id)
+			.where('change.item_name', '=', 'book')
+			.where('change.revision', '=', revision);
 	}
 
 	getBooks() {
@@ -265,3 +417,4 @@ export class DBBooks {
 
 export type BookR = InferResult<ReturnType<DBBooks['getBook']>>[number];
 export type Book = InferResult<ReturnType<DBBooks['getBooks']>>[number];
+export type BookEdit = InferResult<ReturnType<DBBooks['getBookEdit']>>[number];

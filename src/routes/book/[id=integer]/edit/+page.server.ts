@@ -27,9 +27,9 @@ export const load = async ({ params, locals, url }) => {
 	// because the .valid property will be false if it doesn't,
 	// but that's find since we'll just use the "current" revision
 	if (revision.valid && url.searchParams.get('revision')) {
-		book = await dbBooks.getBookHist(bookId, revision.data.revision).executeTakeFirst();
+		book = await dbBooks.getBookHistEdit(bookId, revision.data.revision).executeTakeFirst();
 	} else {
-		book = await dbBooks.getBook(bookId).executeTakeFirst();
+		book = await dbBooks.getBookEdit(bookId).executeTakeFirst();
 	}
 
 	if (!book) {

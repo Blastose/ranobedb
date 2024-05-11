@@ -50,8 +50,8 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 	return () => {
 		return eb
 			.selectFrom('series')
-			.leftJoin('series_title', 'series_title.series_id', 'series.id')
-			.leftJoin('series_title as series_title_orig', (join) =>
+			.innerJoin('series_title', 'series_title.series_id', 'series.id')
+			.innerJoin('series_title as series_title_orig', (join) =>
 				join
 					.onRef('series_title_orig.series_id', '=', 'series.id')
 					.on('series_title_orig.lang', '=', 'ja'),
@@ -78,8 +78,8 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 	return () => {
 		return eb
 			.selectFrom('series_hist')
-			.leftJoin('series_title_hist', 'series_title_hist.change_id', 'series_hist.change_id')
-			.leftJoin('series_title_hist as series_title_hist_orig', (join) =>
+			.innerJoin('series_title_hist', 'series_title_hist.change_id', 'series_hist.change_id')
+			.innerJoin('series_title_hist as series_title_hist_orig', (join) =>
 				join
 					.onRef('series_title_hist_orig.change_id', '=', 'series_hist.change_id')
 					.on('series_title_hist_orig.lang', '=', 'ja'),
