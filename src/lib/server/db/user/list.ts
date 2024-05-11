@@ -3,11 +3,12 @@ import { defaultUserListLabels, type Nullish } from '$lib/zod/schema';
 import { sql, type InferResult } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
+import type { User } from 'lucia';
 
 // TODO Refactor with getBooks
-export function getBooksRL(userId: string) {
+export function getBooksRL(userId: string, user?: User | null) {
 	return db
-		.with('cte_book', withBookTitleCte())
+		.with('cte_book', withBookTitleCte(user?.title_prefs))
 		.selectFrom('cte_book')
 		.leftJoin('image', 'cte_book.image_id', 'image.id')
 		.innerJoin('user_list_book', (join) =>

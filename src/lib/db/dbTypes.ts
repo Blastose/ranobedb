@@ -1,3 +1,4 @@
+import type { LanguagePriority } from '$lib/server/db/dbHelpers';
 import type { ColumnType } from 'kysely';
 
 export const dbItemArray = ['book', 'publisher', 'release', 'series', 'staff'] as const;
@@ -7,6 +8,8 @@ export type DbItem = (typeof dbItemArray)[number];
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 	? ColumnType<S, I | undefined, U>
 	: ColumnType<T, T | undefined, T>;
+
+export type Json<T> = ColumnType<T, string, string>;
 
 export type DateString = ColumnType<string, string, string>;
 
@@ -170,7 +173,7 @@ export const seriesStatusArray = ['ongoing', 'completed', 'cancelled', 'unknown'
 
 export type SeriesStatus = (typeof seriesStatusArray)[number];
 
-export const staffRolesArray = ['artist', 'author', 'editor', 'translator'] as const;
+export const staffRolesArray = ['artist', 'author', 'editor', 'staff', 'translator'] as const;
 
 export type StaffRole = (typeof staffRolesArray)[number];
 
@@ -189,6 +192,7 @@ export interface AuthUser {
 	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;
 	role: Generated<UserRole>;
+	title_prefs: Generated<Json<LanguagePriority[]>>;
 	username: string;
 	username_lowercase: string;
 }
