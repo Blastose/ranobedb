@@ -16,7 +16,7 @@
 	dbItem="series"
 	{isRevision}
 	name={series.title ?? ''}
-	subName={series.romaji || series.title_orig !== series.title ? series.title_orig : null}
+	subName={series.romaji}
 	{user}
 	item={series}
 >

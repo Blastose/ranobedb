@@ -1,4 +1,4 @@
-import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/db/dbTypes';
@@ -117,6 +117,26 @@ export class DBSeries {
 		return this.ranobeDB.db
 			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_series')
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('book')
+						.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
+						.whereRef('series_book.book_id', '=', 'book.id')
+						.select('book.id')
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.whereRef('image.id', '=', 'book.image_id')
+									.selectAll('image')
+									.limit(1),
+							).as('image'),
+						)
+						.orderBy('series_book.sort_order asc')
+						.limit(1),
+				).as('book'),
+			])
 			.selectAll('cte_series');
 	}
 	getSeriesOne(id: number) {

@@ -8,9 +8,11 @@
 		--bg-light: #f2f2f2;
 		--bg-light1: rgb(231, 230, 236);
 		--text-light: #222222;
+		--text-light-sub: #7d7e86;
 		--bg-dark: #222222;
 		--bg-dark1: rgb(48, 48, 51);
 		--text-dark: #f2f2f2;
+		--text-dark-sub: #7d7e86;
 
 		--primary-50: #fafafa;
 		--primary-100: #e4e7ee;
@@ -179,7 +181,15 @@ input[type='checkbox'] {
 	transition: background-color 300ms;
 }
 
-.btn:hover,
+.btn:disabled {
+	color: var(--text-light-sub);
+}
+
+.dark .btn:disabled {
+	color: var(--text-dark-sub);
+}
+
+.btn:hover:not(:disabled),
 .sidebar-item:hover {
 	background-color: rgb(202, 202, 214);
 }
@@ -193,7 +203,7 @@ input[type='checkbox'] {
 	color: var(--text-dark);
 }
 
-.dark .btn:hover,
+.dark .btn:hover:not(:disabled),
 .dark .sidebar-item:hover:not(.active) {
 	background-color: rgb(74, 74, 78);
 }
@@ -278,6 +288,36 @@ input[type='checkbox'] {
 .sub-btn.loading,
 .sub-btn:hover {
 	background-color: var(--primary-800);
+}
+
+.carousel-container {
+	display: flex;
+	container-type: inline-size;
+	container-name: carousel-container;
+}
+.carousel-container .carousel-item {
+	padding: 0 0.25rem;
+	flex: 0 0 33.3333333333333333333333333333333333%;
+}
+@container carousel-container (min-width: 640px) {
+	.carousel-container .carousel-item {
+		flex: 0 0 25%;
+	}
+}
+@container carousel-container (min-width: 768px) {
+	.carousel-container .carousel-item {
+		flex: 0 0 16.66666666666666666666666666666%;
+	}
+}
+@container carousel-container (min-width: 1280px) {
+	.carousel-container .carousel-item {
+		flex: 0 0 12.5%;
+	}
+}
+@container carousel-container (min-width: 1536px) {
+	.carousel-container .carousel-item {
+		flex: 0 0 12.5%;
+	}
 }
 
 .markdown p:first-child {

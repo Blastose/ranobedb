@@ -1,4 +1,4 @@
-import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/db/dbTypes';
@@ -106,7 +106,6 @@ export class DBBooks {
 			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.title_prefs))
 			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_book')
-			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.select([
 				'cte_book.description',
 				'cte_book.description_ja',
@@ -119,11 +118,15 @@ export class DBBooks {
 				'cte_book.title_orig',
 				'cte_book.locked',
 				'cte_book.hidden',
-				'image.filename',
-				'image.height',
-				'image.width',
 			])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'cte_book.image_id')
+						.limit(1),
+				).as('image'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('book_title')
@@ -167,12 +170,17 @@ export class DBBooks {
 										'cte_book_2.title_orig',
 										'cte_book_2.romaji',
 										'cte_book_2.romaji_orig',
-										'image.filename',
-										'image.width',
-										'image.height',
 									])
+									.select((eb) =>
+										jsonObjectFrom(
+											eb
+												.selectFrom('image')
+												.selectAll('image')
+												.whereRef('image.id', '=', 'cte_book_2.image_id')
+												.limit(1),
+										).as('image'),
+									)
 									.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
-									.innerJoin('image', 'image.id', 'cte_book_2.image_id')
 									.whereRef('series_book.series_id', '=', 'cte_series.id')
 									.orderBy('series_book.sort_order asc'),
 							).as('books'),
@@ -186,10 +194,9 @@ export class DBBooks {
 	getBookHist(id: number, revision?: number) {
 		let query = this.ranobeDB.db
 			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_book_2', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.title_prefs))
 			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_book')
-			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.innerJoin('change', 'change.id', 'cte_book.id')
 			.select([
 				'cte_book.description',
@@ -203,11 +210,15 @@ export class DBBooks {
 				'cte_book.title_orig',
 				'change.ilock as locked',
 				'change.ihid as hidden',
-				'image.filename',
-				'image.height',
-				'image.width',
 			])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'cte_book.image_id')
+						.limit(1),
+				).as('image'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('book_title_hist')
@@ -261,12 +272,17 @@ export class DBBooks {
 										'cte_book_2.title_orig',
 										'cte_book_2.romaji',
 										'cte_book_2.romaji_orig',
-										'image.filename',
-										'image.width',
-										'image.height',
 									])
+									.select((eb) =>
+										jsonObjectFrom(
+											eb
+												.selectFrom('image')
+												.selectAll('image')
+												.whereRef('image.id', '=', 'cte_book_2.image_id')
+												.limit(1),
+										).as('image'),
+									)
 									.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
-									.innerJoin('image', 'image.id', 'cte_book_2.image_id')
 									.whereRef('series_book.series_id', '=', 'cte_series.id')
 									.orderBy('series_book.sort_order asc'),
 							).as('books'),
@@ -396,7 +412,6 @@ export class DBBooks {
 		return this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_book')
-			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.select([
 				'cte_book.description',
 				'cte_book.description_ja',
@@ -407,10 +422,16 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
-				'image.filename',
-				'image.height',
-				'image.width',
 			])
+			.select((eb) =>
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'cte_book.image_id')
+						.limit(1),
+				).as('image'),
+			)
 			.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
 	}
 }

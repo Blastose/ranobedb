@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db/db';
 import { defaultUserListLabels, type Nullish } from '$lib/zod/schema';
 import { sql, type InferResult } from 'kysely';
-import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
 
@@ -10,7 +10,6 @@ export function getBooksRL(userId: string, user?: User | null) {
 	return db
 		.with('cte_book', withBookTitleCte(user?.title_prefs))
 		.selectFrom('cte_book')
-		.leftJoin('image', 'cte_book.image_id', 'image.id')
 		.innerJoin('user_list_book', (join) =>
 			join
 				.onRef('user_list_book.book_id', '=', 'cte_book.id')
@@ -37,12 +36,18 @@ export function getBooksRL(userId: string, user?: User | null) {
 			'cte_book.romaji_orig',
 			'cte_book.title',
 			'cte_book.title_orig',
-			'image.filename',
-			'image.height',
-			'image.width',
 			'user_list_label.id as label_id',
 			'user_list_label.label',
 		])
+		.select((eb) =>
+			jsonObjectFrom(
+				eb
+					.selectFrom('image')
+					.selectAll('image')
+					.whereRef('image.id', '=', 'cte_book.image_id')
+					.limit(1),
+			).as('image'),
+		)
 		.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
 }
 

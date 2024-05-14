@@ -1,5 +1,7 @@
 <script lang="ts">
+	import BookImage from '$lib/components/book/BookImage.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
@@ -17,11 +19,18 @@
 >
 	<svelte:fragment slot="display">
 		<div>
-			<div class="flex flex-col gap-4">
+			<BookImageContainer>
 				{#each data.series as series (series.id)}
-					<LinkBox display={series.title ?? ''} href="/series/{series.id}" />
+					{#if series.book}
+						<BookImage
+							book={{ title: series.title, id: series.id, image: series.book.image }}
+							urlPrefix="/series/"
+						/>
+					{:else}
+						<LinkBox display={series.title ?? ''} href="/series/{series.id}" />
+					{/if}
 				{/each}
-			</div>
+			</BookImageContainer>
 		</div>
 	</svelte:fragment>
 </DbShell>
