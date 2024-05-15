@@ -13,6 +13,7 @@
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import BookImage from '../BookImage.svelte';
 	import BookCarousel from '../BookCarousel.svelte';
+	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -101,11 +102,11 @@
 			<div class="flex flex-wrap gap-4">
 				{#each book.staff as staff}
 					<div>
-						<a
-							class="flex flex-col bg-neutral-700 hover:bg-neutral-800 duration-300 px-4 py-2 rounded-md"
-							href="/staff/{staff.staff_id}"
-							>{staff.name} <span class="opacity-70">{staff.role_type}</span></a
-						>
+						<a class="flex flex-col link-box px-4 py-2 rounded-md" href="/staff/{staff.staff_id}">
+							<span>{staff.name}</span>
+							<span class="sub-text">{staff.role_type}</span>
+							<span class="sub-text text-sm">{staff.note}</span>
+						</a>
 					</div>
 				{/each}
 			</div>
@@ -116,7 +117,7 @@
 			<div>
 				{#each book.releases as release}
 					<p>
-						<a href="/release/{release.id}"
+						<a class="link" href="/release/{release.id}"
 							>{release.title} - {release.lang} - {release.format} - {new DateNumber(
 								release.release_date,
 							).getDateFormatted()}</a

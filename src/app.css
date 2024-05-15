@@ -298,6 +298,24 @@ input[type='checkbox'] {
 	background-color: var(--primary-800);
 }
 
+.link-box {
+	background-color: var(--bg-light1);
+	border-radius: 0.25rem;
+	transition: background-color 300ms;
+}
+
+.link-box:hover {
+	background-color: rgb(202, 202, 214);
+}
+
+.dark .link-box {
+	background-color: var(--bg-dark1);
+}
+
+.dark .link-box:hover {
+	background-color: rgb(74, 74, 78);
+}
+
 .carousel-container {
 	display: flex;
 	container-type: inline-size;
