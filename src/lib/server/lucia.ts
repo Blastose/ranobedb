@@ -4,6 +4,7 @@ import { NodePostgresAdapter } from '@lucia-auth/adapter-postgresql';
 import { db, pool } from '$lib/server/db/db';
 import type { UserRole } from '$lib/db/dbTypes';
 import { insertDefaultUserListLabels } from './db/user/user';
+import type { LanguagePriority } from './db/dbHelpers';
 
 const adapter = new NodePostgresAdapter(pool, {
 	session: 'auth_session',
@@ -92,5 +93,5 @@ interface DatabaseUserAttributes {
 	username_lowercase: string;
 	id_numeric: number;
 	role: UserRole;
-	title_prefs: undefined;
+	title_prefs: LanguagePriority[];
 }

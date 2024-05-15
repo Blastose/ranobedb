@@ -1,13 +1,20 @@
 <script lang="ts">
+	import BookImage from '$lib/components/book/BookImage.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
+	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DBItemShell from '$lib/components/layout/db/DBItemShell.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
-	import type { Staff } from '$lib/server/db/staff/staff';
+	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
+	import type { Staff, StaffBook } from '$lib/server/db/staff/staff';
 	import type { User } from 'lucia';
 
 	export let staff: Staff;
+	export let books: Array<StaffBook>;
 	export let user: User | null;
 	export let isRevision: boolean;
+	export let results: number;
+	export let currentPage: number;
+	export let totalPages: number;
 </script>
 
 <DBItemShell
@@ -50,12 +57,22 @@
 		{/if}
 	</section>
 
-	<section>
+	<section class="flex flex-col gap-2">
 		<h2 class="text-lg font-bold">Books</h2>
-		{#each staff.books as book}
-			<p><a href="/book/{book.id}">{book.title} - {book.role_type} - as {book.name}</a></p>
-		{:else}
-			<p class="italic">None</p>
-		{/each}
+		<PaginationContainer
+			{currentPage}
+			{totalPages}
+			results={books.length > 0 ? results : undefined}
+		>
+			{#if books.length > 0}
+				<BookImageContainer moreColumns={true}>
+					{#each books as book}
+						<BookImage {book} urlPrefix="/book/" />
+					{/each}
+				</BookImageContainer>
+			{:else}
+				<p class="italic">None</p>
+			{/if}
+		</PaginationContainer>
 	</section>
 </DBItemShell>

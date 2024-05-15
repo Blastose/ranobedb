@@ -12,5 +12,13 @@
 <PageTitle title={publisher.name} />
 
 <DbRouteShell theme={$themeStore ?? data.theme} imageBgStyle={null}>
-	<Publisher {publisher} isRevision={false} user={data.user} />
+	<Publisher
+		{publisher}
+		books={data.books}
+		isRevision={false}
+		user={data.user}
+		currentPage={data.currentPage}
+		results={data.count}
+		totalPages={data.totalPages}
+	/>
 </DbRouteShell>

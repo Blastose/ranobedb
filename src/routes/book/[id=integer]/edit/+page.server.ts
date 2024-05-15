@@ -1,4 +1,4 @@
-import { DBBooksActions } from '$lib/server/db/books/actions.js';
+import { DBBookActions } from '$lib/server/db/books/actions.js';
 import { DBBooks } from '$lib/server/db/books/books';
 import { bookSchema, revisionSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
@@ -27,9 +27,9 @@ export const load = async ({ params, locals, url }) => {
 	// because the .valid property will be false if it doesn't,
 	// but that's find since we'll just use the "current" revision
 	if (revision.valid && url.searchParams.get('revision')) {
-		book = await dbBooks.getBookHist(bookId, revision.data.revision).executeTakeFirst();
+		book = await dbBooks.getBookHistEdit(bookId, revision.data.revision).executeTakeFirst();
 	} else {
-		book = await dbBooks.getBook(bookId).executeTakeFirst();
+		book = await dbBooks.getBookEdit(bookId).executeTakeFirst();
 	}
 
 	if (!book) {
@@ -73,10 +73,10 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const dbBooksActions = DBBooksActions.fromDB(db);
+		const dbBookActions = DBBookActions.fromDB(db);
 		let success = false;
 		try {
-			await dbBooksActions.editBook({ book: form.data, id }, locals.user);
+			await dbBookActions.editBook({ book: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {

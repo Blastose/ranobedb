@@ -1,4 +1,4 @@
-import { DBBooksActions } from '$lib/server/db/books/actions';
+import { DBBookActions } from '$lib/server/db/books/actions';
 import { bookSchema } from '$lib/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
@@ -48,10 +48,10 @@ export const actions = {
 		}
 
 		let newBookId: number | undefined = undefined;
-		const dbBooksActions = DBBooksActions.fromDB(db);
+		const dbBookActions = DBBookActions.fromDB(db);
 
 		try {
-			newBookId = await dbBooksActions.addBook({ book: form.data }, locals.user);
+			newBookId = await dbBookActions.addBook({ book: form.data }, locals.user);
 		} catch (e) {
 			if (e instanceof DatabaseError) {
 				if (

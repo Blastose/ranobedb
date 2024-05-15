@@ -15,7 +15,7 @@ import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
-export class DBBooksActions {
+export class DBBookActions {
 	ranobeDB: RanobeDB;
 
 	constructor(ranobeDB: RanobeDB) {

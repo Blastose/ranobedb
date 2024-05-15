@@ -11,6 +11,9 @@
 	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import BookImage from '../BookImage.svelte';
+	import BookCarousel from '../BookCarousel.svelte';
+	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -18,8 +21,8 @@
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
 
-	$: imageUrl = book.filename ? `${PUBLIC_IMAGE_URL}${book.filename}` : null;
-	$: imageBgStyle = book.filename
+	$: imageUrl = book.image?.filename ? `${PUBLIC_IMAGE_URL}${book.image?.filename}` : null;
+	$: imageBgStyle = book.image?.filename
 		? ($themeStore ?? theme) === 'light'
 			? `background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%), url(${imageUrl});`
 			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%), url(${imageUrl});`
@@ -34,11 +37,11 @@
 	<div class="-mt-32 z-10 flex flex-col gap-4">
 		<div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] md:grid-cols-[256px_1fr] gap-6 sm:gap-12">
 			<div class="flex flex-col items-center gap-4">
-				{#if book.filename}
+				{#if book.image}
 					<img
-						width={book.width}
-						height={book.height}
-						class="img max-w-[200px] h-fit sm:max-w-[200px] rounded-sm shadow-sm"
+						width={book.image.width}
+						height={book.image.height}
+						class="max-w-[200px] h-fit sm:max-w-[200px] rounded-md shadow-sm"
 						src={imageUrl}
 						alt=""
 						loading="lazy"
@@ -98,11 +101,13 @@
 			<h2 class="font-bold text-lg">Staff</h2>
 			<div class="flex flex-wrap gap-4">
 				{#each book.staff as staff}
-					<p>
-						<a href="/staff/{staff.staff_id}"
-							>{staff.name} <span class="opacity-70">{staff.role_type}</span></a
-						>
-					</p>
+					<div>
+						<a class="flex flex-col link-box px-4 py-2 rounded-md" href="/staff/{staff.staff_id}">
+							<span>{staff.name}</span>
+							<span class="sub-text">{staff.role_type}</span>
+							<span class="sub-text text-sm">{staff.note}</span>
+						</a>
+					</div>
 				{/each}
 			</div>
 		</section>
@@ -112,7 +117,7 @@
 			<div>
 				{#each book.releases as release}
 					<p>
-						<a href="/release/{release.id}"
+						<a class="link" href="/release/{release.id}"
 							>{release.title} - {release.lang} - {release.format} - {new DateNumber(
 								release.release_date,
 							).getDateFormatted()}</a
@@ -124,21 +129,18 @@
 
 		<section>
 			<h2 class="font-bold text-lg">Series</h2>
-			<div>
+			<div class="flex flex-col gap-2">
 				{#each book.series as series}
-					<p>
-						<a href="/series/{series.id}">{series.id}</a>
-					</p>
+					<a class="link w-fit font-bold" href="/series/{series.id}">{series.title}</a>
+					<BookCarousel>
+						{#each series.books as other_book (other_book.id)}
+							<div class="carousel-item">
+								<BookImage book={other_book} urlPrefix="/book/" />
+							</div>
+						{/each}
+					</BookCarousel>
 				{/each}
 			</div>
-		</section>
-
-		<section>
-			<h2 class="font-bold text-lg">Reviews</h2>
-		</section>
-
-		<section>
-			<h2 class="font-bold text-lg">User stats</h2>
 		</section>
 	</div>
 </main>

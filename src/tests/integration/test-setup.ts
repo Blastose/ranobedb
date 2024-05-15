@@ -3,6 +3,7 @@ import { sql, Kysely, PostgresDialect } from 'kysely';
 import type { User } from 'lucia';
 import dotenv from 'dotenv';
 import pkg from 'pg';
+import { defaultLangPrio } from '$lib/server/db/dbHelpers';
 const { Pool } = pkg;
 
 dotenv.config({ path: '.env.testing' });
@@ -238,7 +239,7 @@ export const ranobeBot = {
 	id: 'RanobeBot',
 	id_numeric: 1,
 	role: 'admin',
-	title_prefs: undefined,
+	title_prefs: defaultLangPrio,
 	username: 'RanobeBot',
 } satisfies User;
 

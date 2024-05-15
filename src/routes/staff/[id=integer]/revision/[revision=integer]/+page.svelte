@@ -19,5 +19,13 @@
 <div class="container-rndb flex flex-col gap-6">
 	<Revision changes={data.changes} {title} {buildBaseLink} diff={JSON.stringify(diff)} />
 
-	<Staff {staff} user={data.user} isRevision={true} />
+	<Staff
+		{staff}
+		books={data.books}
+		user={data.user}
+		isRevision={true}
+		results={data.count}
+		currentPage={data.currentPage}
+		totalPages={data.totalPages}
+	/>
 </div>

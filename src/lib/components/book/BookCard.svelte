@@ -5,14 +5,14 @@
 	export let book: Book;
 </script>
 
-<div class="bg-[var(--bg-light1)] dark:bg-[var(--bg-dark1)] p-2 rounded-sm shadow-sm">
+<div class="bg-[var(--bg-light1)] dark:bg-[var(--bg-dark1)] p-2 rounded-lg shadow-sm">
 	<div class="title-container">
-		{#if book.filename}
+		{#if book.image}
 			<img
-				width={book.width}
-				height={book.height}
-				class="img rounded-sm shadow-sm"
-				src="{PUBLIC_IMAGE_URL}{book.filename}"
+				width={book.image.width}
+				height={book.image.height}
+				class="img rounded-md shadow-sm"
+				src="{PUBLIC_IMAGE_URL}{book.image.filename}"
 				alt=""
 				loading="lazy"
 			/>

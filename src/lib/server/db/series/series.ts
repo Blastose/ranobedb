@@ -1,4 +1,4 @@
-import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/db/dbTypes';
@@ -50,8 +50,8 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 	return () => {
 		return eb
 			.selectFrom('series')
-			.leftJoin('series_title', 'series_title.series_id', 'series.id')
-			.leftJoin('series_title as series_title_orig', (join) =>
+			.innerJoin('series_title', 'series_title.series_id', 'series.id')
+			.innerJoin('series_title as series_title_orig', (join) =>
 				join
 					.onRef('series_title_orig.series_id', '=', 'series.id')
 					.on('series_title_orig.lang', '=', 'ja'),
@@ -78,8 +78,8 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 	return () => {
 		return eb
 			.selectFrom('series_hist')
-			.leftJoin('series_title_hist', 'series_title_hist.change_id', 'series_hist.change_id')
-			.leftJoin('series_title_hist as series_title_hist_orig', (join) =>
+			.innerJoin('series_title_hist', 'series_title_hist.change_id', 'series_hist.change_id')
+			.innerJoin('series_title_hist as series_title_hist_orig', (join) =>
 				join
 					.onRef('series_title_hist_orig.change_id', '=', 'series_hist.change_id')
 					.on('series_title_hist_orig.lang', '=', 'ja'),
@@ -117,6 +117,26 @@ export class DBSeries {
 		return this.ranobeDB.db
 			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
 			.selectFrom('cte_series')
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('book')
+						.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
+						.whereRef('series_book.book_id', '=', 'book.id')
+						.select('book.id')
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.whereRef('image.id', '=', 'book.image_id')
+									.selectAll('image')
+									.limit(1),
+							).as('image'),
+						)
+						.orderBy('series_book.sort_order asc')
+						.limit(1),
+				).as('book'),
+			])
 			.selectAll('cte_series');
 	}
 	getSeriesOne(id: number) {
@@ -151,6 +171,15 @@ export class DBSeries {
 							'cte_book.image_id',
 							'series_book.sort_order',
 						])
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.whereRef('image.id', '=', 'cte_book.image_id')
+									.selectAll('image')
+									.limit(1),
+							).as('image'),
+						)
 						.orderBy('sort_order asc'),
 				).as('books'),
 				jsonArrayFrom(
@@ -203,6 +232,15 @@ export class DBSeries {
 							'cte_book.image_id',
 							'series_book_hist.sort_order',
 						])
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.whereRef('image.id', '=', 'cte_book.image_id')
+									.selectAll('image')
+									.limit(1),
+							).as('image'),
+						)
 						.orderBy('sort_order asc'),
 				).as('books'),
 				jsonArrayFrom(

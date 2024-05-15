@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { DBBooksActions } from '$lib/server/db/books/actions';
+import { DBBookActions } from '$lib/server/db/books/actions';
 import { clearDatabase, db, initDatabase, ranobeBot } from './test-setup';
 import { DBBooks } from '$lib/server/db/books/books';
 
@@ -10,9 +10,9 @@ beforeAll(async () => {
 
 describe('book actions', () => {
 	it('should edit the book', async () => {
-		const dbBooksActions = DBBooksActions.fromDB(db);
+		const dbBookActions = DBBookActions.fromDB(db);
 		const book = await db.selectFrom('book').select('id').executeTakeFirstOrThrow();
-		await dbBooksActions.editBook(
+		await dbBookActions.editBook(
 			{
 				book: {
 					comment: 'Test',
@@ -34,13 +34,13 @@ describe('book actions', () => {
 	});
 
 	it('should add a book', async () => {
-		const dbBooksActions = DBBooksActions.fromDB(db);
+		const dbBookActions = DBBookActions.fromDB(db);
 		const staff = await db
 			.selectFrom('staff')
 			.innerJoin('staff_alias', 'staff.id', 'staff_alias.staff_id')
 			.select(['staff.id', 'staff_alias.id as aid'])
 			.executeTakeFirstOrThrow();
-		const addedBookId = await dbBooksActions.addBook(
+		const addedBookId = await dbBookActions.addBook(
 			{
 				book: {
 					comment: 'Test',

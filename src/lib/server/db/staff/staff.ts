@@ -1,7 +1,7 @@
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
 import { Kysely, type InferResult } from 'kysely';
-import { withBookTitleCte } from '../books/books';
+import { DBBooks, withBookTitleCte } from '../books/books';
 import type { DB } from '$lib/db/dbTypes';
 import type { User } from 'lucia';
 
@@ -45,31 +45,6 @@ export class DBStaff {
 						.selectAll('all_aliases'),
 				).as('aliases'),
 			)
-			.select((eb) =>
-				jsonArrayFrom(
-					eb
-						.selectFrom('cte_book')
-						.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'cte_book.id')
-						.innerJoin('staff_alias', (join) =>
-							join
-								.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
-								.onRef('staff_alias.staff_id', '=', 'staff.id'),
-						)
-						.whereRef('staff_alias.staff_id', '=', 'staff.id')
-						.select([
-							'cte_book.id',
-							'staff_alias.name',
-							'staff_alias.main_alias',
-							'staff_alias.staff_id',
-							'book_staff_alias.note',
-							'book_staff_alias.role_type',
-							'cte_book.title',
-							'cte_book.title_orig',
-							'cte_book.romaji',
-							'cte_book.romaji_orig',
-						]),
-				).as('books'),
-			)
 			.where('staff.id', '=', id);
 	}
 
@@ -100,31 +75,6 @@ export class DBStaff {
 							'all_aliases.romaji',
 						]),
 				).as('aliases'),
-			)
-			.select((eb) =>
-				jsonArrayFrom(
-					eb
-						.selectFrom('cte_book')
-						.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'cte_book.id')
-						.innerJoin('staff_alias', (join) =>
-							join
-								.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
-								.on('staff_alias.staff_id', '=', options.id),
-						)
-						.where('staff_alias.staff_id', '=', options.id)
-						.select([
-							'cte_book.id',
-							'staff_alias.name',
-							'staff_alias.main_alias',
-							'staff_alias.staff_id',
-							'book_staff_alias.note',
-							'book_staff_alias.role_type',
-							'cte_book.title',
-							'cte_book.title_orig',
-							'cte_book.romaji',
-							'cte_book.romaji_orig',
-						]),
-				).as('books'),
 			)
 			.where('change.item_id', '=', options.id)
 			.where('change.item_name', '=', 'staff');
@@ -202,7 +152,27 @@ export class DBStaff {
 		}
 		return query;
 	}
+
+	getBooksBelongingToStaff(staffId: number) {
+		return DBBooks.fromDB(this.ranobeDB.db, this.ranobeDB.user)
+			.getBooks()
+			.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'cte_book.id')
+			.innerJoin('staff_alias', (join) =>
+				join
+					.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
+					.on('staff_alias.staff_id', '=', staffId),
+			)
+			.where('staff_alias.staff_id', '=', staffId)
+			.select([
+				'staff_alias.name',
+				'staff_alias.main_alias',
+				'staff_alias.staff_id',
+				'book_staff_alias.note',
+				'book_staff_alias.role_type',
+			]);
+	}
 }
 
 export type Staff = InferResult<ReturnType<DBStaff['getStaffOne']>>[number];
 export type StaffEdit = InferResult<ReturnType<DBStaff['getStaffOneEdit']>>[number];
+export type StaffBook = InferResult<ReturnType<DBStaff['getBooksBelongingToStaff']>>[number];

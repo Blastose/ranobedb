@@ -5,14 +5,14 @@
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import BookTitlesInput from './BookTitlesInput.svelte';
 	import BookStaffInput from './BookStaffInput.svelte';
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookEdit } from '$lib/server/db/books/books';
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import VisibilityInputs from '../all/VisibilityInputs.svelte';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import type { User } from 'lucia';
 
-	export let book: BookR | undefined;
+	export let book: BookEdit | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
