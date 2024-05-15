@@ -35,6 +35,14 @@
 	}
 }
 
+.sub-text {
+	color: var(--text-light-sub);
+}
+
+.dark .sub-text {
+	color: var(--text-dark-sub);
+}
+
 html {
 	overflow-x: hidden;
 	height: 100dvh;

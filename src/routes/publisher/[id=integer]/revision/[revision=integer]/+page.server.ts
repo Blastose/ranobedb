@@ -2,11 +2,15 @@ import { getChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
-import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
+import {
+	getCurrentVisibilityStatus,
+	paginationBuilderExecuteWithCount,
+} from '$lib/server/db/dbHelpers.js';
 import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
 import { db } from '$lib/server/db/db.js';
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params, locals, url }) => {
+	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const id = params.id;
 	const publisherId = Number(id);
 	const revision = Number(params.revision);
@@ -58,9 +62,23 @@ export const load = async ({ params, locals }) => {
 		diff = detailedDiff(prevPublisher, publisher);
 	}
 
+	const booksQuery = dbPublishers.getBooksBelongingToPublisher(publisherId);
+	const {
+		result: books,
+		count,
+		totalPages,
+	} = await paginationBuilderExecuteWithCount(booksQuery, {
+		limit: 24,
+		page: currentPage,
+	});
+
 	return {
 		publisherId,
 		publisher,
+		books,
+		count,
+		totalPages,
+		currentPage,
 		diff,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },

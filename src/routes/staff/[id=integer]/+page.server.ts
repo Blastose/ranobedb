@@ -11,6 +11,9 @@ export const load = async ({ params, locals, url }) => {
 	const staff = await dbStaff.getStaffOne(id).executeTakeFirst();
 	const booksQuery = dbStaff.getBooksBelongingToStaff(id);
 
+	if (!staff) {
+		error(404);
+	}
 	const {
 		result: books,
 		count,
@@ -19,10 +22,6 @@ export const load = async ({ params, locals, url }) => {
 		limit: 24,
 		page: currentPage,
 	});
-
-	if (!staff) {
-		error(404);
-	}
 
 	return { staff, books, count, currentPage, totalPages };
 };

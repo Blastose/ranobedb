@@ -22,6 +22,14 @@
 	</div>
 
 	<div class="container-rndb">
-		<Publisher {publisher} isRevision={true} user={data.user} />
+		<Publisher
+			{publisher}
+			books={data.books}
+			isRevision={true}
+			user={data.user}
+			currentPage={data.currentPage}
+			results={data.count}
+			totalPages={data.totalPages}
+		/>
 	</div>
 </div>

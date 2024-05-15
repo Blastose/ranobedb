@@ -1,7 +1,7 @@
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
 import type { InferResult, Kysely } from 'kysely';
-import { withBookTitleCte } from '../books/books';
+import { DBBooks, withBookTitleCte } from '../books/books';
 import type { DB } from '$lib/db/dbTypes';
 import type { User } from 'lucia';
 
@@ -187,7 +187,18 @@ export class DBPublishers {
 			.where('change.item_name', '=', 'publisher')
 			.where('change.revision', '=', params.revision);
 	}
+
+	getBooksBelongingToPublisher(publisherId: number) {
+		return DBBooks.fromDB(this.ranobeDB.db, this.ranobeDB.user)
+			.getBooks()
+			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
+			.innerJoin('release_publisher', 'release_book.release_id', 'release_publisher.release_id')
+			.where('release_publisher.publisher_id', '=', publisherId);
+	}
 }
 
 export type Publisher = InferResult<ReturnType<DBPublishers['getPublisher']>>[number];
 export type PublisherEdit = InferResult<ReturnType<DBPublishers['getPublisherEdit']>>[number];
+export type PublisherBook = InferResult<
+	ReturnType<DBPublishers['getBooksBelongingToPublisher']>
+>[number];
