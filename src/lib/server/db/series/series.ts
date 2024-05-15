@@ -171,6 +171,15 @@ export class DBSeries {
 							'cte_book.image_id',
 							'series_book.sort_order',
 						])
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.whereRef('image.id', '=', 'cte_book.image_id')
+									.selectAll('image')
+									.limit(1),
+							).as('image'),
+						)
 						.orderBy('sort_order asc'),
 				).as('books'),
 				jsonArrayFrom(
@@ -223,6 +232,15 @@ export class DBSeries {
 							'cte_book.image_id',
 							'series_book_hist.sort_order',
 						])
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.whereRef('image.id', '=', 'cte_book.image_id')
+									.selectAll('image')
+									.limit(1),
+							).as('image'),
+						)
 						.orderBy('sort_order asc'),
 				).as('books'),
 				jsonArrayFrom(

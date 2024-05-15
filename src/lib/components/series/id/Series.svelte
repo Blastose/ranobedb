@@ -4,6 +4,8 @@
 	import type { Series } from '$lib/server/db/series/series';
 	import type { User } from 'lucia';
 	import { groupBy } from '$lib/db/array';
+	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
+	import BookImage from '$lib/components/book/BookImage.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -20,21 +22,15 @@
 	{user}
 	item={series}
 >
+	<p class="sub-text">
+		{series.books.length} primary books • {series.books.length} total books
+	</p>
 	<div class="flex gap-2">
 		<dt>Publication status:</dt>
 		<dd>{series.publication_status}</dd>
 	</div>
 
 	<Hr />
-
-	<section>
-		<h2 class="text-lg font-bold">Books in series</h2>
-		{#each series.books as book, index}
-			<p>#{index + 1}. <a class="link" href="/book/{book.id}">{book.title}</a></p>
-		{:else}
-			<p class="italic">None</p>
-		{/each}
-	</section>
 
 	{#if Object.entries(child_series).length > 0}
 		<section>
@@ -51,4 +47,23 @@
 			</div>
 		</section>
 	{/if}
+
+	<section class="flex flex-col gap-2">
+		<h2 class="text-lg font-bold">Books in series</h2>
+
+		{#if series.books.length > 0}
+			<BookImageContainer moreColumns={true}>
+				{#each series.books as book}
+					<BookImage {book} urlPrefix="/book/" />
+				{/each}
+			</BookImageContainer>
+		{:else}
+			<p class="italic">None</p>
+		{/if}
+		<!-- {#each series.books as book, index}
+			<p>#{index + 1}. <a class="link" href="/book/{book.id}">{book.title}</a></p>
+		{:else}
+			<p class="italic">None</p>
+		{/each} -->
+	</section>
 </DBItemShell>
