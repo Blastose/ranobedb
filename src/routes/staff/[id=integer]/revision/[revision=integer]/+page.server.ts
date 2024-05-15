@@ -2,11 +2,15 @@ import { getChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { detailedDiff } from 'deep-object-diff';
-import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
+import {
+	getCurrentVisibilityStatus,
+	paginationBuilderExecuteWithCount,
+} from '$lib/server/db/dbHelpers.js';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
 import { db } from '$lib/server/db/db.js';
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params, locals, url }) => {
+	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const id = params.id;
 	const staffId = Number(id);
 	const revision = Number(params.revision);
@@ -55,10 +59,23 @@ export const load = async ({ params, locals }) => {
 		diff = detailedDiff(prevStaff, staff);
 	}
 
+	const {
+		result: books,
+		count,
+		totalPages,
+	} = await paginationBuilderExecuteWithCount(dbStaff.getBooksBelongingToStaff(staffId), {
+		limit: 40,
+		page: currentPage,
+	});
+
 	return {
 		staffId,
 		staff,
+		books,
 		diff,
+		count,
+		currentPage,
+		totalPages,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
 	};

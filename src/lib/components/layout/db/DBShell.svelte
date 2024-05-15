@@ -1,9 +1,7 @@
 <script lang="ts">
-	import Pagination from '$lib/components/pagination/Pagination.svelte';
-	import { page } from '$app/stores';
-	import Fly from '$lib/components/layout/Fly.svelte';
 	import SearchInput from '$lib/components/form/SearchInput.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
+	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 
 	export let name: string;
 	export let currentPage: number;
@@ -32,19 +30,11 @@
 		</form>
 
 		<slot name="info" />
-
-		<Pagination url={$page.url} {currentPage} {totalPages} />
-
-		<p>{results} results</p>
 	</div>
 
-	<Fly key={$page.url.searchParams.toString()}>
+	<PaginationContainer {results} {currentPage} {totalPages} showTopPages={true}>
 		<slot name="display" />
-	</Fly>
-
-	<div class="pagination-bottom">
-		<Pagination url={$page.url} {currentPage} {totalPages} />
-	</div>
+	</PaginationContainer>
 </main>
 
 <style>
@@ -53,9 +43,5 @@
 		flex-direction: column;
 		gap: 1rem;
 		view-transition-name: db-head-page;
-	}
-
-	.pagination-bottom {
-		view-transition-name: db-head-page-bottom;
 	}
 </style>
