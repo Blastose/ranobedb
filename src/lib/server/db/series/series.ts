@@ -63,6 +63,7 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 				'series.locked',
 				'series.publication_status',
 				'series.bookwalker_id',
+				'series.description',
 			])
 			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
 			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
@@ -89,6 +90,7 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 				'series_hist.change_id as id',
 				'series_hist.bookwalker_id',
 				'series_hist.publication_status',
+				'series_hist.description',
 			])
 			.select(['series_title_hist.lang', 'series_title_hist.romaji', 'series_title_hist.title'])
 			.select([
@@ -155,6 +157,7 @@ export class DBSeries {
 				'cte_series.romaji_orig',
 				'cte_series.title',
 				'cte_series.title_orig',
+				'cte_series.description',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -214,6 +217,7 @@ export class DBSeries {
 				'cte_series.romaji_orig',
 				'cte_series.title',
 				'cte_series.title_orig',
+				'cte_series.description',
 				'change.ilock as locked',
 				'change.ihid as hidden',
 			])
@@ -287,6 +291,7 @@ export class DBSeries {
 				'cte_series.romaji_orig',
 				'cte_series.title',
 				'cte_series.title_orig',
+				'cte_series.description',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -348,6 +353,7 @@ export class DBSeries {
 				'cte_series.romaji_orig',
 				'cte_series.title',
 				'cte_series.title_orig',
+				'cte_series.description',
 				'change.ihid as hidden',
 				'change.ilock as locked',
 			])

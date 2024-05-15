@@ -19,7 +19,13 @@ describe('book actions', () => {
 					hidden: false,
 					locked: false,
 					staff: [],
-					titles: [],
+					titles: [
+						{
+							lang: 'ja',
+							official: true,
+							title: 'おはよ',
+						},
+					],
 					description: 'Hello',
 				},
 				id: book.id,
@@ -30,7 +36,7 @@ describe('book actions', () => {
 		const changedBook = await dbBooks.getBook(book.id).executeTakeFirstOrThrow();
 		expect(changedBook.description).toBe('Hello');
 		expect(changedBook.staff.length).toBe(0);
-		expect(changedBook.titles.length).toBe(0);
+		expect(changedBook.titles.length).toBe(1);
 	});
 
 	it('should add a book', async () => {

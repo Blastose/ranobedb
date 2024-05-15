@@ -145,7 +145,7 @@ export const releasePublisherTypeArray = ['label', 'publisher'] as const;
 
 export type ReleasePublisherType = (typeof releasePublisherTypeArray)[number];
 
-export const releaseTypeArray = ['complete', 'partial'] as const;
+export const releaseTypeArray = ['complete', 'partial', 'omnibus'] as const;
 
 export type ReleaseType = (typeof releaseTypeArray)[number];
 
@@ -270,6 +270,7 @@ export interface Image {
 }
 
 export interface Publisher {
+	bookwalker_id: number | null;
 	description: string;
 	hidden: boolean;
 	id: Generated<number>;
@@ -279,6 +280,7 @@ export interface Publisher {
 }
 
 export interface PublisherHist {
+	bookwalker_id: number | null;
 	change_id: number;
 	description: string;
 	name: string;
@@ -349,6 +351,7 @@ export interface ReleasePublisherHist {
 
 export interface Series {
 	bookwalker_id: number | null;
+	description: string;
 	hidden: boolean;
 	id: Generated<number>;
 	locked: boolean;
@@ -369,6 +372,7 @@ export interface SeriesBookHist {
 export interface SeriesHist {
 	bookwalker_id: number | null;
 	change_id: number;
+	description: string;
 	publication_status: SeriesStatus;
 }
 

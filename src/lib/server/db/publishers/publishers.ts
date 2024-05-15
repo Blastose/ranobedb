@@ -83,6 +83,7 @@ export class DBPublishers {
 				'publisher_hist.description',
 				'publisher_hist.name',
 				'publisher_hist.romaji',
+				'publisher_hist.bookwalker_id',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) => [

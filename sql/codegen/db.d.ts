@@ -76,7 +76,7 @@ export type ReleaseFormat = 'audio' | 'digital' | 'print';
 
 export type ReleasePublisherType = 'label' | 'publisher';
 
-export type ReleaseType = 'complete' | 'partial';
+export type ReleaseType = 'complete' | 'omnibus' | 'partial';
 
 export type SeriesRelType =
 	| 'main story'
@@ -183,6 +183,7 @@ export interface Image {
 }
 
 export interface Publisher {
+	bookwalker_id: number | null;
 	description: string;
 	hidden: boolean;
 	id: Generated<number>;
@@ -192,6 +193,7 @@ export interface Publisher {
 }
 
 export interface PublisherHist {
+	bookwalker_id: number | null;
 	change_id: number;
 	description: string;
 	name: string;
@@ -262,6 +264,7 @@ export interface ReleasePublisherHist {
 
 export interface Series {
 	bookwalker_id: number | null;
+	description: string;
 	hidden: boolean;
 	id: Generated<number>;
 	locked: boolean;
@@ -283,6 +286,7 @@ export interface SeriesBookHist {
 export interface SeriesHist {
 	bookwalker_id: number | null;
 	change_id: number;
+	description: string;
 	publication_status: SeriesStatus;
 }
 

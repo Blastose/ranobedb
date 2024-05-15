@@ -69,7 +69,13 @@ describe('series actions', () => {
 						},
 					],
 					publication_status: 'unknown',
-					titles: [],
+					titles: [
+						{
+							lang: 'ja',
+							official: true,
+							title: 'こんにちは',
+						},
+					],
 				},
 				id: series.id,
 			},
@@ -95,7 +101,13 @@ describe('series actions', () => {
 					books: [],
 					child_series: [],
 					publication_status: 'unknown',
-					titles: [],
+					titles: [
+						{
+							lang: 'ja',
+							official: true,
+							title: 'こんにちは',
+						},
+					],
 				},
 				id: series.id,
 			},
@@ -124,7 +136,13 @@ describe('series actions', () => {
 					books: [],
 					child_series: [],
 					publication_status: 'unknown',
-					titles: [],
+					titles: [
+						{
+							lang: 'ja',
+							official: true,
+							title: 'こんにちは',
+						},
+					],
 				},
 			},
 			ranobeBot,

@@ -52,7 +52,12 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 					.selectAll('series_title'),
 			).as('titles'),
 		])
-		.select(['series.id', 'series.publication_status'])
+		.select([
+			'series.id',
+			'series.publication_status',
+			'series.description',
+			'series.bookwalker_id',
+		])
 		.where('series.id', 'in', params.series_ids)
 		.execute();
 }
@@ -145,6 +150,8 @@ async function updateReverseSeriesRelations(params: {
 			.values({
 				change_id: reverseRelChange.change_id,
 				publication_status: series_to_update.publication_status,
+				description: series_to_update.description,
+				bookwalker_id: series_to_update.bookwalker_id,
 			})
 			.execute();
 		if (batch_add.length > 0) {
@@ -201,6 +208,8 @@ async function removeReverseSeriesRelations(params: {
 			.values({
 				change_id: reverseRelChange.change_id,
 				publication_status: series_to_remove.publication_status,
+				description: series_to_remove.description,
+				bookwalker_id: series_to_remove.bookwalker_id,
 			})
 			.execute();
 		current = current.filter((item) => item.id_child !== params.main_id);
@@ -283,6 +292,8 @@ async function addReverseSeriesRelations(params: {
 			.values({
 				change_id: reverseRelChange.change_id,
 				publication_status: series_to_add.publication_status,
+				description: series_to_add.description,
+				bookwalker_id: series_to_add.bookwalker_id,
 			})
 			.execute();
 		if (batch_add.length > 0) {
@@ -381,6 +392,7 @@ export class DBSeriesActions {
 					publication_status: data.series.publication_status,
 					bookwalker_id: data.series.bookwalker_id,
 					change_id: change.change_id,
+					description: data.series.description || '',
 				})
 				.executeTakeFirstOrThrow();
 
@@ -548,6 +560,7 @@ export class DBSeriesActions {
 				.values({
 					publication_status: data.series.publication_status,
 					bookwalker_id: data.series.bookwalker_id,
+					description: data.series.description || '',
 					hidden,
 					locked,
 				})
@@ -571,6 +584,7 @@ export class DBSeriesActions {
 				.values({
 					publication_status: data.series.publication_status,
 					bookwalker_id: data.series.bookwalker_id,
+					description: data.series.description || '',
 					change_id: change.change_id,
 				})
 				.executeTakeFirstOrThrow();

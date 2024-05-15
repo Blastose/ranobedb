@@ -25,6 +25,9 @@
 	<p class="sub-text">
 		{series.books.length} primary books • {series.books.length} total books
 	</p>
+
+	<p>{series.description}</p>
+
 	<div class="flex gap-2">
 		<dt>Publication status:</dt>
 		<dd>{series.publication_status}</dd>

@@ -57,7 +57,13 @@ export class DBPublisherActions {
 						.where('publisher_child.hidden', '=', false),
 				).as('child_publishers'),
 			)
-			.select(['publisher.id', 'publisher.description', 'publisher.name', 'publisher.romaji'])
+			.select([
+				'publisher.id',
+				'publisher.description',
+				'publisher.name',
+				'publisher.romaji',
+				'publisher.bookwalker_id',
+			])
 			.where('publisher.id', 'in', params.publisher_ids)
 			.execute();
 	}
@@ -127,6 +133,7 @@ export class DBPublisherActions {
 					description: publisher_to_update.description,
 					name: publisher_to_update.name,
 					romaji: publisher_to_update.romaji,
+					bookwalker_id: publisher_to_update.bookwalker_id,
 				})
 				.execute();
 			if (batch_add.length > 0) {
@@ -179,6 +186,7 @@ export class DBPublisherActions {
 					description: publisher_to_remove.description,
 					name: publisher_to_remove.name,
 					romaji: publisher_to_remove.romaji,
+					bookwalker_id: publisher_to_remove.bookwalker_id,
 				})
 				.execute();
 			current = current.filter((item) => item.id_child !== params.main_id);
@@ -260,6 +268,7 @@ export class DBPublisherActions {
 					description: publisher_to_add.description,
 					name: publisher_to_add.name,
 					romaji: publisher_to_add.romaji,
+					bookwalker_id: publisher_to_add.bookwalker_id,
 				})
 				.execute();
 			if (batch_add.length > 0) {
@@ -353,6 +362,7 @@ export class DBPublisherActions {
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
 					description: data.publisher.description ?? '',
+					bookwalker_id: data.publisher.bookwalker_id,
 					change_id: change.change_id,
 				})
 				.executeTakeFirstOrThrow();
@@ -453,6 +463,7 @@ export class DBPublisherActions {
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
 					description: data.publisher.description ?? '',
+					bookwalker_id: data.publisher.bookwalker_id,
 					hidden,
 					locked,
 				})
@@ -477,6 +488,7 @@ export class DBPublisherActions {
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
 					description: data.publisher.description ?? '',
+					bookwalker_id: data.publisher.bookwalker_id,
 					change_id: change.change_id,
 				})
 				.executeTakeFirstOrThrow();

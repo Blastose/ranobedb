@@ -167,6 +167,7 @@ export const publisherSchema = z.object({
 	name: z.string().max(2000),
 	romaji: z.string().max(2000).nullish(),
 	description: z.string().max(2000).nullish(),
+	bookwalker_id: z.number().nullish(),
 
 	child_publishers: z
 		.array(
@@ -241,6 +242,7 @@ export const seriesSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
 
+	description: z.string().max(2000).nullish(),
 	bookwalker_id: z.number().max(20000000).nullish(),
 	publication_status: z.enum(seriesStatusArray),
 

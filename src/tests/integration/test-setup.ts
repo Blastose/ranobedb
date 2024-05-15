@@ -145,7 +145,7 @@ export async function initDatabase(db: Kysely<DB>) {
 		.execute();
 	const series = await db
 		.insertInto('series')
-		.values({ hidden: false, locked: false, publication_status: 'unknown' })
+		.values({ hidden: false, locked: false, publication_status: 'unknown', description: '' })
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changeSeries = await db
@@ -163,7 +163,7 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('series_hist')
-		.values({ change_id: changeSeries.id, publication_status: 'unknown' })
+		.values({ change_id: changeSeries.id, publication_status: 'unknown', description: '' })
 		.execute();
 	await db
 		.insertInto('series_title')
@@ -175,7 +175,7 @@ export async function initDatabase(db: Kysely<DB>) {
 		.execute();
 	const series2 = await db
 		.insertInto('series')
-		.values({ hidden: false, locked: false, publication_status: 'unknown' })
+		.values({ hidden: false, locked: false, publication_status: 'unknown', description: '' })
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changeSeries2 = await db
@@ -193,7 +193,7 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('series_hist')
-		.values({ change_id: changeSeries2.id, publication_status: 'unknown' })
+		.values({ change_id: changeSeries2.id, publication_status: 'unknown', description: '' })
 		.execute();
 	await db
 		.insertInto('series_title')
