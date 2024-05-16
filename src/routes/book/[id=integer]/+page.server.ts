@@ -22,7 +22,7 @@ export const load = async ({ params, locals }) => {
 	}
 
 	const dbBooks = DBBooks.fromDB(db, user);
-	const book = await dbBooks.getBook(bookId).executeTakeFirstOrThrow();
+	const book = await dbBooks.getBook(bookId).executeTakeFirst();
 	if (!book) {
 		error(404);
 	}

@@ -380,6 +380,7 @@ export class DBSeriesActions {
 				.set({
 					bookwalker_id: data.series.bookwalker_id,
 					publication_status: data.series.publication_status,
+					description: data.series.description || '',
 					hidden,
 					locked,
 				})
