@@ -49,6 +49,15 @@
 
 	<SeriesTitlesInput form={sForm} />
 
+	<TextField
+		form={sForm}
+		type="textarea"
+		field="description"
+		label="Description"
+		textareaRows={4}
+		placeholder="Description"
+	/>
+
 	<div class="flex">
 		<SelectField
 			form={sForm}

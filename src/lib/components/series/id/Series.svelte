@@ -6,6 +6,7 @@
 	import { groupBy } from '$lib/db/array';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
+	import Description from '$lib/components/book/Description.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -26,7 +27,7 @@
 		{series.books.length} primary books • {series.books.length} total books
 	</p>
 
-	<p>{series.description}</p>
+	<Description description={series.description} maxHeight={100} />
 
 	<div class="flex gap-2">
 		<dt>Publication status:</dt>

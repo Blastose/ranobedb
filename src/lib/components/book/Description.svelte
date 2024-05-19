@@ -10,8 +10,8 @@
 	let descriptionElementClientHeight = 0;
 	let expandedDescription: boolean = false;
 
-	let maxHeightNotExpanded = 256;
-	let maxHeight = 256;
+	export let maxHeight = 256;
+	let maxHeightNotExpanded = maxHeight;
 	let hydration = true;
 
 	function resizeDescription() {
