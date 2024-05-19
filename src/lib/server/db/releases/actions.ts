@@ -178,34 +178,14 @@ export class DBReleaseActions {
 			}
 
 			// release_publisher
-			const publishersCurrentDiff = arrayDiff(currentRelease.publishers, data.release.publishers);
-			if (publishersCurrentDiff.length > 0) {
-				await trx
-					.deleteFrom('release_publisher')
-					.where(
-						'publisher_id',
-						'in',
-						publishersCurrentDiff.map((item) => item.id),
-					)
-					.where('release_id', '=', data.id)
-					.execute();
-			}
-			const publishersToUpdate = arrayIntersection(
-				data.release.publishers,
-				currentRelease.publishers,
-			);
-			for (const item of publishersToUpdate) {
-				await trx
-					.updateTable('release_publisher')
-					.set({
-						publisher_type: item.publisher_type,
-					})
-					.where('release_publisher.release_id', '=', data.id)
-					.where('release_publisher.publisher_id', '=', item.id)
-					.execute();
-			}
-			const publishersNewDiff = arrayDiff(data.release.publishers, currentRelease.publishers);
-			const release_publisher_add = publishersNewDiff.map((item) => {
+			// TODO We used to use the arrayDiff and arrayIntersection functions to only add/update/delete the changed entries
+			// but it doesn't really work here since the pk is (release_id, publisher_id, and publisher_type)
+			// so its simplier to just delete everything and add it again.
+			await trx
+				.deleteFrom('release_publisher')
+				.where('release_publisher.release_id', '=', data.id)
+				.execute();
+			const release_publisher_add = data.release.publishers.map((item) => {
 				return { publisher_id: item.id, publisher_type: item.publisher_type, release_id: data.id };
 			}) satisfies Insertable<ReleasePublisher>[];
 			if (release_publisher_add.length > 0) {

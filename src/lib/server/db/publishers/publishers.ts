@@ -98,17 +98,18 @@ export class DBPublishers {
 							'release.id',
 							'release.release_date',
 						])
-						.select((eb) => [
-							jsonArrayFrom(
-								eb
-									.selectFrom('cte_book')
-									.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
-									.whereRef('release_book.release_id', '=', 'release.id')
-									.select(['cte_book.id', 'cte_book.title']),
-							).as('book_releases'),
-						])
+						// .select((eb) => [
+						// 	jsonArrayFrom(
+						// 		eb
+						// 			.selectFrom('cte_book')
+						// 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
+						// 			.whereRef('release_book.release_id', '=', 'release.id')
+						// 			.select(['cte_book.id', 'cte_book.title']),
+						// 	).as('book_releases'),
+						// ])
 						.orderBy('release.release_date desc')
-						.orderBy('release.title'),
+						.orderBy('release.title')
+						.limit(100),
 				).as('releases'),
 				jsonArrayFrom(
 					eb
@@ -149,6 +150,7 @@ export class DBPublishers {
 				'publisher.romaji',
 				'publisher.locked',
 				'publisher.hidden',
+				'publisher.bookwalker_id',
 			])
 			.select((eb) =>
 				jsonArrayFrom(
@@ -172,6 +174,7 @@ export class DBPublishers {
 				'publisher_hist.description',
 				'publisher_hist.name',
 				'publisher_hist.romaji',
+				'publisher_hist.bookwalker_id',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) =>
