@@ -26,6 +26,13 @@ export const load = async ({ locals }) => {
 					romaji: '',
 				},
 			],
+			editions: [
+				{
+					staff: [],
+					lang: 'ja',
+					title: 'Original edition',
+				},
+			],
 		},
 		zod(bookSchema),
 		{ errors: false },
@@ -61,7 +68,7 @@ export const actions = {
 				) {
 					return setError(
 						form,
-						'staff._errors',
+						'editions._errors',
 						'Duplicate staff member with same roles in form. Remove duplicates and try again.',
 					);
 				}

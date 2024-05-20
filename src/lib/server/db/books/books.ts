@@ -135,19 +135,37 @@ export class DBBooks {
 				).as('titles'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('staff_alias')
-						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
-						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
-						.where('staff.hidden', '=', false)
-						.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
+						.selectFrom('book_edition')
+						.whereRef('book_edition.book_id', '=', 'cte_book.id')
 						.select([
-							'book_staff_alias.role_type',
-							'staff_alias.name',
-							'staff_alias.staff_id',
-							'staff_alias.id as staff_alias_id',
-							'book_staff_alias.note',
-						]),
-				).as('staff'),
+							'book_edition.book_id',
+							'book_edition.eid',
+							'book_edition.title',
+							'book_edition.lang',
+						])
+						.select((eb) =>
+							jsonArrayFrom(
+								eb
+									.selectFrom('staff_alias')
+									.innerJoin(
+										'book_staff_alias',
+										'book_staff_alias.staff_alias_id',
+										'staff_alias.id',
+									)
+									.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+									.where('staff.hidden', '=', false)
+									.whereRef('book_staff_alias.eid', '=', 'book_edition.eid')
+									.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
+									.select([
+										'book_staff_alias.role_type',
+										'staff_alias.name',
+										'staff_alias.staff_id',
+										'staff_alias.id as staff_alias_id',
+										'book_staff_alias.note',
+									]),
+							).as('staff'),
+						),
+				).as('editions'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('release')
@@ -233,23 +251,37 @@ export class DBBooks {
 				).as('titles'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('staff_alias')
-						.innerJoin(
-							'book_staff_alias_hist',
-							'book_staff_alias_hist.staff_alias_id',
-							'staff_alias.id',
-						)
-						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
-						.where('staff.hidden', '=', false)
-						.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
+						.selectFrom('book_edition_hist')
+						.whereRef('book_edition_hist.change_id', '=', 'cte_book.id')
 						.select([
-							'book_staff_alias_hist.role_type',
-							'staff_alias.name',
-							'staff_alias.staff_id',
-							'staff_alias.id as staff_alias_id',
-							'book_staff_alias_hist.note',
-						]),
-				).as('staff'),
+							'book_edition_hist.change_id as book_id',
+							'book_edition_hist.eid',
+							'book_edition_hist.title',
+							'book_edition_hist.lang',
+						])
+						.select((eb) =>
+							jsonArrayFrom(
+								eb
+									.selectFrom('staff_alias')
+									.innerJoin(
+										'book_staff_alias_hist',
+										'book_staff_alias_hist.staff_alias_id',
+										'staff_alias.id',
+									)
+									.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+									.where('staff.hidden', '=', false)
+									.whereRef('book_staff_alias_hist.eid', '=', 'book_edition_hist.eid')
+									.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
+									.select([
+										'book_staff_alias_hist.role_type',
+										'staff_alias.name',
+										'staff_alias.staff_id',
+										'staff_alias.id as staff_alias_id',
+										'book_staff_alias_hist.note',
+									]),
+							).as('staff'),
+						),
+				).as('editions'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('release')
@@ -331,19 +363,37 @@ export class DBBooks {
 				).as('titles'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('staff_alias')
-						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
-						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
-						.where('staff.hidden', '=', false)
-						.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
+						.selectFrom('book_edition')
+						.whereRef('book_edition.book_id', '=', 'cte_book.id')
 						.select([
-							'book_staff_alias.role_type',
-							'staff_alias.name',
-							'staff_alias.staff_id',
-							'staff_alias.id as staff_alias_id',
-							'book_staff_alias.note',
-						]),
-				).as('staff'),
+							'book_edition.book_id',
+							'book_edition.eid',
+							'book_edition.title',
+							'book_edition.lang',
+						])
+						.select((eb) =>
+							jsonArrayFrom(
+								eb
+									.selectFrom('staff_alias')
+									.innerJoin(
+										'book_staff_alias',
+										'book_staff_alias.staff_alias_id',
+										'staff_alias.id',
+									)
+									.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+									.where('staff.hidden', '=', false)
+									.whereRef('book_staff_alias.eid', '=', 'book_edition.eid')
+									.whereRef('book_staff_alias.book_id', '=', 'cte_book.id')
+									.select([
+										'book_staff_alias.role_type',
+										'staff_alias.name',
+										'staff_alias.staff_id',
+										'staff_alias.id as staff_alias_id',
+										'book_staff_alias.note',
+									]),
+							).as('staff'),
+						),
+				).as('editions'),
 			])
 			.where('cte_book.id', '=', id);
 	}
@@ -385,23 +435,37 @@ export class DBBooks {
 				).as('titles'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('staff_alias')
-						.innerJoin(
-							'book_staff_alias_hist',
-							'book_staff_alias_hist.staff_alias_id',
-							'staff_alias.id',
-						)
-						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
-						.where('staff.hidden', '=', false)
-						.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
+						.selectFrom('book_edition_hist')
+						.whereRef('book_edition_hist.change_id', '=', 'cte_book.id')
 						.select([
-							'book_staff_alias_hist.role_type',
-							'staff_alias.name',
-							'staff_alias.staff_id',
-							'staff_alias.id as staff_alias_id',
-							'book_staff_alias_hist.note',
-						]),
-				).as('staff'),
+							'book_edition_hist.change_id as book_id',
+							'book_edition_hist.eid',
+							'book_edition_hist.title',
+							'book_edition_hist.lang',
+						])
+						.select((eb) =>
+							jsonArrayFrom(
+								eb
+									.selectFrom('staff_alias')
+									.innerJoin(
+										'book_staff_alias_hist',
+										'book_staff_alias_hist.staff_alias_id',
+										'staff_alias.id',
+									)
+									.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+									.where('staff.hidden', '=', false)
+									.whereRef('book_staff_alias_hist.eid', '=', 'book_edition_hist.eid')
+									.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
+									.select([
+										'book_staff_alias_hist.role_type',
+										'staff_alias.name',
+										'staff_alias.staff_id',
+										'staff_alias.id as staff_alias_id',
+										'book_staff_alias_hist.note',
+									]),
+							).as('staff'),
+						),
+				).as('editions'),
 			])
 			.where('change.item_id', '=', id)
 			.where('change.item_name', '=', 'book')

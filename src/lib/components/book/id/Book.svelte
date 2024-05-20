@@ -13,7 +13,6 @@
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import BookImage from '../BookImage.svelte';
 	import BookCarousel from '../BookCarousel.svelte';
-	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -99,14 +98,24 @@
 
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
-			<div class="flex flex-wrap gap-4">
-				{#each book.staff as staff}
-					<div>
-						<a class="flex flex-col link-box px-4 py-2 rounded-md" href="/staff/{staff.staff_id}">
-							<span>{staff.name}</span>
-							<span class="sub-text">{staff.role_type}</span>
-							<span class="sub-text text-sm">{staff.note}</span>
-						</a>
+			<div class="flex flex-col gap-4">
+				{#each book.editions as edition}
+					<div class="flex flex-col gap-2">
+						<p class="font-semibold">{edition.title} - {edition.lang}</p>
+						<div class="flex flex-wrap gap-4">
+							{#each edition.staff as staff}
+								<div>
+									<a
+										class="flex flex-col link-box px-4 py-2 rounded-md"
+										href="/staff/{staff.staff_id}"
+									>
+										<span>{staff.name}</span>
+										<span class="sub-text">{staff.role_type}</span>
+										<span class="sub-text text-sm">{staff.note}</span>
+									</a>
+								</div>
+							{/each}
+						</div>
 					</div>
 				{/each}
 			</div>

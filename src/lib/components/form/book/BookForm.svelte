@@ -4,13 +4,13 @@
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import BookTitlesInput from './BookTitlesInput.svelte';
-	import BookStaffInput from './BookStaffInput.svelte';
 	import type { BookEdit } from '$lib/server/db/books/books';
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import VisibilityInputs from '../all/VisibilityInputs.svelte';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import type { User } from 'lucia';
+	import BookEditionStaffInput from './BookEditionStaffInput.svelte';
 
 	export let book: BookEdit | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
@@ -70,7 +70,7 @@
 
 	<section>
 		<p class="font-bold text-xl">Database relations:</p>
-		<BookStaffInput form={sForm} />
+		<BookEditionStaffInput form={sForm} />
 	</section>
 
 	<Hr />
