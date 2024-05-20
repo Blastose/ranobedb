@@ -88,7 +88,7 @@ export type SeriesRelType =
 
 export type SeriesStatus = 'cancelled' | 'completed' | 'ongoing' | 'unknown';
 
-export type StaffRole = 'artist' | 'author' | 'editor' | 'staff' | 'translator';
+export type StaffRole = 'artist' | 'author' | 'editor' | 'narrator' | 'staff' | 'translator';
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
@@ -125,6 +125,20 @@ export interface Book {
 	locked: boolean;
 }
 
+export interface BookEdition {
+	book_id: number;
+	eid: number;
+	lang: Language;
+	title: string;
+}
+
+export interface BookEditionHist {
+	change_id: number;
+	eid: number;
+	lang: Language;
+	title: string;
+}
+
 export interface BookHist {
 	change_id: number;
 	description: string;
@@ -134,6 +148,7 @@ export interface BookHist {
 
 export interface BookStaffAlias {
 	book_id: number;
+	eid: number;
 	note: string;
 	role_type: StaffRole;
 	staff_alias_id: number;
@@ -141,6 +156,7 @@ export interface BookStaffAlias {
 
 export interface BookStaffAliasHist {
 	change_id: number;
+	eid: number;
 	note: string;
 	role_type: StaffRole;
 	staff_alias_id: number;
@@ -376,6 +392,8 @@ export interface DB {
 	auth_user: AuthUser;
 	auth_user_credentials: AuthUserCredentials;
 	book: Book;
+	book_edition: BookEdition;
+	book_edition_hist: BookEditionHist;
 	book_hist: BookHist;
 	book_staff_alias: BookStaffAlias;
 	book_staff_alias_hist: BookStaffAliasHist;
