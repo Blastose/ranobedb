@@ -150,7 +150,7 @@ export class DBBookActions {
 				.execute();
 			await trx.deleteFrom('book_edition').where('book_edition.book_id', '=', data.id).execute();
 			const bookEditionInsert = data.book.editions
-				.filter((item) => item.staff.length > 0)
+				.filter((item, index) => index === 0 || item.staff.length > 0)
 				.map((item, index) => ({
 					book_id: data.id,
 					eid: index,
@@ -161,7 +161,7 @@ export class DBBookActions {
 				await trx.insertInto('book_edition').values(bookEditionInsert).execute();
 			}
 			const bookEditionHistInsert = data.book.editions
-				.filter((item) => item.staff.length > 0)
+				.filter((item, index) => index === 0 || item.staff.length > 0)
 				.map((item, index) => ({
 					change_id: change.change_id,
 					eid: index,
@@ -266,7 +266,7 @@ export class DBBookActions {
 			}
 
 			const bookEditionInsert = data.book.editions
-				.filter((item) => item.staff.length > 0)
+				.filter((item, index) => index === 0 || item.staff.length > 0)
 				.map((item, index) => ({
 					book_id: insertedBook.id,
 					eid: index,
@@ -277,7 +277,7 @@ export class DBBookActions {
 				await trx.insertInto('book_edition').values(bookEditionInsert).execute();
 			}
 			const bookEditionHistInsert = data.book.editions
-				.filter((item) => item.staff.length > 0)
+				.filter((item, index) => index === 0 || item.staff.length > 0)
 				.map((item, index) => ({
 					change_id: change.change_id,
 					eid: index,
