@@ -5,7 +5,7 @@
 
 	export let currentPage: number;
 	export let totalPages: number;
-	export let showTopPages: boolean = false;
+	export let showTopPages: boolean = true;
 	export let results: number | undefined;
 </script>
 

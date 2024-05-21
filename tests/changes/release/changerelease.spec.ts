@@ -54,12 +54,12 @@ test.describe('add release mod', () => {
 		await page.locator('select').nth(3).selectOption('4');
 		await page.locator('select').nth(4).selectOption('8');
 		await page.getByLabel('Add book').click();
-		await page.getByLabel('Add book').fill('あ');
-		await page.getByText('#62 あなたの事が好きなわたしを推してくれますか?').click();
+		await page.getByLabel('Add book').fill('f');
+		await page.getByText('#16 Chivalry of a Failed Knight: Volume 2').click();
 		await page.getByLabel('Type: completepartial').selectOption('partial');
 		await page.getByLabel('Add publisher').click();
 		await page.getByLabel('Add publisher').fill('kado');
-		await page.getByText('#4 KADOKAWA').click();
+		await page.getByText('#12 KADOKAWA').click();
 		await page.getByLabel('Type: labelpublisher').selectOption('publisher');
 
 		await page.getByLabel('Edit summary').fill('Add Nyanko');

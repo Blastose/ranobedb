@@ -4,20 +4,25 @@ import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
 
 export const load = async ({ url, locals }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
+	const q = url.searchParams.get('q');
 	const dbPublishers = DBPublishers.fromDB(db, locals.user);
+
+	let query = dbPublishers
+		.getPublishers()
+		.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
+
+	if (q) {
+		query = query.where('publisher.name', 'ilike', `%${q}%`);
+	}
+
 	const {
 		result: publishers,
 		count,
 		totalPages,
-	} = await paginationBuilderExecuteWithCount(
-		dbPublishers
-			.getPublishers()
-			.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
-		{
-			limit: 40,
-			page: currentPage,
-		},
-	);
+	} = await paginationBuilderExecuteWithCount(query, {
+		limit: 40,
+		page: currentPage,
+	});
 
 	return {
 		publishers,

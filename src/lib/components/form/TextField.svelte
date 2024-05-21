@@ -14,6 +14,8 @@
 	export let showRequiredSymbolIfRequired: boolean = true;
 	export let textareaRows: number = 10;
 	export let textareaCols: number = 30;
+	export let resetPadding: boolean = false;
+	export let disabled: boolean = false;
 
 	const { value, errors, constraints } = formFieldProxy(form, field);
 </script>
@@ -32,7 +34,9 @@
 				{placeholder}
 				cols={textareaCols}
 				rows={textareaRows}
+				{disabled}
 				class="input"
+				class:reset-padding={resetPadding}
 				class:error={$errors}
 				aria-invalid={$errors ? 'true' : undefined}
 				bind:value={$value}
@@ -44,7 +48,9 @@
 				type="number"
 				name={field}
 				{placeholder}
+				{disabled}
 				class="input"
+				class:reset-padding={resetPadding}
 				class:error={$errors}
 				aria-invalid={$errors ? 'true' : undefined}
 				bind:value={$value}
@@ -56,7 +62,9 @@
 				{...{ type }}
 				name={field}
 				{placeholder}
+				{disabled}
 				class="input"
+				class:reset-padding={resetPadding}
 				class:error={$errors}
 				aria-invalid={$errors ? 'true' : undefined}
 				bind:value={$value}

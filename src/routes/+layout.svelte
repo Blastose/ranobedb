@@ -36,7 +36,7 @@
 
 	// TODO remove later
 	function handleKeyDown(e: KeyboardEvent) {
-		if (e.key !== 'l') return;
+		if (e.key !== '`') return;
 
 		themeStore.toggle();
 	}

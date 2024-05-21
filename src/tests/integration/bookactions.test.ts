@@ -18,7 +18,7 @@ describe('book actions', () => {
 					comment: 'Test',
 					hidden: false,
 					locked: false,
-					staff: [],
+					editions: [],
 					titles: [
 						{
 							lang: 'ja',
@@ -35,7 +35,7 @@ describe('book actions', () => {
 		const dbBooks = DBBooks.fromDB(db);
 		const changedBook = await dbBooks.getBook(book.id).executeTakeFirstOrThrow();
 		expect(changedBook.description).toBe('Hello');
-		expect(changedBook.staff.length).toBe(0);
+		expect(changedBook.editions.length).toBe(0);
 		expect(changedBook.titles.length).toBe(1);
 	});
 
@@ -52,13 +52,19 @@ describe('book actions', () => {
 					comment: 'Test',
 					hidden: false,
 					locked: false,
-					staff: [
+					editions: [
 						{
-							name: '',
-							note: '',
-							role_type: 'artist',
-							staff_alias_id: staff.aid,
-							staff_id: staff.id,
+							lang: 'ja',
+							title: 'Ofiicial edition',
+							staff: [
+								{
+									name: '',
+									note: '',
+									role_type: 'artist',
+									staff_alias_id: staff.aid,
+									staff_id: staff.id,
+								},
+							],
 						},
 					],
 					titles: [
@@ -75,10 +81,12 @@ describe('book actions', () => {
 		const dbBooks = DBBooks.fromDB(db);
 		const addedBook = await dbBooks.getBook(addedBookId).executeTakeFirstOrThrow();
 		expect(addedBook.titles.length).toBe(1);
-		expect(addedBook.staff.length).toBe(1);
+		expect(addedBook.editions.length).toBe(1);
+		expect(addedBook.editions[0].staff.length).toBe(1);
 
 		const addedBookHist = await dbBooks.getBookHist(addedBookId).executeTakeFirstOrThrow();
 		expect(addedBookHist.titles.length).toBe(1);
-		expect(addedBookHist.staff.length).toBe(1);
+		expect(addedBookHist.editions.length).toBe(1);
+		expect(addedBook.editions[0].staff.length).toBe(1);
 	});
 });

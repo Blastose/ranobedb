@@ -9,7 +9,7 @@ const { Pool } = pkg;
 dotenv.config({ path: '.env.testing' });
 
 export async function clearDatabase(db: Kysely<DB>) {
-	await sql<unknown>`TRUNCATE change, book_hist, book, book_title, book_title_hist, staff_hist, staff, staff_alias, staff_alias_hist, publisher, book_staff_alias, publisher_relation, book_staff_alias_hist, publisher_hist, publisher_relation_hist, release, release_hist, release_publisher, release_publisher_hist, release_book, release_book_hist, series_hist, series, series_relation, series_relation_hist, series_book, series_book_hist, series_title, series_title_hist, user_list_label, user_list_book, user_list_book_label;`.execute(
+	await sql<unknown>`TRUNCATE change, book_hist, book, book_title, book_title_hist, book_edition, book_edition_hist, staff_hist, staff, staff_alias, staff_alias_hist, publisher, book_staff_alias, publisher_relation, book_staff_alias_hist, publisher_hist, publisher_relation_hist, release, release_hist, release_publisher, release_publisher_hist, release_book, release_book_hist, series_hist, series, series_relation, series_relation_hist, series_book, series_book_hist, series_title, series_title_hist, user_list_label, user_list_book, user_list_book_label;`.execute(
 		db,
 	);
 }
@@ -60,6 +60,24 @@ export async function initDatabase(db: Kysely<DB>) {
 			lang: 'ja',
 			official: true,
 			title: 'Book Title',
+		})
+		.execute();
+	await db
+		.insertInto('book_edition')
+		.values({
+			book_id: book.id,
+			lang: 'ja',
+			title: 'Book Title',
+			eid: 0,
+		})
+		.execute();
+	await db
+		.insertInto('book_edition_hist')
+		.values({
+			change_id: changeBook.id,
+			lang: 'ja',
+			title: 'Book Title',
+			eid: 0,
 		})
 		.execute();
 	const publisher = await db

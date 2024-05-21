@@ -173,7 +173,14 @@ export const seriesStatusArray = ['ongoing', 'completed', 'cancelled', 'unknown'
 
 export type SeriesStatus = (typeof seriesStatusArray)[number];
 
-export const staffRolesArray = ['artist', 'author', 'editor', 'staff', 'translator'] as const;
+export const staffRolesArray = [
+	'artist',
+	'author',
+	'editor',
+	'translator',
+	'narrator',
+	'staff',
+] as const;
 
 export type StaffRole = (typeof staffRolesArray)[number];
 
@@ -212,6 +219,20 @@ export interface Book {
 	locked: boolean;
 }
 
+export interface BookEdition {
+	book_id: number;
+	eid: number;
+	lang: Language;
+	title: string;
+}
+
+export interface BookEditionHist {
+	change_id: number;
+	eid: number;
+	lang: Language;
+	title: string;
+}
+
 export interface BookHist {
 	change_id: number;
 	description: string;
@@ -224,6 +245,7 @@ export interface BookStaffAlias {
 	note: string;
 	role_type: StaffRole;
 	staff_alias_id: number;
+	eid: number;
 }
 
 export interface BookStaffAliasHist {
@@ -231,6 +253,7 @@ export interface BookStaffAliasHist {
 	note: string;
 	role_type: StaffRole;
 	staff_alias_id: number;
+	eid: number;
 }
 
 export interface BookTitle {
@@ -461,6 +484,8 @@ export interface DB {
 	auth_user: AuthUser;
 	auth_user_credentials: AuthUserCredentials;
 	book: Book;
+	book_edition: BookEdition;
+	book_edition_hist: BookEditionHist;
 	book_hist: BookHist;
 	book_staff_alias: BookStaffAlias;
 	book_staff_alias_hist: BookStaffAliasHist;

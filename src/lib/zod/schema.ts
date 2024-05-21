@@ -117,17 +117,40 @@ export const bookSchema = z.object({
 			return true;
 		}),
 
-	staff: z
+	editions: z
 		.array(
 			z.object({
-				name: z.string().max(2000),
-				staff_id: z.number().max(2000000),
-				staff_alias_id: z.number().max(2000000),
-				role_type: z.enum(staffRolesArray),
-				note: z.string().max(2000),
+				eid: z.number().nullish(),
+				title: z.string().min(1).max(2000),
+				lang: z.enum(languagesArray),
+				staff: z
+					.array(
+						z.object({
+							name: z.string().max(2000).nullish(),
+							staff_id: z.number().max(2000000),
+							staff_alias_id: z.number().max(2000000),
+							role_type: z.enum(staffRolesArray),
+							note: z.string().max(2000),
+						}),
+					)
+					.max(50),
 			}),
 		)
-		.max(50),
+		.min(1)
+		.max(10)
+		.refine((editions) => {
+			const originalEdition = editions.at(0);
+			if (!originalEdition) {
+				return false;
+			}
+			if (originalEdition.title !== 'Original edition') {
+				return false;
+			}
+			if (originalEdition.lang !== 'ja') {
+				return false;
+			}
+			return true;
+		}),
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
 });
