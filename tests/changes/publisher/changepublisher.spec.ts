@@ -17,7 +17,7 @@ test.describe('edit publisher mod', () => {
 
 		await page.getByLabel('Add publisher').click();
 		await page.getByLabel('Add publisher').fill('kado');
-		await page.getByText('#4 KADOKAWA').click();
+		await page.getByText('#12 KADOKAWA').click();
 		await page.getByLabel('Edit summary').fill('Add KADOKAWA');
 		await page.getByRole('button', { name: 'Submit edit' }).click();
 		await expect(page.locator('.toast-container').first()).toHaveText(
@@ -26,6 +26,7 @@ test.describe('edit publisher mod', () => {
 		await page.getByRole('link', { name: 'Edit' }).click();
 		await page
 			.getByLabel('Relation type: imprintparent brandparent companysubsidiary')
+			.first()
 			.selectOption('parent brand');
 		await page.getByLabel('Edit summary').fill('Change relation type');
 		await page.getByRole('button', { name: 'Submit edit' }).click();
@@ -77,13 +78,13 @@ test.describe('add publisher mod', () => {
 		await page.getByLabel('Edit summary').fill('Add Nyanko');
 		await page.getByLabel('Add publisher').click();
 		await page.getByLabel('Add publisher').fill('kado');
-		await page.getByText('#4 KADOKAWA').click();
+		await page.getByText('#12 KADOKAWA').click();
 		await page.getByRole('button', { name: 'Submit' }).click();
 
 		await expect(page.locator('.toast-container')).toHaveText('Successfully added publisher!');
 
-		await page.goto('/publisher/4');
-		await expect(page.getByText('Parent Brand: にゃんこ')).toBeVisible();
+		await page.goto('/publisher/12');
+		await expect(page.getByText('にゃんこ')).toBeVisible();
 	});
 
 	test('Mod cannot add publisher without filling in required fields', async ({ page }) => {

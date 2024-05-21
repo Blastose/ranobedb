@@ -26,10 +26,10 @@ test.describe('edit series mod', () => {
 
 		await page.getByLabel('Add book').click();
 		await page.getByLabel('Add book').fill('f');
-		await page.getByText('#7 結合男子 -Fragments from Dusk-').click();
+		await page.getByText('#16 Chivalry of a Failed Knight: Volume 2').click();
 		await page.getByLabel('Add series').click();
 		await page.getByLabel('Add series').fill('f');
-		await page.getByText('#7 結合男子 -Fragments from Dusk-').click();
+		await page.getByText('#19 Ascendance of a Bookworm: Fanbook').click();
 		await page.getByLabel('Edit summary').fill('Add relations');
 		await page.getByRole('button', { name: 'Submit edit' }).click();
 		await expect(page.locator('.toast-container').first()).toHaveText(
