@@ -9,9 +9,12 @@ import { hasAddPerms } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { DBStaffActions } from '$lib/server/db/staff/actions.js';
 import { db } from '$lib/server/db/db.js';
+import { buildRedirectUrl } from '$lib/utils/url.js';
 
-export const load = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/login');
+export const load = async ({ locals, url }) => {
+	if (!locals.user) {
+		redirect(302, buildRedirectUrl(url, '/login'));
+	}
 
 	if (!hasAddPerms(locals.user)) {
 		error(403);

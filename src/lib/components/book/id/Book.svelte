@@ -13,6 +13,8 @@
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import BookImage from '../BookImage.svelte';
 	import BookCarousel from '../BookCarousel.svelte';
+	import { buildRedirectUrl } from '$lib/utils/url';
+	import { page } from '$app/stores';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -59,7 +61,9 @@
 							<BookModal {userListForm} {book} {imageBgStyle} />
 						</div>
 					{:else}
-						<a class="primary-btn w-full max-w-xs" href="/login">Add to reading list</a>
+						<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}
+							>Add to reading list</a
+						>
 					{/if}
 				{/if}
 			</div>

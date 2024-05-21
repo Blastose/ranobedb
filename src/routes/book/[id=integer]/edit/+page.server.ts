@@ -12,9 +12,12 @@ import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { db } from '$lib/server/db/db.js';
+import { buildRedirectUrl } from '$lib/utils/url.js';
 
 export const load = async ({ params, locals, url }) => {
-	if (!locals.user) redirect(302, '/login');
+	if (!locals.user) {
+		redirect(302, buildRedirectUrl(url, '/login'));
+	}
 
 	const id = params.id;
 	const bookId = Number(id);

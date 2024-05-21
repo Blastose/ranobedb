@@ -4,9 +4,13 @@ import { getUser, lucia } from '$lib/server/lucia';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { Argon2id } from 'oslo/password';
+import { buildUrlFromRedirect } from '$lib/utils/url.js';
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 
 export const load = async ({ locals }) => {
-	if (locals.user) redirect(302, '/');
+	if (locals.user) {
+		redirect(302, '/');
+	}
 
 	const form = await superValidate(zod(loginSchema));
 
@@ -14,7 +18,7 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ request, cookies, url }) => {
 		const form = await superValidate(request, zod(loginSchema));
 
 		if (!form.valid) {
@@ -41,7 +45,16 @@ export const actions = {
 			...sessionCookie.attributes,
 		});
 
-		console.log(form);
-		return message(form, { text: 'Valid form', type: 'success' });
+		const redirect = url.searchParams.get('redirect');
+		let redirectUrl = '/';
+		if (redirect) {
+			redirectUrl = buildUrlFromRedirect(url, redirect);
+		}
+		flashRedirect(
+			303,
+			redirectUrl,
+			{ type: 'success', message: 'Successfully logged in!' },
+			cookies,
+		);
 	},
 };

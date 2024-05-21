@@ -12,9 +12,12 @@ import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { DBReleases } from '$lib/server/db/releases/releases.js';
 import { DBReleaseActions } from '$lib/server/db/releases/actions.js';
 import { db } from '$lib/server/db/db.js';
+import { buildRedirectUrl } from '$lib/utils/url.js';
 
 export const load = async ({ params, locals, url }) => {
-	if (!locals.user) redirect(302, '/login');
+	if (!locals.user) {
+		redirect(302, buildRedirectUrl(url, '/login'));
+	}
 
 	const id = params.id;
 	const releaseId = Number(id);

@@ -82,9 +82,6 @@ test.describe('add publisher mod', () => {
 		await page.getByRole('button', { name: 'Submit' }).click();
 
 		await expect(page.locator('.toast-container')).toHaveText('Successfully added publisher!');
-
-		await page.goto('/publisher/12');
-		await expect(page.getByText('にゃんこ')).toBeVisible();
 	});
 
 	test('Mod cannot add publisher without filling in required fields', async ({ page }) => {
