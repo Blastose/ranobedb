@@ -17,7 +17,7 @@
 	export let type: 'add' | 'edit';
 	export let user: User | null;
 
-	$: sForm = superForm(bookForm, {
+	const sForm = superForm(bookForm, {
 		dataType: 'json',
 		resetForm: false,
 		onUpdated({ form: f }) {
@@ -26,7 +26,7 @@
 			}
 		},
 	});
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>

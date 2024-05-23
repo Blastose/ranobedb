@@ -7,8 +7,8 @@
 
 	export let data;
 
-	$: form = superForm(data.form);
-	$: ({ enhance, message, delayed, submitting } = form);
+	const form = superForm(data.form);
+	const { enhance, message, delayed, submitting } = form;
 
 	$: if (!$delayed && $message) {
 		addToast({ data: { title: $message.text, type: $message.type } });

@@ -20,7 +20,7 @@
 		return { display: v, value: v };
 	});
 
-	$: sForm = superForm(userListForm, {
+	const sForm = superForm(userListForm, {
 		dataType: 'json',
 		onUpdate: async ({ form }) => {
 			if (!form.valid) return;
@@ -37,9 +37,10 @@
 			});
 		},
 		taintedMessage: null,
+		invalidateAll: 'force',
 	});
 
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	const {
 		elements: { trigger, overlay, content, title, close, portalled },

@@ -20,7 +20,7 @@
 	export let type: 'add' | 'edit';
 	export let user: User | null;
 
-	$: sForm = superForm(seriesForm, {
+	const sForm = superForm(seriesForm, {
 		dataType: 'json',
 		resetForm: false,
 		onUpdated({ form: f }) {
@@ -29,7 +29,7 @@
 			}
 		},
 	});
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>

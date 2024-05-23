@@ -16,7 +16,7 @@
 	export let type: 'add' | 'edit';
 	export let user: User | null;
 
-	$: sForm = superForm(staffForm, {
+	const sForm = superForm(staffForm, {
 		dataType: 'json',
 		resetForm: false,
 		onUpdated({ form: f }) {
@@ -25,7 +25,7 @@
 			}
 		},
 	});
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>
