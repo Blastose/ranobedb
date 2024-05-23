@@ -12,7 +12,7 @@ import type {
 	BookTitle,
 	BookTitleHist,
 	DB,
-} from '$lib/db/dbTypes';
+} from '$lib/server/db/dbTypes';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import SettingsForm from '$lib/components/form/settings/SettingsForm.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 

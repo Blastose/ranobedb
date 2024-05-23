@@ -2,7 +2,7 @@ import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
 import { Kysely, type InferResult } from 'kysely';
 import { DBBooks, withBookTitleCte } from '../books/books';
-import type { DB } from '$lib/db/dbTypes';
+import type { DB } from '$lib/server/db/dbTypes';
 import type { User } from 'lucia';
 
 export class DBStaff {

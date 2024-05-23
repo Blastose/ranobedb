@@ -1,8 +1,8 @@
 <script lang="ts">
 	import Icon from '$lib/components/icon/Icon.svelte';
-	import { languageNames, type Language } from '$lib/db/dbTypes';
+	import type { Language } from '$lib/server/db/dbTypes';
+	import { languageNames } from '$lib/db/dbConsts';
 	import type { displayPrefsSchema } from '$lib/zod/schema';
-	import { flip } from 'svelte/animate';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 
 	export let form: SuperForm<Infer<typeof displayPrefsSchema>, App.Superforms.Message>;

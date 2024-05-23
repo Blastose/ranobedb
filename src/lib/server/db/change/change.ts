@@ -1,4 +1,4 @@
-import type { DB, DbItem } from '$lib/db/dbTypes';
+import type { DB, DbItem } from '$lib/server/db/dbTypes';
 import type { InferResult, Transaction } from 'kysely';
 import { db } from '../db';
 

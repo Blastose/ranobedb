@@ -13,7 +13,7 @@
 	import SeriesBookInput from './SeriesBookInput.svelte';
 	import SeriesRelInput from './SeriesRelInput.svelte';
 	import SelectField from '../SelectField.svelte';
-	import { seriesStatusArray } from '$lib/db/dbTypes';
+	import { seriesStatusArray } from '$lib/db/dbConsts';
 
 	export let series: SeriesEdit | undefined;
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;

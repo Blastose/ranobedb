@@ -5,10 +5,10 @@ import { addChange } from '../change/change';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
-import type { StaffAlias, StaffAliasHist } from '$lib/db/dbTypes';
+import type { StaffAlias, StaffAliasHist } from '$lib/server/db/dbTypes';
 import type { Insertable, Kysely } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
-import type { DB } from '$lib/db/dbTypes';
+import type { DB } from '$lib/server/db/dbTypes';
 
 export class DBStaffActions {
 	ranobeDB: RanobeDB;

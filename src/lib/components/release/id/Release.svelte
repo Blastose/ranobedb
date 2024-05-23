@@ -2,7 +2,7 @@
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import DBItemShell from '$lib/components/layout/db/DBItemShell.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
-	import { languageNames } from '$lib/db/dbTypes';
+	import { languageNames } from '$lib/db/dbConsts';
 	import type { Release } from '$lib/server/db/releases/releases';
 	import type { User } from 'lucia';
 

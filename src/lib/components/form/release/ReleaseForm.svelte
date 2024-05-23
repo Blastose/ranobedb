@@ -12,8 +12,8 @@
 	import ReleasePublisherInput from './ReleasePublisherInput.svelte';
 	import ReleaseBookInput from './ReleaseBookInput.svelte';
 	import ReleaseDateInput from './ReleaseDateInput.svelte';
+	import { languageNames, languagesArray, releaseFormatArray } from '$lib/db/dbConsts';
 	import SelectField from '../SelectField.svelte';
-	import { languageNames, languagesArray, releaseFormatArray } from '$lib/db/dbTypes';
 
 	export let release: ReleaseEdit | undefined;
 	export let releaseForm: SuperValidated<Infer<typeof releaseSchema>>;

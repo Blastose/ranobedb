@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { languageNames, type Language } from '$lib/db/dbTypes';
+	import { languageNames } from '$lib/db/dbConsts';
+	import type { Language } from '$lib/server/db/dbTypes';
 	import type { bookSchema } from '$lib/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 

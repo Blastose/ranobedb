@@ -14,7 +14,7 @@ import type {
 	ReleaseBookHist,
 	ReleasePublisher,
 	ReleasePublisherHist,
-} from '$lib/db/dbTypes';
+} from '$lib/server/db/dbTypes';
 
 export class DBReleaseActions {
 	ranobeDB: RanobeDB;

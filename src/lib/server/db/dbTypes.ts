@@ -1,7 +1,16 @@
+import { publisherRelTypeArray } from '$lib/db/dbConsts';
+import { releaseFormatArray } from '$lib/db/dbConsts';
+import { dbItemArray } from '$lib/db/dbConsts';
+import {
+	releasePublisherTypeArray,
+	releaseTypeArray,
+	seriesRelTypeArray,
+	seriesStatusArray,
+	staffRolesArray,
+} from '$lib/db/dbConsts';
+import { languagesArray } from '$lib/db/dbConsts';
 import type { DisplayPrefs } from '$lib/zod/schema';
 import type { ColumnType } from 'kysely';
-
-export const dbItemArray = ['book', 'publisher', 'release', 'series', 'staff'] as const;
 
 export type DbItem = (typeof dbItemArray)[number];
 
@@ -13,174 +22,19 @@ export type Json<T> = ColumnType<T, string, string>;
 
 export type DateString = ColumnType<string, string, string>;
 
-export const languagesArray = [
-	'ar',
-	'bg',
-	'ca',
-	'ck',
-	'cs',
-	'da',
-	'de',
-	'el',
-	'en',
-	'eo',
-	'es',
-	'eu',
-	'fa',
-	'fi',
-	'fr',
-	'ga',
-	'gd',
-	'he',
-	'hi',
-	'hr',
-	'hu',
-	'id',
-	'it',
-	'iu',
-	'ja',
-	'ko',
-	'la',
-	'lt',
-	'lv',
-	'mk',
-	'ms',
-	'nl',
-	'no',
-	'pl',
-	'pt-br',
-	'pt-pt',
-	'ro',
-	'ru',
-	'sk',
-	'sl',
-	'sr',
-	'sv',
-	'ta',
-	'th',
-	'tr',
-	'uk',
-	'ur',
-	'vi',
-	'zh-Hans',
-	'zh-Hant',
-] as const;
-
-export const languageNames: Record<Language, string> = {
-	ar: 'Arabic',
-	bg: 'Bulgarian',
-	ca: 'Catalan',
-	ck: 'Chukchi',
-	cs: 'Czech',
-	da: 'Danish',
-	de: 'German',
-	el: 'Greek',
-	en: 'English',
-	eo: 'Esperanto',
-	es: 'Spanish',
-	eu: 'Basque',
-	fa: 'Persian',
-	fi: 'Finnish',
-	fr: 'French',
-	ga: 'Irish',
-	gd: 'Scottish Gaelic',
-	he: 'Hebrew',
-	hi: 'Hindi',
-	hr: 'Croatian',
-	hu: 'Hungarian',
-	id: 'Indonesian',
-	it: 'Italian',
-	iu: 'Inuktitut',
-	ja: 'Japanese',
-	ko: 'Korean',
-	la: 'Latin',
-	lt: 'Lithuanian',
-	lv: 'Latvian',
-	mk: 'Macedonian',
-	ms: 'Malay',
-	nl: 'Dutch',
-	no: 'Norwegian',
-	pl: 'Polish',
-	'pt-br': 'Portuguese (Brazil)',
-	'pt-pt': 'Portuguese (Portugal)',
-	ro: 'Romanian',
-	ru: 'Russian',
-	sk: 'Slovak',
-	sl: 'Slovenian',
-	sr: 'Serbian',
-	sv: 'Swedish',
-	ta: 'Tamil',
-	th: 'Thai',
-	tr: 'Turkish',
-	uk: 'Ukrainian',
-	ur: 'Urdu',
-	vi: 'Vietnamese',
-	'zh-Hans': 'Chinese (Simplified)',
-	'zh-Hant': 'Chinese (Traditional)',
-};
-
 export type Language = (typeof languagesArray)[number];
-
-export const publisherRelTypeArray = [
-	'imprint',
-	'parent brand',
-	'parent company',
-	'subsidiary',
-] as const;
-
-export const publisherTypeReverseMap: Record<PublisherRelType, PublisherRelType> = {
-	imprint: 'parent brand',
-	subsidiary: 'parent company',
-	'parent brand': 'imprint',
-	'parent company': 'subsidiary',
-};
 
 export type PublisherRelType = (typeof publisherRelTypeArray)[number];
 
-export const releaseFormatArray = ['audio', 'digital', 'print'] as const;
-
 export type ReleaseFormat = (typeof releaseFormatArray)[number];
-
-export const releasePublisherTypeArray = ['label', 'publisher'] as const;
 
 export type ReleasePublisherType = (typeof releasePublisherTypeArray)[number];
 
-export const releaseTypeArray = ['complete', 'partial', 'omnibus'] as const;
-
 export type ReleaseType = (typeof releaseTypeArray)[number];
-
-export const seriesRelTypeArray = [
-	'parent story',
-	'prequel',
-	'sequel',
-	'side story',
-	'main story',
-	'spin-off',
-] as const;
-
-export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
-	prequel: 'sequel',
-	sequel: 'prequel',
-	'side story': 'main story',
-	'main story': 'side story',
-	'spin-off': 'parent story',
-	'parent story': 'spin-off',
-};
 
 export type SeriesRelType = (typeof seriesRelTypeArray)[number];
 
-export const seriesStatusArray = ['ongoing', 'completed', 'cancelled', 'unknown'] as const;
-
 export type SeriesStatus = (typeof seriesStatusArray)[number];
-
-export const staffRolesArray = [
-	'artist',
-	'author',
-	'editor',
-	'translator',
-	'narrator',
-	'staff',
-] as const;
 
 export type StaffRole = (typeof staffRolesArray)[number];
 

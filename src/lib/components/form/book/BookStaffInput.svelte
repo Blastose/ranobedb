@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { staffRolesArray } from '$lib/db/dbTypes';
+	import { staffRolesArray } from '$lib/db/dbConsts';
 	import type { bookSchema } from '$lib/zod/schema';
 	import ComboboxInput from '../ComboboxInput.svelte';
 

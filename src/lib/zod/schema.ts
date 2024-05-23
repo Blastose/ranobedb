@@ -1,14 +1,14 @@
 import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
-	languagesArray,
-	publisherRelTypeArray,
-	releaseFormatArray,
 	releasePublisherTypeArray,
 	releaseTypeArray,
 	seriesRelTypeArray,
 	seriesStatusArray,
 	staffRolesArray,
-} from '$lib/db/dbTypes';
+} from '$lib/db/dbConsts';
+import { releaseFormatArray } from '$lib/db/dbConsts';
+import { publisherRelTypeArray } from '$lib/db/dbConsts';
+import { languagesArray } from '$lib/db/dbConsts';
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';

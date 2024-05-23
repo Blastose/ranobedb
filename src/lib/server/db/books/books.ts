@@ -1,7 +1,7 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
-import type { DB } from '$lib/db/dbTypes';
+import type { DB } from '$lib/server/db/dbTypes';
 import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
 import type { User } from 'lucia';
 import { withSeriesTitleCte } from '../series/series';

@@ -1,4 +1,4 @@
-import type { DB } from '$lib/db/dbTypes';
+import type { DB } from '$lib/server/db/dbTypes';
 import { defaultUserListLabels } from '$lib/zod/schema';
 import type { Transaction } from 'kysely';
 

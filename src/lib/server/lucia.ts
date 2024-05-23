@@ -2,7 +2,7 @@ import { Lucia } from 'lucia';
 import { dev } from '$app/environment';
 import { NodePostgresAdapter } from '@lucia-auth/adapter-postgresql';
 import { db, pool } from '$lib/server/db/db';
-import type { UserRole } from '$lib/db/dbTypes';
+import type { UserRole } from '$lib/server/db/dbTypes';
 import { insertDefaultUserListLabels } from './db/user/user';
 import type { DisplayPrefs } from '$lib/zod/schema';
 

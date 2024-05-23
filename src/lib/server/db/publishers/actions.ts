@@ -7,15 +7,15 @@ import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import {
-	publisherTypeReverseMap,
 	type PublisherRelation,
 	type PublisherRelationHist,
 	type DB,
 	type PublisherRelType,
-} from '$lib/db/dbTypes';
+} from '$lib/server/db/dbTypes';
 import type { Insertable, Kysely, Transaction } from 'kysely';
 import { arrayDiff } from '$lib/db/array';
 import { reverseRelationUpdateMarkdown } from '$lib/db/revision';
+import { publisherTypeReverseMap } from '$lib/db/dbConsts';
 
 export class DBPublisherActions {
 	ranobeDB: RanobeDB;

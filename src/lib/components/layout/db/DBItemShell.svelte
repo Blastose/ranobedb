@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DbItem } from '$lib/db/dbTypes';
+	import type { DbItem } from '$lib/server/db/dbTypes';
 	import type { User } from 'lucia';
 	import type { Rec } from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplay from './VisibilityDisplay.svelte';

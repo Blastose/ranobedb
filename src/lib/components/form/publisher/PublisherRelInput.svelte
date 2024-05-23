@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { publisherRelTypeArray } from '$lib/db/dbTypes';
+	import { publisherRelTypeArray } from '$lib/db/dbConsts';
 	import type { publisherSchema } from '$lib/zod/schema';
-	import ComboboxInput from '../ComboboxInput.svelte';
-
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
+	import ComboboxInput from '../ComboboxInput.svelte';
 
 	export let form: SuperForm<Infer<typeof publisherSchema>, App.Superforms.Message>;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { seriesRelTypeArray } from '$lib/db/dbTypes';
-	import type { seriesSchema } from '$lib/zod/schema';
+	import { seriesSchema } from '$lib/zod/schema';
+	import { seriesRelTypeArray } from '$lib/db/dbConsts';
 	import ComboboxInput from '../ComboboxInput.svelte';
 
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';

@@ -1,4 +1,4 @@
-import type { DB } from '$lib/db/dbTypes';
+import type { DB } from '$lib/server/db/dbTypes';
 import { sql, Kysely, PostgresDialect } from 'kysely';
 import type { User } from 'lucia';
 import dotenv from 'dotenv';

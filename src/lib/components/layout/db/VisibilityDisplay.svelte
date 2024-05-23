@@ -5,7 +5,7 @@
 <script lang="ts" generics="T extends Rec">
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	import type { DbItem } from '$lib/db/dbTypes';
+	import type { DbItem } from '$lib/server/db/dbTypes';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import type { User } from 'lucia';
 
