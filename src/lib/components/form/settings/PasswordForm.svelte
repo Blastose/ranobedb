@@ -1,0 +1,44 @@
+<script lang="ts">
+	import type { passwordSchema } from '$lib/zod/schema';
+	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { addToast } from '$lib/components/toast/Toaster.svelte';
+	import TextField from '../TextField.svelte';
+	import SubmitButton from '../SubmitButton.svelte';
+
+	export let passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
+
+	const sForm = superForm(passwordForm);
+	const { form, enhance, delayed, submitting, message } = sForm;
+
+	$: if (!$delayed && $message) {
+		addToast({ data: { title: $message.text, type: $message.type } });
+	}
+</script>
+
+<!-- <SuperDebug data={$form} /> -->
+
+<form method="post" action="?/password" class="flex flex-col gap-2 max-w-lg" use:enhance>
+	<div>
+		<h2 class="font-bold text-lg">Update password</h2>
+		<p class="text-sm">Changing your password will log you out of all other sessions</p>
+	</div>
+
+	<div class="flex flex-col gap-1">
+		<TextField
+			form={sForm}
+			field={'currentPassword'}
+			type="password"
+			placeholder="Password"
+			label="Current password"
+		/>
+		<TextField
+			form={sForm}
+			field={'newPassword'}
+			type="password"
+			placeholder="Password"
+			label="New password"
+		/>
+	</div>
+
+	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Update password'} />
+</form>

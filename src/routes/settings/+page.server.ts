@@ -1,8 +1,124 @@
+import { changePassword, changeUsername, getUser, lucia } from '$lib/server/lucia.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
+import { passwordSchema, usernameSchema } from '$lib/zod/schema.js';
 import { redirect } from '@sveltejs/kit';
+import { Argon2id } from 'oslo/password';
+import { fail, message, setError, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import pkg from 'pg';
+const { DatabaseError } = pkg;
 
 export const load = async ({ locals, url }) => {
 	if (!locals.user) {
 		redirect(302, buildRedirectUrl(url, '/login'));
 	}
+
+	const usernameForm = await superValidate(
+		{
+			username: locals.user.username,
+		},
+		zod(usernameSchema),
+	);
+
+	const passwordForm = await superValidate(zod(passwordSchema));
+
+	return { usernameForm, passwordForm };
+};
+
+export const actions = {
+	username: async ({ request, locals }) => {
+		if (!locals.user) return fail(401);
+
+		const usernameForm = await superValidate(request, zod(usernameSchema));
+
+		if (!usernameForm.valid) return fail(400, { loginForm: usernameForm });
+
+		const newUsername = usernameForm.data.username;
+		const password = usernameForm.data.password;
+
+		const user = await getUser(locals.user.username);
+		if (!user) {
+			return message(
+				usernameForm,
+				{ type: 'error', text: 'Invalid login credentials' },
+				{ status: 400 },
+			);
+		}
+
+		const validPassword = await new Argon2id().verify(user.hashed_password, password);
+		if (!validPassword) {
+			return message(usernameForm, { type: 'error', text: 'Invalid password' }, { status: 400 });
+		}
+
+		try {
+			await changeUsername({
+				userId: user.id,
+				newUsername,
+			});
+		} catch (error) {
+			if (error instanceof DatabaseError) {
+				if (
+					error.code === '23505' &&
+					(error.detail?.includes('Key (username)') ||
+						error.detail?.includes('Key (username_lowercase)'))
+				) {
+					setError(
+						usernameForm,
+						'username',
+						'Username is already in use. Please use a different username',
+					);
+					return message(
+						usernameForm,
+						{ type: 'error', text: 'Invalid form entries' },
+						{ status: 400 },
+					);
+				}
+			}
+			return message(
+				usernameForm,
+				{ type: 'error', text: 'An unknown error has occurred' },
+				{ status: 500 },
+			);
+		}
+
+		return message(usernameForm, { text: 'Updated username!', type: 'success' });
+	},
+
+	password: async ({ request, locals, cookies }) => {
+		if (!locals.user) return fail(401);
+
+		const passwordForm = await superValidate(request, zod(passwordSchema));
+		if (!passwordForm.valid) return fail(400, { registerForm: passwordForm });
+
+		const user = await getUser(locals.user.username);
+		if (!user) {
+			return message(
+				passwordForm,
+				{ type: 'error', text: 'Invalid login credentials' },
+				{ status: 400 },
+			);
+		}
+
+		const currentPassword = passwordForm.data.currentPassword;
+		const newPassword = passwordForm.data.newPassword;
+
+		const validPassword = await new Argon2id().verify(user.hashed_password, currentPassword);
+		if (!validPassword) {
+			return message(passwordForm, { type: 'error', text: 'Invalid password' }, { status: 400 });
+		}
+		const newHashedPassword = await new Argon2id().hash(newPassword);
+
+		await changePassword({ userId: user.id, newHashedPassword: newHashedPassword });
+
+		await lucia.invalidateUserSessions(user.id);
+		const session = await lucia.createSession(user.id, {});
+		const sessionCookie = lucia.createSessionCookie(session.id);
+
+		cookies.set(sessionCookie.name, sessionCookie.value, {
+			path: '.',
+			...sessionCookie.attributes,
+		});
+
+		return message(passwordForm, { text: 'Updated password!', type: 'success' });
+	},
 };

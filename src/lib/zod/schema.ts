@@ -37,6 +37,13 @@ const zUsername = z
 	)
 	.min(3, { message: 'Username must be between 3 and 36 characters' })
 	.max(36, { message: 'Username must be between 3 and 36 characters' });
+const zPasswordEntry = z
+	.string({ required_error: 'Password is required' })
+	.max(255, { message: 'Password too long' });
+const zPasswordNew = z
+	.string({ required_error: 'Password is required' })
+	.min(6, { message: 'Password must be between 6 and 255 characters' })
+	.max(255, { message: 'Password must be between 6 and 255 characters' });
 function isValidISO8601Date(dateString: string): boolean {
 	const isoDateRegex = /^\d{4,5}-\d{2}-\d{2}$/;
 	if (!isoDateRegex.test(dateString)) {
@@ -58,9 +65,7 @@ export const loginSchema = z.object({
 	usernameemail: z
 		.string({ required_error: 'Username or email is required' })
 		.max(255, { message: 'Username or email too long' }),
-	password: z
-		.string({ required_error: 'Password is required' })
-		.max(255, { message: 'Password too long' }),
+	password: zPasswordEntry,
 });
 
 export const signupSchema = z.object({
@@ -69,10 +74,7 @@ export const signupSchema = z.object({
 		.email({ message: 'Invalid email address' })
 		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
 	username: zUsername,
-	password: z
-		.string({ required_error: 'Password is required' })
-		.min(6, { message: 'Password must be between 6 and 255 characters' })
-		.max(255, { message: 'Password must be between 6 and 255 characters' }),
+	password: zPasswordNew,
 });
 
 const userListFormTypes = ['add', 'update', 'delete'] as const;
@@ -312,5 +314,15 @@ export const seriesSchema = z.object({
 
 export const searchNameSchema = z.object({ name: z.string() });
 export const revisionSchema = z.object({ revision: z.number() });
+
+export const nameDisplayPrefsSchema = z.object({
+	staff: z.enum(['romaji', 'native'] as const),
+});
+
+export const usernameSchema = z.object({ username: zUsername, password: zPasswordEntry });
+export const passwordSchema = z.object({
+	currentPassword: zPasswordEntry,
+	newPassword: zPasswordNew,
+});
 
 export type Nullish<T> = T | null | undefined;

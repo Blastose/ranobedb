@@ -81,6 +81,29 @@ export async function getUser(usernameemail: string) {
 	}
 }
 
+export async function changeUsername(params: { userId: string; newUsername: string }) {
+	await db
+		.updateTable('auth_user')
+		.set({
+			username: params.newUsername,
+			username_lowercase: params.newUsername.toLowerCase(),
+		})
+		.where('auth_user.id', '=', params.userId)
+		.execute();
+}
+
+export async function changePassword(params: { userId: string; newHashedPassword: string }) {
+	await db.transaction().execute(async (trx) => {
+		await trx
+			.updateTable('auth_user_credentials')
+			.set({
+				hashed_password: params.newHashedPassword,
+			})
+			.where('auth_user_credentials.user_id', '=', params.userId)
+			.execute();
+	});
+}
+
 declare module 'lucia' {
 	interface Register {
 		Lucia: typeof lucia;

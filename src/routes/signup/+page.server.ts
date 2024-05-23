@@ -68,7 +68,6 @@ export const actions = {
 			);
 		}
 
-		console.log(form);
 		return message(form, { text: 'Valid form', type: 'success' });
 	},
 };
