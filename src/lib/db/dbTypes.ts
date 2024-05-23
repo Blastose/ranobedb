@@ -1,4 +1,4 @@
-import type { LanguagePriority } from '$lib/server/db/dbHelpers';
+import type { DisplayPrefs } from '$lib/zod/schema';
 import type { ColumnType } from 'kysely';
 
 export const dbItemArray = ['book', 'publisher', 'release', 'series', 'staff'] as const;
@@ -199,7 +199,7 @@ export interface AuthUser {
 	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;
 	role: Generated<UserRole>;
-	title_prefs: Generated<Json<LanguagePriority[]>>;
+	display_prefs: Generated<Json<DisplayPrefs>>;
 	username: string;
 	username_lowercase: string;
 }

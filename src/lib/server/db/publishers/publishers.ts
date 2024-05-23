@@ -23,7 +23,7 @@ export class DBPublishers {
 
 	getPublisher(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('publisher')
 			.selectAll('publisher')
 			.select((eb) => [
@@ -75,7 +75,7 @@ export class DBPublishers {
 
 	getPublisherHist(options: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('publisher_hist')
 			.innerJoin('change', 'change.id', 'publisher_hist.change_id')
 			.select([

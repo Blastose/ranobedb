@@ -154,9 +154,6 @@ export class DBReleaseActions {
 					.execute();
 			}
 			const booksNewDiff = arrayDiff(data.release.books, currentRelease.books);
-			console.log(booksNewDiff);
-			console.log(data.release);
-			console.log(currentRelease.books);
 			const release_book_add = booksNewDiff.map((item) => {
 				return { book_id: item.id, release_id: data.id, rtype: item.rtype };
 			}) satisfies Insertable<ReleaseBook>[];

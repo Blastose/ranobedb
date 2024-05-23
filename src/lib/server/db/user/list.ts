@@ -8,7 +8,7 @@ import type { User } from 'lucia';
 // TODO Refactor with getBooks
 export function getBooksRL(userId: string, user?: User | null) {
 	return db
-		.with('cte_book', withBookTitleCte(user?.title_prefs))
+		.with('cte_book', withBookTitleCte(user?.display_prefs.title_prefs))
 		.selectFrom('cte_book')
 		.innerJoin('user_list_book', (join) =>
 			join

@@ -102,9 +102,9 @@ export class DBBooks {
 
 	getBook(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.description',
@@ -211,9 +211,9 @@ export class DBBooks {
 
 	getBookHist(id: number, revision?: number) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.innerJoin('change', 'change.id', 'cte_book.id')
 			.select([
@@ -335,7 +335,7 @@ export class DBBooks {
 
 	getBookEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.select([
@@ -400,7 +400,7 @@ export class DBBooks {
 
 	getBookHistEdit(id: number, revision: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.innerJoin('change', 'change.id', 'cte_book.id')
@@ -474,7 +474,7 @@ export class DBBooks {
 
 	getBooks() {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.description',

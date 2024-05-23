@@ -1,11 +1,12 @@
 import { changePassword, changeUsername, getUser, lucia } from '$lib/server/lucia.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
-import { passwordSchema, usernameSchema } from '$lib/zod/schema.js';
+import { displayPrefsSchema, passwordSchema, usernameSchema } from '$lib/zod/schema.js';
 import { redirect } from '@sveltejs/kit';
 import { Argon2id } from 'oslo/password';
 import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
+import { db } from '$lib/server/db/db.js';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals, url }) => {
@@ -21,8 +22,14 @@ export const load = async ({ locals, url }) => {
 	);
 
 	const passwordForm = await superValidate(zod(passwordSchema));
+	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod(displayPrefsSchema));
 
-	return { usernameForm, passwordForm };
+	return {
+		usernameForm,
+		passwordForm,
+		displayPrefsForm,
+		view: url.searchParams.get('view') || 'account',
+	};
 };
 
 export const actions = {
@@ -120,5 +127,30 @@ export const actions = {
 		});
 
 		return message(passwordForm, { text: 'Updated password!', type: 'success' });
+	},
+
+	displayprefs: async ({ request, locals }) => {
+		if (!locals.user) return fail(401);
+
+		const displayPrefsForm = await superValidate(request, zod(displayPrefsSchema));
+		if (!displayPrefsForm.valid) return fail(400, { registerForm: displayPrefsForm });
+
+		const user = await getUser(locals.user.username);
+		if (!user) {
+			return message(
+				displayPrefsForm,
+				{ type: 'error', text: 'Invalid login credentials' },
+				{ status: 400 },
+			);
+		}
+
+		await db
+			.updateTable('auth_user')
+			.set({
+				display_prefs: JSON.stringify(displayPrefsForm.data),
+			})
+			.execute();
+
+		return message(displayPrefsForm, { text: 'Updated password!', type: 'success' });
 	},
 };

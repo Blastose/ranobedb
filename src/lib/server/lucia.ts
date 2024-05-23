@@ -4,7 +4,7 @@ import { NodePostgresAdapter } from '@lucia-auth/adapter-postgresql';
 import { db, pool } from '$lib/server/db/db';
 import type { UserRole } from '$lib/db/dbTypes';
 import { insertDefaultUserListLabels } from './db/user/user';
-import type { LanguagePriority } from './db/dbHelpers';
+import type { DisplayPrefs } from '$lib/zod/schema';
 
 const adapter = new NodePostgresAdapter(pool, {
 	session: 'auth_session',
@@ -22,7 +22,7 @@ export const lucia = new Lucia(adapter, {
 			username: attributes.username,
 			role: attributes.role,
 			id_numeric: attributes.id_numeric,
-			title_prefs: attributes.title_prefs,
+			display_prefs: attributes.display_prefs,
 		};
 	},
 });
@@ -116,5 +116,5 @@ interface DatabaseUserAttributes {
 	username_lowercase: string;
 	id_numeric: number;
 	role: UserRole;
-	title_prefs: LanguagePriority[];
+	display_prefs: DisplayPrefs;
 }

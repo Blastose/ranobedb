@@ -77,7 +77,9 @@
 			<h2 class="text-lg font-bold">Book relations</h2>
 			<div>
 				{#each release.books as book}
-					<a class="link" href="/book/{book.id}">{book.title}</a>
+					<p>
+						<a class="link" href="/book/{book.id}">{book.title}</a>
+					</p>
 				{/each}
 			</div>
 		</div>

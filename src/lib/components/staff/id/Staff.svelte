@@ -20,8 +20,8 @@
 <DBItemShell
 	dbItem="staff"
 	{isRevision}
-	name={staff.name}
-	subName={staff.romaji}
+	name={staff.romaji ?? staff.name}
+	subName={staff.name}
 	{user}
 	item={staff}
 >

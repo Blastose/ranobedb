@@ -12,6 +12,7 @@ import {
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { defaultLangPrio } from '$lib/server/db/dbHelpers';
 dayjs.extend(customParseFormat);
 
 export const defaultUserListLabelsArray = [
@@ -318,6 +319,20 @@ export const revisionSchema = z.object({ revision: z.number() });
 export const nameDisplayPrefsSchema = z.object({
 	staff: z.enum(['romaji', 'native'] as const),
 });
+const zLanguagePrio = z.object({
+	lang: z.enum(languagesArray),
+	romaji: z.boolean(),
+});
+export const displayPrefsSchema = z.object({
+	title_prefs: z.array(zLanguagePrio).min(1).max(10),
+	names: z.enum(['romaji', 'native'] as const),
+});
+export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
+export const defaultDisplayPrefs: DisplayPrefs = {
+	names: 'romaji',
+	title_prefs: defaultLangPrio,
+};
+// console.log(defaultDisplayPrefs);
 
 export const usernameSchema = z.object({ username: zUsername, password: zPasswordEntry });
 export const passwordSchema = z.object({

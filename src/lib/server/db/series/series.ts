@@ -117,7 +117,7 @@ export class DBSeries {
 
 	getSeries() {
 		return this.ranobeDB.db
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_series')
 			.select((eb) => [
 				jsonObjectFrom(
@@ -143,8 +143,8 @@ export class DBSeries {
 	}
 	getSeriesOne(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_series')
 			.select([
 				'cte_series.id',
@@ -203,9 +203,12 @@ export class DBSeries {
 
 	getSeriesHistOne(options: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series_non_hist', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with(
+				'cte_series_non_hist',
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+			)
 			.selectFrom('cte_series')
 			.innerJoin('change', 'change.id', 'cte_series.id')
 			.select([
@@ -339,9 +342,12 @@ export class DBSeries {
 
 	getSeriesHistOneEdit(params: { id: number; revision: number }) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series_non_hist', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with(
+				'cte_series_non_hist',
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+			)
 			.selectFrom('cte_series')
 			.innerJoin('change', 'change.id', 'cte_series.id')
 			.select([
