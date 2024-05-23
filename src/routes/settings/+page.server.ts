@@ -38,7 +38,7 @@ export const actions = {
 
 		const usernameForm = await superValidate(request, zod(usernameSchema));
 
-		if (!usernameForm.valid) return fail(400, { loginForm: usernameForm });
+		if (!usernameForm.valid) return fail(400, { usernameForm });
 
 		const newUsername = usernameForm.data.username;
 		const password = usernameForm.data.password;
@@ -95,7 +95,7 @@ export const actions = {
 		if (!locals.user) return fail(401);
 
 		const passwordForm = await superValidate(request, zod(passwordSchema));
-		if (!passwordForm.valid) return fail(400, { registerForm: passwordForm });
+		if (!passwordForm.valid) return fail(400, { passwordForm });
 
 		const user = await getUser(locals.user.username);
 		if (!user) {
@@ -133,24 +133,16 @@ export const actions = {
 		if (!locals.user) return fail(401);
 
 		const displayPrefsForm = await superValidate(request, zod(displayPrefsSchema));
-		if (!displayPrefsForm.valid) return fail(400, { registerForm: displayPrefsForm });
-
-		const user = await getUser(locals.user.username);
-		if (!user) {
-			return message(
-				displayPrefsForm,
-				{ type: 'error', text: 'Invalid login credentials' },
-				{ status: 400 },
-			);
-		}
+		if (!displayPrefsForm.valid) return fail(400, { displayPrefsForm });
 
 		await db
 			.updateTable('auth_user')
 			.set({
 				display_prefs: JSON.stringify(displayPrefsForm.data),
 			})
+			.where('auth_user.id', '=', locals.user.id)
 			.execute();
 
-		return message(displayPrefsForm, { text: 'Updated password!', type: 'success' });
+		return message(displayPrefsForm, { text: 'Updated display preferences!', type: 'success' });
 	},
 };

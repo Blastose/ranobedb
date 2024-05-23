@@ -316,9 +316,6 @@ export const seriesSchema = z.object({
 export const searchNameSchema = z.object({ name: z.string() });
 export const revisionSchema = z.object({ revision: z.number() });
 
-export const nameDisplayPrefsSchema = z.object({
-	staff: z.enum(['romaji', 'native'] as const),
-});
 const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),
 	romaji: z.boolean(),
