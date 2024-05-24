@@ -3,7 +3,7 @@
 	import type { User } from 'lucia';
 	import type { Rec } from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplay from './VisibilityDisplay.svelte';
-	import type { Nullish } from '$lib/zod/schema';
+	import type { Nullish } from '$lib/server/zod/schema';
 	import VisibilityDisplayPerm from './VisibilityDisplayPerm.svelte';
 
 	export let dbItem: DbItem;

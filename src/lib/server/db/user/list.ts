@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db/db';
-import { defaultUserListLabels, type Nullish } from '$lib/zod/schema';
+import type { Nullish } from '$lib/server/zod/schema';
+import { defaultUserListLabels } from '$lib/db/dbConsts';
 import { sql, type InferResult } from 'kysely';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';

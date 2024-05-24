@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { seriesSchema } from '$lib/zod/schema';
+	import type { seriesSchema } from '$lib/server/zod/schema';
 	import { seriesRelTypeArray } from '$lib/db/dbConsts';
 	import ComboboxInput from '../ComboboxInput.svelte';
 

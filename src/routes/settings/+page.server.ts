@@ -1,6 +1,6 @@
 import { changePassword, changeUsername, getUser, lucia } from '$lib/server/lucia.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
-import { displayPrefsSchema, passwordSchema, usernameSchema } from '$lib/zod/schema.js';
+import { displayPrefsSchema, passwordSchema, usernameSchema } from '$lib/server/zod/schema.js';
 import { redirect } from '@sveltejs/kit';
 import { Argon2id } from 'oslo/password';
 import { fail, message, setError, superValidate } from 'sveltekit-superforms';

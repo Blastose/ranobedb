@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { languageNames } from '$lib/db/dbConsts';
 	import type { Language } from '$lib/server/db/dbTypes';
-	import type { seriesSchema } from '$lib/zod/schema';
+	import type { seriesSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 
 	// TODO this is the same as the one in book; refactor?

@@ -1,5 +1,5 @@
 import type { DB } from '$lib/server/db/dbTypes';
-import { defaultUserListLabels } from '$lib/zod/schema';
+import { defaultUserListLabels } from '$lib/db/dbConsts';
 import type { Transaction } from 'kysely';
 
 export async function insertDefaultUserListLabels(trx: Transaction<DB>, userId: string) {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { staffRolesArray } from '$lib/db/dbConsts';
-	import type { bookSchema } from '$lib/zod/schema';
+	import type { bookSchema } from '$lib/server/zod/schema';
 	import ComboboxInput from '../ComboboxInput.svelte';
 
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';

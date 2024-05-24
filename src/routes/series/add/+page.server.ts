@@ -1,4 +1,4 @@
-import { seriesSchema } from '$lib/zod/schema.js';
+import { seriesSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';

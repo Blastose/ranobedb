@@ -1,4 +1,11 @@
-import type { Language, PublisherRelType, SeriesRelType } from '$lib/server/db/dbTypes';
+import type { LanguagePriority } from '$lib/server/db/dbHelpers';
+import type {
+	ReadingStatus,
+	Language,
+	PublisherRelType,
+	SeriesRelType,
+} from '$lib/server/db/dbTypes';
+import type { DisplayPrefs } from '$lib/server/zod/schema';
 
 export const languagesArray = [
 	'ar',
@@ -156,3 +163,27 @@ export const staffRolesArray = [
 export const seriesStatusArray = ['ongoing', 'completed', 'cancelled', 'unknown'] as const;
 
 export const dbItemArray = ['book', 'publisher', 'release', 'series', 'staff'] as const;
+
+export const defaultUserListLabelsArray = [
+	'Reading',
+	'Finished',
+	'Plan to read',
+	'Stalled',
+	'Dropped',
+] as const;
+
+export const defaultUserListLabelsMap = new Map<ReadingStatus, number>();
+export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) => {
+	defaultUserListLabelsMap.set(v, index + 1);
+	return { id: index + 1, label: v };
+});
+
+export const defaultLangPrio: LanguagePriority[] = [
+	{ lang: 'en', romaji: false },
+	{ lang: 'ja', romaji: true },
+];
+
+export const defaultDisplayPrefs: DisplayPrefs = {
+	names: 'romaji',
+	title_prefs: defaultLangPrio,
+};

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
-	import type { displayPrefsSchema } from '$lib/zod/schema';
+	import type { displayPrefsSchema } from '$lib/server/zod/schema';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TitlePrefsInput from './TitlePrefsInput.svelte';
 	import SelectField from '../SelectField.svelte';

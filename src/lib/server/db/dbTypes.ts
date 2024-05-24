@@ -1,4 +1,4 @@
-import { publisherRelTypeArray } from '$lib/db/dbConsts';
+import { defaultUserListLabelsArray, publisherRelTypeArray } from '$lib/db/dbConsts';
 import { releaseFormatArray } from '$lib/db/dbConsts';
 import { dbItemArray } from '$lib/db/dbConsts';
 import {
@@ -9,7 +9,7 @@ import {
 	staffRolesArray,
 } from '$lib/db/dbConsts';
 import { languagesArray } from '$lib/db/dbConsts';
-import type { DisplayPrefs } from '$lib/zod/schema';
+import type { DisplayPrefs } from '$lib/server/zod/schema';
 import type { ColumnType } from 'kysely';
 
 export type DbItem = (typeof dbItemArray)[number];
@@ -41,6 +41,8 @@ export type StaffRole = (typeof staffRolesArray)[number];
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export type UserRole = 'admin' | 'banned' | 'editor' | 'moderator' | 'unverified' | 'user';
+
+export type ReadingStatus = (typeof defaultUserListLabelsArray)[number];
 
 export interface AuthSession {
 	expires_at: Timestamp;

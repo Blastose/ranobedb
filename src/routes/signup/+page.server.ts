@@ -1,5 +1,5 @@
 import { createUser, lucia } from '$lib/server/lucia.js';
-import { signupSchema } from '$lib/zod/schema';
+import { signupSchema } from '$lib/server/zod/schema';
 import { redirect } from '@sveltejs/kit';
 import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';

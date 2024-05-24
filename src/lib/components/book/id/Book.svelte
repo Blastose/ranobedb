@@ -4,7 +4,7 @@
 	import { themeStore } from '$lib/stores/themeStore';
 	import type { User } from 'lucia';
 	import BookModal from './BookModal.svelte';
-	import type { userListBookSchema } from '$lib/zod/schema';
+	import type { userListBookSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import Description from '$lib/components/book/Description.svelte';
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';

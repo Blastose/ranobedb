@@ -1,4 +1,4 @@
-import { loginSchema } from '$lib/zod/schema';
+import { loginSchema } from '$lib/server/zod/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { getUser, lucia } from '$lib/server/lucia';
 import { superValidate, message } from 'sveltekit-superforms';

@@ -12,22 +12,8 @@ import { languagesArray } from '$lib/db/dbConsts';
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { defaultLangPrio } from '$lib/server/db/dbHelpers';
+import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 dayjs.extend(customParseFormat);
-
-export const defaultUserListLabelsArray = [
-	'Reading',
-	'Finished',
-	'Plan to read',
-	'Stalled',
-	'Dropped',
-] as const;
-export type ReadingStatus = (typeof defaultUserListLabelsArray)[number];
-export const defaultUserListLabelsMap = new Map<ReadingStatus, number>();
-export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) => {
-	defaultUserListLabelsMap.set(v, index + 1);
-	return { id: index + 1, label: v };
-});
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const zUsername = z
@@ -325,11 +311,6 @@ export const displayPrefsSchema = z.object({
 	names: z.enum(['romaji', 'native'] as const),
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
-export const defaultDisplayPrefs: DisplayPrefs = {
-	names: 'romaji',
-	title_prefs: defaultLangPrio,
-};
-// console.log(defaultDisplayPrefs);
 
 export const usernameSchema = z.object({ username: zUsername, password: zPasswordEntry });
 export const passwordSchema = z.object({

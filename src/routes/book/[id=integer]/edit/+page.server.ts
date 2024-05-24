@@ -1,6 +1,6 @@
 import { DBBookActions } from '$lib/server/db/books/actions.js';
 import { DBBooks } from '$lib/server/db/books/books';
-import { bookSchema, revisionSchema } from '$lib/zod/schema.js';
+import { bookSchema, revisionSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';

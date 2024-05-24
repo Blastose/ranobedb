@@ -1,5 +1,5 @@
 import { DBBookActions } from '$lib/server/db/books/actions';
-import { bookSchema } from '$lib/zod/schema.js';
+import { bookSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';

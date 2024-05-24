@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { seriesSchema } from '$lib/zod/schema';
+	import type { seriesSchema } from '$lib/server/zod/schema';
 	import ComboboxInput from '../ComboboxInput.svelte';
 
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';

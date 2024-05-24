@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { publisherRelTypeArray } from '$lib/db/dbConsts';
-	import type { publisherSchema } from '$lib/zod/schema';
+	import type { publisherSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import ComboboxInput from '../ComboboxInput.svelte';
 

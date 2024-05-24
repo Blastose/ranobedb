@@ -2,7 +2,7 @@
 	import SidebarListItem from '$lib/components/layout/sidebar/SidebarListItem.svelte';
 	import { page } from '$app/stores';
 	import UsernameForm from './UsernameForm.svelte';
-	import type { displayPrefsSchema, passwordSchema, usernameSchema } from '$lib/zod/schema';
+	import type { displayPrefsSchema, passwordSchema, usernameSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import PasswordForm from './PasswordForm.svelte';
 	import DisplayPrefsForm from './DisplayPrefsForm.svelte';

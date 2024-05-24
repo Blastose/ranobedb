@@ -3,7 +3,7 @@ import { sql, Kysely, PostgresDialect } from 'kysely';
 import type { User } from 'lucia';
 import dotenv from 'dotenv';
 import pkg from 'pg';
-import { defaultDisplayPrefs } from '$lib/zod/schema';
+import { defaultDisplayPrefs } from '$lib/db/dbConsts';
 const { Pool } = pkg;
 
 dotenv.config({ path: '.env.testing' });

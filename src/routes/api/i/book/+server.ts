@@ -2,7 +2,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { db } from '$lib/server/db/db';
 import type { Expression, SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
-import { searchNameSchema } from '$lib/zod/schema';
+import { searchNameSchema } from '$lib/server/zod/schema';
 import { zod } from 'sveltekit-superforms/adapters';
 import { withBookTitleCte } from '$lib/server/db/books/books';
 

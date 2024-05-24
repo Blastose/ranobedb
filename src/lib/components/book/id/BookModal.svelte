@@ -3,7 +3,7 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { fade, fly } from 'svelte/transition';
 	import type { BookR } from '$lib/server/db/books/books';
-	import { defaultUserListLabelsArray, type userListBookSchema } from '$lib/zod/schema';
+	import type { userListBookSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import { superForm } from 'sveltekit-superforms';
 	import TextField from '$lib/components/form/TextField.svelte';
@@ -11,6 +11,7 @@
 	import { tick } from 'svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import SelectField from '$lib/components/form/SelectField.svelte';
+	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 
 	export let book: BookR;
 	export let imageBgStyle: string;

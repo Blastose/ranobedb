@@ -1,4 +1,4 @@
-import type { staffSchema } from '$lib/zod/schema';
+import type { staffSchema } from '$lib/server/zod/schema';
 import type { Infer } from 'sveltekit-superforms';
 import type { User } from 'lucia';
 import { addChange } from '../change/change';

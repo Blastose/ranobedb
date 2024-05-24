@@ -4,7 +4,7 @@
 	import SelectField from '../SelectField.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import BookStaffInput from './BookStaffInput.svelte';
-	import type { bookSchema } from '$lib/zod/schema';
+	import type { bookSchema } from '$lib/server/zod/schema';
 	import { languageNames, languagesArray } from '$lib/db/dbConsts';
 
 	export let form: SuperForm<Infer<typeof bookSchema>, App.Superforms.Message>;

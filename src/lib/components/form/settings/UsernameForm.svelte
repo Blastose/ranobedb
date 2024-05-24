@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { usernameSchema } from '$lib/zod/schema';
+	import type { usernameSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import TextField from '../TextField.svelte';

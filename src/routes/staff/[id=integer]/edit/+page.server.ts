@@ -1,4 +1,4 @@
-import { revisionSchema, staffSchema } from '$lib/zod/schema.js';
+import { revisionSchema, staffSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';

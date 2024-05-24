@@ -1,4 +1,4 @@
-import type { publisherSchema } from '$lib/zod/schema';
+import type { publisherSchema } from '$lib/server/zod/schema';
 import type { Infer } from 'sveltekit-superforms';
 import { RanobeDB } from '../db';
 import type { User } from 'lucia';

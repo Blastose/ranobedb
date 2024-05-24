@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { releaseTypeArray } from '$lib/db/dbConsts';
-	import type { releaseSchema } from '$lib/zod/schema';
+	import type { releaseSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import ComboboxInput from '../ComboboxInput.svelte';
 
