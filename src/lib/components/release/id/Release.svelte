@@ -1,4 +1,5 @@
 <script lang="ts">
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import DBItemShell from '$lib/components/layout/db/DBItemShell.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
@@ -64,7 +65,7 @@
 				{#each release.publishers as publisher}
 					<p>
 						<a class="link" href="/publisher/{publisher.id}"
-							>{publisher.name} - {publisher.publisher_type}</a
+							><NameDisplay obj={publisher} /> - {publisher.publisher_type}</a
 						>
 					</p>
 				{/each}

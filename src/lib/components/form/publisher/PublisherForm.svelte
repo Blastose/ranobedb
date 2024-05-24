@@ -10,6 +10,7 @@
 	import type { User } from 'lucia';
 	import type { PublisherEdit } from '$lib/server/db/publishers/publishers';
 	import PublisherRelInput from './PublisherRelInput.svelte';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let publisher: PublisherEdit | undefined;
 	export let publisherForm: SuperValidated<Infer<typeof publisherSchema>>;
@@ -34,7 +35,9 @@
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if publisher}
-		<h1 class="font-bold text-xl">Editing {publisher.name ?? 'publisher'}</h1>
+		<h1 class="font-bold text-xl">
+			Editing <NameDisplay obj={publisher} fallback={'publisher'} />
+		</h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add publisher</h1>
 	{/if}

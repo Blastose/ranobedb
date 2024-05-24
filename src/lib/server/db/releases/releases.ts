@@ -27,7 +27,7 @@ export class DBReleases {
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher_type']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type']),
 				).as('publishers'),
 			]);
 	}
@@ -43,7 +43,7 @@ export class DBReleases {
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -92,7 +92,7 @@ export class DBReleases {
 							'publisher.id',
 						)
 						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -145,7 +145,7 @@ export class DBReleases {
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -195,7 +195,7 @@ export class DBReleases {
 							'publisher.id',
 						)
 						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
