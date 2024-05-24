@@ -23,7 +23,13 @@ async function getStaffByName(name: string, nameAsNumber: number) {
 			return eb.or(ors);
 		})
 		.where('staff.hidden', '=', false)
-		.select(['staff_alias.name', 'staff_alias.id', 'staff_alias.staff_id'])
+		.select([
+			'staff_alias.name',
+			'staff_alias.id',
+			'staff_alias.staff_id',
+			'staff_alias.romaji',
+			'staff_alias.id as aid',
+		])
 		.limit(16)
 		.execute();
 }

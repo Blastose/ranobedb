@@ -1,6 +1,8 @@
 <script lang="ts">
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { staffRolesArray } from '$lib/db/dbConsts';
 	import type { bookSchema } from '$lib/server/zod/schema';
+	import type { ApiStaff } from '../../../../routes/api/i/staff/+server';
 	import ComboboxInput from '../ComboboxInput.svelte';
 
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
@@ -14,12 +16,13 @@
 		$values = $values;
 	}
 
-	function handleAddStaff(staff: { id: number; name: string; alt_id?: number }) {
+	function handleAddStaff(staff: ApiStaff[number]) {
 		$values.push({
 			name: staff.name,
+			romaji: staff.romaji,
 			note: '',
-			role_type: 'artist',
-			staff_alias_id: staff.alt_id ?? staff.id,
+			role_type: 'author',
+			staff_alias_id: staff.aid,
 			staff_id: staff.id,
 		});
 		$values = $values;
@@ -36,7 +39,8 @@
 	{#each $values as staff, i}
 		<div class="flex flex-col gap-2 flex-wrap">
 			<a class="link w-fit" target="_blank" rel="noreferrer" href="/staff/{staff.staff_id}"
-				><span class="text-sm">#{staff.staff_id}:</span> {staff.name}</a
+				><span class="text-sm">#{staff.staff_id}:</span>
+				<NameDisplay obj={{ name: staff.name ?? '', romaji: staff.romaji ?? '' }} /></a
 			>
 			<label class="flex gap-2 items-center"
 				><span>Role: </span>

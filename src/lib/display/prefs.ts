@@ -1,4 +1,4 @@
-import type { DisplayPrefs } from '$lib/server/zod/schema';
+import type { DisplayPrefs, Nullish } from '$lib/server/zod/schema';
 import { getContext } from 'svelte';
 import type { Writable } from 'svelte/store';
 
@@ -8,11 +8,11 @@ export function getDisplayPrefsContext() {
 
 type ReleaseTitle = {
 	title: string;
-	romaji: string | null;
+	romaji?: Nullish<string>;
 };
 type Name = {
 	name: string;
-	romaji: string | null;
+	romaji?: Nullish<string>;
 };
 export type NameDisplay = ReleaseTitle | Name;
 export function getNameDisplay(params: { obj: NameDisplay; prefs: DisplayPrefs['names'] }): string {
@@ -23,7 +23,7 @@ export function getNameDisplay(params: { obj: NameDisplay; prefs: DisplayPrefs['
 		name = params.obj.title;
 	}
 	if (params.prefs === 'romaji') {
-		return params.obj.romaji ?? name;
+		return params.obj.romaji || name;
 	} else if (params.prefs === 'native') {
 		return name;
 	}

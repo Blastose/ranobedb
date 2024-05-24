@@ -116,6 +116,7 @@ export const bookSchema = z.object({
 					.array(
 						z.object({
 							name: z.string().max(2000).nullish(),
+							romaji: z.string().max(2000).nullish(),
 							staff_id: z.number().max(2000000),
 							staff_alias_id: z.number().max(2000000),
 							role_type: z.enum(staffRolesArray),
