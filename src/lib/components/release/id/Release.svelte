@@ -6,17 +6,20 @@
 	import { languageNames } from '$lib/db/dbConsts';
 	import type { Release } from '$lib/server/db/releases/releases';
 	import type { User } from 'lucia';
+	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 
 	export let release: Release;
 	export let isRevision: boolean;
 	export let user: User | null;
+
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <DBItemShell
 	dbItem="release"
 	{isRevision}
-	name={release.title}
-	subName={release.romaji}
+	name={getNameDisplay({ obj: release, prefs: $displayPrefs.names })}
+	subName={getNameDisplaySub({ obj: release, prefs: $displayPrefs.names })}
 	{user}
 	item={release}
 >

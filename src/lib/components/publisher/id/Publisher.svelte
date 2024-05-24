@@ -9,6 +9,7 @@
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 
 	export let publisher: Publisher;
 	export let isRevision: boolean;
@@ -19,13 +20,15 @@
 	export let totalPages: number;
 
 	$: child_publishers = groupBy(publisher.child_publishers, (item) => item.relation_type);
+
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <DBItemShell
 	dbItem="publisher"
 	{isRevision}
-	name={publisher.name}
-	subName={publisher.romaji}
+	name={getNameDisplay({ obj: publisher, prefs: $displayPrefs.names })}
+	subName={getNameDisplaySub({ obj: publisher, prefs: $displayPrefs.names })}
 	{user}
 	item={publisher}
 >

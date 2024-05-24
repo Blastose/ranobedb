@@ -39,7 +39,7 @@ export function getNameDisplaySub(params: {
 	} else {
 		name = params.obj.title;
 	}
-	if (params.obj.romaji === name) {
+	if (getNameDisplay(params) === name) {
 		return '';
 	}
 	if (params.prefs === 'romaji') {

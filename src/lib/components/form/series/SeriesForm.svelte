@@ -34,7 +34,7 @@
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>
 
-<SuperDebug data={$form} />
+<!-- <SuperDebug data={$form} /> -->
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if series}
