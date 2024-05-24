@@ -3,6 +3,7 @@
 	import type { releaseSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import ComboboxInput from '../ComboboxInput.svelte';
+	import type { ApiBook } from '../../../../routes/api/i/book/+server';
 
 	export let form: SuperForm<Infer<typeof releaseSchema>, App.Superforms.Message>;
 
@@ -12,11 +13,11 @@
 		$values = $values;
 	}
 
-	function handleAddBook(book: { id: number; name: string }) {
+	function handleAddBook(book: ApiBook[number]) {
 		$values.push({
 			title: book.name,
 			id: book.id,
-			romaji: '',
+			romaji: book.romaji,
 		});
 		$values = $values;
 	}

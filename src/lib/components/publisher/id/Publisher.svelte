@@ -8,6 +8,7 @@
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let publisher: Publisher;
 	export let isRevision: boolean;
@@ -45,7 +46,7 @@
 					<h3 class="font-semibold capitalize">{key}:</h3>
 					{#each publishers as publisher, index}
 						<span>
-							<a class="link" href="/publisher/{publisher.id}">{publisher.name}</a
+							<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a
 							>{#if index < publishers.length - 1},{/if}
 						</span>
 					{/each}

@@ -28,7 +28,7 @@ async function getSeriesByTitle(title: string, titleAsNumber: number) {
 		.limit(16)
 		.execute();
 }
-export type ApiBook = Awaited<ReturnType<typeof getSeriesByTitle>>;
+export type ApiSeries = Awaited<ReturnType<typeof getSeriesByTitle>>;
 
 export const GET: RequestHandler = async ({ url }) => {
 	const form = await superValidate(url.searchParams, zod(searchNameSchema));
