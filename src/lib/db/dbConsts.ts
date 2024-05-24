@@ -186,4 +186,5 @@ export const defaultLangPrio: LanguagePriority[] = [
 export const defaultDisplayPrefs: DisplayPrefs = {
 	names: 'romaji',
 	title_prefs: defaultLangPrio,
+	descriptions: 'en',
 };

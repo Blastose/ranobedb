@@ -7,6 +7,9 @@
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/stores';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { defaultDisplayPrefs } from '$lib/db/dbConsts';
 
 	onNavigate((navigation) => {
 		// if (!document.startViewTransition) return;
@@ -48,6 +51,10 @@
 		addToast({ data: { title: $flash.message, type: $flash.type } });
 		$flash = undefined;
 	}
+
+	const displayPrefs = writable();
+	$: displayPrefs.set(data.user?.display_prefs ?? defaultDisplayPrefs);
+	setContext('displayPrefs', displayPrefs);
 </script>
 
 <svelte:document on:keydown={handleKeyDown} />

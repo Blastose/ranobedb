@@ -4,6 +4,7 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TitlePrefsInput from './TitlePrefsInput.svelte';
 	import SelectField from '../SelectField.svelte';
+	import SubmitButton from '../SubmitButton.svelte';
 
 	export let displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
 
@@ -13,8 +14,6 @@
 	$: if (!$delayed && $message) {
 		addToast({ data: { title: $message.text, type: $message.type } });
 	}
-
-	console.log($form);
 </script>
 
 <form method="post" action="?/displayprefs" class="flex flex-col gap-4 max-w-lg" use:enhance>
@@ -23,7 +22,7 @@
 	</div>
 
 	<div>
-		<h3 class="text-lg font-bold">Staff and publisher names</h3>
+		<h3 class="text-lg font-bold">Release titles, staff and publisher names</h3>
 		<div class="w-fit">
 			<SelectField
 				form={sForm}
@@ -39,6 +38,23 @@
 			/>
 		</div>
 	</div>
+	<div>
+		<h3 class="text-lg font-bold">Book descriptions</h3>
+		<div class="w-fit">
+			<SelectField
+				form={sForm}
+				dropdownOptions={[
+					{ display: 'English', value: 'en' },
+					{ display: 'Japanese', value: 'ja' },
+				]}
+				field="descriptions"
+				label="Descriptions"
+				selectedValue={$form.descriptions}
+				resetPadding={true}
+				showRequiredSymbolIfRequired={false}
+			/>
+		</div>
+	</div>
 
-	<button type="submit" class="primary-btn">Save preferences</button>
+	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Save preferences'} />
 </form>

@@ -309,6 +309,7 @@ const zLanguagePrio = z.object({
 export const displayPrefsSchema = z.object({
 	title_prefs: z.array(zLanguagePrio).min(1).max(10),
 	names: z.enum(['romaji', 'native'] as const),
+	descriptions: z.enum(['en', 'ja'] as const),
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
 

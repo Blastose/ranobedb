@@ -160,6 +160,7 @@ export class DBBooks {
 									.select([
 										'book_staff_alias.role_type',
 										'staff_alias.name',
+										'staff_alias.romaji',
 										'staff_alias.staff_id',
 										'staff_alias.id as staff_alias_id',
 										'book_staff_alias.note',
@@ -276,6 +277,7 @@ export class DBBooks {
 									.select([
 										'book_staff_alias_hist.role_type',
 										'staff_alias.name',
+										'staff_alias.romaji',
 										'staff_alias.staff_id',
 										'staff_alias.id as staff_alias_id',
 										'book_staff_alias_hist.note',
@@ -388,6 +390,7 @@ export class DBBooks {
 									.select([
 										'book_staff_alias.role_type',
 										'staff_alias.name',
+										'staff_alias.romaji',
 										'staff_alias.staff_id',
 										'staff_alias.id as staff_alias_id',
 										'book_staff_alias.note',
@@ -460,6 +463,7 @@ export class DBBooks {
 									.select([
 										'book_staff_alias_hist.role_type',
 										'staff_alias.name',
+										'staff_alias.romaji',
 										'staff_alias.staff_id',
 										'staff_alias.id as staff_alias_id',
 										'book_staff_alias_hist.note',

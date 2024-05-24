@@ -15,6 +15,8 @@
 	import BookCarousel from '../BookCarousel.svelte';
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
+	import { getDisplayPrefsContext } from '$lib/display/prefs';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -28,6 +30,8 @@
 			? `background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%), url(${imageUrl});`
 			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%), url(${imageUrl});`
 		: '';
+
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
@@ -84,8 +88,10 @@
 
 				<section class="pt-4">
 					<h2 class="font-bold text-lg">Description</h2>
-					{#if book.description_ja}
-						<Description description={book.description_ja} />
+					{#if $displayPrefs.descriptions === 'en'}
+						<Description description={(book.description || book.description_ja) ?? ''} />
+					{:else if $displayPrefs.descriptions === 'ja'}
+						<Description description={book.description_ja || book.description} />
 					{/if}
 				</section>
 			</div>
@@ -113,7 +119,7 @@
 										class="flex flex-col link-box px-4 py-2 rounded-md"
 										href="/staff/{staff.staff_id}"
 									>
-										<span>{staff.name}</span>
+										<span><NameDisplay obj={staff} /></span>
 										<span class="sub-text">{staff.role_type}</span>
 										<span class="sub-text text-sm">{staff.note}</span>
 									</a>
@@ -131,9 +137,8 @@
 				{#each book.releases as release}
 					<p>
 						<a class="link" href="/release/{release.id}"
-							>{release.title} - {release.lang} - {release.format} - {new DateNumber(
-								release.release_date,
-							).getDateFormatted()}</a
+							><NameDisplay obj={release} /> - {release.lang} - {release.format}
+							- {new DateNumber(release.release_date).getDateFormatted()}</a
 						>
 					</p>
 				{/each}

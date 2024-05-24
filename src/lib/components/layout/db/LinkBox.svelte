@@ -1,10 +1,12 @@
 <script lang="ts">
-	export let display: string;
+	export let display: string | undefined = undefined;
 	export let href: string;
 </script>
 
 <div class="link-box">
-	<a {href}>{display}</a>
+	<a {href}
+		>{#if display}{display}{:else}<slot />{/if}</a
+	>
 </div>
 
 <style>
