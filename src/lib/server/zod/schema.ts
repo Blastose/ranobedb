@@ -13,6 +13,7 @@ import { z } from 'zod';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
+
 dayjs.extend(customParseFormat);
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
@@ -307,8 +308,10 @@ const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),
 	romaji: z.boolean(),
 });
+export type LanguagePriority = z.infer<typeof zLanguagePrio>;
+
 export const displayPrefsSchema = z.object({
-	title_prefs: z.array(zLanguagePrio).min(1).max(10),
+	title_prefs: z.array(zLanguagePrio).min(1).max(4),
 	names: z.enum(['romaji', 'native'] as const),
 	descriptions: z.enum(['en', 'ja'] as const),
 });
@@ -321,3 +324,27 @@ export const passwordSchema = z.object({
 });
 
 export type Nullish<T> = T | null | undefined;
+
+/*
+update   auth_user
+set display_prefs = '{
+  "title_prefs": [
+    { "lang": "ja", "romaji": true, "official": true },
+    { "lang": "en", "romaji": true, "official": true },
+    { "lang": "en", "romaji": true, "official": true }
+  ],
+  "names": "romaji",
+  "descriptions": "en"
+}'::jsonb;
+
+ALTER TABLE ONLY auth_user ALTER COLUMN 
+display_prefs SET DEFAULT '{
+  "title_prefs": [
+    { "lang": "ja", "romaji": true, "official": true },
+    { "lang": "en", "romaji": true, "official": true },
+    { "lang": "en", "romaji": true, "official": true }
+  ],
+  "names": "romaji",
+  "descriptions": "en"
+}'::jsonb;
+*/

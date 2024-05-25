@@ -1,4 +1,3 @@
-import type { LanguagePriority } from '$lib/server/db/dbHelpers';
 import type {
 	ReadingStatus,
 	Language,
@@ -6,6 +5,7 @@ import type {
 	SeriesRelType,
 } from '$lib/server/db/dbTypes';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
+import type { LanguagePriority } from '$lib/server/zod/schema';
 
 export const languagesArray = [
 	'ar',

@@ -2,7 +2,7 @@ import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
-import { type LanguagePriority } from '../dbHelpers';
+import { type LanguagePriority } from '$lib/server/zod/schema';
 import { defaultLangPrio } from '$lib/db/dbConsts';
 import type { User } from 'lucia';
 import { withSeriesTitleCte } from '../series/series';
