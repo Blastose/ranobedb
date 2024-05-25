@@ -1,11 +1,16 @@
 <script lang="ts">
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 	import type { Change } from '$lib/server/db/change/change';
+	import type { DbItem } from '$lib/server/db/dbTypes';
 
 	export let changes: Change[];
 	export let title: string;
 	export let prefix: string;
-	export let buildRevisionLink: (item_id: number, revision: number) => string;
+	export let dbItem: DbItem;
+
+	function buildRevisionLink(item_id: number, revision: number) {
+		return `/${dbItem}/${item_id}/revision/${revision}`;
+	}
 </script>
 
 <div class="flex flex-col gap-4">
