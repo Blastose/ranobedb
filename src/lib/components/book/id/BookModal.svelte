@@ -12,6 +12,7 @@
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import SelectField from '$lib/components/form/SelectField.svelte';
 	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let book: BookR;
 	export let imageBgStyle: string;
@@ -93,7 +94,7 @@
 				<div class="flex flex-col gap-2 -mt-12 z-[9999999] relative">
 					<div class="flex flex-col">
 						<h2 use:melt={$title} class="font-medium">{modalTitle}</h2>
-						<h3 class="text-xl font-bold">{book.title}</h3>
+						<h3 class="text-xl font-bold"><TitleDisplay obj={book} /></h3>
 					</div>
 
 					<form

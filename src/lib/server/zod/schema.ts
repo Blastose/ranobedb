@@ -235,6 +235,8 @@ export const releaseSchema = z.object({
 			z.object({
 				id: z.number().max(200000),
 				title: z.string().nullish(),
+				romaji: z.string().nullish(),
+				lang: z.enum(languagesArray).nullish(),
 				rtype: z.enum(releaseTypeArray),
 			}),
 		)
@@ -265,6 +267,7 @@ export const seriesSchema = z.object({
 			z.object({
 				title: z.string().nullish(),
 				romaji: z.string().nullish(),
+				lang: z.enum(languagesArray).nullish(),
 				id: z.number().max(100000),
 				sort_order: z.number().max(2000),
 			}),
@@ -275,6 +278,7 @@ export const seriesSchema = z.object({
 			z.object({
 				title: z.string().nullish(),
 				romaji: z.string().nullish(),
+				lang: z.enum(languagesArray).nullish(),
 				id: z.number().max(100000),
 				relation_type: z.enum(seriesRelTypeArray),
 			}),
@@ -324,27 +328,3 @@ export const passwordSchema = z.object({
 });
 
 export type Nullish<T> = T | null | undefined;
-
-/*
-update   auth_user
-set display_prefs = '{
-  "title_prefs": [
-    { "lang": "ja", "romaji": true, "official": true },
-    { "lang": "en", "romaji": true, "official": true },
-    { "lang": "en", "romaji": true, "official": true }
-  ],
-  "names": "romaji",
-  "descriptions": "en"
-}'::jsonb;
-
-ALTER TABLE ONLY auth_user ALTER COLUMN 
-display_prefs SET DEFAULT '{
-  "title_prefs": [
-    { "lang": "ja", "romaji": true, "official": true },
-    { "lang": "en", "romaji": true, "official": true },
-    { "lang": "en", "romaji": true, "official": true }
-  ],
-  "names": "romaji",
-  "descriptions": "en"
-}'::jsonb;
-*/

@@ -34,7 +34,7 @@ export class DBReleases {
 
 	getRelease(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release')
 			.selectAll('release')
 			.select((eb) => [
@@ -59,6 +59,7 @@ export class DBReleases {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
+							'cte_book.lang',
 						]),
 				).as('books'),
 			])
@@ -67,7 +68,7 @@ export class DBReleases {
 
 	getReleaseHist(options: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release_hist')
 			.innerJoin('change', 'change.id', 'release_hist.change_id')
 			.select([
@@ -108,6 +109,7 @@ export class DBReleases {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
+							'cte_book.lang',
 						]),
 				).as('books'),
 			])
@@ -124,7 +126,7 @@ export class DBReleases {
 
 	getReleaseEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release')
 			.select([
 				'release.id',
@@ -161,6 +163,7 @@ export class DBReleases {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
+							'cte_book.lang',
 							'release_book.rtype',
 						]),
 				).as('books'),
@@ -170,7 +173,7 @@ export class DBReleases {
 
 	getReleaseHistEdit(params: { id: number; revision: number }) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release_hist')
 			.innerJoin('change', 'change.id', 'release_hist.change_id')
 			.select([
@@ -211,6 +214,7 @@ export class DBReleases {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
+							'cte_book.lang',
 							'release_book_hist.rtype',
 						]),
 				).as('books'),

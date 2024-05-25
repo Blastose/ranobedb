@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Book } from '$lib/server/db/books/books';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import TitleDisplay from '../display/TitleDisplay.svelte';
 
 	export let book: Book;
 </script>
@@ -20,7 +21,9 @@
 			<div />
 		{/if}
 		<h4 class="flex flex-col gap-2">
-			<a class="line-clamp-2 font-bold text-lg" href="/book/{book.id}">{book.title}</a>
+			<a class="line-clamp-2 font-bold text-lg" href="/book/{book.id}"
+				><TitleDisplay obj={book} /></a
+			>
 
 			<p class="line-clamp-4 whitespace-pre-wrap">
 				{book.description_ja ?? ''}

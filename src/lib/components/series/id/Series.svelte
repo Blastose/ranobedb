@@ -64,10 +64,5 @@
 		{:else}
 			<p class="italic">None</p>
 		{/if}
-		<!-- {#each series.books as book, index}
-			<p>#{index + 1}. <a class="link" href="/book/{book.id}">{book.title}</a></p>
-		{:else}
-			<p class="italic">None</p>
-		{/each} -->
 	</section>
 </DBItemShell>

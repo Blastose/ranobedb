@@ -14,6 +14,7 @@
 	import ReleaseDateInput from './ReleaseDateInput.svelte';
 	import { languageNames, languagesArray, releaseFormatArray } from '$lib/db/dbConsts';
 	import SelectField from '../SelectField.svelte';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let release: ReleaseEdit | undefined;
 	export let releaseForm: SuperValidated<Infer<typeof releaseSchema>>;
@@ -38,7 +39,7 @@
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if release}
-		<h1 class="font-bold text-xl">Editing {release.title ?? 'release'}</h1>
+		<h1 class="font-bold text-xl">Editing <NameDisplay obj={release} /></h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add release</h1>
 	{/if}

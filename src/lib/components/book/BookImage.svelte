@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import type { Language } from '$lib/server/db/dbTypes';
+	import TitleDisplay from '../display/TitleDisplay.svelte';
 
 	export let book: {
 		title: string;
+		title_orig?: string;
+		romaji?: string | null;
+		romaji_orig?: string | null;
+		lang?: Language;
 		id: number;
 		image: {
 			width: number;
@@ -25,5 +31,16 @@
 			loading="lazy"
 		/>
 	</div>
-	<p class="line-clamp-2">{book.title}</p>
+	<p class="line-clamp-2">
+		<TitleDisplay
+			obj={{
+				lang: book.lang ?? 'en',
+				romaji: book.romaji ?? null,
+				romaji_orig: book.romaji_orig ?? null,
+				title: book.title,
+				title_orig: book.title_orig ?? '',
+			}}
+			fallback={book.title}
+		/>
+	</p>
 </a>

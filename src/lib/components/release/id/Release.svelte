@@ -7,6 +7,7 @@
 	import type { Release } from '$lib/server/db/releases/releases';
 	import type { User } from 'lucia';
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let release: Release;
 	export let isRevision: boolean;
@@ -82,7 +83,7 @@
 			<div>
 				{#each release.books as book}
 					<p>
-						<a class="link" href="/book/{book.id}">{book.title}</a>
+						<a class="link" href="/book/{book.id}"><TitleDisplay obj={book} /></a>
 					</p>
 				{/each}
 			</div>

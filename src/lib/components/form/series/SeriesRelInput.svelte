@@ -4,6 +4,8 @@
 	import ComboboxInput from '../ComboboxInput.svelte';
 
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
+	import type { ApiSeries } from '../../../../routes/api/i/series/+server';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
 
@@ -13,11 +15,12 @@
 		$values = $values;
 	}
 
-	function handleAddSeries(series: { id: number; name: string }) {
+	function handleAddSeries(series: ApiSeries[number]) {
 		$values.push({
 			title: series.name,
 			id: series.id,
-			romaji: '',
+			romaji: series.romaji,
+			lang: series.lang,
 			relation_type: 'parent story',
 		});
 		$values = $values;
@@ -36,7 +39,16 @@
 		{#each $values as series, i}
 			<div class="flex flex-col gap-2 flex-wrap">
 				<a class="link w-fit" target="_blank" rel="noreferrer" href="/series/{series.id}"
-					><span class="text-sm">#{series.id}:</span> {series.title}</a
+					><span class="text-sm">#{series.id}:</span>
+					<TitleDisplay
+						obj={{
+							lang: series.lang ?? 'en',
+							romaji: series.romaji ?? '',
+							romaji_orig: null,
+							title: series.title ?? '',
+							title_orig: '',
+						}}
+					/></a
 				>
 				<label class="flex gap-2 items-center"
 					><span>Relation type: </span>

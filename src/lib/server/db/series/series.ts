@@ -173,6 +173,7 @@ export class DBSeries {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
+							'cte_book.lang',
 							'series_book.sort_order',
 						])
 						.select((eb) =>
@@ -238,6 +239,7 @@ export class DBSeries {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
+							'cte_book.lang',
 							'series_book_hist.sort_order',
 						])
 						.select((eb) =>
@@ -281,8 +283,8 @@ export class DBSeries {
 
 	getSeriesOneEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
-			.with('cte_series', withSeriesTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_series')
 			.select([
 				'cte_series.id',
@@ -310,6 +312,7 @@ export class DBSeries {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
+							'cte_book.lang',
 							'series_book.sort_order',
 						])
 						.orderBy('sort_order asc'),
@@ -377,6 +380,7 @@ export class DBSeries {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
+							'cte_book.lang',
 							'series_book_hist.sort_order',
 						])
 						.orderBy('sort_order asc'),

@@ -15,8 +15,9 @@
 	import BookCarousel from '../BookCarousel.svelte';
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
-	import { getDisplayPrefsContext } from '$lib/display/prefs';
+	import { getDisplayPrefsContext, getTitleDisplay, getTitleDisplaySub } from '$lib/display/prefs';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let book: BookR;
 	export let theme: Theme;
@@ -73,8 +74,10 @@
 			</div>
 
 			<div>
-				<h1 class="font-bold text-3xl sm:text-4xl">{book.title}</h1>
-				<p class="opacity-60">{book.romaji_orig ?? ''}</p>
+				<h1 class="font-bold text-3xl sm:text-4xl">
+					<TitleDisplay obj={book} />
+				</h1>
+				<p class="sub-text"><TitleDisplay obj={book} type="sub" /></p>
 
 				{#if !isRevision}
 					<section class="pt-4">
@@ -149,7 +152,9 @@
 			<h2 class="font-bold text-lg">Series</h2>
 			<div class="flex flex-col gap-2">
 				{#each book.series as series}
-					<a class="link w-fit font-bold" href="/series/{series.id}">{series.title}</a>
+					<a class="link w-fit font-bold" href="/series/{series.id}"
+						><TitleDisplay obj={series} /></a
+					>
 					<BookCarousel>
 						{#each series.books as other_book (other_book.id)}
 							<div class="carousel-item">

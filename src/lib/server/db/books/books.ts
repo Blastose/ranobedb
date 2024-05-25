@@ -190,6 +190,7 @@ export class DBBooks {
 										'cte_book_2.title_orig',
 										'cte_book_2.romaji',
 										'cte_book_2.romaji_orig',
+										'cte_book_2.lang',
 									])
 									.select((eb) =>
 										jsonObjectFrom(
@@ -205,7 +206,14 @@ export class DBBooks {
 									.orderBy('series_book.sort_order asc'),
 							).as('books'),
 						)
-						.select(['cte_series.title', 'cte_series.romaji', 'cte_series.id']),
+						.select([
+							'cte_series.title',
+							'cte_series.title_orig',
+							'cte_series.romaji',
+							'cte_series.romaji_orig',
+							'cte_series.id',
+							'cte_series.lang',
+						]),
 				).as('series'),
 			])
 			.where('cte_book.id', '=', id);
@@ -307,6 +315,7 @@ export class DBBooks {
 										'cte_book_2.title_orig',
 										'cte_book_2.romaji',
 										'cte_book_2.romaji_orig',
+										'cte_book_2.lang',
 									])
 									.select((eb) =>
 										jsonObjectFrom(
@@ -322,7 +331,14 @@ export class DBBooks {
 									.orderBy('series_book.sort_order asc'),
 							).as('books'),
 						)
-						.select(['cte_series.title', 'cte_series.romaji', 'cte_series.id']),
+						.select([
+							'cte_series.title',
+							'cte_series.title_orig',
+							'cte_series.romaji',
+							'cte_series.romaji_orig',
+							'cte_series.id',
+							'cte_series.lang',
+						]),
 				).as('series'),
 			])
 			.where('change.item_id', '=', id)

@@ -14,6 +14,7 @@
 	import SeriesRelInput from './SeriesRelInput.svelte';
 	import SelectField from '../SelectField.svelte';
 	import { seriesStatusArray } from '$lib/db/dbConsts';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let series: SeriesEdit | undefined;
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
@@ -38,7 +39,7 @@
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if series}
-		<h1 class="font-bold text-xl">Editing {series.title ?? 'series'}</h1>
+		<h1 class="font-bold text-xl">Editing <TitleDisplay obj={series} /></h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add series</h1>
 	{/if}

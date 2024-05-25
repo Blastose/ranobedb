@@ -1,3 +1,4 @@
+import type { Language } from '$lib/server/db/dbTypes';
 import type { DisplayPrefs, Nullish } from '$lib/server/zod/schema';
 import { getContext } from 'svelte';
 import type { Writable } from 'svelte/store';
@@ -48,4 +49,36 @@ export function getNameDisplaySub(params: {
 		return params.obj.romaji ?? '';
 	}
 	return '';
+}
+
+export type TitleDisplay = {
+	title: string;
+	title_orig: string;
+	romaji: string | null;
+	romaji_orig: string | null;
+	lang: Language;
+};
+export function getTitleDisplay(params: {
+	obj: TitleDisplay;
+	prefs: DisplayPrefs['title_prefs'];
+}): string {
+	const langPref = params.prefs.find((v) => v.lang === params.obj.lang);
+	if (!langPref) {
+		return params.obj.title;
+	}
+	if (langPref.romaji) {
+		return params.obj.romaji || params.obj.title;
+	} else {
+		return params.obj.title;
+	}
+}
+export function getTitleDisplaySub(params: {
+	obj: TitleDisplay;
+	prefs: DisplayPrefs['title_prefs'];
+}): string {
+	const mainTitle = getTitleDisplay(params);
+	if (params.obj.title_orig === mainTitle) {
+		return params.obj.romaji_orig || '';
+	}
+	return params.obj.title_orig;
 }

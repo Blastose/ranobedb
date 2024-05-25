@@ -3,12 +3,16 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { quintOut } from 'svelte/easing';
 	import DndItem from './DndItem.svelte';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
+	import type { Language } from '$lib/server/db/dbTypes';
+	import type { Nullish } from '$lib/server/zod/schema';
 
 	export let items: {
 		id: number;
 		sort_order: number;
 		title?: string | null | undefined;
 		romaji?: string | null | undefined;
+		lang?: Nullish<Language>;
 	}[];
 
 	export let remove: (index: number) => void;
@@ -71,7 +75,16 @@
 						<Icon name="drag" />
 					</div>
 					<a target="_blank" rel="noreferrer" href="/book/{item.id}" class="link line-clamp-1"
-						><span class="text-sm">#{item.id}:</span> {item.title}</a
+						><span class="text-sm">#{item.id}:</span>
+						<TitleDisplay
+							obj={{
+								lang: item.lang ?? 'en',
+								romaji: item.romaji ?? '',
+								romaji_orig: null,
+								title: item.title ?? '',
+								title_orig: '',
+							}}
+						/></a
 					>
 					<div class="flex gap-2">
 						<button

@@ -1,25 +1,25 @@
 <script lang="ts">
 	import {
 		getDisplayPrefsContext,
-		getNameDisplay,
-		getNameDisplaySub,
-		type NameDisplay,
+		getTitleDisplay,
+		getTitleDisplaySub,
+		type TitleDisplay,
 	} from '$lib/display/prefs';
 
-	export let obj: NameDisplay;
+	export let obj: TitleDisplay;
 	export let fallback: string | undefined = undefined;
 	export let type: 'main' | 'sub' = 'main';
 
 	const displayPrefs = getDisplayPrefsContext();
 
-	$: nameDisplay =
+	$: titleDisplay =
 		type === 'main'
-			? getNameDisplay({ obj, prefs: $displayPrefs.names })
-			: getNameDisplaySub({ obj, prefs: $displayPrefs.names });
+			? getTitleDisplay({ obj, prefs: $displayPrefs.title_prefs })
+			: getTitleDisplaySub({ obj, prefs: $displayPrefs.title_prefs });
 </script>
 
-{#if nameDisplay}
-	{nameDisplay}
+{#if titleDisplay}
+	{titleDisplay}
 {:else if fallback}
 	{fallback}
 {/if}
