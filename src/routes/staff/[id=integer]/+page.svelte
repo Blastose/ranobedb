@@ -3,18 +3,19 @@
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
 	import Staff from '$lib/components/staff/id/Staff.svelte';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
-	import { themeStore } from '$lib/stores/themeStore.js';
+	import { getThemeContext } from '$lib/stores/themeStore.js';
 
 	export let data;
 
 	$: staff = data.staff;
 
 	const displayPrefs = getDisplayPrefsContext();
+	const theme = getThemeContext();
 </script>
 
 <PageTitle title={getNameDisplay({ obj: staff, prefs: $displayPrefs.names })} />
 
-<DbRouteShell theme={$themeStore ?? data.theme} imageBgStyle={null}>
+<DbRouteShell theme={$theme} bgImageStyle={null}>
 	<Staff
 		{staff}
 		books={data.books}

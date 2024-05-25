@@ -45,5 +45,12 @@
 		<section>
 			<DisplayPrefsForm {displayPrefsForm} />
 		</section>
+
+		<section>
+			<h3 class="text-lg font-bold">Theme</h3>
+		</section>
+		<section>
+			<h3 class="text-lg font-bold">Page transition animation</h3>
+		</section>
 	{/if}
 </div>

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { BookR } from '$lib/server/db/books/books';
-	import type { Theme } from '$lib/stores/themeStore';
-	import { themeStore } from '$lib/stores/themeStore';
+	import { getBgImageStyle, getThemeContext } from '$lib/stores/themeStore';
 	import type { User } from 'lucia';
 	import BookModal from './BookModal.svelte';
 	import type { userListBookSchema } from '$lib/server/zod/schema';
@@ -15,28 +14,23 @@
 	import BookCarousel from '../BookCarousel.svelte';
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
-	import { getDisplayPrefsContext, getTitleDisplay, getTitleDisplaySub } from '$lib/display/prefs';
+	import { getDisplayPrefsContext } from '$lib/display/prefs';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let book: BookR;
-	export let theme: Theme;
 	export let isRevision: boolean;
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
 
+	const theme = getThemeContext();
 	$: imageUrl = book.image?.filename ? `${PUBLIC_IMAGE_URL}${book.image?.filename}` : null;
-	$: imageBgStyle = book.image?.filename
-		? ($themeStore ?? theme) === 'light'
-			? `background-image: linear-gradient(rgba(242, 242, 242, 0.25) 0%, rgba(242, 242, 242, 1) 75%, rgba(242, 242, 242, 1) 100%), url(${imageUrl});`
-			: `background-image: linear-gradient(rgba(34, 34, 34, 0.7) 0%, rgba(34, 34, 34, 1) 90%, rgba(34, 34, 34, 1) 100%), url(${imageUrl});`
-		: '';
-
+	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
 	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
-	<div class="banner-img {isRevision ? 'h-[128px]' : 'h-[256px]'}" style={imageBgStyle}>
+	<div class="banner-img {isRevision ? 'h-[128px]' : 'h-[256px]'}" style={bgImageStyle}>
 		<div class="blur-image" />
 	</div>
 
@@ -63,7 +57,7 @@
 						<!-- This div is needed to prevent the flex from above because the BookModal component has a portal -->
 						<!-- so it will generate an empty gap space before hydration -->
 						<div class="w-full">
-							<BookModal {userListForm} {book} {imageBgStyle} />
+							<BookModal {userListForm} {book} />
 						</div>
 					{:else}
 						<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}

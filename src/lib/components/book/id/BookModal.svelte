@@ -15,7 +15,6 @@
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let book: BookR;
-	export let imageBgStyle: string;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {
@@ -87,7 +86,7 @@
 				use:melt={$content}
 				class="modal-content-inner no-pt"
 			>
-				<div class="banner-img h-[86px]" style={imageBgStyle}>
+				<div class="banner-img h-[86px]">
 					<div class="blur-image" />
 				</div>
 
@@ -207,20 +206,5 @@
 <style>
 	.modal-content-inner.confirm-modal {
 		max-width: 512px;
-	}
-
-	.blur-image {
-		height: 100%;
-		width: 100%;
-		backdrop-filter: blur(4px);
-	}
-
-	.banner-img {
-		overflow: hidden;
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: 20% 20%;
-		margin-left: calc(-50vw + 50%);
-		margin-right: calc(-50vw + 50%);
 	}
 </style>
