@@ -1,5 +1,5 @@
 <script lang="ts">
-	import History from '$lib/components/history/History.svelte';
+	import HistoryPaged from '$lib/components/history/HistoryPaged.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
 
@@ -16,5 +16,12 @@
 <PageTitle {title} />
 
 <main class="container-rndb">
-	<History {changes} {title} dbItem="release" prefix="r" />
+	<HistoryPaged
+		{changes}
+		{title}
+		dbItem="release"
+		prefix="r"
+		currentPage={data.currentPage}
+		totalPages={data.totalPages}
+	/>
 </main>

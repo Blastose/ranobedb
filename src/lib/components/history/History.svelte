@@ -4,7 +4,7 @@
 	import type { DbItem } from '$lib/server/db/dbTypes';
 
 	export let changes: Change[];
-	export let title: string;
+	export let title: string | undefined = undefined;
 	export let prefix: string;
 	export let dbItem: DbItem;
 
@@ -14,7 +14,9 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	<h1 class="table-title">{title}</h1>
+	{#if title}
+		<h1 class="table-title">{title}</h1>
+	{/if}
 
 	<div class="table-container">
 		<table>
