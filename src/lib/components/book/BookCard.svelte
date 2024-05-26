@@ -2,8 +2,11 @@
 	import type { Book } from '$lib/server/db/books/books';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import TitleDisplay from '../display/TitleDisplay.svelte';
+	import { getDisplayPrefsContext } from '$lib/display/prefs';
 
 	export let book: Book;
+
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <div class="bg-[var(--bg-light1)] dark:bg-[var(--bg-dark1)] p-2 rounded-lg shadow-sm">
@@ -26,7 +29,11 @@
 			>
 
 			<p class="line-clamp-4 whitespace-pre-wrap">
-				{book.description_ja ?? ''}
+				{#if $displayPrefs.descriptions === 'en'}
+					{book.description || book.description_ja}
+				{:else}
+					{book.description_ja || book.description}
+				{/if}
 			</p>
 		</h4>
 	</div>

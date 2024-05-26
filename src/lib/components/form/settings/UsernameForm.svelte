@@ -17,7 +17,7 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" action="?/username" class="flex flex-col gap-2 max-w-lg" use:enhance>
+<form method="post" action="?/username" class="flex flex-col gap-2" use:enhance>
 	<h2 class="font-bold text-lg">Update username</h2>
 
 	<div class="flex flex-col gap-1">

@@ -3,7 +3,8 @@ import type { Nullish } from '$lib/server/zod/schema';
 import { getContext } from 'svelte';
 import { writable } from 'svelte/store';
 
-export type Theme = 'light' | 'dark';
+export const themes = ['light', 'dark'] as const;
+export type Theme = (typeof themes)[number];
 
 function saveThemeToLocalStorageAndDocument(newTheme: Theme) {
 	if (!browser) {

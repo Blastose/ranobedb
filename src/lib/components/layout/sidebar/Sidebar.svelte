@@ -86,6 +86,12 @@
 					text="Sign up"
 					icon="signup"
 				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/settings'}
+					href="/settings"
+					text="Settings"
+					icon="settings"
+				/>
 			</SidebarSection>
 		{/if}
 

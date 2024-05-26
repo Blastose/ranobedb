@@ -73,13 +73,6 @@
 			<nav>
 				<ul class="flex flex-col gap-2">
 					<li>
-						<ProfileItem href="/login" {item} text="Theme">
-							<Icon name="settings" />
-						</ProfileItem>
-					</li>
-
-					<Hr />
-					<li>
 						<ProfileItem href="/login" {item} text="Log in">
 							<Icon name="login" />
 						</ProfileItem>
@@ -87,6 +80,12 @@
 					<li>
 						<ProfileItem href="/signup" {item} text="Sign up">
 							<Icon name="signup" />
+						</ProfileItem>
+					</li>
+					<Hr />
+					<li>
+						<ProfileItem href="/settings" {item} text="Settings">
+							<Icon name="settings" />
 						</ProfileItem>
 					</li>
 				</ul>

@@ -6,6 +6,8 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import PasswordForm from './PasswordForm.svelte';
 	import DisplayPrefsForm from './DisplayPrefsForm.svelte';
+	import ThemeSelect from './ThemeSelect.svelte';
+	import Hr from '$lib/components/layout/Hr.svelte';
 
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
 	export let passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
@@ -31,10 +33,11 @@
 
 	{#if view === 'account' || !view}
 		<h2 class="font-bold text-2xl">Account preferences</h2>
-		<div class="flex flex-col gap-4">
+		<div class="flex flex-col gap-4 max-w-lg">
 			<section>
 				<UsernameForm {usernameForm} />
 			</section>
+			<Hr />
 			<section>
 				<PasswordForm {passwordForm} />
 			</section>
@@ -42,15 +45,17 @@
 	{:else if view === 'display'}
 		<h2 class="font-bold text-2xl">Display preferences</h2>
 
-		<section>
-			<DisplayPrefsForm {displayPrefsForm} />
-		</section>
+		<div class="flex flex-col gap-4 max-w-lg">
+			<section>
+				<h3 class="text-lg font-bold">Theme</h3>
+				<ThemeSelect />
+			</section>
 
-		<section>
-			<h3 class="text-lg font-bold">Theme</h3>
-		</section>
-		<section>
-			<h3 class="text-lg font-bold">Page transition animation</h3>
-		</section>
+			<Hr />
+
+			<section>
+				<DisplayPrefsForm {displayPrefsForm} />
+			</section>
+		</div>
 	{/if}
 </div>

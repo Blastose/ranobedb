@@ -1,17 +1,36 @@
 import { changePassword, changeUsername, getUser, lucia } from '$lib/server/lucia.js';
-import { buildRedirectUrl } from '$lib/utils/url.js';
 import { displayPrefsSchema, passwordSchema, usernameSchema } from '$lib/server/zod/schema.js';
-import { redirect } from '@sveltejs/kit';
 import { Argon2id } from 'oslo/password';
-import { fail, message, setError, superValidate } from 'sveltekit-superforms';
+import {
+	fail,
+	message,
+	setError,
+	superValidate,
+	type Infer,
+	type SuperValidated,
+} from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { db } from '$lib/server/db/db.js';
 const { DatabaseError } = pkg;
 
+type SettingsWithoutUser = {
+	type: 'no-user';
+};
+type SettingsWithUser = {
+	type: 'user';
+	usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
+	passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
+	displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
+	view: 'account' | 'display';
+};
+type SettingsLoad = SettingsWithoutUser | SettingsWithUser;
+
 export const load = async ({ locals, url }) => {
 	if (!locals.user) {
-		redirect(302, buildRedirectUrl(url, '/login'));
+		return {
+			type: 'no-user',
+		} satisfies SettingsLoad;
 	}
 
 	const usernameForm = await superValidate(
@@ -25,11 +44,12 @@ export const load = async ({ locals, url }) => {
 	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod(displayPrefsSchema));
 
 	return {
+		type: 'user',
 		usernameForm,
 		passwordForm,
 		displayPrefsForm,
-		view: url.searchParams.get('view') || 'account',
-	};
+		view: (url.searchParams.get('view') as 'account' | 'display') || 'account',
+	} satisfies SettingsLoad;
 };
 
 export const actions = {

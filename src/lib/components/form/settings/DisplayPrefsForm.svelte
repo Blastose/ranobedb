@@ -16,7 +16,7 @@
 	}
 </script>
 
-<form method="post" action="?/displayprefs" class="flex flex-col gap-4 max-w-lg" use:enhance>
+<form method="post" action="?/displayprefs" class="flex flex-col gap-4" use:enhance>
 	<div>
 		<TitlePrefsInput form={sForm} />
 	</div>

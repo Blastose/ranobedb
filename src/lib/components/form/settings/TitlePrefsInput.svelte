@@ -34,7 +34,7 @@
 	}
 </script>
 
-<section class="flex flex-col gap-2">
+<section>
 	<h3 class="text-lg font-bold">Titles</h3>
 	<div>
 		{#each $values as title, index}
@@ -47,6 +47,8 @@
 				</div>
 				<div>
 					<button
+						class="btn rounded-full"
+						disabled={index === 0}
 						on:click={() => {
 							swap($values, index, index - 1);
 						}}
@@ -54,6 +56,8 @@
 						aria-label="Move up"><Icon name="chevronUp" /></button
 					>
 					<button
+						class="btn rounded-full"
+						disabled={index === $values.length - 1}
 						on:click={() => {
 							swap($values, index, index + 1);
 						}}
@@ -61,6 +65,7 @@
 						aria-label="Move down"><Icon name="chevronDown" /></button
 					>
 					<button
+						class="btn rounded-full"
 						on:click={() => {
 							handleRemoveLanguage(index);
 						}}
@@ -77,7 +82,7 @@
 	<select
 		aria-label="add title"
 		on:change={handleAddLangauge}
-		class="input w-fit reset-padding"
+		class="input w-fit reset-padding mt-2"
 		name="add-titles"
 		id="add-titles"
 	>
