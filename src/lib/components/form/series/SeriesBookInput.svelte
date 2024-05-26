@@ -21,14 +21,14 @@
 			id: book.id,
 			romaji: '',
 			lang: book.lang,
-			sort_order: $values.length,
+			sort_order: $values.length + 1,
 		});
 		$values = $values;
 	}
 
 	function updateSortOrder() {
 		for (const [index, item] of $values.entries()) {
-			item.sort_order = index;
+			item.sort_order = index + 1;
 		}
 		$values = $values;
 	}
@@ -38,6 +38,7 @@
 		const json = await res.json();
 		return json;
 	}
+	// TODO fix sort_order when adding a new one and reordering i think? maybe?
 </script>
 
 <section class="flex flex-col gap-2">

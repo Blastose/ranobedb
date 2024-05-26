@@ -28,6 +28,7 @@
 		"@sveltejs/adapter-node": "^4.0.1",
 		"@sveltejs/kit": "^2.5.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.2",
+		"@types/diff": "^5.2.1",
 		"@types/pg": "^8.10.9",
 		"@typescript-eslint/eslint-plugin": "^6.11.0",
 		"@typescript-eslint/parser": "^6.11.0",
@@ -59,7 +60,9 @@
 		"zod": "^3.23.8"
 	},
 	"dependencies": {
-		"oslo": "^1.1.1"
+		"diff": "^5.2.0",
+		"oslo": "^1.1.1",
+		"xss": "^1.0.15"
 	},
 	"type": "module"
 }

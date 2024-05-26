@@ -5,6 +5,8 @@ import { detailedDiff } from 'deep-object-diff';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
 import { db } from '$lib/server/db/db.js';
+import { diffTrimmedLines } from 'diff';
+import xss from 'xss';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -28,7 +30,6 @@ export const load = async ({ params, locals }) => {
 	const change = changes.find((i) => i.revision === revision)!;
 	const nextChange = changes.find((i) => i.revision === revision + 1);
 
-	console.log(series);
 	if (!series) {
 		error(404);
 	}
@@ -42,6 +43,7 @@ export const load = async ({ params, locals }) => {
 		}
 	}
 	let diff;
+	let diffTrimmedLinesOuput;
 	if (previousRevision > 0) {
 		const prevSeries = await dbSeries
 			.getSeriesHistOne({
@@ -53,13 +55,36 @@ export const load = async ({ params, locals }) => {
 			error(404);
 		}
 		// TODO diff these better
+
 		diff = detailedDiff(prevSeries, series);
+
+		let prevSeriesBooksString = '';
+		for (const i of prevSeries.books) {
+			const str = `<a class="link" target="_blank" href="/book/${i.id}">${xss(i.title)}</a> [#${
+				i.sort_order
+			}]`;
+			prevSeriesBooksString += str + '\n';
+		}
+		let seriesBooksString = '';
+		for (const i of series.books) {
+			// Manually building html; need to use xss
+			const str = `<a class="link" target="_blank" href="/book/${i.id}">${xss(i.title)}</a> [#${
+				i.sort_order
+			}]`;
+			seriesBooksString += str + '\n';
+		}
+		diffTrimmedLinesOuput = diffTrimmedLines(
+			prevSeriesBooksString.trim(),
+			seriesBooksString.trim(),
+		);
+		console.dir(diffTrimmedLinesOuput, { depth: null });
 	}
 
 	return {
 		seriesId,
 		series,
 		diff,
+		diffTrimmedLinesOuput,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
 	};
