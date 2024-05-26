@@ -62,6 +62,12 @@
 					text="Profile"
 					icon="profile"
 				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/settings'}
+					href="/settings"
+					text="Settings"
+					icon="settings"
+				/>
 				<SidebarFormButton text="Sign out" action="/logout">
 					<Icon name="logout" />
 				</SidebarFormButton>
@@ -79,6 +85,12 @@
 					href="/signup"
 					text="Sign up"
 					icon="signup"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/settings'}
+					href="/settings"
+					text="Settings"
+					icon="settings"
 				/>
 			</SidebarSection>
 		{/if}

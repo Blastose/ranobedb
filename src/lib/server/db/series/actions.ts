@@ -1,4 +1,4 @@
-import type { seriesSchema } from '$lib/zod/schema';
+import type { seriesSchema } from '$lib/server/zod/schema';
 import type { Infer } from 'sveltekit-superforms';
 import { RanobeDB } from '../db';
 import type { User } from 'lucia';
@@ -9,14 +9,14 @@ import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import {
 	type DB,
 	type SeriesRelType,
-	seriesRelTypeReverseMap,
 	type SeriesRelationHist,
 	type SeriesRelation,
 	type SeriesBookHist,
 	type SeriesBook,
 	type SeriesTitle,
 	type SeriesTitleHist,
-} from '$lib/db/dbTypes';
+} from '$lib/server/db/dbTypes';
+import { seriesRelTypeReverseMap } from '$lib/db/dbConsts';
 import type { Insertable, Kysely, Transaction } from 'kysely';
 import { arrayDiff, arrayIntersection } from '$lib/db/array';
 import { reverseRelationUpdateMarkdown } from '$lib/db/revision';

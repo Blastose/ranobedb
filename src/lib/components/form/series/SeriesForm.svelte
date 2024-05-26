@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { seriesSchema } from '$lib/zod/schema';
+	import type { seriesSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
@@ -13,14 +13,15 @@
 	import SeriesBookInput from './SeriesBookInput.svelte';
 	import SeriesRelInput from './SeriesRelInput.svelte';
 	import SelectField from '../SelectField.svelte';
-	import { seriesStatusArray } from '$lib/db/dbTypes';
+	import { seriesStatusArray } from '$lib/db/dbConsts';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let series: SeriesEdit | undefined;
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
 
-	$: sForm = superForm(seriesForm, {
+	const sForm = superForm(seriesForm, {
 		dataType: 'json',
 		resetForm: false,
 		onUpdated({ form: f }) {
@@ -29,16 +30,16 @@
 			}
 		},
 	});
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>
 
-<SuperDebug data={$form} />
+<!-- <SuperDebug data={$form} /> -->
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if series}
-		<h1 class="font-bold text-xl">Editing {series.title ?? 'series'}</h1>
+		<h1 class="font-bold text-xl">Editing <TitleDisplay obj={series} /></h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add series</h1>
 	{/if}

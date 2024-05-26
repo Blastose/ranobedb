@@ -1,5 +1,5 @@
 import type { User } from 'lucia';
-import type { UserRole } from './dbTypes';
+import type { UserRole } from '../server/db/dbTypes';
 
 type Perm = 'edit' | 'add' | 'visibility';
 export const permissions: Record<UserRole, Perm[]> = {

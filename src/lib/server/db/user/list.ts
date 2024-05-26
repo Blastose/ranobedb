@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db/db';
-import { defaultUserListLabels, type Nullish } from '$lib/zod/schema';
+import type { Nullish } from '$lib/server/zod/schema';
+import { defaultUserListLabels } from '$lib/db/dbConsts';
 import { sql, type InferResult } from 'kysely';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
@@ -8,7 +9,7 @@ import type { User } from 'lucia';
 // TODO Refactor with getBooks
 export function getBooksRL(userId: string, user?: User | null) {
 	return db
-		.with('cte_book', withBookTitleCte(user?.title_prefs))
+		.with('cte_book', withBookTitleCte(user?.display_prefs.title_prefs))
 		.selectFrom('cte_book')
 		.innerJoin('user_list_book', (join) =>
 			join

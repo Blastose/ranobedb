@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Theme } from '$lib/stores/themeStore';
 
-	export let imageBgStyle: string | null;
+	export let bgImageStyle: string | null;
 	export let theme: Theme;
 
 	function defaultBackgroundImage(theme: Theme) {
@@ -12,7 +12,7 @@
 		}
 	}
 
-	$: bgStyle = imageBgStyle ?? defaultBackgroundImage(theme);
+	$: bgStyle = bgImageStyle ?? defaultBackgroundImage(theme);
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
@@ -20,7 +20,7 @@
 		class="banner-img h-[256px]"
 		style={bgStyle}
 		style:--grad-dark="rgba(115, 115, 156, 1)"
-		style:--grad-light="#121255"
+		style:--grad-light="#b4afc7"
 	>
 		<div class="blur-image" />
 	</div>

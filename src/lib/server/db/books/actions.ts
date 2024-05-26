@@ -1,4 +1,4 @@
-import type { bookSchema } from '$lib/zod/schema';
+import type { bookSchema } from '$lib/server/zod/schema';
 import type { Infer } from 'sveltekit-superforms';
 import { RanobeDB } from '../db';
 import type { User } from 'lucia';
@@ -12,7 +12,7 @@ import type {
 	BookTitle,
 	BookTitleHist,
 	DB,
-} from '$lib/db/dbTypes';
+} from '$lib/server/db/dbTypes';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError, HasRelationsError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';

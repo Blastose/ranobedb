@@ -12,7 +12,9 @@ export const load = async ({ url, locals }) => {
 		.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
 
 	if (q) {
-		query = query.where('publisher.name', 'ilike', `%${q}%`);
+		query = query.where((eb) =>
+			eb.or([eb('publisher.romaji', 'ilike', `%${q}%`), eb('publisher.name', 'ilike', `%${q}%`)]),
+		);
 	}
 
 	const {

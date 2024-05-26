@@ -1,4 +1,4 @@
-import type { releaseSchema } from '$lib/zod/schema';
+import type { releaseSchema } from '$lib/server/zod/schema';
 import type { Infer } from 'sveltekit-superforms';
 import { RanobeDB } from '../db';
 import type { User } from 'lucia';
@@ -14,7 +14,7 @@ import type {
 	ReleaseBookHist,
 	ReleasePublisher,
 	ReleasePublisherHist,
-} from '$lib/db/dbTypes';
+} from '$lib/server/db/dbTypes';
 
 export class DBReleaseActions {
 	ranobeDB: RanobeDB;
@@ -154,9 +154,6 @@ export class DBReleaseActions {
 					.execute();
 			}
 			const booksNewDiff = arrayDiff(data.release.books, currentRelease.books);
-			console.log(booksNewDiff);
-			console.log(data.release);
-			console.log(currentRelease.books);
 			const release_book_add = booksNewDiff.map((item) => {
 				return { book_id: item.id, release_id: data.id, rtype: item.rtype };
 			}) satisfies Insertable<ReleaseBook>[];

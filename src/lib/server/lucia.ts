@@ -2,9 +2,9 @@ import { Lucia } from 'lucia';
 import { dev } from '$app/environment';
 import { NodePostgresAdapter } from '@lucia-auth/adapter-postgresql';
 import { db, pool } from '$lib/server/db/db';
-import type { UserRole } from '$lib/db/dbTypes';
+import type { UserRole } from '$lib/server/db/dbTypes';
 import { insertDefaultUserListLabels } from './db/user/user';
-import type { LanguagePriority } from './db/dbHelpers';
+import type { DisplayPrefs } from '$lib/server/zod/schema';
 
 const adapter = new NodePostgresAdapter(pool, {
 	session: 'auth_session',
@@ -22,7 +22,7 @@ export const lucia = new Lucia(adapter, {
 			username: attributes.username,
 			role: attributes.role,
 			id_numeric: attributes.id_numeric,
-			title_prefs: attributes.title_prefs,
+			display_prefs: attributes.display_prefs,
 		};
 	},
 });
@@ -81,6 +81,29 @@ export async function getUser(usernameemail: string) {
 	}
 }
 
+export async function changeUsername(params: { userId: string; newUsername: string }) {
+	await db
+		.updateTable('auth_user')
+		.set({
+			username: params.newUsername,
+			username_lowercase: params.newUsername.toLowerCase(),
+		})
+		.where('auth_user.id', '=', params.userId)
+		.execute();
+}
+
+export async function changePassword(params: { userId: string; newHashedPassword: string }) {
+	await db.transaction().execute(async (trx) => {
+		await trx
+			.updateTable('auth_user_credentials')
+			.set({
+				hashed_password: params.newHashedPassword,
+			})
+			.where('auth_user_credentials.user_id', '=', params.userId)
+			.execute();
+	});
+}
+
 declare module 'lucia' {
 	interface Register {
 		Lucia: typeof lucia;
@@ -93,5 +116,5 @@ interface DatabaseUserAttributes {
 	username_lowercase: string;
 	id_numeric: number;
 	role: UserRole;
-	title_prefs: LanguagePriority[];
+	display_prefs: DisplayPrefs;
 }

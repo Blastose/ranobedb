@@ -1,9 +1,9 @@
-import type { DB } from '$lib/db/dbTypes';
+import type { DB } from '$lib/server/db/dbTypes';
 import { sql, Kysely, PostgresDialect } from 'kysely';
 import type { User } from 'lucia';
 import dotenv from 'dotenv';
 import pkg from 'pg';
-import { defaultLangPrio } from '$lib/server/db/dbHelpers';
+import { defaultDisplayPrefs } from '$lib/db/dbConsts';
 const { Pool } = pkg;
 
 dotenv.config({ path: '.env.testing' });
@@ -257,7 +257,7 @@ export const ranobeBot = {
 	id: 'RanobeBot',
 	id_numeric: 1,
 	role: 'admin',
-	title_prefs: defaultLangPrio,
+	display_prefs: defaultDisplayPrefs,
 	username: 'RanobeBot',
 } satisfies User;
 

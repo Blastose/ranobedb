@@ -7,6 +7,8 @@
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import type { Staff, StaffBook } from '$lib/server/db/staff/staff';
 	import type { User } from 'lucia';
+	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let staff: Staff;
 	export let books: Array<StaffBook>;
@@ -15,13 +17,15 @@
 	export let results: number;
 	export let currentPage: number;
 	export let totalPages: number;
+
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <DBItemShell
 	dbItem="staff"
 	{isRevision}
-	name={staff.name}
-	subName={staff.romaji}
+	name={getNameDisplay({ obj: staff, prefs: $displayPrefs.names })}
+	subName={getNameDisplaySub({ obj: staff, prefs: $displayPrefs.names })}
 	{user}
 	item={staff}
 >
@@ -30,7 +34,7 @@
 			<h2 class="text-lg font-bold">Other names</h2>
 
 			{#each staff.aliases as alias}
-				<p>{alias.name}</p>
+				<p><NameDisplay obj={alias} /></p>
 			{:else}
 				<p>No other names</p>
 			{/each}

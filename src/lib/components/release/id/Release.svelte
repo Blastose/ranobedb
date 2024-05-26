@@ -1,21 +1,26 @@
 <script lang="ts">
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import DBItemShell from '$lib/components/layout/db/DBItemShell.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
-	import { languageNames } from '$lib/db/dbTypes';
+	import { languageNames } from '$lib/db/dbConsts';
 	import type { Release } from '$lib/server/db/releases/releases';
 	import type { User } from 'lucia';
+	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let release: Release;
 	export let isRevision: boolean;
 	export let user: User | null;
+
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <DBItemShell
 	dbItem="release"
 	{isRevision}
-	name={release.title}
-	subName={release.romaji}
+	name={getNameDisplay({ obj: release, prefs: $displayPrefs.names })}
+	subName={getNameDisplaySub({ obj: release, prefs: $displayPrefs.names })}
 	{user}
 	item={release}
 >
@@ -64,7 +69,7 @@
 				{#each release.publishers as publisher}
 					<p>
 						<a class="link" href="/publisher/{publisher.id}"
-							>{publisher.name} - {publisher.publisher_type}</a
+							><NameDisplay obj={publisher} /> - {publisher.publisher_type}</a
 						>
 					</p>
 				{/each}
@@ -77,7 +82,9 @@
 			<h2 class="text-lg font-bold">Book relations</h2>
 			<div>
 				{#each release.books as book}
-					<a class="link" href="/book/{book.id}">{book.title}</a>
+					<p>
+						<a class="link" href="/book/{book.id}"><TitleDisplay obj={book} /></a>
+					</p>
 				{/each}
 			</div>
 		</div>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { bookSchema } from '$lib/zod/schema';
+	import type { bookSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
@@ -17,7 +17,7 @@
 	export let type: 'add' | 'edit';
 	export let user: User | null;
 
-	$: sForm = superForm(bookForm, {
+	const sForm = superForm(bookForm, {
 		dataType: 'json',
 		resetForm: false,
 		onUpdated({ form: f }) {
@@ -26,7 +26,7 @@
 			}
 		},
 	});
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>

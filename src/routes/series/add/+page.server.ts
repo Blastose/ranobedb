@@ -1,4 +1,4 @@
-import { seriesSchema } from '$lib/zod/schema.js';
+import { seriesSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
@@ -8,10 +8,13 @@ import { hasAddPerms } from '$lib/db/permissions';
 import { DBSeriesActions } from '$lib/server/db/series/actions.js';
 import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
 import { db } from '$lib/server/db/db.js';
+import { buildRedirectUrl } from '$lib/utils/url.js';
 const { DatabaseError } = pkg;
 
-export const load = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/login');
+export const load = async ({ locals, url }) => {
+	if (!locals.user) {
+		redirect(302, buildRedirectUrl(url, '/login'));
+	}
 
 	if (!hasAddPerms(locals.user)) {
 		error(403);

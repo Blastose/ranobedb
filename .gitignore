@@ -4,6 +4,7 @@ node_modules
 /.svelte-kit
 /package
 /static/covers_temp
+/test-results
 .env
 .env.*
 !.env.example

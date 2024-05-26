@@ -11,9 +11,14 @@ export const load = async ({ url, locals }) => {
 		.getStaff()
 		.where('staff.hidden', '=', false)
 		.where('staff.locked', '=', false)
-		.orderBy('staff_alias.name');
+		.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'));
 	if (q) {
-		query = query.where('staff_alias.name', 'ilike', `%${q}%`);
+		query = query.where((eb) =>
+			eb.or([
+				eb('staff_alias.name', 'ilike', `%${q}%`),
+				eb('staff_alias.romaji', 'ilike', `%${q}%`),
+			]),
+		);
 	}
 
 	const {

@@ -101,6 +101,7 @@ export interface AuthSession {
 }
 
 export interface AuthUser {
+	display_prefs: Generated<Json>;
 	id: string;
 	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;

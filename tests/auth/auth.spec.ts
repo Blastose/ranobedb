@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { Kysely, PostgresDialect } from 'kysely';
 import pkg from 'pg';
 const { Pool } = pkg;
-import type { DB } from '$lib/db/dbTypes';
+import type { DB } from '$lib/server/db/dbTypes';
 
 dotenv.config({ path: '.env.testing' });
 
@@ -177,6 +177,6 @@ test.describe('auth', () => {
 
 	test('User cannot access login required pages', async ({ page }) => {
 		await page.goto('/profile');
-		await expect(page).toHaveURL('/login');
+		await expect(page).toHaveURL('/login?redirect=/profile');
 	});
 });

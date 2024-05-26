@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { publisherRelTypeArray } from '$lib/db/dbTypes';
-	import type { publisherSchema } from '$lib/zod/schema';
-	import ComboboxInput from '../ComboboxInput.svelte';
-
+	import { publisherRelTypeArray } from '$lib/db/dbConsts';
+	import type { publisherSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
+	import ComboboxInput from '../ComboboxInput.svelte';
+	import type { ApiPublisher } from '../../../../routes/api/i/publisher/+server';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let form: SuperForm<Infer<typeof publisherSchema>, App.Superforms.Message>;
 
@@ -13,11 +14,11 @@
 		$values = $values;
 	}
 
-	function handleAddPublisher(publisher: { id: number; name: string }) {
+	function handleAddPublisher(publisher: ApiPublisher[number]) {
 		$values.push({
 			name: publisher.name,
 			id: publisher.id,
-			romaji: '',
+			romaji: publisher.romaji,
 		});
 		$values = $values;
 	}
@@ -35,7 +36,7 @@
 		{#each $values as publisher, i}
 			<div class="flex flex-col gap-2 flex-wrap">
 				<a class="link w-fit" target="_blank" rel="noreferrer" href="/publisher/{publisher.id}"
-					><span class="text-sm">#{publisher.id}:</span> {publisher.name}</a
+					><span class="text-sm">#{publisher.id}:</span> <NameDisplay obj={publisher} /></a
 				>
 				<label class="flex gap-2 items-center"
 					><span>Relation type: </span>

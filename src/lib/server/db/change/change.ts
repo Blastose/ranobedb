@@ -1,8 +1,9 @@
-import type { DB, DbItem } from '$lib/db/dbTypes';
+import type { DB, DbItem } from '$lib/server/db/dbTypes';
 import type { InferResult, Transaction } from 'kysely';
 import { db } from '../db';
 
 export type Change = InferResult<ReturnType<typeof getChanges>>[number];
+export const historyItemsPerPage = 25;
 export function getChanges(item_name: DbItem, item_id: number, revisions?: number[]) {
 	return db
 		.selectFrom('change')

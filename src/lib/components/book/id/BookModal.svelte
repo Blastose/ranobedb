@@ -3,7 +3,7 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { fade, fly } from 'svelte/transition';
 	import type { BookR } from '$lib/server/db/books/books';
-	import { defaultUserListLabelsArray, type userListBookSchema } from '$lib/zod/schema';
+	import type { userListBookSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import { superForm } from 'sveltekit-superforms';
 	import TextField from '$lib/components/form/TextField.svelte';
@@ -11,16 +11,17 @@
 	import { tick } from 'svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import SelectField from '$lib/components/form/SelectField.svelte';
+	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let book: BookR;
-	export let imageBgStyle: string;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {
 		return { display: v, value: v };
 	});
 
-	$: sForm = superForm(userListForm, {
+	const sForm = superForm(userListForm, {
 		dataType: 'json',
 		onUpdate: async ({ form }) => {
 			if (!form.valid) return;
@@ -37,9 +38,10 @@
 			});
 		},
 		taintedMessage: null,
+		invalidateAll: 'force',
 	});
 
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	const {
 		elements: { trigger, overlay, content, title, close, portalled },
@@ -84,14 +86,14 @@
 				use:melt={$content}
 				class="modal-content-inner no-pt"
 			>
-				<div class="banner-img h-[86px]" style={imageBgStyle}>
+				<div class="banner-img h-[86px]">
 					<div class="blur-image" />
 				</div>
 
 				<div class="flex flex-col gap-2 -mt-12 z-[9999999] relative">
 					<div class="flex flex-col">
 						<h2 use:melt={$title} class="font-medium">{modalTitle}</h2>
-						<h3 class="text-xl font-bold">{book.title}</h3>
+						<h3 class="text-xl font-bold"><TitleDisplay obj={book} /></h3>
 					</div>
 
 					<form
@@ -204,20 +206,5 @@
 <style>
 	.modal-content-inner.confirm-modal {
 		max-width: 512px;
-	}
-
-	.blur-image {
-		height: 100%;
-		width: 100%;
-		backdrop-filter: blur(4px);
-	}
-
-	.banner-img {
-		overflow: hidden;
-		background-repeat: no-repeat;
-		background-size: cover;
-		background-position: 20% 20%;
-		margin-left: calc(-50vw + 50%);
-		margin-right: calc(-50vw + 50%);
 	}
 </style>

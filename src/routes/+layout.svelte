@@ -1,12 +1,14 @@
 <script lang="ts">
 	import '../app.css';
 	import Layout from '$lib/components/layout/Layout.svelte';
-	import { themeStore } from '$lib/stores/themeStore';
+	import { createThemeStore } from '$lib/stores/themeStore';
 	import { onNavigate } from '$app/navigation';
-	import { onMount } from 'svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import { getFlash } from 'sveltekit-flash-message';
 	import { page } from '$app/stores';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { defaultDisplayPrefs } from '$lib/db/dbConsts';
 
 	onNavigate((navigation) => {
 		// if (!document.startViewTransition) return;
@@ -18,27 +20,11 @@
 		// });
 	});
 
-	onMount(() => {
-		if (!('theme' in localStorage)) {
-			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				themeStore.set('dark');
-			} else {
-				themeStore.set('light');
-			}
-		} else {
-			if (localStorage.getItem('theme') === 'dark') {
-				themeStore.set('dark');
-			} else if (localStorage.getItem('theme') === 'light') {
-				themeStore.set('light');
-			}
-		}
-	});
-
 	// TODO remove later
 	function handleKeyDown(e: KeyboardEvent) {
 		if (e.key !== '`') return;
 
-		themeStore.toggle();
+		theme.toggle();
 	}
 
 	export let data;
@@ -48,23 +34,17 @@
 		addToast({ data: { title: $flash.message, type: $flash.type } });
 		$flash = undefined;
 	}
+
+	const displayPrefs = writable();
+	$: displayPrefs.set(data.user?.display_prefs ?? defaultDisplayPrefs);
+	setContext('displayPrefs', displayPrefs);
+
+	const theme = createThemeStore();
+	$: theme.set(data.theme);
+	setContext('theme', theme);
 </script>
 
 <svelte:document on:keydown={handleKeyDown} />
-
-<svelte:head>
-	<script>
-		if (!('theme' in localStorage)) {
-			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				document.documentElement.classList.add('dark');
-			}
-		} else {
-			if (localStorage.getItem('theme') === 'dark') {
-				document.documentElement.classList.add('dark');
-			}
-		}
-	</script>
-</svelte:head>
 
 <Layout user={data.user} url={data.url}>
 	<slot />

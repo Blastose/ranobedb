@@ -2,16 +2,20 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
 	import Publisher from '$lib/components/publisher/id/Publisher.svelte';
-	import { themeStore } from '$lib/stores/themeStore';
+	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
+	import { getThemeContext } from '$lib/stores/themeStore.js';
 
 	export let data;
 
 	$: publisher = data.publisher;
+
+	const theme = getThemeContext();
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
-<PageTitle title={publisher.name} />
+<PageTitle title={getNameDisplay({ obj: publisher, prefs: $displayPrefs.names })} />
 
-<DbRouteShell theme={$themeStore ?? data.theme} imageBgStyle={null}>
+<DbRouteShell theme={$theme} bgImageStyle={null}>
 	<Publisher
 		{publisher}
 		books={data.books}

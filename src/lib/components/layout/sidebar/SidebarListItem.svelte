@@ -17,7 +17,8 @@
 		| 'publishers'
 		| 'add'
 		| 'login'
-		| 'signup';
+		| 'signup'
+		| 'settings';
 </script>
 
 <li>
@@ -46,6 +47,8 @@
 			<Icon name="login" />
 		{:else if icon === 'signup'}
 			<Icon name="signup" />
+		{:else if icon === 'settings'}
+			<Icon name="settings" />
 		{/if}
 	</SidebarItem>
 </li>

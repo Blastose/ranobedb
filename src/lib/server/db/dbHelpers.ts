@@ -1,12 +1,4 @@
 import { sql, type SelectQueryBuilder } from 'kysely';
-import type { Language } from '$lib/db/dbTypes';
-
-// TODO add language priority table/settings
-export type LanguagePriority = { lang: Language; romaji: boolean };
-export const defaultLangPrio: LanguagePriority[] = [
-	{ lang: 'en', romaji: false },
-	{ lang: 'ja', romaji: true },
-];
 
 export function paginationBuilder<O, DB, TB extends keyof DB>(
 	query: SelectQueryBuilder<DB, TB, O>,

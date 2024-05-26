@@ -1,8 +1,12 @@
 <script lang="ts" context="module">
-	type Rec = { id: number; name: string; alt_id?: number };
+	import type { Nullish } from '$lib/server/zod/schema';
+
+	type Rec = { id: number; name: string; romaji?: Nullish<string> };
 </script>
 
 <script lang="ts" generics="T extends Rec">
+	import NameDisplay from '../display/NameDisplay.svelte';
+
 	import { createCombobox, melt } from '@melt-ui/svelte';
 	import { fly } from 'svelte/transition';
 	import Icon from '../icon/Icon.svelte';
@@ -89,24 +93,24 @@
 					<Icon class="animate-spin" name="loading" />
 				</li>
 			{:else}
-				{#each searchedItems as book, index (index)}
+				{#each searchedItems as item, index (index)}
 					<li
 						use:melt={$option({
-							value: book,
-							label: book.name,
+							value: item,
+							label: item.name,
 						})}
 						class="relative cursor-pointer scroll-my-2 rounded-md py-2 px-2
         data-[highlighted]:bg-gray-300 data-[highlighted]:text-gray-900
 				dark:data-[highlighted]:bg-neutral-600 dark:data-[highlighted]:text-white
           data-[disabled]:opacity-50"
 					>
-						{#if $isSelected(book)}
+						{#if $isSelected(item)}
 							<!--  -->
 						{/if}
 						<div class="">
 							<p>
-								<span class="text-xs opacity-75">#{book.id}</span>
-								{book.name}
+								<span class="text-xs opacity-75">#{item.id}</span>
+								<NameDisplay obj={item} />
 							</p>
 						</div>
 					</li>

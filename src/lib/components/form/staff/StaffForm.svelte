@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { staffSchema } from '$lib/zod/schema';
+	import type { staffSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
@@ -10,13 +10,14 @@
 	import type { User } from 'lucia';
 	import type { StaffEdit } from '$lib/server/db/staff/staff';
 	import StaffNamesInput from './StaffNamesInput.svelte';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let staff: StaffEdit | undefined;
 	export let staffForm: SuperValidated<Infer<typeof staffSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
 
-	$: sForm = superForm(staffForm, {
+	const sForm = superForm(staffForm, {
 		dataType: 'json',
 		resetForm: false,
 		onUpdated({ form: f }) {
@@ -25,16 +26,18 @@
 			}
 		},
 	});
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>
 
-<SuperDebug data={$form} />
+<!-- <SuperDebug data={$form} /> -->
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if staff}
-		<h1 class="font-bold text-xl">Editing {staff.name ?? 'staff'}</h1>
+		<h1 class="font-bold text-xl">
+			Editing <NameDisplay obj={staff} fallback="staff" />
+		</h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add staff</h1>
 	{/if}

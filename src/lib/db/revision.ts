@@ -1,4 +1,4 @@
-import type { DbItem } from './dbTypes';
+import type { DbItem } from '../server/db/dbTypes';
 
 export function buildRevisionMarkdownLink(
 	prefix: string,

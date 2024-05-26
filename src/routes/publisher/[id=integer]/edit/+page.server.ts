@@ -1,4 +1,4 @@
-import { publisherSchema, revisionSchema } from '$lib/zod/schema.js';
+import { publisherSchema, revisionSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
@@ -12,9 +12,12 @@ import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
 import { DBPublisherActions } from '$lib/server/db/publishers/actions.js';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { db } from '$lib/server/db/db.js';
+import { buildRedirectUrl } from '$lib/utils/url.js';
 
 export const load = async ({ params, locals, url }) => {
-	if (!locals.user) redirect(302, '/login');
+	if (!locals.user) {
+		redirect(302, buildRedirectUrl(url, '/login'));
+	}
 
 	const id = params.id;
 	const publisherId = Number(id);

@@ -1,32 +1,20 @@
 import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
-	languagesArray,
-	publisherRelTypeArray,
-	releaseFormatArray,
 	releasePublisherTypeArray,
 	releaseTypeArray,
 	seriesRelTypeArray,
 	seriesStatusArray,
 	staffRolesArray,
-} from '$lib/db/dbTypes';
+} from '$lib/db/dbConsts';
+import { releaseFormatArray } from '$lib/db/dbConsts';
+import { publisherRelTypeArray } from '$lib/db/dbConsts';
+import { languagesArray } from '$lib/db/dbConsts';
 import { z } from 'zod';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-dayjs.extend(customParseFormat);
+import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 
-export const defaultUserListLabelsArray = [
-	'Reading',
-	'Finished',
-	'Plan to read',
-	'Stalled',
-	'Dropped',
-] as const;
-export type ReadingStatus = (typeof defaultUserListLabelsArray)[number];
-export const defaultUserListLabelsMap = new Map<ReadingStatus, number>();
-export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) => {
-	defaultUserListLabelsMap.set(v, index + 1);
-	return { id: index + 1, label: v };
-});
+dayjs.extend(customParseFormat);
 
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const zUsername = z
@@ -37,6 +25,13 @@ const zUsername = z
 	)
 	.min(3, { message: 'Username must be between 3 and 36 characters' })
 	.max(36, { message: 'Username must be between 3 and 36 characters' });
+const zPasswordEntry = z
+	.string({ required_error: 'Password is required' })
+	.max(255, { message: 'Password too long' });
+const zPasswordNew = z
+	.string({ required_error: 'Password is required' })
+	.min(6, { message: 'Password must be between 6 and 255 characters' })
+	.max(255, { message: 'Password must be between 6 and 255 characters' });
 function isValidISO8601Date(dateString: string): boolean {
 	const isoDateRegex = /^\d{4,5}-\d{2}-\d{2}$/;
 	if (!isoDateRegex.test(dateString)) {
@@ -58,9 +53,7 @@ export const loginSchema = z.object({
 	usernameemail: z
 		.string({ required_error: 'Username or email is required' })
 		.max(255, { message: 'Username or email too long' }),
-	password: z
-		.string({ required_error: 'Password is required' })
-		.max(255, { message: 'Password too long' }),
+	password: zPasswordEntry,
 });
 
 export const signupSchema = z.object({
@@ -69,10 +62,7 @@ export const signupSchema = z.object({
 		.email({ message: 'Invalid email address' })
 		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
 	username: zUsername,
-	password: z
-		.string({ required_error: 'Password is required' })
-		.min(6, { message: 'Password must be between 6 and 255 characters' })
-		.max(255, { message: 'Password must be between 6 and 255 characters' }),
+	password: zPasswordNew,
 });
 
 const userListFormTypes = ['add', 'update', 'delete'] as const;
@@ -127,6 +117,7 @@ export const bookSchema = z.object({
 					.array(
 						z.object({
 							name: z.string().max(2000).nullish(),
+							romaji: z.string().max(2000).nullish(),
 							staff_id: z.number().max(2000000),
 							staff_alias_id: z.number().max(2000000),
 							role_type: z.enum(staffRolesArray),
@@ -244,6 +235,8 @@ export const releaseSchema = z.object({
 			z.object({
 				id: z.number().max(200000),
 				title: z.string().nullish(),
+				romaji: z.string().nullish(),
+				lang: z.enum(languagesArray).nullish(),
 				rtype: z.enum(releaseTypeArray),
 			}),
 		)
@@ -274,6 +267,7 @@ export const seriesSchema = z.object({
 			z.object({
 				title: z.string().nullish(),
 				romaji: z.string().nullish(),
+				lang: z.enum(languagesArray).nullish(),
 				id: z.number().max(100000),
 				sort_order: z.number().max(2000),
 			}),
@@ -284,6 +278,7 @@ export const seriesSchema = z.object({
 			z.object({
 				title: z.string().nullish(),
 				romaji: z.string().nullish(),
+				lang: z.enum(languagesArray).nullish(),
 				id: z.number().max(100000),
 				relation_type: z.enum(seriesRelTypeArray),
 			}),
@@ -312,5 +307,24 @@ export const seriesSchema = z.object({
 
 export const searchNameSchema = z.object({ name: z.string() });
 export const revisionSchema = z.object({ revision: z.number() });
+
+const zLanguagePrio = z.object({
+	lang: z.enum(languagesArray),
+	romaji: z.boolean(),
+});
+export type LanguagePriority = z.infer<typeof zLanguagePrio>;
+
+export const displayPrefsSchema = z.object({
+	title_prefs: z.array(zLanguagePrio).min(1).max(4),
+	names: z.enum(['romaji', 'native'] as const),
+	descriptions: z.enum(['en', 'ja'] as const),
+});
+export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
+
+export const usernameSchema = z.object({ username: zUsername, password: zPasswordEntry });
+export const passwordSchema = z.object({
+	currentPassword: zPasswordEntry,
+	newPassword: zPasswordNew,
+});
 
 export type Nullish<T> = T | null | undefined;

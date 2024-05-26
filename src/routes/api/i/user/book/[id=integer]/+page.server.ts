@@ -2,7 +2,8 @@ import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { defaultUserListLabelsMap, userListBookSchema } from '$lib/zod/schema';
+import { userListBookSchema } from '$lib/server/zod/schema';
+import { defaultUserListLabelsMap } from '$lib/db/dbConsts';
 import { addBookToList, editBookInList, removeBookFromList } from '$lib/server/db/user/list';
 
 export const actions = {

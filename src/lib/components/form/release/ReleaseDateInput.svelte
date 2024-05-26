@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { releaseSchema } from '$lib/zod/schema';
+	import type { releaseSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, type Infer, formFieldProxy } from 'sveltekit-superforms';
 	import { DateNumber } from './releaseDate';
 

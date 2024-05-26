@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { releaseTypeArray } from '$lib/db/dbTypes';
-	import type { releaseSchema } from '$lib/zod/schema';
-	import ComboboxInput from '../ComboboxInput.svelte';
-
+	import { releaseTypeArray } from '$lib/db/dbConsts';
+	import type { releaseSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
+	import ComboboxInput from '../ComboboxInput.svelte';
+	import type { ApiBook } from '../../../../routes/api/i/book/+server';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let form: SuperForm<Infer<typeof releaseSchema>, App.Superforms.Message>;
 
@@ -13,11 +14,12 @@
 		$values = $values;
 	}
 
-	function handleAddBook(book: { id: number; name: string }) {
+	function handleAddBook(book: ApiBook[number]) {
 		$values.push({
 			title: book.name,
 			id: book.id,
-			romaji: '',
+			romaji: book.romaji,
+			lang: book.lang,
 		});
 		$values = $values;
 	}
@@ -35,7 +37,16 @@
 		{#each $values as book, i}
 			<div class="flex flex-wrap gap-2 items-center">
 				<a class="link w-fit" target="_blank" rel="noreferrer" href="/book/{book.id}"
-					><span class="text-sm">#{book.id}:</span> {book.title}</a
+					><span class="text-sm">#{book.id}:</span>
+					<TitleDisplay
+						obj={{
+							lang: book.lang ?? 'en',
+							romaji: book.romaji ?? '',
+							romaji_orig: null,
+							title: book.title ?? '',
+							title_orig: '',
+						}}
+					/></a
 				>
 				<label class="flex gap-2 items-center"
 					><span>Type: </span>

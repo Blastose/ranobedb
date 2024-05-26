@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { publisherSchema } from '$lib/zod/schema';
+	import type { publisherSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
@@ -10,13 +10,14 @@
 	import type { User } from 'lucia';
 	import type { PublisherEdit } from '$lib/server/db/publishers/publishers';
 	import PublisherRelInput from './PublisherRelInput.svelte';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let publisher: PublisherEdit | undefined;
 	export let publisherForm: SuperValidated<Infer<typeof publisherSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
 
-	$: sForm = superForm(publisherForm, {
+	const sForm = superForm(publisherForm, {
 		dataType: 'json',
 		resetForm: false,
 		onUpdated({ form: f }) {
@@ -25,16 +26,18 @@
 			}
 		},
 	});
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>
 
-<SuperDebug data={$form} />
+<!-- <SuperDebug data={$form} /> -->
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if publisher}
-		<h1 class="font-bold text-xl">Editing {publisher.name ?? 'publisher'}</h1>
+		<h1 class="font-bold text-xl">
+			Editing <NameDisplay obj={publisher} fallback={'publisher'} />
+		</h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add publisher</h1>
 	{/if}

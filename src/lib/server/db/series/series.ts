@@ -1,8 +1,9 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
-import type { DB } from '$lib/db/dbTypes';
-import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
+import type { DB } from '$lib/server/db/dbTypes';
+import { type LanguagePriority } from '$lib/server/zod/schema';
+import { defaultLangPrio } from '$lib/db/dbConsts';
 import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
 
@@ -117,7 +118,7 @@ export class DBSeries {
 
 	getSeries() {
 		return this.ranobeDB.db
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_series')
 			.select((eb) => [
 				jsonObjectFrom(
@@ -143,8 +144,8 @@ export class DBSeries {
 	}
 	getSeriesOne(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_series')
 			.select([
 				'cte_series.id',
@@ -172,6 +173,7 @@ export class DBSeries {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
+							'cte_book.lang',
 							'series_book.sort_order',
 						])
 						.select((eb) =>
@@ -203,9 +205,12 @@ export class DBSeries {
 
 	getSeriesHistOne(options: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series_non_hist', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with(
+				'cte_series_non_hist',
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+			)
 			.selectFrom('cte_series')
 			.innerJoin('change', 'change.id', 'cte_series.id')
 			.select([
@@ -234,6 +239,7 @@ export class DBSeries {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
+							'cte_book.lang',
 							'series_book_hist.sort_order',
 						])
 						.select((eb) =>
@@ -277,8 +283,8 @@ export class DBSeries {
 
 	getSeriesOneEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
-			.with('cte_series', withSeriesTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_series')
 			.select([
 				'cte_series.id',
@@ -306,6 +312,7 @@ export class DBSeries {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
+							'cte_book.lang',
 							'series_book.sort_order',
 						])
 						.orderBy('sort_order asc'),
@@ -339,9 +346,12 @@ export class DBSeries {
 
 	getSeriesHistOneEdit(params: { id: number; revision: number }) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series_non_hist', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with(
+				'cte_series_non_hist',
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+			)
 			.selectFrom('cte_series')
 			.innerJoin('change', 'change.id', 'cte_series.id')
 			.select([
@@ -370,6 +380,7 @@ export class DBSeries {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
+							'cte_book.lang',
 							'series_book_hist.sort_order',
 						])
 						.orderBy('sort_order asc'),

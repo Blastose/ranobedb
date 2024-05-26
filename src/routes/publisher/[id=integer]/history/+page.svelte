@@ -1,22 +1,27 @@
 <script lang="ts">
-	import History from '$lib/components/history/History.svelte';
+	import HistoryPaged from '$lib/components/history/HistoryPaged.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
 
 	export let data;
 
 	$: changes = data.changes;
 	$: publisher = data.publisher;
 
-	$: title = `Edit history of ${publisher.name}`;
+	const displayPrefs = getDisplayPrefsContext();
 
-	// TODO these can be replaced with DbItem enums
-	function buildRevisionLink(item_id: number, revision: number) {
-		return `/publisher/${item_id}/revision/${revision}`;
-	}
+	$: title = `Edit history of ${getNameDisplay({ obj: publisher, prefs: $displayPrefs.names })}`;
 </script>
 
 <PageTitle {title} />
 
 <main class="container-rndb">
-	<History {changes} {title} {buildRevisionLink} prefix="p" />
+	<HistoryPaged
+		{changes}
+		{title}
+		dbItem="publisher"
+		prefix="p"
+		currentPage={data.currentPage}
+		totalPages={data.totalPages}
+	/>
 </main>

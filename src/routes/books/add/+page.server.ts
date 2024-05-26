@@ -1,5 +1,5 @@
 import { DBBookActions } from '$lib/server/db/books/actions';
-import { bookSchema } from '$lib/zod/schema.js';
+import { bookSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
@@ -7,10 +7,13 @@ import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasAddPerms } from '$lib/db/permissions';
 import { db } from '$lib/server/db/db.js';
+import { buildRedirectUrl } from '$lib/utils/url.js';
 const { DatabaseError } = pkg;
 
-export const load = async ({ locals }) => {
-	if (!locals.user) redirect(302, '/login');
+export const load = async ({ locals, url }) => {
+	if (!locals.user) {
+		redirect(302, buildRedirectUrl(url, '/login'));
+	}
 
 	if (!hasAddPerms(locals.user)) {
 		error(403);

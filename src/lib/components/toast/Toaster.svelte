@@ -6,7 +6,11 @@
 		actions: { portal },
 	} = createToaster<ToastData>();
 
-	export const addToast = helpers.addToast;
+	export const addToast = (props: Parameters<typeof helpers.addToast>[0]) => {
+		if (browser) {
+			helpers.addToast(props);
+		}
+	};
 </script>
 
 <script lang="ts">
@@ -14,6 +18,7 @@
 	import Toast from './Toast.svelte';
 	import { flip } from 'svelte/animate';
 	import type { ToastData } from './toast';
+	import { browser } from '$app/environment';
 </script>
 
 <div class="toaster-container" use:portal>

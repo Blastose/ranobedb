@@ -1,21 +1,27 @@
 <script lang="ts">
-	import History from '$lib/components/history/History.svelte';
+	import HistoryPaged from '$lib/components/history/HistoryPaged.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs.js';
 
 	export let data;
 
 	$: changes = data.changes;
 	$: book = data.book;
 
-	$: title = `Edit history of ${book.title ?? book.title_orig ?? ''}`;
+	const displayPrefs = getDisplayPrefsContext();
 
-	function buildRevisionLink(item_id: number, revision: number) {
-		return `/book/${item_id}/revision/${revision}`;
-	}
+	$: title = `Edit history of ${getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs })}`;
 </script>
 
 <PageTitle {title} />
 
 <main class="container-rndb">
-	<History {changes} {title} {buildRevisionLink} prefix="b" />
+	<HistoryPaged
+		{changes}
+		{title}
+		dbItem="book"
+		prefix="b"
+		currentPage={data.currentPage}
+		totalPages={data.totalPages}
+	/>
 </main>

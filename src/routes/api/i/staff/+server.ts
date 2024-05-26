@@ -2,7 +2,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { db } from '$lib/server/db/db';
 import type { Expression, SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
-import { searchNameSchema } from '$lib/zod/schema';
+import { searchNameSchema } from '$lib/server/zod/schema';
 import { zod } from 'sveltekit-superforms/adapters';
 
 function addCharacterBetweenString(str: string, char: string) {
@@ -23,7 +23,13 @@ async function getStaffByName(name: string, nameAsNumber: number) {
 			return eb.or(ors);
 		})
 		.where('staff.hidden', '=', false)
-		.select(['staff_alias.name', 'staff_alias.id', 'staff_alias.staff_id'])
+		.select([
+			'staff_alias.name',
+			'staff_alias.id',
+			'staff_alias.staff_id',
+			'staff_alias.romaji',
+			'staff_alias.id as aid',
+		])
 		.limit(16)
 		.execute();
 }

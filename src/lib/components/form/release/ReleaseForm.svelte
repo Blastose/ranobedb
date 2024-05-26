@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { releaseSchema } from '$lib/zod/schema';
+	import type { releaseSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
@@ -12,15 +12,16 @@
 	import ReleasePublisherInput from './ReleasePublisherInput.svelte';
 	import ReleaseBookInput from './ReleaseBookInput.svelte';
 	import ReleaseDateInput from './ReleaseDateInput.svelte';
+	import { languageNames, languagesArray, releaseFormatArray } from '$lib/db/dbConsts';
 	import SelectField from '../SelectField.svelte';
-	import { languageNames, languagesArray, releaseFormatArray } from '$lib/db/dbTypes';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	export let release: ReleaseEdit | undefined;
 	export let releaseForm: SuperValidated<Infer<typeof releaseSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
 
-	$: sForm = superForm(releaseForm, {
+	const sForm = superForm(releaseForm, {
 		dataType: 'json',
 		resetForm: false,
 		onUpdated({ form: f }) {
@@ -29,16 +30,16 @@
 			}
 		},
 	});
-	$: ({ form, enhance, delayed, submitting } = sForm);
+	const { form, enhance, delayed, submitting } = sForm;
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
 </script>
 
-<SuperDebug data={$form} />
+<!-- <SuperDebug data={$form} /> -->
 
 <form method="post" class="flex flex-col gap-4" use:enhance>
 	{#if release}
-		<h1 class="font-bold text-xl">Editing {release.title ?? 'release'}</h1>
+		<h1 class="font-bold text-xl">Editing <NameDisplay obj={release} /></h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add release</h1>
 	{/if}

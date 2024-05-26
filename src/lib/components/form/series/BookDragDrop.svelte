@@ -3,24 +3,41 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { quintOut } from 'svelte/easing';
 	import DndItem from './DndItem.svelte';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
+	import type { Language } from '$lib/server/db/dbTypes';
+	import type { Nullish } from '$lib/server/zod/schema';
+	import { tick } from 'svelte';
 
 	export let items: {
 		id: number;
 		sort_order: number;
 		title?: string | null | undefined;
 		romaji?: string | null | undefined;
+		lang?: Nullish<Language>;
 	}[];
 
 	export let remove: (index: number) => void;
 	export let updateSortOrder: () => void;
 
-	function swap<T>(arr: T[], indexL: number, indexR: number) {
+	async function swap<T>(arr: T[], indexL: number, indexR: number, direction: 'up' | 'down') {
 		if (indexL < 0 || indexR < 0) return;
 		if (indexL > arr.length - 1 || indexR > arr.length - 1) return;
 
 		[arr[indexR], arr[indexL]] = [arr[indexL], arr[indexR]];
 		updateSortOrder();
 		items = items;
+
+		// When the up button is pressed and swaped, the button afterwards is not focused, whereas it is when the down button is pressed,
+		// so we need to manually focus the button
+		if (direction === 'up') {
+			await tick();
+			const button = bookList.querySelector<HTMLButtonElement>(
+				`button[data-index="${indexL - 1}"]`,
+			);
+			if (button) {
+				button.focus();
+			}
+		}
 	}
 
 	let dragging = false;
@@ -49,9 +66,10 @@
 			},
 		};
 	}
+	let bookList: HTMLDivElement;
 </script>
 
-<div use:dragList class="flex flex-col gap-2">
+<div use:dragList class="flex flex-col gap-2" bind:this={bookList}>
 	{#each items as item, index (item.id)}
 		<div animate:flip={{ duration: 500, easing: quintOut }}>
 			<DndItem
@@ -71,25 +89,40 @@
 						<Icon name="drag" />
 					</div>
 					<a target="_blank" rel="noreferrer" href="/book/{item.id}" class="link line-clamp-1"
-						><span class="text-sm">#{item.id}:</span> {item.title}</a
+						><span class="text-sm">#{item.id}:</span>
+						<TitleDisplay
+							obj={{
+								lang: item.lang ?? 'en',
+								romaji: item.romaji ?? '',
+								romaji_orig: null,
+								title: item.title ?? '',
+								title_orig: '',
+							}}
+						/></a
 					>
 					<div class="flex gap-2">
 						<button
+							class="btn rounded-full"
+							disabled={index === 0}
 							on:click={() => {
-								swap(items, index, index - 1);
+								swap(items, index, index - 1, 'up');
 							}}
 							type="button"
+							data-index={index}
 							aria-label="Move up"><Icon name="chevronUp" /></button
 						>
 						<button
+							class="btn rounded-full"
+							disabled={index === items.length - 1}
 							on:click={() => {
-								swap(items, index, index + 1);
+								swap(items, index, index + 1, 'down');
 							}}
 							type="button"
 							aria-label="Move down"><Icon name="chevronDown" /></button
 						>
 
 						<button
+							class="btn rounded-full"
 							on:click={() => {
 								remove(index);
 							}}

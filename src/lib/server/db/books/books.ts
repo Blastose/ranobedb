@@ -1,8 +1,9 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
-import type { DB } from '$lib/db/dbTypes';
-import { defaultLangPrio, type LanguagePriority } from '../dbHelpers';
+import type { DB } from '$lib/server/db/dbTypes';
+import { type LanguagePriority } from '$lib/server/zod/schema';
+import { defaultLangPrio } from '$lib/db/dbConsts';
 import type { User } from 'lucia';
 import { withSeriesTitleCte } from '../series/series';
 
@@ -102,9 +103,9 @@ export class DBBooks {
 
 	getBook(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.description',
@@ -159,6 +160,7 @@ export class DBBooks {
 									.select([
 										'book_staff_alias.role_type',
 										'staff_alias.name',
+										'staff_alias.romaji',
 										'staff_alias.staff_id',
 										'staff_alias.id as staff_alias_id',
 										'book_staff_alias.note',
@@ -188,6 +190,7 @@ export class DBBooks {
 										'cte_book_2.title_orig',
 										'cte_book_2.romaji',
 										'cte_book_2.romaji_orig',
+										'cte_book_2.lang',
 									])
 									.select((eb) =>
 										jsonObjectFrom(
@@ -203,7 +206,14 @@ export class DBBooks {
 									.orderBy('series_book.sort_order asc'),
 							).as('books'),
 						)
-						.select(['cte_series.title', 'cte_series.romaji', 'cte_series.id']),
+						.select([
+							'cte_series.title',
+							'cte_series.title_orig',
+							'cte_series.romaji',
+							'cte_series.romaji_orig',
+							'cte_series.id',
+							'cte_series.lang',
+						]),
 				).as('series'),
 			])
 			.where('cte_book.id', '=', id);
@@ -211,9 +221,9 @@ export class DBBooks {
 
 	getBookHist(id: number, revision?: number) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.title_prefs))
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.innerJoin('change', 'change.id', 'cte_book.id')
 			.select([
@@ -275,6 +285,7 @@ export class DBBooks {
 									.select([
 										'book_staff_alias_hist.role_type',
 										'staff_alias.name',
+										'staff_alias.romaji',
 										'staff_alias.staff_id',
 										'staff_alias.id as staff_alias_id',
 										'book_staff_alias_hist.note',
@@ -304,6 +315,7 @@ export class DBBooks {
 										'cte_book_2.title_orig',
 										'cte_book_2.romaji',
 										'cte_book_2.romaji_orig',
+										'cte_book_2.lang',
 									])
 									.select((eb) =>
 										jsonObjectFrom(
@@ -319,7 +331,14 @@ export class DBBooks {
 									.orderBy('series_book.sort_order asc'),
 							).as('books'),
 						)
-						.select(['cte_series.title', 'cte_series.romaji', 'cte_series.id']),
+						.select([
+							'cte_series.title',
+							'cte_series.title_orig',
+							'cte_series.romaji',
+							'cte_series.romaji_orig',
+							'cte_series.id',
+							'cte_series.lang',
+						]),
 				).as('series'),
 			])
 			.where('change.item_id', '=', id)
@@ -335,7 +354,7 @@ export class DBBooks {
 
 	getBookEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.select([
@@ -387,6 +406,7 @@ export class DBBooks {
 									.select([
 										'book_staff_alias.role_type',
 										'staff_alias.name',
+										'staff_alias.romaji',
 										'staff_alias.staff_id',
 										'staff_alias.id as staff_alias_id',
 										'book_staff_alias.note',
@@ -400,7 +420,7 @@ export class DBBooks {
 
 	getBookHistEdit(id: number, revision: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.innerJoin('change', 'change.id', 'cte_book.id')
@@ -459,6 +479,7 @@ export class DBBooks {
 									.select([
 										'book_staff_alias_hist.role_type',
 										'staff_alias.name',
+										'staff_alias.romaji',
 										'staff_alias.staff_id',
 										'staff_alias.id as staff_alias_id',
 										'book_staff_alias_hist.note',
@@ -474,7 +495,7 @@ export class DBBooks {
 
 	getBooks() {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.title_prefs))
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.description',

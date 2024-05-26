@@ -1,4 +1,5 @@
 <script lang="ts">
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
 	import DisplayBoxContainer from '$lib/components/layout/db/DisplayBoxContainer.svelte';
@@ -19,7 +20,7 @@
 	<svelte:fragment slot="display">
 		<DisplayBoxContainer>
 			{#each data.staff as staff (staff.id)}
-				<LinkBox display={staff.name} href="/staff/{staff.id}" />
+				<LinkBox href="/staff/{staff.id}"><NameDisplay obj={staff} /></LinkBox>
 			{/each}
 		</DisplayBoxContainer>
 	</svelte:fragment>

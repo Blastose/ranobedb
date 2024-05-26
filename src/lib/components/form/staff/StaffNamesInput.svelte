@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { staffSchema } from '$lib/zod/schema';
+	import type { staffSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 
 	export let form: SuperForm<Infer<typeof staffSchema>, App.Superforms.Message>;

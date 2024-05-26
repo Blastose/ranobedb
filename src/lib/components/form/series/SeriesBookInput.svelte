@@ -1,9 +1,10 @@
 <script lang="ts">
-	import type { seriesSchema } from '$lib/zod/schema';
+	import type { seriesSchema } from '$lib/server/zod/schema';
 	import ComboboxInput from '../ComboboxInput.svelte';
 
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import BookDragDrop from './BookDragDrop.svelte';
+	import type { ApiBook } from '../../../../routes/api/i/book/+server';
 
 	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
 
@@ -13,12 +14,13 @@
 		$values = $values;
 	}
 
-	function handleAddBook(book: { id: number; name: string }) {
+	function handleAddBook(book: ApiBook[number]) {
 		if ($values.some((item) => item.id === book.id)) return;
 		$values.push({
 			title: book.name,
 			id: book.id,
 			romaji: '',
+			lang: book.lang,
 			sort_order: $values.length,
 		});
 		$values = $values;

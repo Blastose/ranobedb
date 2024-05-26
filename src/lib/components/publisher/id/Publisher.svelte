@@ -8,6 +8,8 @@
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 
 	export let publisher: Publisher;
 	export let isRevision: boolean;
@@ -18,13 +20,15 @@
 	export let totalPages: number;
 
 	$: child_publishers = groupBy(publisher.child_publishers, (item) => item.relation_type);
+
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <DBItemShell
 	dbItem="publisher"
 	{isRevision}
-	name={publisher.name}
-	subName={publisher.romaji}
+	name={getNameDisplay({ obj: publisher, prefs: $displayPrefs.names })}
+	subName={getNameDisplaySub({ obj: publisher, prefs: $displayPrefs.names })}
 	{user}
 	item={publisher}
 >
@@ -45,7 +49,7 @@
 					<h3 class="font-semibold capitalize">{key}:</h3>
 					{#each publishers as publisher, index}
 						<span>
-							<a class="link" href="/publisher/{publisher.id}">{publisher.name}</a
+							<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a
 							>{#if index < publishers.length - 1},{/if}
 						</span>
 					{/each}

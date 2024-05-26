@@ -2,7 +2,7 @@ import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
 import type { InferResult, Kysely } from 'kysely';
 import { withBookTitleCte } from '../books/books';
-import type { DB } from '$lib/db/dbTypes';
+import type { DB } from '$lib/server/db/dbTypes';
 import type { User } from 'lucia';
 
 export class DBReleases {
@@ -27,14 +27,14 @@ export class DBReleases {
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher_type']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type']),
 				).as('publishers'),
 			]);
 	}
 
 	getRelease(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release')
 			.selectAll('release')
 			.select((eb) => [
@@ -43,7 +43,7 @@ export class DBReleases {
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -59,6 +59,7 @@ export class DBReleases {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
+							'cte_book.lang',
 						]),
 				).as('books'),
 			])
@@ -67,7 +68,7 @@ export class DBReleases {
 
 	getReleaseHist(options: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release_hist')
 			.innerJoin('change', 'change.id', 'release_hist.change_id')
 			.select([
@@ -92,7 +93,7 @@ export class DBReleases {
 							'publisher.id',
 						)
 						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -108,6 +109,7 @@ export class DBReleases {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
+							'cte_book.lang',
 						]),
 				).as('books'),
 			])
@@ -124,7 +126,7 @@ export class DBReleases {
 
 	getReleaseEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release')
 			.select([
 				'release.id',
@@ -145,7 +147,7 @@ export class DBReleases {
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -161,6 +163,7 @@ export class DBReleases {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
+							'cte_book.lang',
 							'release_book.rtype',
 						]),
 				).as('books'),
@@ -170,7 +173,7 @@ export class DBReleases {
 
 	getReleaseHistEdit(params: { id: number; revision: number }) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release_hist')
 			.innerJoin('change', 'change.id', 'release_hist.change_id')
 			.select([
@@ -195,7 +198,7 @@ export class DBReleases {
 							'publisher.id',
 						)
 						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
-						.select(['publisher.name', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -211,6 +214,7 @@ export class DBReleases {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
+							'cte_book.lang',
 							'release_book_hist.rtype',
 						]),
 				).as('books'),
