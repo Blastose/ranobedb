@@ -38,7 +38,6 @@
 		const json = await res.json();
 		return json;
 	}
-	// TODO fix sort_order when adding a new one and reordering i think? maybe?
 </script>
 
 <section class="flex flex-col gap-2">

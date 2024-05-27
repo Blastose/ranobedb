@@ -1,12 +1,17 @@
 import { getChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
-import { detailedDiff } from 'deep-object-diff';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
 import { db } from '$lib/server/db/db.js';
-import { diffTrimmedLines } from 'diff';
-import xss from 'xss';
+import {
+	generateBookTitleChangeStringFromBooks,
+	generateSeriesBookChangeStringFromBooks,
+	generateSeriesRelationChangeStringFromSeries,
+	getChange,
+	getChangeDiffWords,
+	type Change2,
+} from '$lib/components/history/utils.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -24,13 +29,17 @@ export const load = async ({ params, locals }) => {
 		revision + 1,
 	]).execute();
 
-	const [series, changes] = await Promise.all([seriesPromise, changesPromise]);
+	const [series, seriesHistEdit, changes] = await Promise.all([
+		seriesPromise,
+		dbSeries.getSeriesHistOneEdit({ id: seriesId, revision }).executeTakeFirst(),
+		changesPromise,
+	]);
 
 	const prevChange = changes.find((i) => i.revision === previousRevision);
 	const change = changes.find((i) => i.revision === revision)!;
 	const nextChange = changes.find((i) => i.revision === revision + 1);
 
-	if (!series) {
+	if (!series || !seriesHistEdit) {
 		error(404);
 	}
 
@@ -43,10 +52,11 @@ export const load = async ({ params, locals }) => {
 		}
 	}
 	let diff;
-	let diffTrimmedLinesOuput;
+	let resss;
+	const diffs: NonNullable<Change2>[] = [];
 	if (previousRevision > 0) {
 		const prevSeries = await dbSeries
-			.getSeriesHistOne({
+			.getSeriesHistOneEdit({
 				id: seriesId,
 				revision: previousRevision,
 			})
@@ -54,37 +64,77 @@ export const load = async ({ params, locals }) => {
 		if (!prevSeries) {
 			error(404);
 		}
-		// TODO diff these better
-
-		diff = detailedDiff(prevSeries, series);
-
-		let prevSeriesBooksString = '';
-		for (const i of prevSeries.books) {
-			const str = `<a class="link" target="_blank" href="/book/${i.id}">${xss(i.title)}</a> [#${
-				i.sort_order
-			}]`;
-			prevSeriesBooksString += str + '\n';
+		resss = getChange({
+			obj1: prevSeries,
+			obj2: seriesHistEdit,
+			key: 'books',
+			fn: (v: (typeof seriesHistEdit)['books']) => generateSeriesBookChangeStringFromBooks(v),
+			name: 'Books',
+		});
+		if (resss) {
+			diffs.push(resss);
 		}
-		let seriesBooksString = '';
-		for (const i of series.books) {
-			// Manually building html; need to use xss
-			const str = `<a class="link" target="_blank" href="/book/${i.id}">${xss(i.title)}</a> [#${
-				i.sort_order
-			}]`;
-			seriesBooksString += str + '\n';
+		resss = getChange({
+			obj1: prevSeries,
+			obj2: seriesHistEdit,
+			key: 'titles',
+			fn: (v: (typeof seriesHistEdit)['titles']) => generateBookTitleChangeStringFromBooks(v),
+			name: 'Title(s)',
+		});
+		if (resss) {
+			diffs.push(resss);
 		}
-		diffTrimmedLinesOuput = diffTrimmedLines(
-			prevSeriesBooksString.trim(),
-			seriesBooksString.trim(),
-		);
-		console.dir(diffTrimmedLinesOuput, { depth: null });
+		resss = getChange({
+			obj1: prevSeries,
+			obj2: seriesHistEdit,
+			key: 'child_series',
+			fn: (v: (typeof seriesHistEdit)['child_series']) =>
+				generateSeriesRelationChangeStringFromSeries(v),
+			name: 'Series relations',
+		});
+		if (resss) {
+			diffs.push(resss);
+		}
+		resss = getChangeDiffWords({
+			name: 'Hidden',
+			words1: prevSeries.hidden.toString(),
+			words2: seriesHistEdit.hidden.toString(),
+		});
+		if (resss) {
+			diffs.push(resss);
+		}
+		resss = getChangeDiffWords({
+			name: 'Locked',
+			words1: prevSeries.locked.toString(),
+			words2: seriesHistEdit.locked.toString(),
+		});
+		if (resss) {
+			diffs.push(resss);
+		}
+		resss = getChangeDiffWords({
+			name: 'Pub. status',
+			words1: prevSeries.publication_status,
+			words2: seriesHistEdit.publication_status,
+		});
+		if (resss) {
+			diffs.push(resss);
+		}
+		resss = getChangeDiffWords({
+			name: 'Description',
+			words1: prevSeries.description,
+			words2: seriesHistEdit.description,
+		});
+		if (resss) {
+			diffs.push(resss);
+		}
 	}
 
 	return {
 		seriesId,
 		series,
 		diff,
-		diffTrimmedLinesOuput,
+		diffs,
+		diffTrimmedLinesOuput: resss,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
 	};
