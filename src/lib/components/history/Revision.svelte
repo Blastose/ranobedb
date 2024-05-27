@@ -64,17 +64,19 @@
 		/>
 	{/if}
 
-	<section class="flex flex-col gap-2">
-		<h2 class="font-bold text-lg">Changes:</h2>
-		{#each diffs as d, index}
-			<section>
-				<DiffDisplay changes={d} />
-			</section>
-			{#if index !== diffs.length - 1}
-				<Hr />
-			{/if}
-		{:else}
-			<p class="italic">No changes</p>
-		{/each}
-	</section>
+	{#if changes.change.revision !== 1}
+		<section class="flex flex-col gap-2">
+			<h2 class="font-bold text-lg">Changes:</h2>
+			{#each diffs as d, index}
+				<section>
+					<DiffDisplay changes={d} />
+				</section>
+				{#if index !== diffs.length - 1}
+					<Hr />
+				{/if}
+			{:else}
+				<p class="italic">No changes</p>
+			{/each}
+		</section>
+	{/if}
 </div>

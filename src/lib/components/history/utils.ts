@@ -1,7 +1,12 @@
-import { getTitleDisplay, type TitleDisplay } from '$lib/display/prefs';
-import type { Language, SeriesRelType } from '$lib/server/db/dbTypes';
-import type { DisplayPrefs } from '$lib/server/zod/schema';
-import { diffLines, diffWords, type Change } from 'diff';
+import { getNameDisplay, getTitleDisplay, type TitleDisplay } from '$lib/display/prefs';
+import type {
+	Language,
+	ReleasePublisherType,
+	ReleaseType,
+	SeriesRelType,
+} from '$lib/server/db/dbTypes';
+import type { DisplayPrefs, Nullish } from '$lib/server/zod/schema';
+import { diffChars, diffLines, diffWords, type Change } from 'diff';
 import xss from 'xss';
 
 export function generateLink(href: string, content: string) {
@@ -24,6 +29,54 @@ export function generateSeriesBookChangeStringFromBooks(
 	let str = '';
 	for (const book of books) {
 		str += generateSeriesBookChangeString(book, prefs) + '\n';
+	}
+	return str.trim();
+}
+function generateReleaseBookChangeString(
+	book: TitleDisplay & { rtype: ReleaseType; id: number },
+	prefs: DisplayPrefs['title_prefs'],
+) {
+	return `${generateLink(
+		`/book/${book.id}`,
+		getTitleDisplay({ obj: book, prefs }),
+	)} ${` [${book.rtype}]`}`;
+}
+export function generateReleaseBookChangeStringFromBooks(
+	books: (TitleDisplay & { rtype: ReleaseType; id: number })[],
+	prefs: DisplayPrefs['title_prefs'],
+) {
+	let str = '';
+	for (const book of books) {
+		str += generateReleaseBookChangeString(book, prefs) + '\n';
+	}
+	return str.trim();
+}
+function generateReleasePublisherChangeString(
+	publisher: {
+		id: number;
+		name: string;
+		romaji: string | null;
+		publisher_type: ReleasePublisherType;
+	},
+	prefs: DisplayPrefs['names'],
+) {
+	return `${generateLink(
+		`/publisher/${publisher.id}`,
+		getNameDisplay({ obj: publisher, prefs }),
+	)} ${` [${publisher.publisher_type}]`}`;
+}
+export function generateReleasePublisherChangeStringFromPublishers(
+	publishers: {
+		id: number;
+		name: string;
+		romaji: string | null;
+		publisher_type: ReleasePublisherType;
+	}[],
+	prefs: DisplayPrefs['names'],
+) {
+	let str = '';
+	for (const publisher of publishers) {
+		str += generateReleasePublisherChangeString(publisher, prefs) + '\n';
 	}
 	return str.trim();
 }
@@ -131,11 +184,11 @@ export function getDiffLines<J, T extends Record<K, J>, K extends keyof T>(param
 }
 
 export function getDiffWords(params: {
-	words1: string;
-	words2: string;
+	words1: Nullish<string>;
+	words2: Nullish<string>;
 	name: string;
 }): Diff | undefined {
-	const diffs = diffWords(params.words1, params.words2);
+	const diffs = diffWords(params.words1 ?? '', params.words2 ?? '');
 	for (const diff of diffs) {
 		if (diff.removed || diff.added) {
 			return {
@@ -143,6 +196,24 @@ export function getDiffWords(params: {
 				name: params.name,
 				textType: 'text',
 				type: 'word',
+			};
+		}
+	}
+	return undefined;
+}
+export function getDiffChars(params: {
+	words1: Nullish<string>;
+	words2: Nullish<string>;
+	name: string;
+}): Diff | undefined {
+	const diffs = diffChars(params.words1 ?? '', params.words2 ?? '');
+	for (const diff of diffs) {
+		if (diff.removed || diff.added) {
+			return {
+				changes: diffs,
+				name: params.name,
+				textType: 'text',
+				type: 'char',
 			};
 		}
 	}
