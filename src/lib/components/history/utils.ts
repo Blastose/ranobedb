@@ -86,6 +86,24 @@ export function generateSeriesRelationChangeStringFromSeries(
 	return str.trim();
 }
 
+type StaffAlias = {
+	main_alias: boolean;
+	name: string;
+	romaji: string | null;
+};
+function generateStaffAliasChangeString(alias: StaffAlias): string {
+	return `${alias.name}${alias.romaji ? ` (${alias.romaji})` : ``}${
+		alias.main_alias ? ` [primary]` : ``
+	}`;
+}
+export function generateStaffAliasChangeStringFromStaffAliases(aliases: StaffAlias[]) {
+	let str = '';
+	for (const alias of aliases) {
+		str += generateStaffAliasChangeString(alias) + '\n';
+	}
+	return str.trim();
+}
+
 export type Diff = {
 	name: string;
 	changes: Change[];
