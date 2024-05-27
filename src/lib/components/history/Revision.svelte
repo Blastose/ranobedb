@@ -1,27 +1,23 @@
 <script lang="ts">
 	import type { Change } from '$lib/server/db/change/change';
-	import type { Change as DiffChange } from 'diff';
 	import RevisionInfo from './RevisionInfo.svelte';
-	import ChangeComponent from './diff-display/Change.svelte';
-	import type { Change2 } from './utils';
+	import type { Diff } from './utils';
 	import Hr from '../layout/Hr.svelte';
-	import ChangeText from './diff-display/ChangeText.svelte';
+	import DiffDisplay from './diff-display/DiffDisplay.svelte';
 
 	export let changes: { prevChange?: Change; change: Change; nextChange?: Change };
 	export let title: string;
 	export let buildBaseLink: () => string;
-	export let diff: string;
-	export let diffs: NonNullable<Change2>[];
+	export let diffs: Diff[];
 </script>
 
 <div class="flex flex-col gap-2">
 	<div>
 		<p class="font-bold text-lg">Revision {changes.change.revision} of {title}</p>
-		<div class="flex gap-4">
-			<a class="link" href="{buildBaseLink()}/history">View history</a><a
-				class="link"
-				href={buildBaseLink()}>View current</a
-			>
+		<div class="flex flex-wrap gap-4">
+			<a class="link" href="{buildBaseLink()}/history">View history</a>
+			<a class="link" href={buildBaseLink()}>View current</a>
+			<a class="link" href="#content">Jump to content</a>
 		</div>
 	</div>
 
@@ -68,22 +64,17 @@
 		/>
 	{/if}
 
-	{#if diff}
-		<section>
-			<h2>Changes:</h2>
-			<code class="whitespace-pre-line">{diff}</code>
-		</section>
-	{/if}
-
-	<h2 class="font-bold text-lg">Changes:</h2>
-	{#if diffs}
+	<section class="flex flex-col gap-2">
+		<h2 class="font-bold text-lg">Changes:</h2>
 		{#each diffs as d, index}
 			<section>
-				<ChangeText changes={d} />
+				<DiffDisplay changes={d} />
 			</section>
 			{#if index !== diffs.length - 1}
 				<Hr />
 			{/if}
+		{:else}
+			<p class="italic">No changes</p>
 		{/each}
-	{/if}
+	</section>
 </div>

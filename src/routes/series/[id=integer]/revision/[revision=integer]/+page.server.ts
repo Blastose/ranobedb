@@ -8,9 +8,9 @@ import {
 	generateBookTitleChangeStringFromBooks,
 	generateSeriesBookChangeStringFromBooks,
 	generateSeriesRelationChangeStringFromSeries,
-	getChange,
-	getChangeDiffWords,
-	type Change2,
+	getDiffLines,
+	getDiffWords,
+	type Diff,
 } from '$lib/components/history/utils.js';
 
 export const load = async ({ params, locals }) => {
@@ -52,8 +52,7 @@ export const load = async ({ params, locals }) => {
 		}
 	}
 	let diff;
-	let resss;
-	const diffs: NonNullable<Change2>[] = [];
+	const diffs: Diff[] = [];
 	if (previousRevision > 0) {
 		const prevSeries = await dbSeries
 			.getSeriesHistOneEdit({
@@ -64,27 +63,27 @@ export const load = async ({ params, locals }) => {
 		if (!prevSeries) {
 			error(404);
 		}
-		resss = getChange({
-			obj1: prevSeries,
-			obj2: seriesHistEdit,
-			key: 'books',
-			fn: (v: (typeof seriesHistEdit)['books']) => generateSeriesBookChangeStringFromBooks(v),
-			name: 'Books',
-		});
-		if (resss) {
-			diffs.push(resss);
-		}
-		resss = getChange({
+		diff = getDiffLines({
 			obj1: prevSeries,
 			obj2: seriesHistEdit,
 			key: 'titles',
 			fn: (v: (typeof seriesHistEdit)['titles']) => generateBookTitleChangeStringFromBooks(v),
 			name: 'Title(s)',
 		});
-		if (resss) {
-			diffs.push(resss);
+		if (diff) {
+			diffs.push(diff);
 		}
-		resss = getChange({
+		diff = getDiffLines({
+			obj1: prevSeries,
+			obj2: seriesHistEdit,
+			key: 'books',
+			fn: (v: (typeof seriesHistEdit)['books']) => generateSeriesBookChangeStringFromBooks(v),
+			name: 'Books',
+		});
+		if (diff) {
+			diffs.push(diff);
+		}
+		diff = getDiffLines({
 			obj1: prevSeries,
 			obj2: seriesHistEdit,
 			key: 'child_series',
@@ -92,49 +91,47 @@ export const load = async ({ params, locals }) => {
 				generateSeriesRelationChangeStringFromSeries(v),
 			name: 'Series relations',
 		});
-		if (resss) {
-			diffs.push(resss);
+		if (diff) {
+			diffs.push(diff);
 		}
-		resss = getChangeDiffWords({
+		diff = getDiffWords({
 			name: 'Hidden',
 			words1: prevSeries.hidden.toString(),
 			words2: seriesHistEdit.hidden.toString(),
 		});
-		if (resss) {
-			diffs.push(resss);
+		if (diff) {
+			diffs.push(diff);
 		}
-		resss = getChangeDiffWords({
+		diff = getDiffWords({
 			name: 'Locked',
 			words1: prevSeries.locked.toString(),
 			words2: seriesHistEdit.locked.toString(),
 		});
-		if (resss) {
-			diffs.push(resss);
+		if (diff) {
+			diffs.push(diff);
 		}
-		resss = getChangeDiffWords({
+		diff = getDiffWords({
 			name: 'Pub. status',
 			words1: prevSeries.publication_status,
 			words2: seriesHistEdit.publication_status,
 		});
-		if (resss) {
-			diffs.push(resss);
+		if (diff) {
+			diffs.push(diff);
 		}
-		resss = getChangeDiffWords({
+		diff = getDiffWords({
 			name: 'Description',
 			words1: prevSeries.description,
 			words2: seriesHistEdit.description,
 		});
-		if (resss) {
-			diffs.push(resss);
+		if (diff) {
+			diffs.push(diff);
 		}
 	}
 
 	return {
 		seriesId,
 		series,
-		diff,
 		diffs,
-		diffTrimmedLinesOuput: resss,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
 	};

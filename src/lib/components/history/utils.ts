@@ -31,7 +31,7 @@ function generateBookTitleChangeString(book: {
 }) {
 	let str = `[${book.lang}] ${book.title} [official: ${book.official}]`;
 	if (book.romaji) {
-		str += '\n' + `[${book.lang} Romaji]${book.romaji}`;
+		str += '\n' + `[${book.lang} Romaji] ${book.romaji}`;
 	}
 	return str;
 }
@@ -72,16 +72,19 @@ export function generateSeriesRelationChangeStringFromSeries(
 	return str.trim();
 }
 
-export type Change2 =
-	| { name: string; changes: Change[]; type: 'line' | 'word' | 'char'; textType: 'text' | 'html' }
-	| undefined;
-export function getChange<J, T extends Record<K, J>, K extends keyof T>(params: {
+export type Diff = {
+	name: string;
+	changes: Change[];
+	type: 'line' | 'word' | 'char';
+	textType: 'text' | 'html';
+};
+export function getDiffLines<J, T extends Record<K, J>, K extends keyof T>(params: {
 	obj1: T;
 	obj2: T;
 	key: K;
-	fn: (arg0: J) => string;
+	fn: (value: J) => string;
 	name: string;
-}): Change2 {
+}): Diff | undefined {
 	const { fn, obj1, obj2, key, name } = params;
 	const changeStrings = { changeStr1: fn(obj1[key]), changeStr2: fn(obj2[key]) };
 	const diffs = diffLines(changeStrings.changeStr1, changeStrings.changeStr2, {
@@ -95,11 +98,11 @@ export function getChange<J, T extends Record<K, J>, K extends keyof T>(params: 
 	return undefined;
 }
 
-export function getChangeDiffWords(params: {
+export function getDiffWords(params: {
 	words1: string;
 	words2: string;
 	name: string;
-}): Change2 {
+}): Diff | undefined {
 	const diffs = diffWords(params.words1, params.words2);
 	for (const diff of diffs) {
 		if (diff.removed || diff.added) {

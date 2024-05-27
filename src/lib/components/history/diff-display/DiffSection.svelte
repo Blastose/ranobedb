@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Change2 } from '../utils';
+	import type { Diff } from '../utils';
 
-	export let changes: NonNullable<Change2>;
+	export let changes: Diff;
 	export let type: 'old' | 'new';
 </script>
 
