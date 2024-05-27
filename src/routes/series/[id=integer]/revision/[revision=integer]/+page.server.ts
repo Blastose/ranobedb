@@ -10,8 +10,10 @@ import {
 	generateSeriesRelationChangeStringFromSeries,
 	getDiffLines,
 	getDiffWords,
+	pushIfNotUndefined,
 	type Diff,
 } from '$lib/components/history/utils.js';
+import { getDisplayPrefsUser } from '$lib/display/prefs.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -53,6 +55,7 @@ export const load = async ({ params, locals }) => {
 	}
 	let diff;
 	const diffs: Diff[] = [];
+	const titlePrefs = getDisplayPrefsUser(locals?.user).title_prefs;
 	if (previousRevision > 0) {
 		const prevSeries = await dbSeries
 			.getSeriesHistOneEdit({
@@ -70,62 +73,49 @@ export const load = async ({ params, locals }) => {
 			fn: (v: (typeof seriesHistEdit)['titles']) => generateBookTitleChangeStringFromBooks(v),
 			name: 'Title(s)',
 		});
-		if (diff) {
-			diffs.push(diff);
-		}
+		pushIfNotUndefined(diffs, diff);
 		diff = getDiffLines({
 			obj1: prevSeries,
 			obj2: seriesHistEdit,
 			key: 'books',
-			fn: (v: (typeof seriesHistEdit)['books']) => generateSeriesBookChangeStringFromBooks(v),
+			fn: (v: (typeof seriesHistEdit)['books']) =>
+				generateSeriesBookChangeStringFromBooks(v, titlePrefs),
 			name: 'Books',
 		});
-		if (diff) {
-			diffs.push(diff);
-		}
+		pushIfNotUndefined(diffs, diff);
 		diff = getDiffLines({
 			obj1: prevSeries,
 			obj2: seriesHistEdit,
 			key: 'child_series',
 			fn: (v: (typeof seriesHistEdit)['child_series']) =>
-				generateSeriesRelationChangeStringFromSeries(v),
+				generateSeriesRelationChangeStringFromSeries(v, titlePrefs),
 			name: 'Series relations',
 		});
-		if (diff) {
-			diffs.push(diff);
-		}
+		pushIfNotUndefined(diffs, diff);
 		diff = getDiffWords({
 			name: 'Hidden',
 			words1: prevSeries.hidden.toString(),
 			words2: seriesHistEdit.hidden.toString(),
 		});
-		if (diff) {
-			diffs.push(diff);
-		}
+		pushIfNotUndefined(diffs, diff);
 		diff = getDiffWords({
 			name: 'Locked',
 			words1: prevSeries.locked.toString(),
 			words2: seriesHistEdit.locked.toString(),
 		});
-		if (diff) {
-			diffs.push(diff);
-		}
+		pushIfNotUndefined(diffs, diff);
 		diff = getDiffWords({
 			name: 'Pub. status',
 			words1: prevSeries.publication_status,
 			words2: seriesHistEdit.publication_status,
 		});
-		if (diff) {
-			diffs.push(diff);
-		}
+		pushIfNotUndefined(diffs, diff);
 		diff = getDiffWords({
 			name: 'Description',
 			words1: prevSeries.description,
 			words2: seriesHistEdit.description,
 		});
-		if (diff) {
-			diffs.push(diff);
-		}
+		pushIfNotUndefined(diffs, diff);
 	}
 
 	return {

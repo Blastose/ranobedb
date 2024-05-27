@@ -1,4 +1,6 @@
+import { getTitleDisplay, type TitleDisplay } from '$lib/display/prefs';
 import type { Language, SeriesRelType } from '$lib/server/db/dbTypes';
+import type { DisplayPrefs } from '$lib/server/zod/schema';
 import { diffLines, diffWords, type Change } from 'diff';
 import xss from 'xss';
 
@@ -6,19 +8,22 @@ export function generateLink(href: string, content: string) {
 	return `<a class="link" target="_blank" href="${href}">${xss(content)}</a>`;
 }
 
-function generateSeriesBookChangeString(book: { id: number; title: string; sort_order: number }) {
-	return `${generateLink(`/book/${book.id}`, book.title)} ${` [#${book.sort_order}]`}`;
+function generateSeriesBookChangeString(
+	book: TitleDisplay & { sort_order: number; id: number },
+	prefs: DisplayPrefs['title_prefs'],
+) {
+	return `${generateLink(
+		`/book/${book.id}`,
+		getTitleDisplay({ obj: book, prefs }),
+	)} ${` [#${book.sort_order}]`}`;
 }
 export function generateSeriesBookChangeStringFromBooks(
-	books: {
-		id: number;
-		title: string;
-		sort_order: number;
-	}[],
+	books: (TitleDisplay & { sort_order: number; id: number })[],
+	prefs: DisplayPrefs['title_prefs'],
 ) {
 	let str = '';
 	for (const book of books) {
-		str += generateSeriesBookChangeString(book) + '\n';
+		str += generateSeriesBookChangeString(book, prefs) + '\n';
 	}
 	return str.trim();
 }
@@ -49,13 +54,20 @@ export function generateBookTitleChangeStringFromBooks(
 	}
 	return str.trim();
 }
-function generateSeriesRelationChangeString(series: {
-	id: number;
-	title: string;
-	romaji: string | null;
-	relation_type: SeriesRelType;
-}) {
-	return `${generateLink(`/series/${series.id}`, series.title)} ${` [${series.relation_type}]`}`;
+function generateSeriesRelationChangeString(
+	series: {
+		id: number;
+		title: string;
+		romaji: string | null;
+		relation_type: SeriesRelType;
+		lang: Language;
+	},
+	prefs: DisplayPrefs['title_prefs'],
+) {
+	return `${generateLink(
+		`/series/${series.id}`,
+		getTitleDisplay({ obj: series, prefs }),
+	)} ${` [${series.relation_type}]`}`;
 }
 export function generateSeriesRelationChangeStringFromSeries(
 	series: {
@@ -63,11 +75,13 @@ export function generateSeriesRelationChangeStringFromSeries(
 		title: string;
 		romaji: string | null;
 		relation_type: SeriesRelType;
+		lang: Language;
 	}[],
+	prefs: DisplayPrefs['title_prefs'],
 ) {
 	let str = '';
 	for (const serie of series) {
-		str += generateSeriesRelationChangeString(serie) + '\n';
+		str += generateSeriesRelationChangeString(serie, prefs) + '\n';
 	}
 	return str.trim();
 }
@@ -115,4 +129,10 @@ export function getDiffWords(params: {
 		}
 	}
 	return undefined;
+}
+
+export function pushIfNotUndefined<T>(array: T[], item: T | undefined) {
+	if (item) {
+		array.push(item);
+	}
 }

@@ -1,10 +1,15 @@
+import { defaultDisplayPrefs } from '$lib/db/dbConsts';
 import type { Language } from '$lib/server/db/dbTypes';
 import type { DisplayPrefs, Nullish } from '$lib/server/zod/schema';
+import type { User } from 'lucia';
 import { getContext } from 'svelte';
 import type { Writable } from 'svelte/store';
 
 export function getDisplayPrefsContext() {
 	return getContext<Writable<DisplayPrefs>>('displayPrefs');
+}
+export function getDisplayPrefsUser(user: User | null) {
+	return user?.display_prefs ?? defaultDisplayPrefs;
 }
 
 type ReleaseTitle = {
@@ -53,6 +58,13 @@ export function getNameDisplaySub(params: {
 
 export type TitleDisplay = {
 	title: string;
+	title_orig?: string;
+	romaji: string | null;
+	romaji_orig?: string | null;
+	lang: Language;
+};
+export type TitleDisplaySub = {
+	title: string;
 	title_orig: string;
 	romaji: string | null;
 	romaji_orig: string | null;
@@ -73,7 +85,7 @@ export function getTitleDisplay(params: {
 	}
 }
 export function getTitleDisplaySub(params: {
-	obj: TitleDisplay;
+	obj: TitleDisplaySub;
 	prefs: DisplayPrefs['title_prefs'];
 }): string {
 	const mainTitle = getTitleDisplay(params);
