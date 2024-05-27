@@ -3,10 +3,10 @@
 		getDisplayPrefsContext,
 		getTitleDisplay,
 		getTitleDisplaySub,
-		type TitleDisplay,
+		type TitleDisplayFull,
 	} from '$lib/display/prefs';
 
-	export let obj: TitleDisplay;
+	export let obj: TitleDisplayFull;
 	export let fallback: string | undefined = undefined;
 	export let type: 'main' | 'sub' = 'main';
 

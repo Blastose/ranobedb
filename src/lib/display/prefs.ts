@@ -63,7 +63,7 @@ export type TitleDisplay = {
 	romaji_orig?: string | null;
 	lang: Language;
 };
-export type TitleDisplaySub = {
+export type TitleDisplayFull = {
 	title: string;
 	title_orig: string;
 	romaji: string | null;
@@ -85,7 +85,7 @@ export function getTitleDisplay(params: {
 	}
 }
 export function getTitleDisplaySub(params: {
-	obj: TitleDisplaySub;
+	obj: TitleDisplayFull;
 	prefs: DisplayPrefs['title_prefs'];
 }): string {
 	const mainTitle = getTitleDisplay(params);

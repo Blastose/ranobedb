@@ -22,6 +22,6 @@
 	</div>
 
 	<div class="mt-[150px]">
-		<Book {book} theme={data.theme} user={data.user} isRevision={true} />
+		<Book {book} user={data.user} isRevision={true} />
 	</div>
 </div>

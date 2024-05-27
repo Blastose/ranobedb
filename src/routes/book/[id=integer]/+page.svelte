@@ -9,10 +9,4 @@
 
 <PageTitle title={book.title ?? book.title_orig ?? ''} />
 
-<Book
-	{book}
-	userListForm={data.userListForm}
-	theme={data.theme}
-	user={data.user}
-	isRevision={false}
-/>
+<Book {book} userListForm={data.userListForm} user={data.user} isRevision={false} />
