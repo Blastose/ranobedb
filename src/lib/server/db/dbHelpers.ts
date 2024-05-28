@@ -57,14 +57,16 @@ export async function paginationBuilderExecuteWithCount<O>(
 		query
 			.clearSelect()
 			.clearOrderBy()
-			.select((eb) => [eb.fn.countAll<number>().as('count')])
-			.executeTakeFirstOrThrow(),
+			.select((eb) => [eb.fn.countAll<number>().over().as('count')])
+			.limit(1)
+			.executeTakeFirst(),
 	]);
 
+	const count = total?.count || 0;
 	return {
 		result: res,
-		count: total.count,
-		totalPages: Math.ceil(total.count / pageOptions.limit),
+		count,
+		totalPages: Math.ceil(count / pageOptions.limit),
 	};
 }
 

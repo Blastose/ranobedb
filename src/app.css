@@ -43,6 +43,10 @@
 	color: var(--text-dark-sub);
 }
 
+.dark-main-text {
+	color: var(--text-dark);
+}
+
 html {
 	overflow-x: hidden;
 	height: 100dvh;
