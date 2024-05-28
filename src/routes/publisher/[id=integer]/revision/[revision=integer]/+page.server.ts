@@ -84,11 +84,14 @@ export const load = async ({ params, locals, url }) => {
 		});
 		pushIfNotUndefined(diffs, diff);
 		diff = getDiffLines({
-			obj1: prevPublisherHistEdit,
-			obj2: publisherHistEdit,
-			key: 'child_publishers',
-			fn: (v: (typeof publisherHistEdit)['child_publishers']) =>
-				generatePublisherRelChangeStringFromPublishers(v, displayPrefs.names),
+			lines1: generatePublisherRelChangeStringFromPublishers(
+				prevPublisherHistEdit['child_publishers'],
+				displayPrefs.names,
+			),
+			lines2: generatePublisherRelChangeStringFromPublishers(
+				publisherHistEdit['child_publishers'],
+				displayPrefs.names,
+			),
 			name: 'Series relations',
 		});
 		pushIfNotUndefined(diffs, diff);

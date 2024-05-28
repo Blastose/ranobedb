@@ -82,20 +82,26 @@ export const load = async ({ params, locals }) => {
 		});
 		pushIfNotUndefined(diffs, diff);
 		diff = getDiffLines({
-			obj1: prevReleaseHistEdit,
-			obj2: releaseHistEdit,
-			key: 'books',
-			fn: (v: (typeof releaseHistEdit)['books']) =>
-				generateReleaseBookChangeStringFromBooks(v, displayPrefs.title_prefs),
+			lines1: generateReleaseBookChangeStringFromBooks(
+				prevReleaseHistEdit['books'],
+				displayPrefs.title_prefs,
+			),
+			lines2: generateReleaseBookChangeStringFromBooks(
+				releaseHistEdit['books'],
+				displayPrefs.title_prefs,
+			),
 			name: 'Books',
 		});
 		pushIfNotUndefined(diffs, diff);
 		diff = getDiffLines({
-			obj1: prevReleaseHistEdit,
-			obj2: releaseHistEdit,
-			key: 'publishers',
-			fn: (v: (typeof releaseHistEdit)['publishers']) =>
-				generateReleasePublisherChangeStringFromPublishers(v, displayPrefs.names),
+			lines1: generateReleasePublisherChangeStringFromPublishers(
+				prevReleaseHistEdit['publishers'],
+				displayPrefs.names,
+			),
+			lines2: generateReleasePublisherChangeStringFromPublishers(
+				releaseHistEdit['publishers'],
+				displayPrefs.names,
+			),
 			name: 'Publishers',
 		});
 		pushIfNotUndefined(diffs, diff);

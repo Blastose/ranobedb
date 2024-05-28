@@ -4,15 +4,17 @@ import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
 import { db } from '$lib/server/db/db.js';
-import { getDisplayPrefsUser } from '$lib/display/prefs.js';
 import {
 	generateBookEditionChangeStringFromEditions,
+	generateBookStaffChangeStringFromStaffs,
 	generateBookTitleChangeStringFromBooks,
 	getDiffLines,
 	getDiffWords,
 	pushIfNotUndefined,
+	type BookStaff,
 	type Diff,
 } from '$lib/components/history/utils.js';
+import { getDisplayPrefsUser } from '$lib/display/prefs.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -49,7 +51,7 @@ export const load = async ({ params, locals }) => {
 	}
 	let diff;
 	const diffs: Diff[] = [];
-	const titlePrefs = getDisplayPrefsUser(locals?.user).title_prefs;
+	const displayPrefs = getDisplayPrefsUser(locals.user);
 	if (previousRevision > 0) {
 		const [prevBookHistEdit, bookHistEdit] = await Promise.all([
 			dbBooks
@@ -64,10 +66,8 @@ export const load = async ({ params, locals }) => {
 			error(404);
 		}
 		diff = getDiffLines({
-			obj1: prevBookHistEdit,
-			obj2: bookHistEdit,
-			key: 'titles',
-			fn: (v: (typeof bookHistEdit)['titles']) => generateBookTitleChangeStringFromBooks(v),
+			lines1: generateBookTitleChangeStringFromBooks(prevBookHistEdit['titles']),
+			lines2: generateBookTitleChangeStringFromBooks(bookHistEdit['titles']),
 			name: 'Title(s)',
 		});
 		pushIfNotUndefined(diffs, diff);
@@ -84,10 +84,40 @@ export const load = async ({ params, locals }) => {
 		});
 		pushIfNotUndefined(diffs, diff);
 		diff = getDiffLines({
-			obj1: prevBookHistEdit,
-			obj2: bookHistEdit,
-			key: 'editions',
-			fn: (v: (typeof bookHistEdit)['editions']) => generateBookEditionChangeStringFromEditions(v),
+			lines1: generateBookEditionChangeStringFromEditions(prevBookHistEdit['editions']),
+			lines2: generateBookEditionChangeStringFromEditions(bookHistEdit['editions']),
+			name: 'Editions',
+		});
+		pushIfNotUndefined(diffs, diff);
+		const prevHistStaff: BookStaff[] = [];
+		for (const ed of prevBookHistEdit['editions']) {
+			for (const staff of ed.staff) {
+				prevHistStaff.push({
+					edition_name: ed.title,
+					name: staff.name,
+					note: staff.note,
+					role_type: staff.role_type,
+					romaji: staff.romaji,
+					staff_id: staff.staff_id,
+				});
+			}
+		}
+		const currentHistStaff: BookStaff[] = [];
+		for (const ed of bookHistEdit['editions']) {
+			for (const staff of ed.staff) {
+				currentHistStaff.push({
+					edition_name: ed.title,
+					name: staff.name,
+					note: staff.note,
+					role_type: staff.role_type,
+					romaji: staff.romaji,
+					staff_id: staff.staff_id,
+				});
+			}
+		}
+		diff = getDiffLines({
+			lines1: generateBookStaffChangeStringFromStaffs(prevHistStaff, displayPrefs.names),
+			lines2: generateBookStaffChangeStringFromStaffs(currentHistStaff, displayPrefs.names),
 			name: 'Editions',
 		});
 		pushIfNotUndefined(diffs, diff);

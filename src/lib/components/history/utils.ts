@@ -195,7 +195,7 @@ export function generateBookEditionChangeStringFromEditions(editions: Edition[])
 	}
 	return str.trim();
 }
-type BookStaff = {
+export type BookStaff = {
 	staff_id: number;
 	name: string;
 	romaji: string | null;
@@ -204,10 +204,11 @@ type BookStaff = {
 	edition_name: string;
 };
 function generateBookStaffChangeString(staff: BookStaff, prefs: DisplayPrefs['names']): string {
-	return `[${staff.edition_name}] ${generateLink(
-		`/staff/${staff.staff_id}`,
-		getNameDisplay({ obj: staff, prefs }),
-	)} ${` [${staff.role_type}] [${staff.note}]`}`;
+	return `${
+		staff.edition_name !== 'Original edition' ? `[${staff.edition_name}]` : ''
+	} ${generateLink(`/staff/${staff.staff_id}`, getNameDisplay({ obj: staff, prefs }))} ${` [${
+		staff.role_type
+	}] ${staff.note ? `[${staff.note}]` : ''}`}`;
 }
 export function generateBookStaffChangeStringFromStaffs(
 	staffs: BookStaff[],
@@ -226,16 +227,13 @@ export type Diff = {
 	type: 'line' | 'word' | 'char';
 	textType: 'text' | 'html';
 };
-export function getDiffLines<J, T extends Record<K, J>, K extends keyof T>(params: {
-	obj1: T;
-	obj2: T;
-	key: K;
-	fn: (value: J) => string;
+export function getDiffLines(params: {
+	lines1: string;
+	lines2: string;
 	name: string;
 }): Diff | undefined {
-	const { fn, obj1, obj2, key, name } = params;
-	const changeStrings = { changeStr1: fn(obj1[key]), changeStr2: fn(obj2[key]) };
-	const diffs = diffLines(changeStrings.changeStr1, changeStrings.changeStr2, {
+	const { lines1, lines2, name } = params;
+	const diffs = diffLines(lines1, lines2, {
 		newlineIsToken: true,
 	});
 	for (const diff of diffs) {

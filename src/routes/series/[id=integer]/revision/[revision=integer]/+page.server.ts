@@ -66,28 +66,26 @@ export const load = async ({ params, locals }) => {
 			error(404);
 		}
 		diff = getDiffLines({
-			obj1: prevSeriesHistEdit,
-			obj2: seriesHistEdit,
-			key: 'titles',
-			fn: (v: (typeof seriesHistEdit)['titles']) => generateBookTitleChangeStringFromBooks(v),
+			lines1: generateBookTitleChangeStringFromBooks(prevSeriesHistEdit['titles']),
+			lines2: generateBookTitleChangeStringFromBooks(seriesHistEdit['titles']),
 			name: 'Title(s)',
 		});
 		pushIfNotUndefined(diffs, diff);
 		diff = getDiffLines({
-			obj1: prevSeriesHistEdit,
-			obj2: seriesHistEdit,
-			key: 'books',
-			fn: (v: (typeof seriesHistEdit)['books']) =>
-				generateSeriesBookChangeStringFromBooks(v, titlePrefs),
+			lines1: generateSeriesBookChangeStringFromBooks(prevSeriesHistEdit['books'], titlePrefs),
+			lines2: generateSeriesBookChangeStringFromBooks(seriesHistEdit['books'], titlePrefs),
 			name: 'Books',
 		});
 		pushIfNotUndefined(diffs, diff);
 		diff = getDiffLines({
-			obj1: prevSeriesHistEdit,
-			obj2: seriesHistEdit,
-			key: 'child_series',
-			fn: (v: (typeof seriesHistEdit)['child_series']) =>
-				generateSeriesRelationChangeStringFromSeries(v, titlePrefs),
+			lines1: generateSeriesRelationChangeStringFromSeries(
+				prevSeriesHistEdit['child_series'],
+				titlePrefs,
+			),
+			lines2: generateSeriesRelationChangeStringFromSeries(
+				seriesHistEdit['child_series'],
+				titlePrefs,
+			),
 			name: 'Series relations',
 		});
 		pushIfNotUndefined(diffs, diff);

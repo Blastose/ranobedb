@@ -66,11 +66,8 @@ export const load = async ({ params, locals, url }) => {
 			error(404);
 		}
 		diff = getDiffLines({
-			obj1: prevStaffHistEdit,
-			obj2: staffHistEdit,
-			key: 'aliases',
-			fn: (v: (typeof staffHistEdit)['aliases']) =>
-				generateStaffAliasChangeStringFromStaffAliases(v),
+			lines1: generateStaffAliasChangeStringFromStaffAliases(prevStaffHistEdit['aliases']),
+			lines2: generateStaffAliasChangeStringFromStaffAliases(staffHistEdit['aliases']),
 			name: 'Names',
 		});
 		pushIfNotUndefined(diffs, diff);
