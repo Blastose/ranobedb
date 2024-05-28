@@ -74,8 +74,8 @@
 	>
 </div>
 
-<div use:melt={$portalled}>
-	{#if $open}
+{#if $open}
+	<div use:melt={$portalled}>
 		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
 		<div class="modal-content">
 			<div
@@ -84,13 +84,9 @@
 					y: 8,
 				}}
 				use:melt={$content}
-				class="modal-content-inner no-pt"
+				class="modal-content-inner"
 			>
-				<div class="banner-img h-[86px]">
-					<div class="blur-image" />
-				</div>
-
-				<div class="flex flex-col gap-2 -mt-12 z-[9999999] relative">
+				<div class="flex flex-col gap-2">
 					<div class="flex flex-col">
 						<h2 use:melt={$title} class="font-medium">{modalTitle}</h2>
 						<h3 class="text-xl font-bold"><TitleDisplay obj={book} /></h3>
@@ -156,8 +152,8 @@
 					<Icon name="close" />
 				</button>
 
-				<div use:melt={$portalledNested}>
-					{#if $openNested}
+				{#if $openNested}
+					<div use:melt={$portalledNested}>
 						<div use:melt={$overlayNested} class="modal-bg" transition:fade={{ duration: 150 }} />
 						<div class="modal-content">
 							<div
@@ -196,12 +192,12 @@
 								</button>
 							</div>
 						</div>
-					{/if}
-				</div>
+					</div>
+				{/if}
 			</div>
 		</div>
-	{/if}
-</div>
+	</div>
+{/if}
 
 <style>
 	.modal-content-inner.confirm-modal {
