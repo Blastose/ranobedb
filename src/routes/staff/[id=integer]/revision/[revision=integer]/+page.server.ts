@@ -1,13 +1,19 @@
 import { getChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
-import { detailedDiff } from 'deep-object-diff';
 import {
 	getCurrentVisibilityStatus,
 	paginationBuilderExecuteWithCount,
 } from '$lib/server/db/dbHelpers.js';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
 import { db } from '$lib/server/db/db.js';
+import {
+	generateStaffAliasChangeStringFromStaffAliases,
+	getDiffLines,
+	getDiffWords,
+	pushIfNotUndefined,
+	type Diff,
+} from '$lib/components/history/utils.js';
 
 export const load = async ({ params, locals, url }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
@@ -45,18 +51,44 @@ export const load = async ({ params, locals, url }) => {
 		}
 	}
 	let diff;
+	const diffs: Diff[] = [];
 	if (previousRevision > 0) {
-		const prevStaff = await dbStaff
-			.getStaffHistOne({
-				id: staffId,
-				revision: previousRevision,
-			})
-			.executeTakeFirst();
-		if (!prevStaff) {
+		const [prevStaffHistEdit, staffHistEdit] = await Promise.all([
+			dbStaff
+				.getStaffHistOneEdit({
+					id: staffId,
+					revision: previousRevision,
+				})
+				.executeTakeFirst(),
+			dbStaff.getStaffHistOneEdit({ id: staffId, revision }).executeTakeFirst(),
+		]);
+		if (!prevStaffHistEdit || !staffHistEdit) {
 			error(404);
 		}
-		// TODO diff these better
-		diff = detailedDiff(prevStaff, staff);
+		diff = getDiffLines({
+			lines1: generateStaffAliasChangeStringFromStaffAliases(prevStaffHistEdit['aliases']),
+			lines2: generateStaffAliasChangeStringFromStaffAliases(staffHistEdit['aliases']),
+			name: 'Names',
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Hidden',
+			words1: prevStaffHistEdit.hidden.toString(),
+			words2: staffHistEdit.hidden.toString(),
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Locked',
+			words1: prevStaffHistEdit.locked.toString(),
+			words2: staffHistEdit.locked.toString(),
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Description',
+			words1: prevStaffHistEdit.description,
+			words2: staffHistEdit.description,
+		});
+		pushIfNotUndefined(diffs, diff);
 	}
 
 	const {
@@ -64,7 +96,7 @@ export const load = async ({ params, locals, url }) => {
 		count,
 		totalPages,
 	} = await paginationBuilderExecuteWithCount(dbStaff.getBooksBelongingToStaff(staffId), {
-		limit: 40,
+		limit: 24,
 		page: currentPage,
 	});
 
@@ -72,7 +104,7 @@ export const load = async ({ params, locals, url }) => {
 		staffId,
 		staff,
 		books,
-		diff,
+		diffs,
 		count,
 		currentPage,
 		totalPages,

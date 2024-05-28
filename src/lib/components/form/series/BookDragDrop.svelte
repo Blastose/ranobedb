@@ -125,6 +125,7 @@
 							class="btn rounded-full"
 							on:click={() => {
 								remove(index);
+								updateSortOrder();
 							}}
 							type="button"
 							aria-label="Remove"><Icon name="close" /></button

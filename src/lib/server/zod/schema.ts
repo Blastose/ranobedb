@@ -228,7 +228,13 @@ export const releaseSchema = z.object({
 			return true;
 		}, 'Release date must have correct format.'),
 	pages: z.number().min(1).max(200000).nullish(),
-	isbn13: z.string().min(13).max(13).nullish(),
+	isbn13: z
+		.string()
+		.min(13)
+		.max(13)
+		.nullish()
+		.or(z.literal(''))
+		.transform((v) => (v === '' ? null : v)),
 
 	books: z
 		.array(

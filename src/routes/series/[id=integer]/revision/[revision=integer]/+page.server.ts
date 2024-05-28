@@ -1,10 +1,19 @@
 import { getChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
-import { detailedDiff } from 'deep-object-diff';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
 import { db } from '$lib/server/db/db.js';
+import {
+	generateBookTitleChangeStringFromBooks,
+	generateSeriesBookChangeStringFromBooks,
+	generateSeriesRelationChangeStringFromSeries,
+	getDiffLines,
+	getDiffWords,
+	pushIfNotUndefined,
+	type Diff,
+} from '$lib/components/history/utils.js';
+import { getDisplayPrefsUser } from '$lib/display/prefs.js';
 
 export const load = async ({ params, locals }) => {
 	const id = params.id;
@@ -28,7 +37,6 @@ export const load = async ({ params, locals }) => {
 	const change = changes.find((i) => i.revision === revision)!;
 	const nextChange = changes.find((i) => i.revision === revision + 1);
 
-	console.log(series);
 	if (!series) {
 		error(404);
 	}
@@ -42,24 +50,75 @@ export const load = async ({ params, locals }) => {
 		}
 	}
 	let diff;
+	const diffs: Diff[] = [];
+	const titlePrefs = getDisplayPrefsUser(locals?.user).title_prefs;
 	if (previousRevision > 0) {
-		const prevSeries = await dbSeries
-			.getSeriesHistOne({
-				id: seriesId,
-				revision: previousRevision,
-			})
-			.executeTakeFirst();
-		if (!prevSeries) {
+		const [prevSeriesHistEdit, seriesHistEdit] = await Promise.all([
+			dbSeries
+				.getSeriesHistOneEdit({
+					id: seriesId,
+					revision: previousRevision,
+				})
+				.executeTakeFirst(),
+			dbSeries.getSeriesHistOneEdit({ id: seriesId, revision }).executeTakeFirst(),
+		]);
+		if (!prevSeriesHistEdit || !seriesHistEdit) {
 			error(404);
 		}
-		// TODO diff these better
-		diff = detailedDiff(prevSeries, series);
+		diff = getDiffLines({
+			lines1: generateBookTitleChangeStringFromBooks(prevSeriesHistEdit['titles']),
+			lines2: generateBookTitleChangeStringFromBooks(seriesHistEdit['titles']),
+			name: 'Title(s)',
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffLines({
+			lines1: generateSeriesBookChangeStringFromBooks(prevSeriesHistEdit['books'], titlePrefs),
+			lines2: generateSeriesBookChangeStringFromBooks(seriesHistEdit['books'], titlePrefs),
+			name: 'Books',
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffLines({
+			lines1: generateSeriesRelationChangeStringFromSeries(
+				prevSeriesHistEdit['child_series'],
+				titlePrefs,
+			),
+			lines2: generateSeriesRelationChangeStringFromSeries(
+				seriesHistEdit['child_series'],
+				titlePrefs,
+			),
+			name: 'Series relations',
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Hidden',
+			words1: prevSeriesHistEdit.hidden.toString(),
+			words2: seriesHistEdit.hidden.toString(),
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Locked',
+			words1: prevSeriesHistEdit.locked.toString(),
+			words2: seriesHistEdit.locked.toString(),
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Pub. status',
+			words1: prevSeriesHistEdit.publication_status,
+			words2: seriesHistEdit.publication_status,
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Description',
+			words1: prevSeriesHistEdit.description,
+			words2: seriesHistEdit.description,
+		});
+		pushIfNotUndefined(diffs, diff);
 	}
 
 	return {
 		seriesId,
 		series,
-		diff,
+		diffs,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
 	};

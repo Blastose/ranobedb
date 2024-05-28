@@ -1,13 +1,15 @@
 <script lang="ts">
 	import Revision from '$lib/components/history/Revision.svelte';
+	import RevisionContainer from '$lib/components/history/RevisionContainer.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import Release from '$lib/components/release/id/Release.svelte';
+	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
 
 	export let data;
 
+	const displayPrefs = getDisplayPrefsContext();
 	$: release = data.release;
-	$: diff = data.diff;
-	$: title = release.title;
+	$: title = getNameDisplay({ obj: release, prefs: $displayPrefs.names });
 
 	function buildBaseLink() {
 		return `/release/${data.releaseId}`;
@@ -16,12 +18,14 @@
 
 <PageTitle title="Viewing revision {data.revision.revision} of {title}" />
 
-<div>
-	<div class="container-rndb">
-		<Revision changes={data.changes} {title} {buildBaseLink} diff={JSON.stringify(diff)} />
-	</div>
+<div class="container-rndb flex flex-col gap-6">
+	<RevisionContainer>
+		<svelte:fragment slot="revision">
+			<Revision changes={data.changes} {title} {buildBaseLink} diffs={data.diffs} />
+		</svelte:fragment>
 
-	<div class="container-rndb">
-		<Release isRevision={true} {release} user={data.user} />
-	</div>
+		<svelte:fragment slot="content">
+			<Release isRevision={true} {release} user={data.user} />
+		</svelte:fragment>
+	</RevisionContainer>
 </div>

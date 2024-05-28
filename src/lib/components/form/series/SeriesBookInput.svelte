@@ -21,14 +21,14 @@
 			id: book.id,
 			romaji: '',
 			lang: book.lang,
-			sort_order: $values.length,
+			sort_order: $values.length + 1,
 		});
 		$values = $values;
 	}
 
 	function updateSortOrder() {
 		for (const [index, item] of $values.entries()) {
-			item.sort_order = index;
+			item.sort_order = index + 1;
 		}
 		$values = $values;
 	}

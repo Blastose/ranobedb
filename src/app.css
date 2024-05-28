@@ -78,6 +78,10 @@ a.link:hover {
 	color: rgb(169, 170, 245);
 }
 
+.content-jump {
+	scroll-margin-top: var(--header-height);
+}
+
 /* Remove blue highlight on mobile presses */
 input,
 textarea,
