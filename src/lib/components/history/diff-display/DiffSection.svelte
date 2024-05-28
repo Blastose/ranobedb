@@ -5,7 +5,7 @@
 	export let type: 'old' | 'new';
 </script>
 
-<div class={changes.type !== 'line' ? 'flex' : ''}>
+<div>
 	{#each changes.changes as part}
 		{@const showDiffBg = type === 'new' ? part.added : part.removed}
 		{@const doNotShowChange = type === 'new' ? part.removed : part.added}

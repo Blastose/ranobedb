@@ -1,13 +1,21 @@
 import { getChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
-import { detailedDiff } from 'deep-object-diff';
 import {
 	getCurrentVisibilityStatus,
 	paginationBuilderExecuteWithCount,
 } from '$lib/server/db/dbHelpers.js';
 import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
+import {
+	generatePublisherRelChangeStringFromPublishers,
+	getDiffChars,
+	getDiffLines,
+	getDiffWords,
+	pushIfNotUndefined,
+	type Diff,
+} from '$lib/components/history/utils.js';
 import { db } from '$lib/server/db/db.js';
+import { getDisplayPrefsUser } from '$lib/display/prefs.js';
 
 export const load = async ({ params, locals, url }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
@@ -48,18 +56,54 @@ export const load = async ({ params, locals, url }) => {
 		}
 	}
 	let diff;
+	const diffs: Diff[] = [];
+	const displayPrefs = getDisplayPrefsUser(locals?.user);
 	if (previousRevision > 0) {
-		const prevPublisher = await dbPublishers
-			.getPublisherHist({
-				id: publisherId,
-				revision: previousRevision,
-			})
-			.executeTakeFirst();
-		if (!prevPublisher) {
+		const [prevPublisherHistEdit, publisherHistEdit] = await Promise.all([
+			dbPublishers
+				.getPublisherHistEdit({
+					id: publisherId,
+					revision: previousRevision,
+				})
+				.executeTakeFirst(),
+			dbPublishers.getPublisherHistEdit({ id: publisherId, revision }).executeTakeFirst(),
+		]);
+		if (!prevPublisherHistEdit || !publisherHistEdit) {
 			error(404);
 		}
-		// TODO diff these better
-		diff = detailedDiff(prevPublisher, publisher);
+		diff = getDiffChars({
+			name: 'Name',
+			words1: prevPublisherHistEdit.name,
+			words2: publisherHistEdit.name,
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffChars({
+			name: 'Romaji',
+			words1: prevPublisherHistEdit.romaji,
+			words2: publisherHistEdit.romaji,
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffLines({
+			obj1: prevPublisherHistEdit,
+			obj2: publisherHistEdit,
+			key: 'child_publishers',
+			fn: (v: (typeof publisherHistEdit)['child_publishers']) =>
+				generatePublisherRelChangeStringFromPublishers(v, displayPrefs.names),
+			name: 'Series relations',
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Hidden',
+			words1: prevPublisherHistEdit.hidden.toString(),
+			words2: publisherHistEdit.hidden.toString(),
+		});
+		pushIfNotUndefined(diffs, diff);
+		diff = getDiffWords({
+			name: 'Locked',
+			words1: prevPublisherHistEdit.locked.toString(),
+			words2: publisherHistEdit.locked.toString(),
+		});
+		pushIfNotUndefined(diffs, diff);
 	}
 
 	const booksQuery = dbPublishers.getBooksBelongingToPublisher(publisherId);
@@ -79,7 +123,7 @@ export const load = async ({ params, locals, url }) => {
 		count,
 		totalPages,
 		currentPage,
-		diff,
+		diffs,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
 	};

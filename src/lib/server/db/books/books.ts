@@ -418,7 +418,7 @@ export class DBBooks {
 			.where('cte_book.id', '=', id);
 	}
 
-	getBookHistEdit(id: number, revision: number) {
+	getBookHistEdit(params: { id: number; revision: number }) {
 		return this.ranobeDB.db
 			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
@@ -488,9 +488,9 @@ export class DBBooks {
 						),
 				).as('editions'),
 			])
-			.where('change.item_id', '=', id)
+			.where('change.item_id', '=', params.id)
 			.where('change.item_name', '=', 'book')
-			.where('change.revision', '=', revision);
+			.where('change.revision', '=', params.revision);
 	}
 
 	getBooks() {

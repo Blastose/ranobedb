@@ -1,9 +1,11 @@
 import { getNameDisplay, getTitleDisplay, type TitleDisplay } from '$lib/display/prefs';
 import type {
 	Language,
+	PublisherRelType,
 	ReleasePublisherType,
 	ReleaseType,
 	SeriesRelType,
+	StaffRole,
 } from '$lib/server/db/dbTypes';
 import type { DisplayPrefs, Nullish } from '$lib/server/zod/schema';
 import { diffChars, diffLines, diffWords, type Change } from 'diff';
@@ -153,6 +155,67 @@ export function generateStaffAliasChangeStringFromStaffAliases(aliases: StaffAli
 	let str = '';
 	for (const alias of aliases) {
 		str += generateStaffAliasChangeString(alias) + '\n';
+	}
+	return str.trim();
+}
+type PublisherRel = {
+	id: number;
+	name: string;
+	romaji: string | null;
+	relation_type: PublisherRelType;
+};
+function generatePublisherRelChangeString(
+	publisher: PublisherRel,
+	prefs: DisplayPrefs['names'],
+): string {
+	return `${getNameDisplay({ obj: publisher, prefs })} [${publisher.relation_type}]`;
+}
+export function generatePublisherRelChangeStringFromPublishers(
+	publishers: PublisherRel[],
+	prefs: DisplayPrefs['names'],
+) {
+	let str = '';
+	for (const publisher of publishers) {
+		str += generatePublisherRelChangeString(publisher, prefs) + '\n';
+	}
+	return str.trim();
+}
+type Edition = {
+	book_id: number;
+	title: string;
+	lang: Language;
+};
+function generateBookEditionChangeString(edition: Edition): string {
+	return `[${edition.lang}] ${edition.title}`;
+}
+export function generateBookEditionChangeStringFromEditions(editions: Edition[]) {
+	let str = '';
+	for (const edition of editions) {
+		str += generateBookEditionChangeString(edition) + '\n';
+	}
+	return str.trim();
+}
+type BookStaff = {
+	staff_id: number;
+	name: string;
+	romaji: string | null;
+	note: string;
+	role_type: StaffRole;
+	edition_name: string;
+};
+function generateBookStaffChangeString(staff: BookStaff, prefs: DisplayPrefs['names']): string {
+	return `[${staff.edition_name}] ${generateLink(
+		`/staff/${staff.staff_id}`,
+		getNameDisplay({ obj: staff, prefs }),
+	)} ${` [${staff.role_type}] [${staff.note}]`}`;
+}
+export function generateBookStaffChangeStringFromStaffs(
+	staffs: BookStaff[],
+	prefs: DisplayPrefs['names'],
+) {
+	let str = '';
+	for (const staff of staffs) {
+		str += generateBookStaffChangeString(staff, prefs) + '\n';
 	}
 	return str.trim();
 }
