@@ -177,7 +177,12 @@ export class DBStaff {
 				'staff_alias.main_alias',
 				'staff_alias.staff_id',
 				'book_staff_alias.note',
-				'book_staff_alias.role_type',
+			])
+			.select(({ fn, cast }) => [
+				fn
+					.agg<StaffRole[]>('array_agg', [cast('book_staff_alias.role_type', 'text')])
+					.distinct()
+					.as('role_types'),
 			])
 			.select((eb) =>
 				jsonObjectFrom(
@@ -187,7 +192,20 @@ export class DBStaff {
 						.whereRef('image.id', '=', 'cte_book.image_id')
 						.limit(1),
 				).as('image'),
-			);
+			)
+			.groupBy([
+				'cte_book.id',
+				'cte_book.image_id',
+				'cte_book.lang',
+				'cte_book.romaji',
+				'cte_book.romaji_orig',
+				'cte_book.title',
+				'cte_book.title_orig',
+				'staff_alias.name',
+				'staff_alias.main_alias',
+				'staff_alias.staff_id',
+				'book_staff_alias.note',
+			]);
 	}
 
 	getSeriesBelongingToStaff(staffId: number) {

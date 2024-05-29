@@ -195,3 +195,9 @@ export const staffTabsIconsMap: Record<(typeof staffTabs)[number], IconType> = {
 	books: 'book',
 	series: 'bookshelf',
 };
+export const publisherTabs = ['series', 'books', 'releases'] as const;
+export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconType> = {
+	books: 'book',
+	series: 'bookshelf',
+	releases: 'file',
+};

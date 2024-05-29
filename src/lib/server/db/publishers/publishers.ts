@@ -1,9 +1,10 @@
-import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
 import type { InferResult, Kysely } from 'kysely';
 import { DBBooks, withBookTitleCte } from '../books/books';
-import type { DB } from '$lib/server/db/dbTypes';
+import type { DB, ReleasePublisherType } from '$lib/server/db/dbTypes';
 import type { User } from 'lucia';
+import { DBSeries } from '../series/series';
 
 export class DBPublishers {
 	ranobeDB: RanobeDB;
@@ -197,12 +198,145 @@ export class DBPublishers {
 			.getBooks()
 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
 			.innerJoin('release_publisher', 'release_book.release_id', 'release_publisher.release_id')
-			.where('release_publisher.publisher_id', '=', publisherId);
+			.where('release_publisher.publisher_id', '=', publisherId)
+			.clearSelect()
+			.select([
+				'cte_book.id',
+				'cte_book.image_id',
+				'cte_book.lang',
+				'cte_book.romaji',
+				'cte_book.romaji_orig',
+				'cte_book.title',
+				'cte_book.title_orig',
+			])
+			.select(({ fn, cast }) => [
+				fn
+					.agg<ReleasePublisherType[]>('array_agg', [
+						cast('release_publisher.publisher_type', 'text'),
+					])
+					.distinct()
+					.as('publisher_type'),
+			])
+			.select((eb) =>
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'cte_book.image_id')
+						.limit(1),
+				).as('image'),
+			)
+			.groupBy([
+				'cte_book.description',
+				'cte_book.description_ja',
+				'cte_book.id',
+				'cte_book.image_id',
+				'cte_book.lang',
+				'cte_book.romaji',
+				'cte_book.romaji_orig',
+				'cte_book.title',
+				'cte_book.title_orig',
+			]);
+	}
+
+	getSeriesBelongingToPublisher(publisherId: number) {
+		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
+			.getSeries()
+			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
+			.innerJoin('release_book', 'release_book.book_id', 'series_book.book_id')
+			.innerJoin('release_publisher', 'release_publisher.release_id', 'release_book.release_id')
+			.innerJoin('publisher', 'publisher.id', 'release_publisher.publisher_id')
+			.where('publisher.id', '=', publisherId)
+			.clearSelect()
+			.select([
+				'cte_series.title',
+				'cte_series.bookwalker_id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.id',
+				'cte_series.publication_status',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title_orig',
+				'cte_series.title',
+			])
+			.select(({ fn, cast }) => [
+				fn
+					.agg<ReleasePublisherType[]>('array_agg', [
+						cast('release_publisher.publisher_type', 'text'),
+					])
+					.distinct()
+					.as('publisher_types'),
+			])
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('book')
+						.innerJoin('series_book as sb2', 'sb2.series_id', 'cte_series.id')
+						.whereRef('sb2.book_id', '=', 'book.id')
+						.select('book.id')
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.whereRef('image.id', '=', 'book.image_id')
+									.selectAll('image')
+									.limit(1),
+							).as('image'),
+						)
+						.orderBy('sb2.sort_order asc')
+						.limit(1),
+				).as('book'),
+			])
+			.groupBy([
+				'cte_series.title',
+				'cte_series.bookwalker_id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.id',
+				'cte_series.publication_status',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title_orig',
+				'cte_series.title',
+			]);
+	}
+
+	getReleasesBelongingToPublisher(publisherId: number) {
+		return this.ranobeDB.db
+			.selectFrom('publisher')
+			.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
+			.innerJoin('release', 'release.id', 'release_publisher.release_id')
+			.selectAll('release')
+			.select('release_publisher.publisher_type')
+			.where('publisher.id', '=', publisherId);
 	}
 }
 
 export type Publisher = InferResult<ReturnType<DBPublishers['getPublisher']>>[number];
 export type PublisherEdit = InferResult<ReturnType<DBPublishers['getPublisherEdit']>>[number];
+export type PublisherReleases = InferResult<
+	ReturnType<DBPublishers['getReleasesBelongingToPublisher']>
+>[number];
 export type PublisherBook = InferResult<
 	ReturnType<DBPublishers['getBooksBelongingToPublisher']>
 >[number];
+export type PublisherSeries = InferResult<
+	ReturnType<DBPublishers['getSeriesBelongingToPublisher']>
+>[number];
+
+type PublisherBooksWork = {
+	type: 'books';
+	books: PublisherBook[];
+};
+type PublisherSeriesWorks = {
+	type: 'series';
+	series: PublisherSeries[];
+};
+type PublisherReleasesWorks = {
+	type: 'releases';
+	releases: PublisherReleases[];
+};
+export type PublisherWorks = PublisherBooksWork | PublisherSeriesWorks | PublisherReleasesWorks;

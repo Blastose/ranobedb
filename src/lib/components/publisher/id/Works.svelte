@@ -4,19 +4,29 @@
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import Tabs from '$lib/components/tabs/Tabs.svelte';
-	import { staffTabs, staffTabsIconsMap } from '$lib/db/dbConsts';
-	import type { StaffWorks } from '$lib/server/db/staff/staff';
+	import { publisherTabs, publisherTabsIconsMap } from '$lib/db/dbConsts';
+	import type { PublisherWorks } from '$lib/server/db/publishers/publishers';
 
-	export let works: StaffWorks;
+	export let works: PublisherWorks;
 	export let results: number;
 	export let currentPage: number;
 	export let totalPages: number;
 
-	$: worksMain = works.type === 'books' ? works.books : works.series;
+	function getWorksMain(worksObj: PublisherWorks) {
+		if (worksObj.type === 'books') {
+			return worksObj.books;
+		} else if (worksObj.type === 'series') {
+			return worksObj.series;
+		} else {
+			return worksObj.releases;
+		}
+	}
+
+	$: worksMain = getWorksMain(works);
 </script>
 
 <section class="flex flex-col gap-2">
-	<Tabs tabs={staffTabs} currentTab={works.type} tabsIcons={staffTabsIconsMap} />
+	<Tabs tabs={publisherTabs} currentTab={works.type} tabsIcons={publisherTabsIconsMap} />
 
 	<PaginationContainer
 		{currentPage}
@@ -28,21 +38,29 @@
 				<BookImageContainer moreColumns={true}>
 					{#each works.books as book}
 						<BookImage {book} urlPrefix="/book/">
-							<BookImageBadge badges={book.role_types} />
+							<BookImageBadge badges={book.publisher_type} />
 						</BookImage>
 					{/each}
 				</BookImageContainer>
-			{:else}
+			{:else if works.type === 'series'}
 				<BookImageContainer moreColumns={true}>
 					{#each works.series as series}
 						<BookImage
 							book={{ title: series.title, id: series.id, image: series.book?.image }}
 							urlPrefix="/series/"
 						>
-							<BookImageBadge badges={series.role_types} />
+							<BookImageBadge badges={series.publisher_types} />
 						</BookImage>
 					{/each}
 				</BookImageContainer>
+			{:else}
+				{#each works.releases as release}
+					<p>
+						<a class="link" href="/release/{release.id}"
+							>{release.title} - {release.release_date} - {release.publisher_type}</a
+						>
+					</p>
+				{/each}
 			{/if}
 		{:else}
 			<p class="italic">None</p>
