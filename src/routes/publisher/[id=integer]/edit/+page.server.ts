@@ -25,10 +25,7 @@ export const load = async ({ params, locals, url }) => {
 
 	const dbPublishers = DBPublishers.fromDB(db, locals.user);
 	const revision = await superValidate(url, zod(revisionSchema));
-	// We need to check if the url search params contains `revision`
-	// because the .valid property will be false if it doesn't,
-	// but that's find since we'll just use the "current" revision
-	if (revision.valid && url.searchParams.get('revision')) {
+	if (revision.data.revision) {
 		publisher = await dbPublishers
 			.getPublisherHistEdit({
 				id: publisherId,
@@ -54,10 +51,9 @@ export const load = async ({ params, locals, url }) => {
 		error(403);
 	}
 
-	const prefilledComment =
-		revision.valid && url.searchParams.get('revision')
-			? revertedRevisionMarkdown('p', 'publisher', publisherId, revision.data.revision)
-			: undefined;
+	const prefilledComment = revision.data.revision
+		? revertedRevisionMarkdown('p', 'publisher', publisherId, revision.data.revision)
+		: undefined;
 
 	const form = await superValidate(
 		{ ...publisher, comment: prefilledComment },
