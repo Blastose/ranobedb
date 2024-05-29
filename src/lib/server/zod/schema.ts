@@ -5,6 +5,7 @@ import {
 	seriesRelTypeArray,
 	seriesStatusArray,
 	staffRolesArray,
+	staffTabs,
 } from '$lib/db/dbConsts';
 import { releaseFormatArray } from '$lib/db/dbConsts';
 import { publisherRelTypeArray } from '$lib/db/dbConsts';
@@ -312,7 +313,8 @@ export const seriesSchema = z.object({
 });
 
 export const searchNameSchema = z.object({ name: z.string() });
-export const revisionSchema = z.object({ revision: z.number() });
+export const revisionSchema = z.object({ revision: z.number().nullish() });
+export const staffTabsSchema = z.object({ tab: z.enum(staffTabs) });
 
 const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),

@@ -1,12 +1,15 @@
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBStaff, type StaffWorks } from '$lib/server/db/staff/staff';
+import { staffTabsSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
-	// TODO zod
-	const tab = (url.searchParams.get('tab') || 'series') as 'books' | 'series';
+	const svTab = await superValidate(url, zod(staffTabsSchema));
+	const tab = svTab.data.tab;
 	const id = Number(params.id);
 
 	const dbStaff = DBStaff.fromDB(db, locals.user);
@@ -31,7 +34,7 @@ export const load = async ({ params, locals, url }) => {
 		count = countBooks;
 		totalPages = totalPagesBooks;
 		works = {
-			type: 'book',
+			type: tab,
 			books,
 		};
 	} else {
@@ -47,7 +50,7 @@ export const load = async ({ params, locals, url }) => {
 		count = countSeries;
 		totalPages = totalPagesSeries;
 		works = {
-			type: 'series',
+			type: tab,
 			series,
 		};
 	}

@@ -263,7 +263,7 @@ export type StaffBook = InferResult<ReturnType<DBStaff['getBooksBelongingToStaff
 export type StaffSeries = InferResult<ReturnType<DBStaff['getSeriesBelongingToStaff']>>[number];
 
 type StaffBooksWork = {
-	type: 'book';
+	type: 'books';
 	books: StaffBook[];
 };
 type StaffSeriesWorks = {

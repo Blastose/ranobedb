@@ -1,14 +1,12 @@
 <script lang="ts">
-	import BookImage from '$lib/components/book/BookImage.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
-	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DBItemShell from '$lib/components/layout/db/DBItemShell.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
-	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import type { Staff, StaffWorks } from '$lib/server/db/staff/staff';
 	import type { User } from 'lucia';
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import Works from './Works.svelte';
 
 	export let staff: Staff;
 	export let works: StaffWorks;
@@ -50,8 +48,6 @@
 		{/if}
 	</section>
 
-	<Hr />
-
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
 		{#if staff.bookwalker_id}
@@ -61,58 +57,9 @@
 		{/if}
 	</section>
 
-	{#if works.type === 'book'}
-		<section class="flex flex-col gap-2">
-			<h2 class="text-lg font-bold">Books</h2>
-			<PaginationContainer
-				{currentPage}
-				{totalPages}
-				results={works.books.length > 0 ? results : undefined}
-			>
-				{#if works.books.length > 0}
-					<BookImageContainer moreColumns={true}>
-						{#each works.books as book}
-							<BookImage {book} urlPrefix="/book/" />
-						{/each}
-					</BookImageContainer>
-				{:else}
-					<p class="italic">None</p>
-				{/if}
-			</PaginationContainer>
-		</section>
-	{:else}
-		<section class="flex flex-col gap-2">
-			<h2 class="text-lg font-bold">Series</h2>
-			<PaginationContainer
-				{currentPage}
-				{totalPages}
-				results={works.series.length > 0 ? results : undefined}
-			>
-				{#if works.series.length > 0}
-					<BookImageContainer moreColumns={true}>
-						{#each works.series as series}
-							<BookImage
-								book={{ title: series.title, id: series.id, image: series.book?.image }}
-								urlPrefix="/series/"
-							>
-								<div class="absolute top-0 right-0">
-									<div class="flex flex-col gap-1 p-1 sm:p-2 items-end">
-										{#each series.role_types as role}
-											<div
-												class="bg-black/90 dark-main-text w-fit text-sm sm:text-base rounded-full px-2"
-											>
-												{role}
-											</div>
-										{/each}
-									</div>
-								</div>
-							</BookImage>
-						{/each}
-					</BookImageContainer>
-				{:else}
-					<p class="italic">None</p>
-				{/if}
-			</PaginationContainer>
-		</section>
-	{/if}
+	<Hr />
+
+	<div class="mt-2">
+		<Works {currentPage} {results} {totalPages} {works} />
+	</div>
 </DBItemShell>

@@ -72,6 +72,12 @@ body {
 .dark .link {
 	color: rgb(169, 170, 245);
 }
+.bg-link {
+	background-color: rgb(80, 80, 211);
+}
+.dark .bg-link {
+	background-color: rgb(169, 170, 245);
+}
 a.link {
 	color: rgb(80, 80, 211);
 }
@@ -80,6 +86,9 @@ a.link:hover {
 }
 .dark a.link {
 	color: rgb(169, 170, 245);
+}
+a.link.no-underline {
+	text-decoration: none;
 }
 
 .content-jump {
