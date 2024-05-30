@@ -140,6 +140,14 @@ export class DBSeries {
 						.limit(1),
 				).as('book'),
 			])
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('series_book as sb3')
+						.whereRef('sb3.series_id', '=', 'cte_series.id')
+						.select(({ fn }) => [fn.countAll().as('count')]),
+				).as('volumes'),
+			])
 			.selectAll('cte_series');
 	}
 	getSeriesOne(id: number) {
