@@ -5,6 +5,8 @@ import { DBBooks, withBookTitleCte } from '../books/books';
 import type { DB, ReleasePublisherType } from '$lib/server/db/dbTypes';
 import type { User } from 'lucia';
 import { DBSeries } from '../series/series';
+import type { publisherTabs } from '$lib/db/dbConsts';
+import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 
 export class DBPublishers {
 	ranobeDB: RanobeDB;
@@ -227,8 +229,6 @@ export class DBPublishers {
 				).as('image'),
 			)
 			.groupBy([
-				'cte_book.description',
-				'cte_book.description_ja',
 				'cte_book.id',
 				'cte_book.image_id',
 				'cte_book.lang',
@@ -236,7 +236,8 @@ export class DBPublishers {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
-			]);
+			])
+			.clearOrderBy();
 	}
 
 	getSeriesBelongingToPublisher(publisherId: number) {
@@ -245,8 +246,7 @@ export class DBPublishers {
 			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
 			.innerJoin('release_book', 'release_book.book_id', 'series_book.book_id')
 			.innerJoin('release_publisher', 'release_publisher.release_id', 'release_book.release_id')
-			.innerJoin('publisher', 'publisher.id', 'release_publisher.publisher_id')
-			.where('publisher.id', '=', publisherId)
+			.where('release_publisher.publisher_id', '=', publisherId)
 			.clearSelect()
 			.select([
 				'cte_series.title',
@@ -289,6 +289,14 @@ export class DBPublishers {
 						.limit(1),
 				).as('book'),
 			])
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('series_book as sb3')
+						.whereRef('sb3.series_id', '=', 'cte_series.id')
+						.select(({ fn }) => [fn.countAll().as('count')]),
+				).as('volumes'),
+			])
 			.groupBy([
 				'cte_series.title',
 				'cte_series.bookwalker_id',
@@ -312,6 +320,67 @@ export class DBPublishers {
 			.selectAll('release')
 			.select('release_publisher.publisher_type')
 			.where('publisher.id', '=', publisherId);
+	}
+
+	async getWorksPaged(params: {
+		id: number;
+		currentPage: number;
+		tab: (typeof publisherTabs)[number];
+	}) {
+		const { id, currentPage, tab } = params;
+		let works: PublisherWorks;
+		let count;
+		let totalPages;
+		if (tab === 'books') {
+			const booksQuery = this.getBooksBelongingToPublisher(id);
+			const {
+				result: books,
+				count: countBooks,
+				totalPages: totalPagesBooks,
+			} = await paginationBuilderExecuteWithCount(booksQuery, {
+				limit: 24,
+				page: currentPage,
+			});
+			count = countBooks;
+			totalPages = totalPagesBooks;
+			works = {
+				type: tab,
+				books,
+			};
+		} else if (tab === 'series') {
+			const seriesQuery = this.getSeriesBelongingToPublisher(id);
+			const {
+				result: series,
+				count: countSeries,
+				totalPages: totalPagesSeries,
+			} = await paginationBuilderExecuteWithCount(seriesQuery, {
+				limit: 24,
+				page: currentPage,
+			});
+			count = countSeries;
+			totalPages = totalPagesSeries;
+			works = {
+				type: tab,
+				series,
+			};
+		} else {
+			const releasesQuery = this.getReleasesBelongingToPublisher(id);
+			const {
+				result: releases,
+				count: countSeries,
+				totalPages: totalPagesSeries,
+			} = await paginationBuilderExecuteWithCount(releasesQuery, {
+				limit: 24,
+				page: currentPage,
+			});
+			count = countSeries;
+			totalPages = totalPagesSeries;
+			works = {
+				type: tab,
+				releases,
+			};
+		}
+		return { count, totalPages, currentPage, works };
 	}
 }
 

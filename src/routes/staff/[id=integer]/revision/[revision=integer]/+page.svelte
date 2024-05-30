@@ -27,7 +27,7 @@
 		<svelte:fragment slot="content">
 			<Staff
 				{staff}
-				books={data.books}
+				works={data.works}
 				user={data.user}
 				isRevision={true}
 				results={data.count}

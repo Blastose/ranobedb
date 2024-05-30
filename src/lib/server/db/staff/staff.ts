@@ -5,6 +5,8 @@ import { DBBooks, withBookTitleCte } from '../books/books';
 import type { DB, StaffRole } from '$lib/server/db/dbTypes';
 import type { User } from 'lucia';
 import { DBSeries } from '../series/series';
+import type { staffTabs } from '$lib/db/dbConsts';
+import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 
 export class DBStaff {
 	ranobeDB: RanobeDB;
@@ -242,6 +244,14 @@ export class DBStaff {
 			.select((eb) => [
 				jsonObjectFrom(
 					eb
+						.selectFrom('series_book as sb3')
+						.whereRef('sb3.series_id', '=', 'cte_series.id')
+						.select(({ fn }) => [fn.countAll().as('count')]),
+				).as('volumes'),
+			])
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
 						.selectFrom('book')
 						.innerJoin('series_book as sb2', 'sb2.series_id', 'cte_series.id')
 						.whereRef('sb2.book_id', '=', 'book.id')
@@ -272,6 +282,56 @@ export class DBStaff {
 				'cte_series.title_orig',
 				'cte_series.title',
 			]);
+	}
+
+	async getWorksPaged(params: {
+		id: number;
+		currentPage: number;
+		tab: (typeof staffTabs)[number];
+	}) {
+		const { id, currentPage, tab } = params;
+		let count;
+		let totalPages;
+		let works: StaffWorks;
+		if (tab === 'books') {
+			const booksQuery = this.getBooksBelongingToStaff(id);
+			const {
+				result: books,
+				count: countBooks,
+				totalPages: totalPagesBooks,
+			} = await paginationBuilderExecuteWithCount(booksQuery, {
+				limit: 24,
+				page: currentPage,
+			});
+			count = countBooks;
+			totalPages = totalPagesBooks;
+			works = {
+				type: tab,
+				books,
+			};
+		} else {
+			const seriesQuery = this.getSeriesBelongingToStaff(id);
+			const {
+				result: series,
+				count: countSeries,
+				totalPages: totalPagesSeries,
+			} = await paginationBuilderExecuteWithCount(seriesQuery, {
+				limit: 24,
+				page: currentPage,
+			});
+			count = countSeries;
+			totalPages = totalPagesSeries;
+			works = {
+				type: tab,
+				series,
+			};
+		}
+		return {
+			works,
+			count,
+			totalPages,
+			currentPage,
+		};
 	}
 }
 

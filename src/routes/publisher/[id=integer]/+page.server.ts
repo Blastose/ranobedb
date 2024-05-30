@@ -1,6 +1,5 @@
 import { db } from '$lib/server/db/db.js';
-import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
-import { DBPublishers, type PublisherWorks } from '$lib/server/db/publishers/publishers.js';
+import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
 import { publisherTabsSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
@@ -18,58 +17,6 @@ export const load = async ({ params, locals, url }) => {
 	if (!publisher) {
 		error(404);
 	}
-
-	let works: PublisherWorks;
-	let count;
-	let totalPages;
-	if (tab === 'books') {
-		const booksQuery = dbPublishers.getBooksBelongingToPublisher(id);
-		const {
-			result: books,
-			count: countBooks,
-			totalPages: totalPagesBooks,
-		} = await paginationBuilderExecuteWithCount(booksQuery, {
-			limit: 24,
-			page: currentPage,
-		});
-		count = countBooks;
-		totalPages = totalPagesBooks;
-		works = {
-			type: tab,
-			books,
-		};
-	} else if (tab === 'series') {
-		const seriesQuery = dbPublishers.getSeriesBelongingToPublisher(id);
-		const {
-			result: series,
-			count: countSeries,
-			totalPages: totalPagesSeries,
-		} = await paginationBuilderExecuteWithCount(seriesQuery, {
-			limit: 24,
-			page: currentPage,
-		});
-		count = countSeries;
-		totalPages = totalPagesSeries;
-		works = {
-			type: tab,
-			series,
-		};
-	} else {
-		const releasesQuery = dbPublishers.getReleasesBelongingToPublisher(id);
-		const {
-			result: releases,
-			count: countSeries,
-			totalPages: totalPagesSeries,
-		} = await paginationBuilderExecuteWithCount(releasesQuery, {
-			limit: 24,
-			page: currentPage,
-		});
-		count = countSeries;
-		totalPages = totalPagesSeries;
-		works = {
-			type: tab,
-			releases,
-		};
-	}
+	const { count, totalPages, works } = await dbPublishers.getWorksPaged({ id, currentPage, tab });
 	return { publisher, works, count, currentPage, totalPages };
 };

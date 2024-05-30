@@ -58,5 +58,7 @@
 
 	<Hr />
 
-	<Works {currentPage} {results} {totalPages} {works} />
+	<div class="mt-2">
+		<Works {currentPage} {results} {totalPages} {works} />
+	</div>
 </DBItemShell>

@@ -40,6 +40,12 @@
 							urlPrefix="/series/"
 						>
 							<BookImageBadge badges={series.role_types} />
+							{#if series.volumes}
+								<BookImageBadge
+									badges={[`${series.volumes.count} vols.`]}
+									location="bottom-right"
+								/>
+							{/if}
 						</BookImage>
 					{/each}
 				</BookImageContainer>
