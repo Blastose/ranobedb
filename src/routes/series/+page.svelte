@@ -1,5 +1,6 @@
 <script lang="ts">
 	import BookImage from '$lib/components/book/BookImage.svelte';
+	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
@@ -19,13 +20,20 @@
 >
 	<svelte:fragment slot="display">
 		<div>
-			<BookImageContainer>
+			<BookImageContainer moreColumns={true}>
 				{#each data.series as series (series.id)}
 					{#if series.book}
 						<BookImage
 							book={{ title: series.title, id: series.id, image: series.book.image }}
 							urlPrefix="/series/"
-						/>
+						>
+							{#if series.volumes}
+								<BookImageBadge
+									badges={[`${series.volumes.count} vols.`]}
+									location="bottom-right"
+								/>
+							{/if}
+						</BookImage>
 					{:else}
 						<LinkBox display={series.title ?? ''} href="/series/{series.id}" />
 					{/if}

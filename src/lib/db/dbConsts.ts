@@ -1,3 +1,4 @@
+import type { IconType } from '$lib/components/icon/Icon.svelte';
 import type {
 	ReadingStatus,
 	Language,
@@ -187,4 +188,16 @@ export const defaultDisplayPrefs: DisplayPrefs = {
 	names: 'romaji',
 	title_prefs: defaultLangPrio,
 	descriptions: 'en',
+};
+
+export const staffTabs = ['series', 'books'] as const;
+export const staffTabsIconsMap: Record<(typeof staffTabs)[number], IconType> = {
+	books: 'book',
+	series: 'bookshelf',
+};
+export const publisherTabs = ['series', 'books', 'releases'] as const;
+export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconType> = {
+	books: 'book',
+	series: 'bookshelf',
+	releases: 'file',
 };

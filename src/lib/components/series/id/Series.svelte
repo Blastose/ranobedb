@@ -5,6 +5,7 @@
 	import type { User } from 'lucia';
 	import { groupBy } from '$lib/db/array';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
+	import { getDisplayPrefsContext, getTitleDisplay, getTitleDisplaySub } from '$lib/display/prefs';
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import Description from '$lib/components/book/Description.svelte';
 
@@ -13,13 +14,14 @@
 	export let isRevision: boolean;
 
 	$: child_series = groupBy(series.child_series, (item) => item.relation_type);
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <DBItemShell
 	dbItem="series"
 	{isRevision}
-	name={series.title ?? ''}
-	subName={series.romaji}
+	name={getTitleDisplay({ obj: series, prefs: $displayPrefs.title_prefs })}
+	subName={getTitleDisplaySub({ obj: series, prefs: $displayPrefs.title_prefs })}
 	{user}
 	item={series}
 >

@@ -1,12 +1,13 @@
 import { getChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
-import {
-	getCurrentVisibilityStatus,
-	paginationBuilderExecuteWithCount,
-} from '$lib/server/db/dbHelpers.js';
+import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
 import { db } from '$lib/server/db/db.js';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { staffTabsSchema } from '$lib/server/zod/schema.js';
+
 import {
 	generateStaffAliasChangeStringFromStaffAliases,
 	getDiffLines,
@@ -18,6 +19,8 @@ import {
 export const load = async ({ params, locals, url }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const id = params.id;
+	const svTab = await superValidate(url, zod(staffTabsSchema));
+	const tab = svTab.data.tab;
 	const staffId = Number(id);
 	const revision = Number(params.revision);
 	const previousRevision = revision - 1;
@@ -91,19 +94,15 @@ export const load = async ({ params, locals, url }) => {
 		pushIfNotUndefined(diffs, diff);
 	}
 
-	const {
-		result: books,
-		count,
-		totalPages,
-	} = await paginationBuilderExecuteWithCount(dbStaff.getBooksBelongingToStaff(staffId), {
-		limit: 24,
-		page: currentPage,
+	const { count, totalPages, works } = await dbStaff.getWorksPaged({
+		id: staffId,
+		currentPage,
+		tab,
 	});
-
 	return {
 		staffId,
 		staff,
-		books,
+		works,
 		diffs,
 		count,
 		currentPage,

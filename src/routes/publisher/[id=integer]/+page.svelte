@@ -18,7 +18,7 @@
 <DbRouteShell theme={$theme} bgImageStyle={null}>
 	<Publisher
 		{publisher}
-		books={data.books}
+		works={data.works}
 		isRevision={false}
 		user={data.user}
 		currentPage={data.currentPage}

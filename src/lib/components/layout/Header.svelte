@@ -56,7 +56,8 @@
 	}
 
 	.on-book-route {
-		transition: background-color 450ms;
+		transition: background-color 300ms;
+		transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 	}
 
 	:global(.dark) .header {

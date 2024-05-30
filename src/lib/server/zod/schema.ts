@@ -1,10 +1,12 @@
 import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
+	publisherTabs,
 	releasePublisherTypeArray,
 	releaseTypeArray,
 	seriesRelTypeArray,
 	seriesStatusArray,
 	staffRolesArray,
+	staffTabs,
 } from '$lib/db/dbConsts';
 import { releaseFormatArray } from '$lib/db/dbConsts';
 import { publisherRelTypeArray } from '$lib/db/dbConsts';
@@ -312,7 +314,9 @@ export const seriesSchema = z.object({
 });
 
 export const searchNameSchema = z.object({ name: z.string() });
-export const revisionSchema = z.object({ revision: z.number() });
+export const revisionSchema = z.object({ revision: z.number().nullish() });
+export const staffTabsSchema = z.object({ tab: z.enum(staffTabs) });
+export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs) });
 
 const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),
