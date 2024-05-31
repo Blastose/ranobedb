@@ -59,10 +59,17 @@
 			}}
 			aria-label={expandedDescription ? 'Show less' : 'Show more'}
 		>
-			<span class="chevron-icon {expandedDescription ? 'rotate-90' : '-rotate-90'}">
+			<span
+				class="{hydration ? 'invisible opacity-0' : 'inline opacity-100'}
+					 {expandedDescription ? 'rotate-90' : '-rotate-90'}
+					 duration-500 chevron-icon"
+			>
 				<Icon name="chevronLeft" />
 			</span>
-			<span class="expand-description-text">{expandedDescription ? 'Show less' : 'Show more'}</span>
+			<span
+				class="{hydration ? 'invisible opacity-0' : 'inline opacity-100'}
+					 duration-500 expand-description-text">{expandedDescription ? 'Show less' : 'Show more'}</span
+			>
 		</button>
 	{/if}
 </div>
@@ -71,7 +78,7 @@
 	.description-container {
 		display: flex;
 		flex-direction: column;
-		gap: 0.5rem;
+		gap: 0.25rem;
 	}
 
 	.description {
@@ -82,8 +89,8 @@
 
 	.expand-description-text {
 		margin-top: -0.5rem;
-		font-size: 0.75rem /* 12px */;
-		line-height: 1rem /* 16px */;
+		font-size: 0.75rem;
+		line-height: 1rem;
 	}
 
 	.chevron-icon {
@@ -99,7 +106,7 @@
 		justify-content: center;
 		background: linear-gradient(
 			rgba(0, 0, 0, 0) 0%,
-			rgba(242, 242, 242, 0.781) 25%,
+			rgba(242, 242, 242, 0.781) 50%,
 			rgba(242, 242, 242, 1) 100%
 		);
 	}
@@ -107,7 +114,7 @@
 	:global(.dark) .hide-text-gradient {
 		background: linear-gradient(
 			rgba(255, 255, 255, 0) 0%,
-			rgba(34, 34, 34, 0.781) 25%,
+			rgba(34, 34, 34, 0.781) 50%,
 			rgba(34, 34, 34, 1) 100%
 		);
 	}

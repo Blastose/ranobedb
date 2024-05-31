@@ -8,6 +8,7 @@
 	import { getDisplayPrefsContext, getTitleDisplay, getTitleDisplaySub } from '$lib/display/prefs';
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import Description from '$lib/components/book/Description.svelte';
+	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -53,6 +54,8 @@
 			</div>
 		</section>
 	{/if}
+
+	<PublishersSection publishers={series.publishers} />
 
 	<section class="flex flex-col gap-2">
 		<h2 class="text-lg font-bold">Books in series</h2>

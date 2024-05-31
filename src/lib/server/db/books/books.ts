@@ -215,6 +215,22 @@ export class DBBooks {
 							'cte_series.lang',
 						]),
 				).as('series'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('publisher')
+						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
+						.innerJoin('release_book', 'release_book.release_id', 'release_publisher.release_id')
+						.innerJoin('release', 'release.id', 'release_book.release_id')
+						.where('release_book.book_id', '=', id)
+						.distinctOn(['publisher.id', 'release.lang'])
+						.select([
+							'publisher.id',
+							'publisher.name',
+							'publisher.romaji',
+							'release_publisher.publisher_type',
+							'release.lang',
+						]),
+				).as('publishers'),
 			])
 			.where('cte_book.id', '=', id);
 	}
@@ -340,6 +356,22 @@ export class DBBooks {
 							'cte_series.lang',
 						]),
 				).as('series'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('publisher')
+						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
+						.innerJoin('release_book', 'release_book.release_id', 'release_publisher.release_id')
+						.innerJoin('release', 'release.id', 'release_book.release_id')
+						.where('release_book.book_id', '=', id)
+						.distinctOn(['publisher.id', 'release.lang'])
+						.select([
+							'publisher.id',
+							'publisher.name',
+							'publisher.romaji',
+							'release_publisher.publisher_type',
+							'release.lang',
+						]),
+				).as('publishers'),
 			])
 			.where('change.item_id', '=', id)
 			.where('change.item_name', '=', 'book');
