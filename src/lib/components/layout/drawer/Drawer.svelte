@@ -6,6 +6,7 @@
 	import type { User } from 'lucia';
 	import { writable } from 'svelte/store';
 	import { quintOut } from 'svelte/easing';
+	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
 	export let user: User | null;
 	const customOpen = writable(false);
@@ -21,11 +22,24 @@
 	function handleNavigation() {
 		customOpen.set(false);
 	}
+
+	const sidebarStore = getSidebarStoreContext();
+
+	function openSidebar() {
+		sidebarStore.set('open');
+	}
 </script>
 
-<button use:melt={$trigger} class="btn rounded-sm p-1" aria-label="Open sidebar">
-	<Icon name="menu" />
-</button>
+<div class="flex items-center lg:hidden pr-4">
+	<button type="button" use:melt={$trigger} class="btn rounded-sm p-1" aria-label="Open sidebar">
+		<Icon name="menu" />
+	</button>
+</div>
+<div class="hidden items-center lg:flex pr-4">
+	<button type="button" on:click={openSidebar} class="btn rounded-sm p-1" aria-label="Open sidebar">
+		<Icon name="menu" />
+	</button>
+</div>
 
 <div use:melt={$portalled}>
 	{#if $customOpen}
@@ -40,7 +54,7 @@
 				easing: quintOut,
 			}}
 		>
-			<button use:melt={$close} aria-label="Close" class="close-btn btn">
+			<button use:melt={$close} aria-label="Close" class="drawer close-btn btn">
 				<Icon name="close" />
 			</button>
 
@@ -66,5 +80,9 @@
 
 	:global(.dark) .modal-drawer {
 		background-color: var(--bg-dark);
+	}
+
+	.drawer.close-btn {
+		top: 1rem;
 	}
 </style>

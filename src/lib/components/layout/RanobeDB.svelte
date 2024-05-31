@@ -10,12 +10,7 @@
 
 <div class="flex items-center">
 	{#if showOpenDrawerButton}
-		<!-- Normally we would use a gap-4 on the above div, but -->
-		<!-- The Drawer component uses Melt which uses a portal div that would -->
-		<!-- also have a gap before it moves after hydration kicks in -->
-		<div class="flex items-center mr-4">
-			<Drawer {user} />
-		</div>
+		<Drawer {user} />
 	{/if}
 	<h2 class="text-2xl font-bold">
 		<a aria-label="Home" class="logo-link" href="/">

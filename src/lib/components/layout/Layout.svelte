@@ -4,15 +4,18 @@
 	import type { User } from 'lucia';
 	import Fly from './Fly.svelte';
 	import Toaster from '$lib/components/toast/Toaster.svelte';
+	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
 	export let user: User | null;
 	export let url: string;
+
+	const sidebarStore = getSidebarStoreContext();
 </script>
 
 <Toaster />
 
 <div class="layout-container">
-	<div class="sidebar-wrapper sidebar-animation">
+	<div class="sidebar-wrapper sidebar-animation" class:sidebar-open={$sidebarStore === 'open'}>
 		<Sidebar {user} />
 	</div>
 
@@ -58,7 +61,7 @@
 	}
 
 	@media (min-width: 1024px) {
-		.sidebar-wrapper {
+		.sidebar-wrapper.sidebar-open {
 			margin-left: 0px;
 			visibility: visible;
 		}
