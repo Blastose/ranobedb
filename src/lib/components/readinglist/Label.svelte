@@ -37,8 +37,8 @@
 	.box-underline {
 		width: 100%;
 		height: 0.166rem;
-		border-radius: 0.075rem;
 		transition: background-color 300ms;
+		border-radius: 2rem 2rem 0px 0px;
 	}
 
 	.box-underline.active {
