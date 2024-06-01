@@ -8,6 +8,7 @@
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+	export let seriesId: number | undefined;
 
 	const { values, errors, valueErrors } = arrayProxy(form, 'child_series');
 	function handleRemoveSeries(index: number) {
@@ -73,7 +74,13 @@
 				>
 			</div>
 		{/each}
-		<ComboboxInput handleAdd={handleAddSeries} {search} title="Add series" />
+		<ComboboxInput
+			handleAdd={handleAddSeries}
+			{search}
+			title="Add series"
+			selectedItems={[...$values, { id: seriesId ?? -1 }]}
+			filterDuplicateIds={true}
+		/>
 	</div>
 	{#if $errors}
 		<p class="error-text-color">{$errors}</p>

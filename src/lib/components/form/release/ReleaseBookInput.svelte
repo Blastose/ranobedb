@@ -65,7 +65,13 @@
 				>
 			</div>
 		{/each}
-		<ComboboxInput handleAdd={handleAddBook} {search} title="Add book" />
+		<ComboboxInput
+			handleAdd={handleAddBook}
+			{search}
+			title="Add book"
+			selectedItems={$values}
+			filterDuplicateIds={true}
+		/>
 	</div>
 	{#if $errors}
 		<p class="error-text-color">{$errors}</p>

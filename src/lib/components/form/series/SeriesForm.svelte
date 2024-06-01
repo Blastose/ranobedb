@@ -79,7 +79,7 @@
 	<Hr />
 
 	<SeriesBookInput form={sForm} />
-	<SeriesRelInput form={sForm} />
+	<SeriesRelInput form={sForm} seriesId={series?.id} />
 
 	<TextareaFieldMarkdown
 		form={sForm}
