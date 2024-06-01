@@ -29,7 +29,7 @@
 	}
 
 	async function search(inputValue: string) {
-		const res = await fetch(`/api/i/staff?name=${inputValue}`);
+		const res = await fetch(`/api/i/staff?name=${encodeURIComponent(inputValue)}`);
 		const json = await res.json();
 		return json;
 	}
