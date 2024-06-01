@@ -57,6 +57,9 @@
 					bind:value={$values[i].note}
 				/></label
 			>
+			{#if $valueErrors && $valueErrors[i]?.note}
+				<p class="error-text-color">{$valueErrors[i]?.note}</p>
+			{/if}
 			<button
 				on:click={() => {
 					handleRemoveStaff(i);

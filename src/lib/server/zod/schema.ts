@@ -84,6 +84,30 @@ export const userListBookSchema = z.object({
 	type: z.enum(userListFormTypes),
 });
 
+const zTitles = z
+	.array(
+		z.object({
+			lang: z.enum(languagesArray),
+			official: z.boolean(),
+			title: z
+				.string()
+				.min(1, { message: 'Title must be at least 1 character' })
+				.max(2000, { message: 'Title must be at most 2000 characters' }),
+			romaji: z.string().max(2000, { message: 'Romaji must be at most 2000 characters' }).nullish(),
+		}),
+	)
+	.min(1, { message: 'There needs to be at least 1 title' })
+	.max(50, { message: 'The total number of titles must be less than 50' })
+	.refine(
+		(titles) => {
+			if (!titles.some((v) => v.lang === 'ja')) {
+				return false;
+			}
+			return true;
+		},
+		{ message: 'A Japanese title must be included' },
+	);
+
 export const bookSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
@@ -95,37 +119,18 @@ export const bookSchema = z.object({
 		.string()
 		.max(2000, { message: 'Description must be at most 2000 characters' })
 		.nullish(),
-	image_id: z.number().nullish(),
+	image_id: z.number().max(2000000).nullish(),
 
-	titles: z
-		.array(
-			z.object({
-				lang: z.enum(languagesArray),
-				official: z.boolean(),
-				title: z
-					.string()
-					.min(1, { message: 'Title must be at least 1 character' })
-					.max(2000, { message: 'Title must be at most 2000 characters' }),
-				romaji: z
-					.string()
-					.max(2000, { message: 'Romaji must be at most 2000 characters' })
-					.nullish(),
-			}),
-		)
-		.min(1, { message: 'There needs to be at least 1 title' })
-		.max(50, { message: 'The total number of titles must be less than 50' })
-		.refine((titles) => {
-			if (!titles.some((v) => v.lang === 'ja')) {
-				return false;
-			}
-			return true;
-		}),
+	titles: zTitles,
 
 	editions: z
 		.array(
 			z.object({
-				eid: z.number().nullish(),
-				title: z.string().min(1).max(2000),
+				eid: z.number().min(0).max(2000000).nullish(),
+				title: z
+					.string()
+					.min(1, { message: 'Title must be at least 1 character' })
+					.max(2000, { message: 'Title must be at most 2000 characters' }),
 				lang: z.enum(languagesArray),
 				staff: z
 					.array(
@@ -135,27 +140,27 @@ export const bookSchema = z.object({
 							staff_id: z.number().max(2000000),
 							staff_alias_id: z.number().max(2000000),
 							role_type: z.enum(staffRolesArray),
-							note: z.string().max(2000),
+							note: z.string().max(2000, { message: 'Note must be at most 2000 characters' }),
 						}),
 					)
 					.max(50),
 			}),
 		)
-		.min(1)
-		.max(10)
-		.refine((editions) => {
-			const originalEdition = editions.at(0);
-			if (!originalEdition) {
-				return false;
-			}
-			if (originalEdition.title !== 'Original edition') {
-				return false;
-			}
-			if (originalEdition.lang !== 'ja') {
-				return false;
-			}
-			return true;
-		}),
+		.min(1, { message: 'There must be at least 1 edition' })
+		.max(10, { message: 'The total number of editions must be less than or equal to 10' })
+		.refine(
+			(editions) => {
+				const originalEdition = editions.at(0);
+				if (!originalEdition) {
+					return false;
+				}
+				if (originalEdition.title !== 'Original edition') {
+					return false;
+				}
+				return true;
+			},
+			{ message: 'Original edition must be first ' },
+		),
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
 });
@@ -304,23 +309,7 @@ export const seriesSchema = z.object({
 			}),
 		)
 		.max(200),
-	titles: z
-		.array(
-			z.object({
-				lang: z.enum(languagesArray),
-				official: z.boolean(),
-				title: z.string().min(1, { message: 'Title must be at least 1 character' }).max(2000),
-				romaji: z.string().max(2000).nullish(),
-			}),
-		)
-		.min(1)
-		.max(50)
-		.refine((titles) => {
-			if (!titles.some((v) => v.lang === 'ja')) {
-				return false;
-			}
-			return true;
-		}),
+	titles: zTitles,
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
 });

@@ -64,15 +64,13 @@
 					></label
 				>
 
-				{#if title.lang !== 'ja'}
-					<button
-						type="button"
-						class="sub-btn"
-						on:click={() => {
-							handleRemoveTitle(i);
-						}}>Remove title</button
-					>
-				{/if}
+				<button
+					type="button"
+					class="sub-btn"
+					on:click={() => {
+						handleRemoveTitle(i);
+					}}>Remove title</button
+				>
 			</div>
 		</div>
 	{/each}
@@ -88,4 +86,8 @@
 			<option value={code}>{lang}</option>
 		{/each}
 	</select>
+
+	{#if $errors}
+		<p class="error-text-color">{$errors}</p>
+	{/if}
 </section>

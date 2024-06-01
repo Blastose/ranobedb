@@ -5,10 +5,14 @@
 
 <PageTitle title="Add to database" />
 
-<main class="container-rndb flex flex-col gap-2">
-	<LinkBox display="Add book" href="/books/add" />
-	<LinkBox display="Add series" href="/series/add" />
-	<LinkBox display="Add releases" href="/releases/add" />
-	<LinkBox display="Add staff" href="/staff/add" />
-	<LinkBox display="Add publisher" href="/publishers/add" />
+<main class="container-rndb flex flex-col gap-4">
+	<h1 class="text-4xl font-bold">Add to database</h1>
+
+	<div class="flex flex-col gap-2">
+		<LinkBox display="Add book" href="/books/add" />
+		<LinkBox display="Add series" href="/series/add" />
+		<LinkBox display="Add releases" href="/releases/add" />
+		<LinkBox display="Add staff" href="/staff/add" />
+		<LinkBox display="Add publisher" href="/publishers/add" />
+	</div>
 </main>
