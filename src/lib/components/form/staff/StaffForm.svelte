@@ -11,6 +11,7 @@
 	import type { StaffEdit } from '$lib/server/db/staff/staff';
 	import StaffNamesInput from './StaffNamesInput.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 
 	export let staff: StaffEdit | undefined;
 	export let staffForm: SuperValidated<Infer<typeof staffSchema>>;
@@ -64,24 +65,26 @@
 
 	<Hr />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="description"
 		label="Biography"
 		textareaRows={4}
 		placeholder="Biography"
+		labelId="description"
 	/>
 
 	<Hr />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}
 		placeholder="Summarize the changes you have made"
+		labelId="edit-summary"
 	/>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={submitButtonText} />

@@ -11,6 +11,7 @@
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import type { User } from 'lucia';
 	import BookEditionStaffInput from './BookEditionStaffInput.svelte';
+	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 
 	export let book: BookEdit | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
@@ -48,22 +49,24 @@
 
 	<Hr />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="description"
 		label="Description"
 		textareaRows={4}
 		placeholder="Description"
+		labelId="description-md"
 	/>
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="description_ja"
 		label="Description (japanese)"
 		textareaRows={4}
 		placeholder="Description (japanese)"
+		labelId="descriptionjp-md"
 	/>
 
 	<Hr />
@@ -75,13 +78,14 @@
 
 	<Hr />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}
 		placeholder="Summarize the changes you have made"
+		labelId="edit-summary"
 	/>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={submitButtonText} />

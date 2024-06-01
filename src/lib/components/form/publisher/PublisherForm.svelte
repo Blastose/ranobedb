@@ -11,6 +11,7 @@
 	import type { PublisherEdit } from '$lib/server/db/publishers/publishers';
 	import PublisherRelInput from './PublisherRelInput.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 
 	export let publisher: PublisherEdit | undefined;
 	export let publisherForm: SuperValidated<Infer<typeof publisherSchema>>;
@@ -55,26 +56,28 @@
 		placeholder="Romanization"
 	/>
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="description"
 		label="Biography"
 		textareaRows={4}
 		placeholder="Biography"
+		labelId="biography-md"
 	/>
 
 	<PublisherRelInput form={sForm} />
 
 	<Hr />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}
 		placeholder="Summarize the changes you have made"
+		labelId="edit-summary"
 	/>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={submitButtonText} />

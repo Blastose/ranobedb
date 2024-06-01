@@ -15,6 +15,7 @@
 	import { languageNames, languagesArray, releaseFormatArray } from '$lib/db/dbConsts';
 	import SelectField from '../SelectField.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 
 	export let release: ReleaseEdit | undefined;
 	export let releaseForm: SuperValidated<Infer<typeof releaseSchema>>;
@@ -92,13 +93,14 @@
 
 	<ReleaseDateInput form={sForm} />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="description"
 		label="Note"
 		textareaRows={4}
 		placeholder="Note"
+		labelId="description"
 	/>
 
 	<Hr />
@@ -108,13 +110,14 @@
 
 	<Hr />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}
 		placeholder="Summarize the changes you have made"
+		labelId="edit-summary"
 	/>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={submitButtonText} />

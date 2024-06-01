@@ -485,3 +485,7 @@ input[type='checkbox'] {
 	background: rgb(59, 58, 65);
 	color: var(--text-dark);
 }
+.markdown blockquote {
+	padding-left: 1rem;
+	margin-left: 1rem;
+}
