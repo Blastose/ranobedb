@@ -13,6 +13,8 @@
 		--bg-dark1: rgb(48, 48, 51);
 		--text-dark: #f2f2f2;
 		--text-dark-sub: #888991;
+		--link: rgb(81, 81, 182);
+		--link-dark: rgb(169, 170, 245);
 
 		--primary-50: #fafafa;
 		--primary-100: #e4e7ee;
@@ -67,25 +69,25 @@ body {
 }
 
 .link {
-	color: rgb(80, 80, 211);
+	color: var(--link);
 }
 .dark .link {
-	color: rgb(169, 170, 245);
+	color: var(--link-dark);
 }
 .bg-link {
-	background-color: rgb(80, 80, 211);
+	background-color: var(--link);
 }
 .dark .bg-link {
-	background-color: rgb(169, 170, 245);
+	background-color: var(--link-dark);
 }
 a.link {
-	color: rgb(80, 80, 211);
+	color: var(--link);
 }
 a.link:hover {
 	text-decoration: underline;
 }
 .dark a.link {
-	color: rgb(169, 170, 245);
+	color: var(--link-dark);
 }
 a.link.no-underline {
 	text-decoration: none;
@@ -372,6 +374,9 @@ input[type='checkbox'] {
 	margin-left: 0;
 	margin-right: 0;
 }
+.markdown p:last-child {
+	margin-bottom: 0;
+}
 .markdown.singleline p {
 	margin: 0;
 }
@@ -479,4 +484,8 @@ input[type='checkbox'] {
 .dark .markdown .spoiler.revealed {
 	background: rgb(59, 58, 65);
 	color: var(--text-dark);
+}
+.markdown blockquote {
+	padding-left: 1rem;
+	margin-left: 1rem;
 }

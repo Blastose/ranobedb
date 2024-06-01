@@ -89,9 +89,12 @@ export const actions = {
 			console.log(e);
 			if (e instanceof DatabaseError) {
 				if (
-					e.code === '23505' &&
-					e.table === 'publisher_relation' &&
-					e.constraint === 'publisher_relation_pkey'
+					(e.code === '23505' &&
+						e.table === 'publisher_relation' &&
+						e.constraint === 'publisher_relation_pkey') ||
+					(e.code === '23505' &&
+						e.table === 'publisher_relation_hist' &&
+						e.constraint === 'publisher_relation_hist_pkey')
 				) {
 					return setError(
 						form,

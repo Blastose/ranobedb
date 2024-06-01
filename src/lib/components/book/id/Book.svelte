@@ -17,6 +17,8 @@
 	import { getDisplayPrefsContext } from '$lib/display/prefs';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
+	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
+	import BookReleases from './BookReleases.svelte';
 
 	export let book: BookR;
 	export let isRevision: boolean;
@@ -105,7 +107,7 @@
 
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
-			<div class="flex flex-col gap-4">
+			<div class="flex flex-wrap gap-4">
 				{#each book.editions as edition}
 					<div class="flex flex-col gap-2">
 						<p class="font-semibold">{edition.title} - {edition.lang}</p>
@@ -128,33 +130,27 @@
 			</div>
 		</section>
 
-		<section>
-			<h2 class="font-bold text-lg">Releases</h2>
-			<div>
-				{#each book.releases as release}
-					<p>
-						<a class="link" href="/release/{release.id}"
-							><NameDisplay obj={release} /> - {release.lang} - {release.format}
-							- {new DateNumber(release.release_date).getDateFormatted()}</a
-						>
-					</p>
-				{/each}
-			</div>
-		</section>
+		<PublishersSection publishers={book.publishers} />
+
+		<BookReleases releases={book.releases} />
 
 		<section>
 			<h2 class="font-bold text-lg">Series</h2>
 			<div class="flex flex-col gap-2">
 				{#each book.series as series}
-					<a class="link w-fit font-bold" href="/series/{series.id}"
-						><TitleDisplay obj={series} /></a
-					>
 					<BookCarousel>
-						{#each series.books as other_book (other_book.id)}
-							<div class="carousel-item">
-								<BookImage book={other_book} urlPrefix="/book/" />
-							</div>
-						{/each}
+						<svelte:fragment slot="link">
+							<a class="link w-fit font-bold" href="/series/{series.id}"
+								><TitleDisplay obj={series} /></a
+							>
+						</svelte:fragment>
+						<svelte:fragment slot="items">
+							{#each series.books as other_book (other_book.id)}
+								<div class="carousel-item">
+									<BookImage book={other_book} urlPrefix="/book/" />
+								</div>
+							{/each}
+						</svelte:fragment>
 					</BookCarousel>
 				{/each}
 			</div>

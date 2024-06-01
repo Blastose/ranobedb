@@ -87,8 +87,14 @@ export const userListBookSchema = z.object({
 export const bookSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
-	description: z.string().max(2000).nullish(),
-	description_ja: z.string().max(2000).nullish(),
+	description: z
+		.string()
+		.max(2000, { message: 'Description must be at most 2000 characters' })
+		.nullish(),
+	description_ja: z
+		.string()
+		.max(2000, { message: 'Description must be at most 2000 characters' })
+		.nullish(),
 	image_id: z.number().nullish(),
 
 	titles: z
@@ -96,12 +102,18 @@ export const bookSchema = z.object({
 			z.object({
 				lang: z.enum(languagesArray),
 				official: z.boolean(),
-				title: z.string().min(1, { message: 'Title must be at least 1 character' }).max(2000),
-				romaji: z.string().max(2000).nullish(),
+				title: z
+					.string()
+					.min(1, { message: 'Title must be at least 1 character' })
+					.max(2000, { message: 'Title must be at most 2000 characters' }),
+				romaji: z
+					.string()
+					.max(2000, { message: 'Romaji must be at most 2000 characters' })
+					.nullish(),
 			}),
 		)
-		.min(1)
-		.max(50)
+		.min(1, { message: 'There needs to be at least 1 title' })
+		.max(50, { message: 'The total number of titles must be less than 50' })
 		.refine((titles) => {
 			if (!titles.some((v) => v.lang === 'ja')) {
 				return false;

@@ -9,6 +9,8 @@ import type { DisplayPrefs } from '$lib/server/zod/schema';
 import type { LanguagePriority } from '$lib/server/zod/schema';
 
 export const languagesArray = [
+	'en',
+	'ja',
 	'ar',
 	'bg',
 	'ca',
@@ -17,7 +19,6 @@ export const languagesArray = [
 	'da',
 	'de',
 	'el',
-	'en',
 	'eo',
 	'es',
 	'eu',
@@ -33,7 +34,6 @@ export const languagesArray = [
 	'id',
 	'it',
 	'iu',
-	'ja',
 	'ko',
 	'la',
 	'lt',

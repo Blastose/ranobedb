@@ -1,4 +1,4 @@
-import { jsonArrayFrom } from 'kysely/helpers/postgres';
+import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
 import type { InferResult, Kysely } from 'kysely';
 import { withBookTitleCte } from '../books/books';
@@ -53,6 +53,7 @@ export class DBReleases {
 								.onRef('release_book.book_id', '=', 'cte_book.id')
 								.onRef('release_book.release_id', '=', 'release.id'),
 						)
+						.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
 						.select([
 							'cte_book.id',
 							'cte_book.title',
@@ -60,7 +61,18 @@ export class DBReleases {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.lang',
-						]),
+							'series_book.sort_order',
+						])
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.selectAll('image')
+									.whereRef('image.id', '=', 'cte_book.image_id')
+									.limit(1),
+							).as('image'),
+						)
+						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
 			])
 			.where('release.id', '=', id);
@@ -103,6 +115,7 @@ export class DBReleases {
 								.onRef('release_book_hist.book_id', '=', 'cte_book.id')
 								.onRef('release_book_hist.change_id', '=', 'release_hist.change_id'),
 						)
+						.innerJoin('series_book', 'series_book.book_id', 'release_book_hist.book_id')
 						.select([
 							'cte_book.id',
 							'cte_book.title',
@@ -110,7 +123,18 @@ export class DBReleases {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.lang',
-						]),
+							'series_book.sort_order',
+						])
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.selectAll('image')
+									.whereRef('image.id', '=', 'cte_book.image_id')
+									.limit(1),
+							).as('image'),
+						)
+						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
 			])
 			.where('change.item_id', '=', options.id)

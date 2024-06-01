@@ -4,6 +4,7 @@
 	import RanobeDb from './RanobeDB.svelte';
 	import { page } from '$app/stores';
 	import SearchInput from '$lib/components/form/SearchInput.svelte';
+	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
 	export let user: User | null;
 
@@ -22,6 +23,8 @@
 
 	let scrollY: number | undefined;
 	$: isOnBookRoute = disableHeaderOpacity($page.url.pathname);
+
+	const sidebarStore = getSidebarStoreContext();
 </script>
 
 <svelte:window bind:scrollY />
@@ -33,7 +36,7 @@
 	class:hide-bg-color={isOnBookRoute}
 >
 	<div class="header-items container-rndb">
-		<div class="visible lg:invisible">
+		<div class="ranobedb-logo" class:sidebar-open={$sidebarStore === 'open'}>
 			<RanobeDb {user} hideTextWhenWidthSmall={true} showOpenDrawerButton={true} />
 		</div>
 
@@ -53,6 +56,16 @@
 		view-transition-name: header;
 		background-color: var(--bg-light);
 		z-index: 9999;
+	}
+
+	.ranobedb-logo {
+		visibility: visible;
+	}
+
+	@media (min-width: 1024px) {
+		.ranobedb-logo.sidebar-open {
+			visibility: hidden;
+		}
 	}
 
 	.on-book-route {

@@ -15,6 +15,7 @@
 	import SelectField from '../SelectField.svelte';
 	import { seriesStatusArray } from '$lib/db/dbConsts';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
+	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 
 	export let series: SeriesEdit | undefined;
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
@@ -50,13 +51,14 @@
 
 	<SeriesTitlesInput form={sForm} />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="description"
 		label="Description"
 		textareaRows={4}
 		placeholder="Description"
+		labelId="description"
 	/>
 
 	<div class="flex">
@@ -77,15 +79,16 @@
 	<Hr />
 
 	<SeriesBookInput form={sForm} />
-	<SeriesRelInput form={sForm} />
+	<SeriesRelInput form={sForm} seriesId={series?.id} />
 
-	<TextField
+	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}
 		placeholder="Summarize the changes you have made"
+		labelId="edit-summary"
 	/>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={submitButtonText} />

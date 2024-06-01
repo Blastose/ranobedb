@@ -44,7 +44,7 @@
 	<h2 class="text-lg font-bold">Book Relations</h2>
 	<div class="flex gap-2 flex-col">
 		<BookDragDrop items={$values} remove={handleRemoveBook} {updateSortOrder} />
-		<ComboboxInput handleAdd={handleAddBook} {search} title="Add book" />
+		<ComboboxInput handleAdd={handleAddBook} {search} title="Add book" selectedItems={$values}  filterDuplicateIds={true}/>
 	</div>
 	{#if $errors}
 		<p class="error-text-color">{$errors}</p>

@@ -7,6 +7,7 @@
 	import SidebarFormButton from './SidebarFormButton.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
+	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
 	export let user: User | null;
 	export let isDrawer: boolean = false;
@@ -38,10 +39,24 @@
 			},
 		};
 	}
+
+	const sidebarStore = getSidebarStoreContext();
+	function closeSidebar() {
+		sidebarStore.set('closed');
+	}
 </script>
 
 <aside use:watchNavigation class="sidebar thin-scrollbar" class:drawer={isDrawer}>
-	<RanobeDb {user} hideTextWhenWidthSmall={false} />
+	<div class="flex justify-between items-center">
+		<RanobeDb {user} hideTextWhenWidthSmall={false} />
+		{#if !isDrawer}
+			<button
+				class="relative btn left-2 rounded-full inline-flex items-center justify-center w-8 h-8"
+				type="button"
+				on:click={closeSidebar}><Icon name="close" /></button
+			>
+		{/if}
+	</div>
 
 	<nav class="flex flex-col gap-4">
 		<SidebarSection>

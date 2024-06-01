@@ -6,7 +6,6 @@
 
 <script lang="ts" generics="T extends Rec">
 	import NameDisplay from '../display/NameDisplay.svelte';
-
 	import { createCombobox, melt } from '@melt-ui/svelte';
 	import { fly } from 'svelte/transition';
 	import Icon from '../icon/Icon.svelte';
@@ -14,6 +13,8 @@
 	export let title: string;
 	export let handleAdd: (item: T) => void;
 	export let search: (input: string) => Promise<T[]>;
+	export let selectedItems: Pick<T, 'id'>[];
+	export let filterDuplicateIds: boolean;
 
 	const {
 		elements: { menu, input, option, label },
@@ -39,7 +40,6 @@
 			loading = true;
 			debounce(async () => {
 				const json = await search($inputValue);
-				console.log(json);
 				searchedItems = json;
 				loading = false;
 			});
@@ -52,9 +52,7 @@
 
 	$: {
 		if ($selected) {
-			console.log($selected);
 			handleAdd($selected.value);
-			$inputValue = '';
 		}
 	}
 </script>
@@ -65,7 +63,7 @@
 		<span>{title}</span>
 	</label>
 
-	<div class="relative w-fit">
+	<div class="relative w-full max-w-sm">
 		<div class="absolute left-2 top-1/2 -translate-y-1/2"><Icon name="search" /></div>
 		<input use:melt={$input} class="input w-full !pl-10 !pr-8" placeholder="Name" />
 		<div class="absolute right-2 top-1/2 z-10 -translate-y-1/2 text-magnum-900">
@@ -94,26 +92,28 @@
 				</li>
 			{:else}
 				{#each searchedItems as item, index (index)}
-					<li
-						use:melt={$option({
-							value: item,
-							label: item.name,
-						})}
-						class="relative cursor-pointer scroll-my-2 rounded-md py-2 px-2
+					{#if !filterDuplicateIds || (filterDuplicateIds && !selectedItems.some((v) => v.id === item.id))}
+						<li
+							use:melt={$option({
+								value: item,
+								label: item.name,
+							})}
+							class="relative cursor-pointer scroll-my-2 rounded-md py-2 px-2
         data-[highlighted]:bg-gray-300 data-[highlighted]:text-gray-900
 				dark:data-[highlighted]:bg-neutral-600 dark:data-[highlighted]:text-white
           data-[disabled]:opacity-50"
-					>
-						{#if $isSelected(item)}
-							<!--  -->
-						{/if}
-						<div class="">
-							<p>
-								<span class="text-xs opacity-75">#{item.id}</span>
-								<NameDisplay obj={item} />
-							</p>
-						</div>
-					</li>
+						>
+							{#if $isSelected(item)}
+								<!--  -->
+							{/if}
+							<div class="">
+								<p>
+									<span class="text-xs opacity-75">#{item.id}</span>
+									<NameDisplay obj={item} />
+								</p>
+							</div>
+						</li>
+					{/if}
 				{:else}
 					<li
 						class="relative cursor-pointer rounded-md py-1 px-2

@@ -7,7 +7,8 @@
 	import type { Release } from '$lib/server/db/releases/releases';
 	import type { User } from 'lucia';
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
-	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
+	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
+	import BookImage from '$lib/components/book/BookImage.svelte';
 
 	export let release: Release;
 	export let isRevision: boolean;
@@ -63,37 +64,42 @@
 	</dl>
 
 	{#if release.publishers.length > 0}
-		<div>
+		<section>
 			<h2 class="text-lg font-bold">Publishers</h2>
-			<div>
-				{#each release.publishers as publisher}
-					<p>
-						<a class="link" href="/publisher/{publisher.id}"
-							><NameDisplay obj={publisher} /> - {publisher.publisher_type}</a
-						>
-					</p>
+			<p>
+				{#each release.publishers as publisher, index}
+					<span>
+						<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a>
+						<span class="text-xs">{publisher.publisher_type}</span
+						>{#if index !== release.publishers.length - 1}<span>,</span>{/if}
+					</span>
 				{/each}
-			</div>
-		</div>
+			</p>
+		</section>
 	{/if}
 
-	{#if release.books.length > 0}
-		<div>
-			<h2 class="text-lg font-bold">Book relations</h2>
-			<div>
+	<section class="flex flex-col gap-2">
+		<h2 class="text-lg font-bold">Books relations</h2>
+
+		{#if release.books.length > 0}
+			<BookImageContainer moreColumns={true}>
 				{#each release.books as book}
-					<p>
-						<a class="link" href="/book/{book.id}"><TitleDisplay obj={book} /></a>
-					</p>
+					<BookImage {book} urlPrefix="/book/" />
 				{/each}
-			</div>
-		</div>
-	{/if}
+			</BookImageContainer>
+		{:else}
+			<p class="italic">None</p>
+		{/if}
+	</section>
 </DBItemShell>
 
 <style>
 	dl > div {
 		display: grid;
 		grid-template-columns: 100px 1fr;
+	}
+
+	dt {
+		font-weight: 700;
 	}
 </style>
