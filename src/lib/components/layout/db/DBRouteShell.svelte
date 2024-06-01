@@ -12,7 +12,7 @@
 		}
 	}
 
-	$: bgStyle = bgImageStyle ?? defaultBackgroundImage(theme);
+	$: bgStyle = bgImageStyle || defaultBackgroundImage(theme);
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">

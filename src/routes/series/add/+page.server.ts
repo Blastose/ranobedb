@@ -50,7 +50,6 @@ export const actions = {
 		}
 
 		if (!form.valid) {
-			console.log(form.errors);
 			return fail(400, { form });
 		}
 
@@ -101,7 +100,6 @@ export const actions = {
 					'Cannot hide series. Remove any relations to the series and try again.',
 				);
 			}
-			console.log(e);
 		}
 
 		if (newSeriesId) {

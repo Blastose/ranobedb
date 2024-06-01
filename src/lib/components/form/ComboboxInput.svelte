@@ -39,7 +39,6 @@
 			loading = true;
 			debounce(async () => {
 				const json = await search($inputValue);
-				console.log(json);
 				searchedItems = json;
 				loading = false;
 			});
@@ -52,7 +51,6 @@
 
 	$: {
 		if ($selected) {
-			console.log($selected);
 			handleAdd($selected.value);
 			$inputValue = '';
 		}
