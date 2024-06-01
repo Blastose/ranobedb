@@ -18,6 +18,7 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
+	import BookReleases from './BookReleases.svelte';
 
 	export let book: BookR;
 	export let isRevision: boolean;
@@ -104,8 +105,6 @@
 			</div>
 		</section>
 
-		<PublishersSection publishers={book.publishers} />
-
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
 			<div class="flex flex-wrap gap-4">
@@ -131,19 +130,9 @@
 			</div>
 		</section>
 
-		<section>
-			<h2 class="font-bold text-lg">Releases</h2>
-			<div>
-				{#each book.releases as release}
-					<p>
-						<a class="link" href="/release/{release.id}"
-							><NameDisplay obj={release} /> - {release.lang} - {release.format}
-							- {new DateNumber(release.release_date).getDateFormatted()}</a
-						>
-					</p>
-				{/each}
-			</div>
-		</section>
+		<PublishersSection publishers={book.publishers} />
+
+		<BookReleases releases={book.releases} />
 
 		<section>
 			<h2 class="font-bold text-lg">Series</h2>
