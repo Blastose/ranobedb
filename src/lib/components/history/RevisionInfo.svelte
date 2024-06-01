@@ -7,14 +7,16 @@
 	export let isLatestRevision: boolean;
 
 	$: revisionEditText = isLatestRevision ? 'edit' : 'revert to';
+	$: revisionEditLink = isLatestRevision
+		? `${buildBaseLink()}/edit`
+		: `${buildBaseLink()}/edit?revision=${change?.revision}`;
 </script>
 
 {#if change}
 	<section class="flex flex-col text-center items-center">
 		<h2 class="font-semibold">
-			Revision {change.revision} (<a
-				class="link font-normal"
-				href="{buildBaseLink()}/edit?revision={change.revision}">{revisionEditText}</a
+			Revision {change.revision} (<a class="link font-normal" href={revisionEditLink}
+				>{revisionEditText}</a
 			>)
 		</h2>
 
