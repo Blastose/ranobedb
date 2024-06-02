@@ -19,6 +19,7 @@
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
 	import BookReleases from './BookReleases.svelte';
+	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
 
 	export let book: BookR;
 	export let isRevision: boolean;
@@ -111,20 +112,7 @@
 				{#each book.editions as edition}
 					<div class="flex flex-col gap-2">
 						<p class="font-semibold">{edition.title} - {edition.lang}</p>
-						<div class="flex flex-wrap gap-4">
-							{#each edition.staff as staff}
-								<div>
-									<a
-										class="flex flex-col link-box px-4 py-2 rounded-md"
-										href="/staff/{staff.staff_id}"
-									>
-										<span><NameDisplay obj={staff} /></span>
-										<span class="sub-text">{staff.role_type}</span>
-										<span class="sub-text text-sm">{staff.note}</span>
-									</a>
-								</div>
-							{/each}
-						</div>
+						<StaffsSectionSnippet staffs={edition.staff} />
 					</div>
 				{/each}
 			</div>

@@ -35,7 +35,7 @@ test.describe('edit series mod', () => {
 		await expect(page.locator('.toast-container').first()).toHaveText(
 			'Successfully edited series!',
 		);
-		await page.getByRole('link', { name: 'Edit' }).click();
+		await page.getByRole('link', { name: 'Edit', exact: true }).click();
 		await page
 			.getByLabel('Relation type: parent storyprequelsequelside storymain storyspin-off')
 			.selectOption('main story');

@@ -224,6 +224,24 @@ export class DBSeries {
 							'release.lang',
 						]),
 				).as('publishers'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('staff_alias')
+						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+						.innerJoin('series_book', 'series_book.book_id', 'book_staff_alias.book_id')
+						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+						.where('staff.hidden', '=', false)
+						.where('series_book.series_id', '=', id)
+						.distinctOn('staff_alias.staff_id')
+						.select([
+							'book_staff_alias.role_type',
+							'staff_alias.name',
+							'staff_alias.romaji',
+							'staff_alias.staff_id',
+							'staff_alias.id as staff_alias_id',
+							'book_staff_alias.note',
+						]),
+				).as('staff'),
 			])
 			.where('cte_series.id', '=', id);
 	}
@@ -300,8 +318,8 @@ export class DBSeries {
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.innerJoin('release_book', 'release_book.release_id', 'release_publisher.release_id')
 						.innerJoin('release', 'release.id', 'release_book.release_id')
-						.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
-						.where('series_book.series_id', '=', options.id)
+						.innerJoin('series_book_hist', 'series_book_hist.book_id', 'release_book.book_id')
+						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
 						.distinctOn(['publisher.id', 'release.lang'])
 						.select([
 							'publisher.id',
@@ -311,6 +329,24 @@ export class DBSeries {
 							'release.lang',
 						]),
 				).as('publishers'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('staff_alias')
+						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+						.innerJoin('series_book_hist', 'series_book_hist.book_id', 'book_staff_alias.book_id')
+						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+						.where('staff.hidden', '=', false)
+						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
+						.distinctOn('staff_alias.staff_id')
+						.select([
+							'book_staff_alias.role_type',
+							'staff_alias.name',
+							'staff_alias.romaji',
+							'staff_alias.staff_id',
+							'staff_alias.id as staff_alias_id',
+							'book_staff_alias.note',
+						]),
+				).as('staff'),
 			])
 			.where('change.item_id', '=', options.id)
 			.where('change.item_name', '=', 'series');

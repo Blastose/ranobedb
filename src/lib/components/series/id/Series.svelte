@@ -9,6 +9,7 @@
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import Description from '$lib/components/book/Description.svelte';
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
+	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -54,6 +55,11 @@
 			</div>
 		</section>
 	{/if}
+
+	<section class="flex flex-col gap-2">
+		<h2 class="font-bold text-lg">Staff</h2>
+		<StaffsSectionSnippet staffs={series.staff} />
+	</section>
 
 	<PublishersSection publishers={series.publishers} />
 
