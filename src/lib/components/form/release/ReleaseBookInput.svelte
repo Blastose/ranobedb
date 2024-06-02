@@ -20,6 +20,7 @@
 			id: book.id,
 			romaji: book.romaji,
 			lang: book.lang,
+			rtype: 'complete',
 		});
 		$values = $values;
 	}

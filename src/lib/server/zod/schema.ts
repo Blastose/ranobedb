@@ -230,22 +230,25 @@ export const releaseSchema = z.object({
 		.number()
 		.min(10000101)
 		.max(99999999)
-		.refine((val) => {
-			const dateNumber = new DateNumber(val);
-			if (dateNumber.isFullDate()) {
-				return dayjs(dateNumber.getDateFormatted(), 'YYYY-MM-DD', true).isValid();
-			}
+		.refine(
+			(val) => {
+				const dateNumber = new DateNumber(val);
+				if (dateNumber.isFullDate()) {
+					return dayjs(dateNumber.getDateFormatted(), 'YYYY-MM-DD', true).isValid();
+				}
 
-			const { month, day } = dateNumber.extractYearMonthDay();
-			if (month > 12 && month !== 99) {
-				return false;
-			}
-			if (day > 31 && day !== 99) {
-				return false;
-			}
+				const { month, day } = dateNumber.extractYearMonthDay();
+				if (month > 12 && month !== 99) {
+					return false;
+				}
+				if (day > 31 && day !== 99) {
+					return false;
+				}
 
-			return true;
-		}, 'Release date must have correct format.'),
+				return true;
+			},
+			{ message: 'Release date must have correct format.' },
+		),
 	pages: z.number().min(1).max(200000).nullish(),
 	isbn13: z
 		.string()
@@ -265,16 +268,17 @@ export const releaseSchema = z.object({
 				rtype: z.enum(releaseTypeArray),
 			}),
 		)
-		.max(50),
+		.max(50, { message: 'The number of books must be less than or equal to 50' }),
 	publishers: z
 		.array(
 			z.object({
 				id: z.number().max(200000),
 				name: z.string(),
+				romaji: z.string().nullish(),
 				publisher_type: z.enum(releasePublisherTypeArray),
 			}),
 		)
-		.max(50),
+		.max(50, { message: 'The number of publishers must be less than or equal to 50' }),
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
 });
