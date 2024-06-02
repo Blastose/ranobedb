@@ -16,6 +16,7 @@
 	import { seriesStatusArray } from '$lib/db/dbConsts';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
+	import TextFieldLink from '../TextFieldLink.svelte';
 
 	export let series: SeriesEdit | undefined;
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
@@ -75,6 +76,16 @@
 			showRequiredSymbolIfRequired={false}
 		/>
 	</div>
+
+	<TextFieldLink
+		form={sForm}
+		type="number"
+		field="bookwalker_id"
+		label="Bookwalker Id"
+		resetPadding={true}
+		before="https://bookwalker.jp/series/"
+		after="/list/"
+	/>
 
 	<Hr />
 

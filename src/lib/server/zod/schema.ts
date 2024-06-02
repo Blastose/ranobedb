@@ -297,7 +297,7 @@ export const seriesSchema = z.object({
 				sort_order: z.number().max(2000),
 			}),
 		)
-		.max(200),
+		.max(200, { message: 'The total number of books must be less than or equal to 200' }),
 	child_series: z
 		.array(
 			z.object({
@@ -308,7 +308,7 @@ export const seriesSchema = z.object({
 				relation_type: z.enum(seriesRelTypeArray),
 			}),
 		)
-		.max(200),
+		.max(200, { message: 'The total number of related series must be less than or equal to 200' }),
 	titles: zTitles,
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
