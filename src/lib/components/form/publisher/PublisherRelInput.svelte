@@ -19,6 +19,7 @@
 			name: publisher.name,
 			id: publisher.id,
 			romaji: publisher.romaji,
+			relation_type: 'imprint',
 		});
 		$values = $values;
 	}
