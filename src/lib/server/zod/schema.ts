@@ -181,8 +181,8 @@ export const staffSchema = z.object({
 				romaji: z.string().max(2000).nullish(),
 			}),
 		)
-		.min(1)
-		.max(50)
+		.min(1, { message: 'There must be at least 1 alias' })
+		.max(50, { message: 'The number of aliases must be less than or equal to 50' })
 		.refine((staffs) => {
 			const countMainAlias = staffs.filter((item) => item.main_alias).length;
 			if (countMainAlias !== 1) {
