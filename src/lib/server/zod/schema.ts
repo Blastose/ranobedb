@@ -211,7 +211,7 @@ export const publisherSchema = z.object({
 				relation_type: z.enum(publisherRelTypeArray),
 			}),
 		)
-		.max(50),
+		.max(50, { message: 'The number of publishers must be less than or equal to 50' }),
 
 	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
 });
