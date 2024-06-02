@@ -29,7 +29,7 @@
 	}
 
 	async function search(inputValue: string) {
-		const res = await fetch(`/api/i/staff?name=${inputValue}`);
+		const res = await fetch(`/api/i/staff?name=${encodeURIComponent(inputValue)}`);
 		const json = await res.json();
 		return json;
 	}
@@ -57,6 +57,9 @@
 					bind:value={$values[i].note}
 				/></label
 			>
+			{#if $valueErrors && $valueErrors[i]?.note}
+				<p class="error-text-color">{$valueErrors[i]?.note}</p>
+			{/if}
 			<button
 				on:click={() => {
 					handleRemoveStaff(i);

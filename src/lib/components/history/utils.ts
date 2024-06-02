@@ -12,7 +12,7 @@ import { diffChars, diffLines, diffWords, type Change } from 'diff';
 import xss from 'xss';
 
 export function generateLink(href: string, content: string) {
-	return `<a class="link" target="_blank" href="${href}">${xss(content)}</a>`;
+	return `<a class="link" target="_blank" href="${href}">${xss(content, { whiteList: {} })}</a>`;
 }
 
 function generateSeriesBookChangeString(
@@ -236,10 +236,26 @@ export function getDiffLines(params: {
 	const diffs = diffLines(lines1, lines2, {
 		newlineIsToken: true,
 	});
+	let isDiff = false;
 	for (const diff of diffs) {
+		diff.value = xss(diff.value, {
+			whiteList: {
+				a: ['href', 'class', 'target'],
+			},
+			onTagAttr(tag, name, value) {
+				if (tag === 'a' && name === 'href') {
+					if (!value.startsWith('/') || value.startsWith('//')) {
+						return '';
+					}
+				}
+			},
+		});
 		if (diff.removed || diff.added) {
-			return { name, changes: diffs, type: 'line', textType: 'html' };
+			isDiff = true;
 		}
+	}
+	if (isDiff) {
+		return { name, changes: diffs, type: 'line', textType: 'html' };
 	}
 	return undefined;
 }

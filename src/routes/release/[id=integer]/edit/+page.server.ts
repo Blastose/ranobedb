@@ -95,9 +95,12 @@ export const actions = {
 						'Duplicate books in form. Remove duplicates and try again',
 					);
 				} else if (
-					e.code === '23505' &&
-					e.table === 'release_publisher' &&
-					e.constraint === 'release_publisher_pkey'
+					(e.code === '23505' &&
+						e.table === 'release_publisher' &&
+						e.constraint === 'release_publisher_pkey') ||
+					(e.code === '23505' &&
+						e.table === 'release_publisher_hist' &&
+						e.constraint === 'release_publisher_hist_pkey')
 				) {
 					return setError(
 						form,

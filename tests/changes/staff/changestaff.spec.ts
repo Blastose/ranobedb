@@ -49,7 +49,7 @@ test.describe('add staff mod', () => {
 		await page.goto('/staff/add');
 		await page.getByLabel('Name (in original script)').fill('あざせかい');
 		await page.getByLabel('Romanization').fill('Asasekai');
-		await page.getByRole('button', { name: 'Add name' }).click();
+		await page.getByRole('button', { name: 'Add alias' }).click();
 		await page.getByLabel('Name (in original script)').nth(1).fill('Jimmy');
 		await page.getByLabel('Biography').fill('Jimmy is a great man');
 		await page.getByLabel('Edit summary').fill('Add Jimmy');

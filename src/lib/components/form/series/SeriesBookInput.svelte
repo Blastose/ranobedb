@@ -34,7 +34,7 @@
 	}
 
 	async function search(inputValue: string) {
-		const res = await fetch(`/api/i/book?name=${inputValue}`);
+		const res = await fetch(`/api/i/book?name=${encodeURIComponent(inputValue)}`);
 		const json = await res.json();
 		return json;
 	}
@@ -44,7 +44,13 @@
 	<h2 class="text-lg font-bold">Book Relations</h2>
 	<div class="flex gap-2 flex-col">
 		<BookDragDrop items={$values} remove={handleRemoveBook} {updateSortOrder} />
-		<ComboboxInput handleAdd={handleAddBook} {search} title="Add book" selectedItems={$values}  filterDuplicateIds={true}/>
+		<ComboboxInput
+			handleAdd={handleAddBook}
+			{search}
+			title="Add book"
+			selectedItems={$values}
+			filterDuplicateIds={true}
+		/>
 	</div>
 	{#if $errors}
 		<p class="error-text-color">{$errors}</p>

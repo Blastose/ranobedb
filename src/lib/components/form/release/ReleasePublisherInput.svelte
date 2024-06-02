@@ -19,12 +19,13 @@
 			name: publisher.name,
 			id: publisher.id,
 			romaji: publisher.romaji,
+			publisher_type: 'publisher',
 		});
 		$values = $values;
 	}
 
 	async function search(inputValue: string) {
-		const res = await fetch(`/api/i/publisher?name=${inputValue}`);
+		const res = await fetch(`/api/i/publisher?name=${encodeURIComponent(inputValue)}`);
 		const json = await res.json();
 		return json;
 	}

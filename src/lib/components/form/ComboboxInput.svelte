@@ -55,6 +55,9 @@
 			handleAdd($selected.value);
 		}
 	}
+
+	$: filteredItems = searchedItems.filter((si) => !selectedItems.some((v) => v.id === si.id));
+	$: itemsToDisplay = filterDuplicateIds ? filteredItems : searchedItems;
 </script>
 
 <div class="flex flex-col gap-1">
@@ -91,29 +94,27 @@
 					<Icon class="animate-spin" name="loading" />
 				</li>
 			{:else}
-				{#each searchedItems as item, index (index)}
-					{#if !filterDuplicateIds || (filterDuplicateIds && !selectedItems.some((v) => v.id === item.id))}
-						<li
-							use:melt={$option({
-								value: item,
-								label: item.name,
-							})}
-							class="relative cursor-pointer scroll-my-2 rounded-md py-2 px-2
+				{#each itemsToDisplay as item, index (index)}
+					<li
+						use:melt={$option({
+							value: item,
+							label: item.name,
+						})}
+						class="relative cursor-pointer scroll-my-2 rounded-md py-2 px-2
         data-[highlighted]:bg-gray-300 data-[highlighted]:text-gray-900
 				dark:data-[highlighted]:bg-neutral-600 dark:data-[highlighted]:text-white
           data-[disabled]:opacity-50"
-						>
-							{#if $isSelected(item)}
-								<!--  -->
-							{/if}
-							<div class="">
-								<p>
-									<span class="text-xs opacity-75">#{item.id}</span>
-									<NameDisplay obj={item} />
-								</p>
-							</div>
-						</li>
-					{/if}
+					>
+						{#if $isSelected(item)}
+							<!-- None -->
+						{/if}
+						<div class="">
+							<p>
+								<span class="text-xs opacity-75">#{item.id}</span>
+								<NameDisplay obj={item} />
+							</p>
+						</div>
+					</li>
 				{:else}
 					<li
 						class="relative cursor-pointer rounded-md py-1 px-2

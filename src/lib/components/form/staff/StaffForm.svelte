@@ -12,6 +12,7 @@
 	import StaffNamesInput from './StaffNamesInput.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
+	import TextFieldLink from '../TextFieldLink.svelte';
 
 	export let staff: StaffEdit | undefined;
 	export let staffForm: SuperValidated<Infer<typeof staffSchema>>;
@@ -53,13 +54,16 @@
 
 	<section>
 		<h2>Links</h2>
-		<div class="flex flex-col gap-2">
-			<TextField type="number" form={sForm} field="bookwalker_id" label="Bookwalker ID" />
-			{#if $form.bookwalker_id}
-				<a target="_blank" href="https://bookwalker.jp/author/{$form.bookwalker_id}" class="link"
-					>Preview link</a
-				>
-			{/if}
+		<div class="flex">
+			<TextFieldLink
+				form={sForm}
+				type="number"
+				field="bookwalker_id"
+				label="Bookwalker Id"
+				resetPadding={true}
+				before="https://bookwalker.jp/author/"
+				after=""
+			/>
 		</div>
 	</section>
 

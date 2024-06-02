@@ -68,7 +68,7 @@
 		/>
 	{:else}
 		<div class="markdown-output">
-			<MarkdownToHtml markdown={$value.toString() || 'Nothing to preview'} type="full" />
+			<MarkdownToHtml markdown={$value?.toString() || 'Nothing to preview'} type="full" />
 		</div>
 	{/if}
 	{#if $errors}

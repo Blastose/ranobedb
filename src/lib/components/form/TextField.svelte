@@ -77,3 +77,9 @@
 		<span class="error-text-color">{$errors}</span>
 	{/if}
 </div>
+
+<style>
+	.input:disabled {
+		background-color: unset;
+	}
+</style>
