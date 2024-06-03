@@ -18,6 +18,7 @@ import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 
 dayjs.extend(customParseFormat);
 
+const maxTextLength = 2000;
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const zUsername = z
 	.string({ required_error: 'Username is required' })
@@ -34,6 +35,7 @@ const zPasswordNew = z
 	.string({ required_error: 'Password is required' })
 	.min(6, { message: 'Password must be between 6 and 255 characters' })
 	.max(255, { message: 'Password must be between 6 and 255 characters' });
+
 function isValidISO8601Date(dateString: string): boolean {
 	const isoDateRegex = /^\d{4,5}-\d{2}-\d{2}$/;
 	if (!isoDateRegex.test(dateString)) {
@@ -88,6 +90,25 @@ export const userListBookSchema = z.object({
 	type: z.enum(userListFormTypes),
 });
 
+const zRomaji = z
+	.string()
+	.trim()
+	.max(maxTextLength, { message: `Romaji must be at most ${maxTextLength} characters` })
+	.nullish()
+	.transform((v) => v || null);
+
+const zDescription = z
+	.string()
+	.trim()
+	.max(maxTextLength, { message: `Description must be at most ${maxTextLength} characters` })
+	.nullish();
+
+const zComment = z
+	.string()
+	.trim()
+	.min(1, { message: 'Summary must have at least 1 character' })
+	.max(maxTextLength);
+
 const zTitles = z
 	.array(
 		z.object({
@@ -98,11 +119,7 @@ const zTitles = z
 				.trim()
 				.min(1, { message: 'Title must be at least 1 character' })
 				.max(2000, { message: 'Title must be at most 2000 characters' }),
-			romaji: z
-				.string()
-				.trim()
-				.max(2000, { message: 'Romaji must be at most 2000 characters' })
-				.nullish(),
+			romaji: zRomaji,
 		}),
 	)
 	.min(1, { message: 'There needs to be at least 1 title' })
@@ -120,16 +137,8 @@ const zTitles = z
 export const bookSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
-	description: z
-		.string()
-		.trim()
-		.max(2000, { message: 'Description must be at most 2000 characters' })
-		.nullish(),
-	description_ja: z
-		.string()
-		.trim()
-		.max(2000, { message: 'Description must be at most 2000 characters' })
-		.nullish(),
+	description: zDescription,
+	description_ja: zDescription,
 	image_id: z.number().max(2000000).nullish(),
 
 	titles: zTitles,
@@ -177,11 +186,7 @@ export const bookSchema = z.object({
 			{ message: 'Original edition must be first ' },
 		),
 
-	comment: z
-		.string()
-		.trim()
-		.min(1, { message: 'Summary must have at least 1 character' })
-		.max(2000),
+	comment: zComment,
 });
 
 export const staffSchema = z.object({
@@ -197,7 +202,7 @@ export const staffSchema = z.object({
 				ref_book_id: z.number().max(2000000).nullish(),
 				main_alias: z.boolean(),
 				name: z.string().trim().min(1, { message: 'Name must be at least 1 character' }).max(2000),
-				romaji: z.string().trim().max(2000).nullish(),
+				romaji: zRomaji,
 			}),
 		)
 		.min(1, { message: 'There must be at least 1 alias' })
@@ -209,11 +214,7 @@ export const staffSchema = z.object({
 			}
 			return true;
 		}),
-	comment: z
-		.string()
-		.trim()
-		.min(1, { message: 'Summary must have at least 1 character' })
-		.max(2000),
+	comment: zComment,
 });
 
 export const publisherSchema = z.object({
@@ -221,8 +222,8 @@ export const publisherSchema = z.object({
 	locked: z.boolean(),
 
 	name: z.string().trim().max(2000),
-	romaji: z.string().trim().max(2000).nullish(),
-	description: z.string().trim().max(2000).nullish(),
+	romaji: zRomaji,
+	description: zDescription,
 	bookwalker_id: z.number().nullish(),
 
 	child_publishers: z
@@ -236,11 +237,7 @@ export const publisherSchema = z.object({
 		)
 		.max(50, { message: 'The number of publishers must be less than or equal to 50' }),
 
-	comment: z
-		.string()
-		.trim()
-		.min(1, { message: 'Summary must have at least 1 character' })
-		.max(2000),
+	comment: zComment,
 });
 
 export const releaseSchema = z.object({
@@ -248,8 +245,8 @@ export const releaseSchema = z.object({
 	locked: z.boolean(),
 
 	title: z.string().trim().max(2000),
-	romaji: z.string().trim().max(2000).nullish(),
-	description: z.string().trim().max(2000).nullish(),
+	romaji: zRomaji,
+	description: zDescription,
 
 	format: z.enum(releaseFormatArray),
 	lang: z.enum(languagesArray),
@@ -308,18 +305,14 @@ export const releaseSchema = z.object({
 		)
 		.max(50, { message: 'The number of publishers must be less than or equal to 50' }),
 
-	comment: z
-		.string()
-		.trim()
-		.min(1, { message: 'Summary must have at least 1 character' })
-		.max(2000),
+	comment: zComment,
 });
 
 export const seriesSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
 
-	description: z.string().trim().max(2000).nullish(),
+	description: zDescription,
 	bookwalker_id: z.number().max(20000000).nullish(),
 	publication_status: z.enum(seriesStatusArray),
 
@@ -347,11 +340,7 @@ export const seriesSchema = z.object({
 		.max(200, { message: 'The total number of related series must be less than or equal to 200' }),
 	titles: zTitles,
 
-	comment: z
-		.string()
-		.trim()
-		.min(1, { message: 'Summary must have at least 1 character' })
-		.max(2000),
+	comment: zComment,
 });
 
 export const searchNameSchema = z.object({ name: z.string() });
