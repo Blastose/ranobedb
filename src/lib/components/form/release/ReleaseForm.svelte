@@ -91,7 +91,7 @@
 		/>
 	</div>
 
-	<ReleaseDateInput form={sForm} />
+	<ReleaseDateInput form={sForm} field="release_date" label="Release date" />
 
 	<TextareaFieldMarkdown
 		form={sForm}

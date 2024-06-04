@@ -1,11 +1,23 @@
-<script lang="ts">
-	import type { releaseSchema } from '$lib/server/zod/schema';
-	import { type SuperForm, type Infer, formFieldProxy } from 'sveltekit-superforms';
+<script lang="ts" context="module">
+	type Rec = Record<string, unknown>;
+</script>
+
+<script lang="ts" generics="T extends Rec">
+	import {
+		type SuperForm,
+		type Infer,
+		formFieldProxy,
+		type FormPathLeaves,
+		numberProxy,
+	} from 'sveltekit-superforms';
 	import { DateNumber } from './releaseDate';
 
-	export let form: SuperForm<Infer<typeof releaseSchema>, App.Superforms.Message>;
+	export let form: SuperForm<T, App.Superforms.Message>;
+	export let field: FormPathLeaves<T>;
+	export let label: string;
 
-	const { value, errors, constraints } = formFieldProxy(form, 'release_date');
+	const { value, errors, constraints } = formFieldProxy(form, field);
+	const proxy = numberProxy(form, field);
 
 	const years = ['TBA', ...Array.from({ length: 131 }, (_, index) => 2030 - index)] as const;
 	const months = [
@@ -44,58 +56,58 @@
 		}
 	}
 
-	const initalDate = new DateNumber($value);
+	const initalDate = new DateNumber(Number($proxy));
 	let hideMonth = initalDate.getYear() === 9999;
 	let hideDay = initalDate.getYear() === 9999 || initalDate.getMonth() === 99;
 	function handleYearChange(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
 		const inputValue = e.currentTarget.value;
 		if (inputValue === 'TBA') {
-			const newDateNumber = new DateNumber($value);
+			const newDateNumber = new DateNumber(Number($value));
 			newDateNumber.setYear(9999);
 			newDateNumber.setMonth(99);
 			newDateNumber.setDay(99);
-			value.set(newDateNumber.date);
+			proxy.set(newDateNumber.date.toString());
 			hideMonth = true;
 			hideDay = true;
 			resetMonthOptions();
 			resetDayOptions();
 		} else {
-			value.set(new DateNumber($value).setYear(Number(inputValue)));
+			proxy.set(new DateNumber(Number($proxy)).setYear(Number(inputValue)).toString());
 			hideMonth = false;
-			hideDay = false;
+			hideDay = hideDay ?? false;
 		}
 	}
 	function handleMonthChange(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
 		const inputValue = e.currentTarget.value;
 		if (inputValue === '0') {
-			const newDateNumber = new DateNumber($value);
+			const newDateNumber = new DateNumber(Number($proxy));
 			newDateNumber.setMonth(99);
 			newDateNumber.setDay(99);
-			value.set(newDateNumber.date);
+			proxy.set(newDateNumber.date.toString());
 			hideDay = true;
 			resetDayOptions();
 		} else {
-			value.set(new DateNumber($value).setMonth(Number(inputValue)));
+			proxy.set(new DateNumber(Number($proxy)).setMonth(Number(inputValue)).toString());
 			hideDay = false;
 		}
 	}
 	function handleDayChange(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
 		const inputValue = e.currentTarget.value;
 		if (inputValue === '-day-') {
-			const newDateNumber = new DateNumber($value);
+			const newDateNumber = new DateNumber(Number($proxy));
 			newDateNumber.setDay(99);
-			value.set(newDateNumber.date);
+			proxy.set(newDateNumber.date.toString());
 		} else {
-			value.set(new DateNumber($value).setDay(Number(inputValue)));
+			proxy.set(new DateNumber(Number($proxy)).setDay(Number(inputValue)).toString());
 		}
 	}
 
 	let selectContainer: HTMLDivElement;
 </script>
 
-<div>
+<div class="flex flex-col gap-1">
 	<label class="flex flex-col gap-1">
-		<span>Release date</span>
+		<span>{label}</span>
 		<div class="flex gap-2" bind:this={selectContainer}>
 			<select on:change={handleYearChange} class="input reset-padding" name="" id="">
 				{#each years as year}
@@ -122,7 +134,7 @@
 			{#if !hideDay}
 				<select on:change={handleDayChange} class="input reset-padding" name="" id="">
 					{#each days as day, index}
-						{@const currentDateNumber = new DateNumber($value)}
+						{@const currentDateNumber = new DateNumber(Number($proxy))}
 						{@const maxNumberOfDays = new Date(
 							currentDateNumber.getYear(),
 							currentDateNumber.getMonth(),
@@ -141,6 +153,9 @@
 			{/if}
 		</div>
 	</label>
+	{#if $errors}
+		<p class="error-text-color">{$errors}</p>
+	{/if}
 </div>
 
 <style>
