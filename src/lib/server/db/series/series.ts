@@ -18,7 +18,18 @@ function titleCaseBuilder(
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
-		cb = cb.when('series_title.lang', '=', prio.lang).then(count);
+		if (prio.romaji) {
+			cb = cb
+				.when(
+					eb.and([
+						eb('series_title.lang', '=', prio.lang),
+						eb('series_title.romaji', 'is not', null),
+					]),
+				)
+				.then(count);
+		} else {
+			cb = cb.when(eb.and([eb('series_title.lang', '=', prio.lang)])).then(count);
+		}
 		count++;
 	}
 	// Fallback to jp title if there are no matches
@@ -37,7 +48,18 @@ function titleHistCaseBuilder(
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
-		cb = cb.when('series_title_hist.lang', '=', prio.lang).then(count);
+		if (prio.romaji) {
+			cb = cb
+				.when(
+					eb.and([
+						eb('series_title_hist.lang', '=', prio.lang),
+						eb('series_title_hist.romaji', 'is not', null),
+					]),
+				)
+				.then(count);
+		} else {
+			cb = cb.when(eb.and([eb('series_title_hist.lang', '=', prio.lang)])).then(count);
+		}
 		count++;
 	}
 	// Fallback to jp title if there are no matches

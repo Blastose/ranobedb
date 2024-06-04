@@ -15,7 +15,15 @@ function titleCaseBuilder(eb: ExpressionBuilder<DB, 'book_title'>, langPrios: La
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
-		cb = cb.when('book_title.lang', '=', prio.lang).then(count);
+		if (prio.romaji) {
+			cb = cb
+				.when(
+					eb.and([eb('book_title.lang', '=', prio.lang), eb('book_title.romaji', 'is not', null)]),
+				)
+				.then(count);
+		} else {
+			cb = cb.when(eb.and([eb('book_title.lang', '=', prio.lang)])).then(count);
+		}
 		count++;
 	}
 	// Fallback to jp title if there are no matches
@@ -34,7 +42,18 @@ function titleHistCaseBuilder(
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
-		cb = cb.when('book_title_hist.lang', '=', prio.lang).then(count);
+		if (prio.romaji) {
+			cb = cb
+				.when(
+					eb.and([
+						eb('book_title_hist.lang', '=', prio.lang),
+						eb('book_title_hist.romaji', 'is not', null),
+					]),
+				)
+				.then(count);
+		} else {
+			cb = cb.when(eb.and([eb('book_title_hist.lang', '=', prio.lang)])).then(count);
+		}
 		count++;
 	}
 	// Fallback to jp title if there are no matches
