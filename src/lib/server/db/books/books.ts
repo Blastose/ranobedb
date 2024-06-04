@@ -77,6 +77,7 @@ export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
 				'book_hist.description',
 				'book_hist.description_ja',
 				'book_hist.image_id',
+				'book_hist.release_date',
 			])
 			.select(['book_title_hist.lang', 'book_title_hist.romaji', 'book_title_hist.title'])
 			.select([
@@ -117,6 +118,7 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
 				'cte_book.locked',
 				'cte_book.hidden',
 			])
@@ -252,6 +254,7 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
 				'change.ilock as locked',
 				'change.ihid as hidden',
 			])
@@ -399,6 +402,7 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
 				'cte_book.locked',
 				'cte_book.hidden',
 				'image.filename',
@@ -466,6 +470,7 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
 				'change.ilock as locked',
 				'change.ihid as hidden',
 				'image.filename',
@@ -539,6 +544,7 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
 			])
 			.select((eb) =>
 				jsonObjectFrom(

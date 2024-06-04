@@ -43,7 +43,12 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 					.selectFrom('book')
 					.innerJoin('series_book', 'series_book.book_id', 'book.id')
 					.whereRef('series_book.series_id', '=', 'series.id')
-					.select(['series_book.book_id', 'series_book.series_id', 'series_book.sort_order']),
+					.select([
+						'series_book.book_id',
+						'series_book.series_id',
+						'series_book.sort_order',
+						'series_book.book_type',
+					]),
 			).as('books'),
 			jsonArrayFrom(
 				eb
@@ -52,12 +57,7 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 					.selectAll('series_title'),
 			).as('titles'),
 		])
-		.select([
-			'series.id',
-			'series.publication_status',
-			'series.description',
-			'series.bookwalker_id',
-		])
+		.selectAll('series')
 		.where('series.id', 'in', params.series_ids)
 		.execute();
 }
@@ -71,6 +71,7 @@ async function addMiscSeriesRelations(params: {
 		book_id: item.book_id,
 		change_id: params.change_id,
 		sort_order: item.sort_order,
+		book_type: item.book_type,
 	})) satisfies Insertable<SeriesBookHist>[];
 	if (batch_add_books.length > 0) {
 		await params.trx.insertInto('series_book_hist').values(batch_add_books).execute();
@@ -152,6 +153,12 @@ async function updateReverseSeriesRelations(params: {
 				publication_status: series_to_update.publication_status,
 				description: series_to_update.description,
 				bookwalker_id: series_to_update.bookwalker_id,
+				aliases: series_to_update.aliases,
+				end_date: series_to_update.end_date,
+				start_date: series_to_update.start_date,
+				anidb_id: series_to_update.anidb_id,
+				web_novel: series_to_update.web_novel,
+				wikidata_id: series_to_update.wikidata_id,
 			})
 			.execute();
 		if (batch_add.length > 0) {
@@ -210,6 +217,12 @@ async function removeReverseSeriesRelations(params: {
 				publication_status: series_to_remove.publication_status,
 				description: series_to_remove.description,
 				bookwalker_id: series_to_remove.bookwalker_id,
+				aliases: series_to_remove.aliases,
+				end_date: series_to_remove.end_date,
+				start_date: series_to_remove.start_date,
+				anidb_id: series_to_remove.anidb_id,
+				web_novel: series_to_remove.web_novel,
+				wikidata_id: series_to_remove.wikidata_id,
 			})
 			.execute();
 		current = current.filter((item) => item.id_child !== params.main_id);
@@ -294,6 +307,12 @@ async function addReverseSeriesRelations(params: {
 				publication_status: series_to_add.publication_status,
 				description: series_to_add.description,
 				bookwalker_id: series_to_add.bookwalker_id,
+				aliases: series_to_add.aliases,
+				end_date: series_to_add.end_date,
+				start_date: series_to_add.start_date,
+				anidb_id: series_to_add.anidb_id,
+				web_novel: series_to_add.web_novel,
+				wikidata_id: series_to_add.wikidata_id,
 			})
 			.execute();
 		if (batch_add.length > 0) {
@@ -339,7 +358,7 @@ export class DBSeriesActions {
 							.selectFrom('book')
 							.innerJoin('series_book', 'series_book.book_id', 'book.id')
 							.whereRef('series_book.series_id', '=', 'series.id')
-							.select(['book.id', 'series_book.sort_order'])
+							.select(['book.id', 'series_book.sort_order', 'series_book.book_type'])
 							.orderBy('sort_order desc'),
 					).as('books'),
 				])
@@ -394,6 +413,12 @@ export class DBSeriesActions {
 					bookwalker_id: data.series.bookwalker_id,
 					change_id: change.change_id,
 					description: data.series.description || '',
+					aliases: data.series.aliases,
+					end_date: data.series.end_date,
+					start_date: data.series.start_date,
+					anidb_id: data.series.anidb_id,
+					web_novel: data.series.web_novel,
+					wikidata_id: data.series.wikidata_id,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -431,6 +456,7 @@ export class DBSeriesActions {
 					change_id: change.change_id,
 					book_id: item.id,
 					sort_order: item.sort_order,
+					book_type: item.book_type,
 				};
 			}) satisfies Insertable<SeriesBookHist>[];
 			if (series_book_hist.length > 0) {
@@ -463,7 +489,12 @@ export class DBSeriesActions {
 			}
 			const booksNewDiff = arrayDiff(data.series.books, currentSeries.books);
 			const series_book_add = booksNewDiff.map((item) => {
-				return { book_id: item.id, series_id: data.id, sort_order: item.sort_order };
+				return {
+					book_id: item.id,
+					series_id: data.id,
+					sort_order: item.sort_order,
+					book_type: item.book_type,
+				};
 			}) satisfies Insertable<SeriesBook>[];
 			if (series_book_add.length > 0) {
 				await trx.insertInto('series_book').values(series_book_add).execute();
@@ -562,6 +593,12 @@ export class DBSeriesActions {
 					publication_status: data.series.publication_status,
 					bookwalker_id: data.series.bookwalker_id,
 					description: data.series.description || '',
+					aliases: data.series.aliases,
+					end_date: data.series.end_date,
+					start_date: data.series.start_date,
+					anidb_id: data.series.anidb_id,
+					web_novel: data.series.web_novel,
+					wikidata_id: data.series.wikidata_id,
 					hidden,
 					locked,
 				})
@@ -587,6 +624,12 @@ export class DBSeriesActions {
 					bookwalker_id: data.series.bookwalker_id,
 					description: data.series.description || '',
 					change_id: change.change_id,
+					aliases: data.series.aliases,
+					end_date: data.series.end_date,
+					start_date: data.series.start_date,
+					anidb_id: data.series.anidb_id,
+					web_novel: data.series.web_novel,
+					wikidata_id: data.series.wikidata_id,
 				})
 				.executeTakeFirstOrThrow();
 			const series_relations = data.series.child_series.map((item) => {
@@ -638,13 +681,23 @@ export class DBSeriesActions {
 
 			// series_book
 			const series_book_add = data.series.books.map((item) => {
-				return { book_id: item.id, series_id: insertedSeries.id, sort_order: item.sort_order };
+				return {
+					book_id: item.id,
+					series_id: insertedSeries.id,
+					sort_order: item.sort_order,
+					book_type: item.book_type,
+				};
 			}) satisfies Insertable<SeriesBook>[];
 			if (series_book_add.length > 0) {
 				await trx.insertInto('series_book').values(series_book_add).execute();
 			}
 			const series_book_add_hist = data.series.books.map((item) => {
-				return { book_id: item.id, change_id: change.change_id, sort_order: item.sort_order };
+				return {
+					book_id: item.id,
+					change_id: change.change_id,
+					sort_order: item.sort_order,
+					book_type: item.book_type,
+				};
 			}) satisfies Insertable<SeriesBookHist>[];
 			if (series_book_add.length > 0) {
 				await trx.insertInto('series_book_hist').values(series_book_add_hist).execute();

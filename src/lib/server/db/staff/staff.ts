@@ -61,7 +61,15 @@ export class DBStaff {
 					.on('staff_alias_hist.main_alias', '=', true),
 			)
 			.innerJoin('change', 'change.id', 'staff_hist.change_id')
-			.select(['staff_hist.change_id as id', 'staff_hist.description', 'staff_hist.bookwalker_id'])
+			.select([
+				'staff_hist.change_id as id',
+				'staff_hist.description',
+				'staff_hist.bookwalker_id',
+				'staff_hist.pixiv_id',
+				'staff_hist.twitter_id',
+				'staff_hist.website',
+				'staff_hist.wikidata_id',
+			])
 			.select(['staff_alias_hist.name', 'staff_alias_hist.romaji'])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) =>
@@ -126,7 +134,15 @@ export class DBStaff {
 					.on('staff_alias_hist.main_alias', '=', true),
 			)
 			.innerJoin('change', 'change.id', 'staff_hist.change_id')
-			.select(['staff_hist.change_id as id', 'staff_hist.description', 'staff_hist.bookwalker_id'])
+			.select([
+				'staff_hist.change_id as id',
+				'staff_hist.description',
+				'staff_hist.bookwalker_id',
+				'staff_hist.pixiv_id',
+				'staff_hist.twitter_id',
+				'staff_hist.website',
+				'staff_hist.wikidata_id',
+			])
 			.select(['staff_alias_hist.name', 'staff_alias_hist.romaji'])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) =>

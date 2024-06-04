@@ -2,11 +2,12 @@ import type { ColumnType } from 'kysely';
 
 export type DbItem = 'book' | 'publisher' | 'release' | 'series' | 'staff';
 
-export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
-	? ColumnType<S, I | undefined, U>
-	: ColumnType<T, T | undefined, T>;
+export type Generated<T> =
+	T extends ColumnType<infer S, infer I, infer U>
+		? ColumnType<S, I | undefined, U>
+		: ColumnType<T, T | undefined, T>;
 
-export type Json = ColumnType<JsonValue, string, string>;
+export type Json = JsonValue;
 
 export type JsonArray = JsonValue[];
 
@@ -74,9 +75,11 @@ export type PublisherRelType = 'imprint' | 'parent brand' | 'parent company' | '
 
 export type ReleaseFormat = 'audio' | 'digital' | 'print';
 
-export type ReleasePublisherType = 'label' | 'publisher';
+export type ReleasePublisherType = 'imprint' | 'publisher';
 
 export type ReleaseType = 'complete' | 'omnibus' | 'partial';
+
+export type SeriesBookType = 'main' | 'sub';
 
 export type SeriesRelType =
 	| 'main story'
@@ -86,13 +89,13 @@ export type SeriesRelType =
 	| 'side story'
 	| 'spin-off';
 
-export type SeriesStatus = 'cancelled' | 'completed' | 'ongoing' | 'unknown';
+export type SeriesStatus = 'cancelled' | 'completed' | 'hiatus' | 'ongoing' | 'unknown';
 
 export type StaffRole = 'artist' | 'author' | 'editor' | 'narrator' | 'staff' | 'translator';
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type UserRole = 'admin' | 'banned' | 'editor' | 'moderator' | 'unverified' | 'user';
+export type UserRole = 'admin' | 'banned' | 'editor' | 'moderator' | 'user';
 
 export interface AuthSession {
 	expires_at: Timestamp;
@@ -106,24 +109,25 @@ export interface AuthUser {
 	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;
 	role: Generated<UserRole>;
-	title_prefs: Generated<Json>;
 	username: string;
 	username_lowercase: string;
 }
 
 export interface AuthUserCredentials {
 	email: string;
+	email_verified: Generated<boolean>;
 	hashed_password: string;
 	user_id: string;
 }
 
 export interface Book {
 	description: string;
-	description_ja: string | null;
+	description_ja: string;
 	hidden: boolean;
 	id: Generated<number>;
 	image_id: number | null;
 	locked: boolean;
+	release_date: number;
 }
 
 export interface BookEdition {
@@ -143,8 +147,9 @@ export interface BookEditionHist {
 export interface BookHist {
 	change_id: number;
 	description: string;
-	description_ja: string | null;
+	description_ja: string;
 	image_id: number | null;
+	release_date: number;
 }
 
 export interface BookStaffAlias {
@@ -191,10 +196,19 @@ export interface Change {
 	user_id: string;
 }
 
+export interface EmailVerificationCode {
+	code: string;
+	email: string;
+	expires_at: Timestamp;
+	id: Generated<number>;
+	user_id: string;
+}
+
 export interface Image {
 	filename: string;
 	height: number;
 	id: Generated<number>;
+	nsfw: boolean;
 	spoiler: boolean;
 	width: number;
 }
@@ -207,6 +221,9 @@ export interface Publisher {
 	locked: boolean;
 	name: string;
 	romaji: string | null;
+	twitter_id: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface PublisherHist {
@@ -215,6 +232,9 @@ export interface PublisherHist {
 	description: string;
 	name: string;
 	romaji: string | null;
+	twitter_id: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface PublisherRelation {
@@ -230,6 +250,8 @@ export interface PublisherRelationHist {
 }
 
 export interface Release {
+	amazon: string | null;
+	bookwalker: string | null;
 	description: string;
 	format: ReleaseFormat;
 	hidden: boolean;
@@ -238,9 +260,11 @@ export interface Release {
 	lang: Language;
 	locked: boolean;
 	pages: number | null;
+	rakuten: string | null;
 	release_date: number;
 	romaji: string | null;
 	title: string;
+	website: string | null;
 }
 
 export interface ReleaseBook {
@@ -256,15 +280,19 @@ export interface ReleaseBookHist {
 }
 
 export interface ReleaseHist {
+	amazon: string | null;
+	bookwalker: string | null;
 	change_id: number;
 	description: string;
 	format: ReleaseFormat;
 	isbn13: string | null;
 	lang: Language;
 	pages: number | null;
+	rakuten: string | null;
 	release_date: number;
 	romaji: string | null;
 	title: string;
+	website: string | null;
 }
 
 export interface ReleasePublisher {
@@ -280,31 +308,45 @@ export interface ReleasePublisherHist {
 }
 
 export interface Series {
+	aliases: string;
+	anidb_id: number | null;
 	bookwalker_id: number | null;
 	description: string;
+	end_date: number;
 	hidden: boolean;
 	id: Generated<number>;
 	locked: boolean;
 	publication_status: SeriesStatus;
+	start_date: number;
+	web_novel: string | null;
+	wikidata_id: number | null;
 }
 
 export interface SeriesBook {
 	book_id: number;
+	book_type: SeriesBookType;
 	series_id: number;
 	sort_order: number;
 }
 
 export interface SeriesBookHist {
 	book_id: number;
+	book_type: SeriesBookType;
 	change_id: number;
 	sort_order: number;
 }
 
 export interface SeriesHist {
+	aliases: string;
+	anidb_id: string | null;
 	bookwalker_id: number | null;
 	change_id: number;
 	description: string;
+	end_date: number;
 	publication_status: SeriesStatus;
+	start_date: number;
+	web_novel: string | null;
+	wikidata_id: number | null;
 }
 
 export interface SeriesRelation {
@@ -341,6 +383,10 @@ export interface Staff {
 	hidden: boolean;
 	id: Generated<number>;
 	locked: boolean;
+	pixiv_id: number | null;
+	twitter_id: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface StaffAlias {
@@ -363,6 +409,10 @@ export interface StaffHist {
 	bookwalker_id: number | null;
 	change_id: number;
 	description: string;
+	pixiv_id: number | null;
+	twitter_id: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface UserListBook {
@@ -401,6 +451,7 @@ export interface DB {
 	book_title: BookTitle;
 	book_title_hist: BookTitleHist;
 	change: Change;
+	email_verification_code: EmailVerificationCode;
 	image: Image;
 	publisher: Publisher;
 	publisher_hist: PublisherHist;

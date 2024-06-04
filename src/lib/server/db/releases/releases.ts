@@ -53,7 +53,7 @@ export class DBReleases {
 								.onRef('release_book.book_id', '=', 'cte_book.id')
 								.onRef('release_book.release_id', '=', 'release.id'),
 						)
-						.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
+						.leftJoin('series_book', 'series_book.book_id', 'release_book.book_id')
 						.select([
 							'cte_book.id',
 							'cte_book.title',
@@ -93,6 +93,10 @@ export class DBReleases {
 				'release_hist.release_date',
 				'release_hist.romaji',
 				'release_hist.title',
+				'release_hist.amazon',
+				'release_hist.bookwalker',
+				'release_hist.rakuten',
+				'release_hist.website',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) => [
@@ -115,7 +119,7 @@ export class DBReleases {
 								.onRef('release_book_hist.book_id', '=', 'cte_book.id')
 								.onRef('release_book_hist.change_id', '=', 'release_hist.change_id'),
 						)
-						.innerJoin('series_book', 'series_book.book_id', 'release_book_hist.book_id')
+						.leftJoin('series_book', 'series_book.book_id', 'release_book_hist.book_id')
 						.select([
 							'cte_book.id',
 							'cte_book.title',
@@ -162,6 +166,10 @@ export class DBReleases {
 				'release.release_date',
 				'release.romaji',
 				'release.title',
+				'release.amazon',
+				'release.bookwalker',
+				'release.rakuten',
+				'release.website',
 				'release.hidden',
 				'release.locked',
 			])
@@ -210,6 +218,10 @@ export class DBReleases {
 				'release_hist.release_date',
 				'release_hist.romaji',
 				'release_hist.title',
+				'release_hist.amazon',
+				'release_hist.bookwalker',
+				'release_hist.rakuten',
+				'release_hist.website',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) => [

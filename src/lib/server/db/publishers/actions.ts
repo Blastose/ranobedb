@@ -352,6 +352,10 @@ export class DBPublisherActions {
 					description: data.publisher.description ?? '',
 					hidden,
 					locked,
+					bookwalker_id: data.publisher.bookwalker_id,
+					twitter_id: data.publisher.twitter_id,
+					website: data.publisher.website,
+					wikidata_id: data.publisher.wikidata_id,
 				})
 				.where('publisher.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -466,6 +470,9 @@ export class DBPublisherActions {
 					bookwalker_id: data.publisher.bookwalker_id,
 					hidden,
 					locked,
+					twitter_id: data.publisher.twitter_id,
+					website: data.publisher.website,
+					wikidata_id: data.publisher.wikidata_id,
 				})
 				.returning('publisher.id')
 				.executeTakeFirstOrThrow();

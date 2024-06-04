@@ -100,10 +100,11 @@ export class DBBookActions {
 				.updateTable('book')
 				.set({
 					description: data.book.description ?? '',
-					description_ja: data.book.description_ja,
+					description_ja: data.book.description_ja ?? '',
 					hidden,
 					locked,
 					image_id: data.book.image_id,
+					release_date: data.book.release_date,
 				})
 				.where('book.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -112,9 +113,10 @@ export class DBBookActions {
 				.insertInto('book_hist')
 				.values({
 					description: data.book.description ?? '',
-					description_ja: data.book.description_ja,
+					description_ja: data.book.description_ja ?? '',
 					change_id: change.change_id,
 					image_id: data.book.image_id,
+					release_date: data.book.release_date,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -211,10 +213,11 @@ export class DBBookActions {
 				.insertInto('book')
 				.values({
 					description: data.book.description ?? '',
-					description_ja: data.book.description_ja,
+					description_ja: data.book.description_ja ?? '',
 					hidden,
 					locked,
 					image_id: data.book.image_id,
+					release_date: data.book.release_date,
 				})
 				.returning('book.id')
 				.executeTakeFirstOrThrow();
@@ -235,9 +238,10 @@ export class DBBookActions {
 				.insertInto('book_hist')
 				.values({
 					description: data.book.description ?? '',
-					description_ja: data.book.description_ja,
+					description_ja: data.book.description_ja ?? '',
 					change_id: change.change_id,
 					image_id: data.book.image_id,
+					release_date: data.book.release_date,
 				})
 				.executeTakeFirstOrThrow();
 			const bookTitleInsert = data.book.titles.map((item) => {

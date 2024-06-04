@@ -22,6 +22,7 @@
 			romaji: '',
 			lang: book.lang,
 			sort_order: $values.length + 1,
+			book_type: 'main',
 		});
 		$values = $values;
 	}

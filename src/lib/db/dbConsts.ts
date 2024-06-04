@@ -130,9 +130,11 @@ export const publisherTypeReverseMap: Record<PublisherRelType, PublisherRelType>
 
 export const releaseFormatArray = ['audio', 'digital', 'print'] as const;
 
-export const releasePublisherTypeArray = ['label', 'publisher'] as const;
+export const releasePublisherTypeArray = ['imprint', 'publisher'] as const;
 
 export const releaseTypeArray = ['complete', 'partial', 'omnibus'] as const;
+
+export const seriesBookTypeArray = ['main', 'sub'] as const;
 
 export const seriesRelTypeArray = [
 	'parent story',
@@ -161,7 +163,13 @@ export const staffRolesArray = [
 	'staff',
 ] as const;
 
-export const seriesStatusArray = ['ongoing', 'completed', 'cancelled', 'unknown'] as const;
+export const seriesStatusArray = [
+	'ongoing',
+	'completed',
+	'hiatus',
+	'cancelled',
+	'unknown',
+] as const;
 
 export const dbItemArray = ['book', 'publisher', 'release', 'series', 'staff'] as const;
 

@@ -41,17 +41,6 @@ export class DBPublishers {
 							'release.id',
 							'release.release_date',
 						])
-						// Removed because nested `jsonArrayFrom`s are really slow
-						// .select((eb) => [
-						// 	jsonArrayFrom(
-						// 		eb
-						// 			.selectFrom('cte_book')
-						// 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
-						// 			.whereRef('release_book.release_id', '=', 'release.id')
-						// 			.select(['cte_book.id', 'cte_book.title'])
-						// 			.limit(10),
-						// 	).as('book_releases'),
-						// ])
 						.orderBy('release.release_date desc')
 						.orderBy('release.title')
 						.limit(100),
@@ -87,6 +76,9 @@ export class DBPublishers {
 				'publisher_hist.name',
 				'publisher_hist.romaji',
 				'publisher_hist.bookwalker_id',
+				'publisher_hist.twitter_id',
+				'publisher_hist.website',
+				'publisher_hist.wikidata_id',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) => [
@@ -101,15 +93,6 @@ export class DBPublishers {
 							'release.id',
 							'release.release_date',
 						])
-						// .select((eb) => [
-						// 	jsonArrayFrom(
-						// 		eb
-						// 			.selectFrom('cte_book')
-						// 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
-						// 			.whereRef('release_book.release_id', '=', 'release.id')
-						// 			.select(['cte_book.id', 'cte_book.title']),
-						// 	).as('book_releases'),
-						// ])
 						.orderBy('release.release_date desc')
 						.orderBy('release.title')
 						.limit(100),
@@ -154,6 +137,9 @@ export class DBPublishers {
 				'publisher.locked',
 				'publisher.hidden',
 				'publisher.bookwalker_id',
+				'publisher.twitter_id',
+				'publisher.website',
+				'publisher.wikidata_id',
 			])
 			.select((eb) =>
 				jsonArrayFrom(
@@ -178,6 +164,9 @@ export class DBPublishers {
 				'publisher_hist.name',
 				'publisher_hist.romaji',
 				'publisher_hist.bookwalker_id',
+				'publisher_hist.twitter_id',
+				'publisher_hist.website',
+				'publisher_hist.wikidata_id',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) =>

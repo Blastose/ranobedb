@@ -3,6 +3,7 @@ import {
 	publisherTabs,
 	releasePublisherTypeArray,
 	releaseTypeArray,
+	seriesBookTypeArray,
 	seriesRelTypeArray,
 	seriesStatusArray,
 	staffRolesArray,
@@ -19,6 +20,7 @@ import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 dayjs.extend(customParseFormat);
 
 const maxTextLength = 2000;
+const maxWikidataId = 9007199254740991;
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const zUsername = z
 	.string({ required_error: 'Username is required' })
@@ -95,7 +97,8 @@ const zRomaji = z
 	.trim()
 	.max(maxTextLength, { message: `Romaji must be at most ${maxTextLength} characters` })
 	.nullish()
-	.transform((v) => v || null);
+	.transform((v) => v || null)
+	.nullish();
 
 const zDescription = z
 	.string()
@@ -133,6 +136,51 @@ const zTitles = z
 		},
 		{ message: 'A Japanese title must be included' },
 	);
+
+const zReleaseDate = z
+	.number()
+	.min(10000101)
+	.max(99999999)
+	.refine(
+		(val) => {
+			const dateNumber = new DateNumber(val);
+			if (dateNumber.isFullDate()) {
+				return dayjs(dateNumber.getDateFormatted(), 'YYYY-MM-DD', true).isValid();
+			}
+
+			const { month, day } = dateNumber.extractYearMonthDay();
+			if (month > 12 && month !== 99) {
+				return false;
+			}
+			if (day > 31 && day !== 99) {
+				return false;
+			}
+
+			return true;
+		},
+		{ message: 'Release date must have correct format.' },
+	);
+
+const zLink = (validHostnames: string[]) =>
+	z
+		.string()
+		.max(maxTextLength)
+		.url()
+		.refine(
+			(v) => {
+				if (validHostnames.length === 0) {
+					return true;
+				}
+
+				const url = new URL(v);
+				if (validHostnames.includes(url.hostname)) {
+					return true;
+				}
+				return false;
+			},
+			{ message: `Invalid url; Url must be one of ${validHostnames.toString()}` },
+		)
+		.nullish();
 
 export const bookSchema = z.object({
 	hidden: z.boolean(),
@@ -186,14 +234,20 @@ export const bookSchema = z.object({
 			{ message: 'Original edition must be first ' },
 		),
 
+	release_date: zReleaseDate,
+
 	comment: zComment,
 });
 
 export const staffSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
-	description: z.string().trim().max(2000).nullish(),
+	description: zDescription,
 	bookwalker_id: z.number().nullish(),
+	pivix_id: z.number().nullish(),
+	twitter_id: z.string().trim().max(2000).nullish(),
+	website: zLink([]),
+	wikidata_id: z.number().max(maxWikidataId).nullish(),
 
 	aliases: z
 		.array(
@@ -237,6 +291,10 @@ export const publisherSchema = z.object({
 		)
 		.max(50, { message: 'The number of publishers must be less than or equal to 50' }),
 
+	twitter_id: z.string().trim().max(maxTextLength).nullish(),
+	website: zLink([]),
+	wikidata_id: z.number().max(maxWikidataId).nullish(),
+
 	comment: zComment,
 });
 
@@ -250,29 +308,7 @@ export const releaseSchema = z.object({
 
 	format: z.enum(releaseFormatArray),
 	lang: z.enum(languagesArray),
-	release_date: z
-		.number()
-		.min(10000101)
-		.max(99999999)
-		.refine(
-			(val) => {
-				const dateNumber = new DateNumber(val);
-				if (dateNumber.isFullDate()) {
-					return dayjs(dateNumber.getDateFormatted(), 'YYYY-MM-DD', true).isValid();
-				}
-
-				const { month, day } = dateNumber.extractYearMonthDay();
-				if (month > 12 && month !== 99) {
-					return false;
-				}
-				if (day > 31 && day !== 99) {
-					return false;
-				}
-
-				return true;
-			},
-			{ message: 'Release date must have correct format.' },
-		),
+	release_date: zReleaseDate,
 	pages: z.number().min(1).max(200000).nullish(),
 	isbn13: z
 		.string()
@@ -282,6 +318,11 @@ export const releaseSchema = z.object({
 		.nullish()
 		.or(z.literal(''))
 		.transform((v) => (v === '' ? null : v)),
+
+	amazon: zLink(['www.amazon.co.jp', 'www.amazon.com']),
+	bookwalker: zLink(['bookwalker.jp', 'global.bookwalker.jp']),
+	rakuten: zLink(['books.rakuten.co.jp']),
+	website: zLink([]),
 
 	books: z
 		.array(
@@ -298,7 +339,7 @@ export const releaseSchema = z.object({
 		.array(
 			z.object({
 				id: z.number().max(200000),
-				name: z.string().nullish(),
+				name: z.string(),
 				romaji: z.string().nullish(),
 				publisher_type: z.enum(releasePublisherTypeArray),
 			}),
@@ -315,6 +356,12 @@ export const seriesSchema = z.object({
 	description: zDescription,
 	bookwalker_id: z.number().max(20000000).nullish(),
 	publication_status: z.enum(seriesStatusArray),
+	aliases: z.string().trim().max(2000),
+	anidb_id: z.number().max(maxWikidataId).nullish(),
+	start_date: zReleaseDate,
+	end_date: zReleaseDate,
+	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com']),
+	wikidata_id: z.number().max(maxWikidataId).nullish(),
 
 	books: z
 		.array(
@@ -323,6 +370,7 @@ export const seriesSchema = z.object({
 				romaji: z.string().nullish(),
 				lang: z.enum(languagesArray).nullish(),
 				id: z.number().max(100000),
+				book_type: z.enum(seriesBookTypeArray),
 				sort_order: z.number().max(2000),
 			}),
 		)

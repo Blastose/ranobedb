@@ -98,6 +98,10 @@ export class DBReleaseActions {
 					release_date: data.release.release_date,
 					romaji: data.release.romaji,
 					title: data.release.title,
+					amazon: data.release.amazon,
+					bookwalker: data.release.bookwalker,
+					rakuten: data.release.rakuten,
+					website: data.release.website,
 				})
 				.where('release.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -210,6 +214,10 @@ export class DBReleaseActions {
 					release_date: data.release.release_date,
 					romaji: data.release.romaji,
 					title: data.release.title,
+					amazon: data.release.amazon,
+					bookwalker: data.release.bookwalker,
+					rakuten: data.release.rakuten,
+					website: data.release.website,
 				})
 				.returning('release.id')
 				.executeTakeFirstOrThrow();

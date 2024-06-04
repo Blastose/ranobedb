@@ -65,6 +65,12 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 				'series.publication_status',
 				'series.bookwalker_id',
 				'series.description',
+				'series.aliases',
+				'series.anidb_id',
+				'series.start_date',
+				'series.end_date',
+				'series.web_novel',
+				'series.wikidata_id',
 			])
 			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
 			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
@@ -92,6 +98,12 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 				'series_hist.bookwalker_id',
 				'series_hist.publication_status',
 				'series_hist.description',
+				'series_hist.aliases',
+				'series_hist.anidb_id',
+				'series_hist.start_date',
+				'series_hist.end_date',
+				'series_hist.web_novel',
+				'series_hist.wikidata_id',
 			])
 			.select(['series_title_hist.lang', 'series_title_hist.romaji', 'series_title_hist.title'])
 			.select([
@@ -167,6 +179,12 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.description',
+				'cte_series.aliases',
+				'cte_series.anidb_id',
+				'cte_series.start_date',
+				'cte_series.end_date',
+				'cte_series.web_novel',
+				'cte_series.wikidata_id',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -183,6 +201,7 @@ export class DBSeries {
 							'cte_book.image_id',
 							'cte_book.lang',
 							'series_book.sort_order',
+							'series_book.book_type',
 						])
 						.select((eb) =>
 							jsonObjectFrom(
@@ -266,6 +285,12 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.description',
+				'cte_series.aliases',
+				'cte_series.anidb_id',
+				'cte_series.start_date',
+				'cte_series.end_date',
+				'cte_series.web_novel',
+				'cte_series.wikidata_id',
 				'change.ilock as locked',
 				'change.ihid as hidden',
 			])
@@ -283,6 +308,7 @@ export class DBSeries {
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
 							'cte_book.lang',
+							'series_book_hist.book_type',
 							'series_book_hist.sort_order',
 						])
 						.select((eb) =>
@@ -376,6 +402,12 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.description',
+				'cte_series.aliases',
+				'cte_series.anidb_id',
+				'cte_series.start_date',
+				'cte_series.end_date',
+				'cte_series.web_novel',
+				'cte_series.wikidata_id',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -391,6 +423,7 @@ export class DBSeries {
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
 							'cte_book.lang',
+							'series_book.book_type',
 							'series_book.sort_order',
 						])
 						.orderBy('sort_order asc'),
@@ -443,6 +476,12 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.description',
+				'cte_series.aliases',
+				'cte_series.anidb_id',
+				'cte_series.start_date',
+				'cte_series.end_date',
+				'cte_series.web_novel',
+				'cte_series.wikidata_id',
 				'change.ihid as hidden',
 				'change.ilock as locked',
 			])
@@ -460,6 +499,7 @@ export class DBSeries {
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
 							'cte_book.lang',
+							'series_book_hist.book_type',
 							'series_book_hist.sort_order',
 						])
 						.orderBy('sort_order asc'),

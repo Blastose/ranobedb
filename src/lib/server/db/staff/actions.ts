@@ -75,6 +75,10 @@ export class DBStaffActions {
 					description: data.staff.description ?? '',
 					hidden,
 					locked,
+					pixiv_id: data.staff.pivix_id,
+					twitter_id: data.staff.twitter_id,
+					website: data.staff.website,
+					wikidata_id: data.staff.wikidata_id,
 				})
 				.where('staff.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -115,7 +119,7 @@ export class DBStaffActions {
 								.where('staff_alias.id', 'in', aliases_with_aids)
 								.select('staff_alias.id')
 								.execute()
-					  ).map((item) => item.id)
+						).map((item) => item.id)
 					: [];
 			// console.log('valid_aids');
 			// console.log(valid_aids);
@@ -222,6 +226,10 @@ export class DBStaffActions {
 					bookwalker_id: data.staff.bookwalker_id,
 					hidden,
 					locked,
+					pixiv_id: data.staff.pivix_id,
+					twitter_id: data.staff.twitter_id,
+					website: data.staff.website,
+					wikidata_id: data.staff.wikidata_id,
 				})
 				.returning('staff.id')
 				.executeTakeFirstOrThrow();
