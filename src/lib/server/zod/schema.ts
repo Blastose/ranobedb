@@ -152,6 +152,9 @@ const zReleaseDate = z
 			if (month > 12 && month !== 99) {
 				return false;
 			}
+			if (month === 99 && day !== 99) {
+				return false;
+			}
 			if (day > 31 && day !== 99) {
 				return false;
 			}
@@ -165,20 +168,23 @@ const zLink = (validHostnames: string[]) =>
 	z
 		.string()
 		.max(maxTextLength)
-		.url()
+		.trim()
 		.refine(
 			(v) => {
-				if (validHostnames.length === 0) {
-					return true;
+				try {
+					const url = new URL(v);
+					if (validHostnames.length === 0) {
+						return true;
+					}
+					if (validHostnames.includes(url.hostname)) {
+						return true;
+					}
+					return false;
+				} catch {
+					return false;
 				}
-
-				const url = new URL(v);
-				if (validHostnames.includes(url.hostname)) {
-					return true;
-				}
-				return false;
 			},
-			{ message: `Invalid url; Url must be one of ${validHostnames.toString()}` },
+			{ message: `Invalid url; Url must be one of ${validHostnames.join(', ')}` },
 		)
 		.nullish();
 
@@ -356,7 +362,17 @@ export const seriesSchema = z.object({
 	description: zDescription,
 	bookwalker_id: z.number().max(20000000).nullish(),
 	publication_status: z.enum(seriesStatusArray),
-	aliases: z.string().trim().max(2000),
+	aliases: z
+		.string()
+		.trim()
+		.max(2000)
+		.transform((v) =>
+			v
+				.split('\n')
+				.map((v) => v.trim())
+				.join('\n'),
+		)
+		.nullish(),
 	anidb_id: z.number().max(maxWikidataId).nullish(),
 	start_date: zReleaseDate,
 	end_date: zReleaseDate,

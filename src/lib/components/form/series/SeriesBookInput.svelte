@@ -44,7 +44,7 @@
 <section class="flex flex-col gap-2">
 	<h2 class="text-lg font-bold">Book Relations</h2>
 	<div class="flex gap-2 flex-col">
-		<BookDragDrop items={$values} remove={handleRemoveBook} {updateSortOrder} />
+		<BookDragDrop {form} remove={handleRemoveBook} {updateSortOrder} />
 		<ComboboxInput
 			handleAdd={handleAddBook}
 			{search}

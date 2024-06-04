@@ -17,6 +17,13 @@
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import TextFieldLink from '../TextFieldLink.svelte';
+	import LinkInput from '../LinkInput.svelte';
+	import ReleaseDateInput from '../release/ReleaseDateInput.svelte';
+	import {
+		aniDbLink,
+		bookwalkerSeriesLink,
+		wikidataLink,
+	} from '$lib/components/db-links/db-ext-links';
 
 	export let series: SeriesEdit | undefined;
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
@@ -77,14 +84,56 @@
 		/>
 	</div>
 
+	<TextField
+		form={sForm}
+		type="textarea"
+		field="aliases"
+		label="Aliases"
+		showRequiredSymbolIfRequired={false}
+		placeholder="Aliases separated by new lines"
+		textareaRows={3}
+	/>
+
+	<div class="flex flex-wrap gap-x-4">
+		<ReleaseDateInput form={sForm} field="start_date" label="Start date" />
+		<ReleaseDateInput form={sForm} field="end_date" label="End date" />
+	</div>
+
+	<div class="max-w-md">
+		<LinkInput
+			form={sForm}
+			field="web_novel"
+			label="Web novel"
+			resetPadding={true}
+			placeholder="Syosetu or Kakuyomu links"
+		/>
+	</div>
+
+	<TextFieldLink
+		form={sForm}
+		type="number"
+		field="anidb_id"
+		label="AniDB id"
+		resetPadding={true}
+		linkBeforeAfter={aniDbLink}
+	/>
+
 	<TextFieldLink
 		form={sForm}
 		type="number"
 		field="bookwalker_id"
 		label="Bookwalker Id"
 		resetPadding={true}
-		before="https://bookwalker.jp/series/"
-		after="/list/"
+		linkBeforeAfter={bookwalkerSeriesLink}
+	/>
+
+	<TextFieldLink
+		form={sForm}
+		type="number"
+		field="wikidata_id"
+		label="Wikidata id"
+		resetPadding={true}
+		linkBeforeAfter={wikidataLink}
 	/>
 
 	<Hr />

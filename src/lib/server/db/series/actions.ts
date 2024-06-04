@@ -397,12 +397,12 @@ export class DBSeriesActions {
 			await trx
 				.updateTable('series')
 				.set({
+					hidden,
+					locked,
 					bookwalker_id: data.series.bookwalker_id,
 					publication_status: data.series.publication_status,
 					description: data.series.description || '',
-					hidden,
-					locked,
-					aliases: data.series.aliases,
+					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
 					anidb_id: data.series.anidb_id,
@@ -415,11 +415,11 @@ export class DBSeriesActions {
 			await trx
 				.insertInto('series_hist')
 				.values({
-					publication_status: data.series.publication_status,
-					bookwalker_id: data.series.bookwalker_id,
 					change_id: change.change_id,
+					bookwalker_id: data.series.bookwalker_id,
+					publication_status: data.series.publication_status,
 					description: data.series.description || '',
-					aliases: data.series.aliases,
+					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
 					anidb_id: data.series.anidb_id,
@@ -488,6 +488,7 @@ export class DBSeriesActions {
 					.updateTable('series_book')
 					.set({
 						sort_order: item.sort_order,
+						book_type: item.book_type,
 					})
 					.where('series_book.series_id', '=', data.id)
 					.where('series_book.book_id', '=', item.id)
@@ -596,17 +597,17 @@ export class DBSeriesActions {
 			const insertedSeries = await trx
 				.insertInto('series')
 				.values({
+					hidden,
+					locked,
 					publication_status: data.series.publication_status,
 					bookwalker_id: data.series.bookwalker_id,
 					description: data.series.description || '',
-					aliases: data.series.aliases,
+					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
 					anidb_id: data.series.anidb_id,
 					web_novel: data.series.web_novel,
 					wikidata_id: data.series.wikidata_id,
-					hidden,
-					locked,
 				})
 				.returning('series.id')
 				.executeTakeFirstOrThrow();
@@ -626,11 +627,11 @@ export class DBSeriesActions {
 			await trx
 				.insertInto('series_hist')
 				.values({
+					change_id: change.change_id,
 					publication_status: data.series.publication_status,
 					bookwalker_id: data.series.bookwalker_id,
 					description: data.series.description || '',
-					change_id: change.change_id,
-					aliases: data.series.aliases,
+					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
 					anidb_id: data.series.anidb_id,

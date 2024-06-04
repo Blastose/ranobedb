@@ -4,17 +4,14 @@
 	import { quintOut } from 'svelte/easing';
 	import DndItem from './DndItem.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
-	import type { Language } from '$lib/server/db/dbTypes';
-	import type { Nullish } from '$lib/server/zod/schema';
+	import type { seriesSchema } from '$lib/server/zod/schema';
 	import { tick } from 'svelte';
+	import { seriesBookTypeArray } from '$lib/db/dbConsts';
+	import { arrayProxy, type Infer, type SuperForm } from 'sveltekit-superforms';
 
-	export let items: {
-		id: number;
-		sort_order: number;
-		title?: string | null | undefined;
-		romaji?: string | null | undefined;
-		lang?: Nullish<Language>;
-	}[];
+	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+
+	const { values, errors, valueErrors } = arrayProxy(form, 'books');
 
 	export let remove: (index: number) => void;
 	export let updateSortOrder: () => void;
@@ -25,7 +22,7 @@
 
 		[arr[indexR], arr[indexL]] = [arr[indexL], arr[indexR]];
 		updateSortOrder();
-		items = items;
+		$values = $values;
 
 		// When the up button is pressed and swaped, the button afterwards is not focused, whereas it is when the down button is pressed,
 		// so we need to manually focus the button
@@ -52,10 +49,10 @@
 				newIndex = newIndex - 1;
 			}
 
-			const movedItem = items.splice(currentDragIndex, 1);
-			items.splice(newIndex, 0, movedItem[0]);
+			const movedItem = $values.splice(currentDragIndex, 1);
+			$values.splice(newIndex, 0, movedItem[0]);
 			updateSortOrder();
-			items = items;
+			$values = $values;
 		}
 
 		node.addEventListener('dragend', reorderItem);
@@ -70,7 +67,7 @@
 </script>
 
 <div use:dragList class="flex flex-col gap-2" bind:this={bookList}>
-	{#each items as item, index (item.id)}
+	{#each $values as item, index (item.id)}
 		<div animate:flip={{ duration: 500, easing: quintOut }}>
 			<DndItem
 				arrayIndex={index}
@@ -105,7 +102,7 @@
 							class="btn rounded-full"
 							disabled={index === 0}
 							on:click={() => {
-								swap(items, index, index - 1, 'up');
+								swap($values, index, index - 1, 'up');
 							}}
 							type="button"
 							data-index={index}
@@ -113,9 +110,9 @@
 						>
 						<button
 							class="btn rounded-full"
-							disabled={index === items.length - 1}
+							disabled={index === $values.length - 1}
 							on:click={() => {
-								swap(items, index, index + 1, 'down');
+								swap($values, index, index + 1, 'down');
 							}}
 							type="button"
 							aria-label="Move down"><Icon name="chevronDown" /></button
@@ -133,12 +130,23 @@
 					</div>
 				</div>
 			</DndItem>
+			<label class="flex gap-2">
+				<span>Book type:</span>
+				<select class="input reset-padding" bind:value={$values[index].book_type}>
+					{#each seriesBookTypeArray as role}
+						<option value={role} selected={role === $values[index].book_type}>{role}</option>
+					{/each}
+				</select>
+			</label>
 		</div>
 	{/each}
 	<div
 		class="h-[1px] w-full rounded-full duration-75"
-		class:divider={dragging && currentHoverIndex === items.length}
+		class:divider={dragging && currentHoverIndex === $values.length}
 	/>
+	{#if $errors}
+		<p class="error-text-color">{$errors}</p>
+	{/if}
 </div>
 
 <style>
