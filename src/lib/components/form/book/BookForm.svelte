@@ -12,6 +12,7 @@
 	import type { User } from 'lucia';
 	import BookEditionStaffInput from './BookEditionStaffInput.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
+	import ReleaseDateInput from '../release/ReleaseDateInput.svelte';
 
 	export let book: BookEdit | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
@@ -68,6 +69,8 @@
 		placeholder="Description (japanese)"
 		labelId="descriptionjp-md"
 	/>
+
+	<ReleaseDateInput form={sForm} field="release_date" label="Release date" />
 
 	<Hr />
 
