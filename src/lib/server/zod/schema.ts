@@ -284,7 +284,7 @@ export const publisherSchema = z.object({
 	name: z.string().trim().max(2000),
 	romaji: zRomaji,
 	description: zDescription,
-	bookwalker_id: z.number().nullish(),
+	bookwalker: zLink(['bookwalker.jp', 'global.bookwalker.jp']),
 
 	child_publishers: z
 		.array(

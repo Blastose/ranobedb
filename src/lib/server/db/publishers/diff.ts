@@ -74,8 +74,8 @@ export function getPublisherDiffs(params: {
 		diffs,
 		getDiffWords({
 			name: 'Bookwalker',
-			words1: prevPublisherHistEdit.bookwalker_id?.toString(),
-			words2: publisherHistEdit.bookwalker_id?.toString(),
+			words1: prevPublisherHistEdit.bookwalker,
+			words2: publisherHistEdit.bookwalker,
 		}),
 	);
 	pushIfNotUndefined(

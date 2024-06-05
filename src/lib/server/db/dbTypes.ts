@@ -168,7 +168,7 @@ export interface Image {
 }
 
 export interface Publisher {
-	bookwalker_id: number | null;
+	bookwalker: string | null;
 	description: string;
 	hidden: boolean;
 	id: Generated<number>;
@@ -181,7 +181,7 @@ export interface Publisher {
 }
 
 export interface PublisherHist {
-	bookwalker_id: number | null;
+	bookwalker: string | null;
 	change_id: number;
 	description: string;
 	name: string;

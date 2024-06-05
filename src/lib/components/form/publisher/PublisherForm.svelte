@@ -69,14 +69,9 @@
 			<div class="max-w-md">
 				<LinkInput form={sForm} field="website" label="Website" resetPadding={true} />
 			</div>
-			<TextFieldLink
-				form={sForm}
-				type="number"
-				field="bookwalker_id"
-				label="Bookwalker"
-				resetPadding={true}
-				linkBeforeAfter={bookwalkerAuthorLink}
-			/>
+			<div class="max-w-md">
+				<LinkInput form={sForm} field="bookwalker" label="Bookwalker" resetPadding={true} />
+			</div>
 			<TextFieldLink
 				form={sForm}
 				type="number"
