@@ -97,7 +97,6 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
 			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
 			.orderBy('series.id')
-			.orderBy('series.id')
 			.orderBy((eb) => titleCaseBuilder(eb, langPrios ?? defaultLangPrio));
 	};
 }
@@ -182,7 +181,16 @@ export class DBSeries {
 						.select(({ fn }) => [fn.countAll().as('count')]),
 				).as('volumes'),
 			])
-			.selectAll('cte_series');
+			.select([
+				'cte_series.id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+			]);
 	}
 	getSeriesOne(id: number) {
 		return this.ranobeDB.db

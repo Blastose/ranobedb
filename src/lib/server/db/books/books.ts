@@ -573,8 +573,7 @@ export class DBBooks {
 						.whereRef('image.id', '=', 'cte_book.image_id')
 						.limit(1),
 				).as('image'),
-			)
-			.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
+			);
 	}
 }
 

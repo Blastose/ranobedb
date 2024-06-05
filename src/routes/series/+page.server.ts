@@ -10,6 +10,9 @@ export const load = async ({ url, locals }) => {
 	if (q) {
 		query = query.where('cte_series.title', 'ilike', `%${q}%`);
 	}
+
+	query = query.orderBy((eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'));
+
 	const {
 		result: series,
 		count,

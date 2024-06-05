@@ -5,15 +5,16 @@ import { DeduplicateJoinsPlugin } from 'kysely';
 
 export const load = async ({ url, locals }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
-	const query = url.searchParams.get('q');
+	const q = url.searchParams.get('q');
 
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
-	let k = dbBooks.getBooks();
-	k = k.where('cte_book.hidden', '=', false);
+	let query = dbBooks.getBooks();
+	query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
+	query = query.where('cte_book.hidden', '=', false);
 	const useQuery = true;
-	if (query) {
-		k = k.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
+	if (q) {
+		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb(
 				'cte_book.id',
 				'in',
@@ -25,8 +26,8 @@ export const load = async ({ url, locals }) => {
 								.innerJoin('book_title', (join) => join.onRef('book_title.book_id', '=', 'book.id'))
 								.where((eb2) =>
 									eb2.or([
-										eb2('book_title.title', 'ilike', `%${query}%`),
-										eb2('book_title.romaji', 'ilike', `%${query}%`),
+										eb2('book_title.title', 'ilike', `%${q}%`),
+										eb2('book_title.romaji', 'ilike', `%${q}%`),
 									]),
 								),
 						)
@@ -50,7 +51,7 @@ export const load = async ({ url, locals }) => {
 		result: books,
 		count,
 		totalPages,
-	} = await paginationBuilderExecuteWithCount(k, {
+	} = await paginationBuilderExecuteWithCount(query, {
 		limit: 24,
 		page: currentPage,
 	});

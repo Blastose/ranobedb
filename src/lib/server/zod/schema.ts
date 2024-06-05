@@ -238,6 +238,18 @@ export const bookSchema = z.object({
 				return true;
 			},
 			{ message: 'Original edition must be first ' },
+		)
+		.refine(
+			(editions) => {
+				for (let i = 1; i < editions.length; i++) {
+					const edition = editions[i];
+					if (edition.title.toLowerCase() === 'Original edition'.toLowerCase()) {
+						return false;
+					}
+				}
+				return true;
+			},
+			{ message: "Cannot name other editions 'Original edition'" },
 		),
 
 	release_date: zReleaseDate,
