@@ -63,6 +63,9 @@ export class DBPublisherActions {
 				'publisher.name',
 				'publisher.romaji',
 				'publisher.bookwalker_id',
+				'publisher.twitter_id',
+				'publisher.website',
+				'publisher.wikidata_id',
 			])
 			.where('publisher.id', 'in', params.publisher_ids)
 			.execute();
@@ -134,6 +137,9 @@ export class DBPublisherActions {
 					name: publisher_to_update.name,
 					romaji: publisher_to_update.romaji,
 					bookwalker_id: publisher_to_update.bookwalker_id,
+					twitter_id: publisher_to_update.twitter_id,
+					website: publisher_to_update.website,
+					wikidata_id: publisher_to_update.wikidata_id,
 				})
 				.execute();
 			if (batch_add.length > 0) {
@@ -187,6 +193,9 @@ export class DBPublisherActions {
 					name: publisher_to_remove.name,
 					romaji: publisher_to_remove.romaji,
 					bookwalker_id: publisher_to_remove.bookwalker_id,
+					twitter_id: publisher_to_remove.twitter_id,
+					website: publisher_to_remove.website,
+					wikidata_id: publisher_to_remove.wikidata_id,
 				})
 				.execute();
 			current = current.filter((item) => item.id_child !== params.main_id);
@@ -269,6 +278,9 @@ export class DBPublisherActions {
 					name: publisher_to_add.name,
 					romaji: publisher_to_add.romaji,
 					bookwalker_id: publisher_to_add.bookwalker_id,
+					twitter_id: publisher_to_add.twitter_id,
+					website: publisher_to_add.website,
+					wikidata_id: publisher_to_add.wikidata_id,
 				})
 				.execute();
 			if (batch_add.length > 0) {
@@ -347,11 +359,11 @@ export class DBPublisherActions {
 			await trx
 				.updateTable('publisher')
 				.set({
+					hidden,
+					locked,
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
 					description: data.publisher.description ?? '',
-					hidden,
-					locked,
 					bookwalker_id: data.publisher.bookwalker_id,
 					twitter_id: data.publisher.twitter_id,
 					website: data.publisher.website,
@@ -363,11 +375,14 @@ export class DBPublisherActions {
 			await trx
 				.insertInto('publisher_hist')
 				.values({
+					change_id: change.change_id,
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
 					description: data.publisher.description ?? '',
 					bookwalker_id: data.publisher.bookwalker_id,
-					change_id: change.change_id,
+					twitter_id: data.publisher.twitter_id,
+					website: data.publisher.website,
+					wikidata_id: data.publisher.wikidata_id,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -464,12 +479,12 @@ export class DBPublisherActions {
 			const insertedPublisher = await trx
 				.insertInto('publisher')
 				.values({
+					hidden,
+					locked,
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
 					description: data.publisher.description ?? '',
 					bookwalker_id: data.publisher.bookwalker_id,
-					hidden,
-					locked,
 					twitter_id: data.publisher.twitter_id,
 					website: data.publisher.website,
 					wikidata_id: data.publisher.wikidata_id,
@@ -492,11 +507,14 @@ export class DBPublisherActions {
 			await trx
 				.insertInto('publisher_hist')
 				.values({
+					change_id: change.change_id,
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
 					description: data.publisher.description ?? '',
 					bookwalker_id: data.publisher.bookwalker_id,
-					change_id: change.change_id,
+					twitter_id: data.publisher.twitter_id,
+					website: data.publisher.website,
+					wikidata_id: data.publisher.wikidata_id,
 				})
 				.executeTakeFirstOrThrow();
 			const publisher_relations = data.publisher.child_publishers.map((item) => {

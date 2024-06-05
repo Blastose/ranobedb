@@ -12,6 +12,13 @@
 	import PublisherRelInput from './PublisherRelInput.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
+	import TextFieldLink from '../TextFieldLink.svelte';
+	import LinkInput from '../LinkInput.svelte';
+	import {
+		bookwalkerAuthorLink,
+		twitterLink,
+		wikidataLink,
+	} from '$lib/components/db-links/db-ext-links';
 
 	export let publisher: PublisherEdit | undefined;
 	export let publisherForm: SuperValidated<Infer<typeof publisherSchema>>;
@@ -55,6 +62,39 @@
 		label="Romanization"
 		placeholder="Romanization"
 	/>
+
+	<section>
+		<h2 class="text-lg font-bold">Links</h2>
+		<div class="flex flex-col gap-2">
+			<div class="max-w-md">
+				<LinkInput form={sForm} field="website" label="Website" resetPadding={true} />
+			</div>
+			<TextFieldLink
+				form={sForm}
+				type="number"
+				field="bookwalker_id"
+				label="Bookwalker"
+				resetPadding={true}
+				linkBeforeAfter={bookwalkerAuthorLink}
+			/>
+			<TextFieldLink
+				form={sForm}
+				type="number"
+				field="wikidata_id"
+				label="Wikidata"
+				resetPadding={true}
+				linkBeforeAfter={wikidataLink}
+			/>
+			<TextFieldLink
+				form={sForm}
+				type="text"
+				field="twitter_id"
+				label="Twitter"
+				resetPadding={true}
+				linkBeforeAfter={twitterLink}
+			/>
+		</div>
+	</section>
 
 	<TextareaFieldMarkdown
 		form={sForm}
