@@ -71,10 +71,10 @@ export class DBStaffActions {
 			await trx
 				.updateTable('staff')
 				.set({
-					bookwalker_id: data.staff.bookwalker_id,
-					description: data.staff.description ?? '',
 					hidden,
 					locked,
+					description: data.staff.description ?? '',
+					bookwalker_id: data.staff.bookwalker_id,
 					pixiv_id: data.staff.pivix_id,
 					twitter_id: data.staff.twitter_id,
 					website: data.staff.website,
@@ -86,9 +86,13 @@ export class DBStaffActions {
 			await trx
 				.insertInto('staff_hist')
 				.values({
+					change_id: change.change_id,
 					description: data.staff.description ?? '',
 					bookwalker_id: data.staff.bookwalker_id,
-					change_id: change.change_id,
+					pixiv_id: data.staff.pivix_id,
+					twitter_id: data.staff.twitter_id,
+					website: data.staff.website,
+					wikidata_id: data.staff.wikidata_id,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -222,10 +226,10 @@ export class DBStaffActions {
 			const insertedStaff = await trx
 				.insertInto('staff')
 				.values({
-					description: data.staff.description ?? '',
-					bookwalker_id: data.staff.bookwalker_id,
 					hidden,
 					locked,
+					description: data.staff.description ?? '',
+					bookwalker_id: data.staff.bookwalker_id,
 					pixiv_id: data.staff.pivix_id,
 					twitter_id: data.staff.twitter_id,
 					website: data.staff.website,
@@ -249,9 +253,13 @@ export class DBStaffActions {
 			await trx
 				.insertInto('staff_hist')
 				.values({
+					change_id: change.change_id,
 					description: data.staff.description ?? '',
 					bookwalker_id: data.staff.bookwalker_id,
-					change_id: change.change_id,
+					pixiv_id: data.staff.pivix_id,
+					twitter_id: data.staff.twitter_id,
+					website: data.staff.website,
+					wikidata_id: data.staff.wikidata_id,
 				})
 				.executeTakeFirstOrThrow();
 

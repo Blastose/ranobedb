@@ -72,8 +72,6 @@ export const actions = {
 			return fail(403, { form });
 		}
 
-		console.dir(form, { depth: null });
-
 		if (!form.valid) {
 			return fail(400, { form });
 		}
@@ -85,7 +83,7 @@ export const actions = {
 			success = true;
 		} catch (e) {
 			if (e instanceof DatabaseError) {
-				//
+				return fail(400, { form });
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
 			} else if (e instanceof HasRelationsError) {

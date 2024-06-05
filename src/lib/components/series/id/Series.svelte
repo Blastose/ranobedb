@@ -17,6 +17,7 @@
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
 	import DbExtLink from '$lib/components/db-links/DbExtLink.svelte';
+	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -63,33 +64,16 @@
 		<h2 class="font-bold text-lg">Links</h2>
 		<div class="flex flex-wrap gap-x-4">
 			{#if series.web_novel}
-				<div>
-					<dt>Web novel:</dt>
-					<dd><a href={series.web_novel} target="_blank" class="link">{series.web_novel}</a></dd>
-				</div>
+				<a href={series.web_novel} target="_blank" class="link">Web novel</a>
 			{/if}
-
 			{#if series.bookwalker_id}
-				<div>
-					<dt>Bookwalker:</dt>
-					<dd>
-						<DbExtLink fullLink={{ ...bookwalkerSeriesLink, value: series.bookwalker_id }} />
-					</dd>
-				</div>
+				<DbExtLinkShort fullLink={{ ...bookwalkerSeriesLink, value: series.bookwalker_id }} />
 			{/if}
-
 			{#if series.anidb_id}
-				<div>
-					<dt>AniDB:</dt>
-					<dd><DbExtLink fullLink={{ ...aniDbLink, value: series.anidb_id }} /></dd>
-				</div>
+				<DbExtLinkShort fullLink={{ ...aniDbLink, value: series.anidb_id }} />
 			{/if}
-
 			{#if series.wikidata_id}
-				<div>
-					<dt>Wikidata:</dt>
-					<dd><DbExtLink fullLink={{ ...wikidataLink, value: series.wikidata_id }} /></dd>
-				</div>
+				<DbExtLinkShort fullLink={{ ...wikidataLink, value: series.wikidata_id }} />
 			{/if}
 		</div>
 	</section>

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { staffSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
@@ -13,6 +12,13 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import TextFieldLink from '../TextFieldLink.svelte';
+	import {
+		bookwalkerAuthorLink,
+		pixivLink,
+		twitterLink,
+		wikidataLink,
+	} from '$lib/components/db-links/db-ext-links';
+	import LinkInput from '../LinkInput.svelte';
 
 	export let staff: StaffEdit | undefined;
 	export let staffForm: SuperValidated<Infer<typeof staffSchema>>;
@@ -53,16 +59,42 @@
 	<Hr />
 
 	<section>
-		<h2>Links</h2>
-		<div class="flex">
+		<h2 class="text-lg font-bold">Links</h2>
+		<div class="flex flex-col gap-2">
+			<div class="max-w-md">
+				<LinkInput form={sForm} field="website" label="Website" resetPadding={true} />
+			</div>
 			<TextFieldLink
 				form={sForm}
 				type="number"
 				field="bookwalker_id"
-				label="Bookwalker Id"
+				label="Bookwalker"
 				resetPadding={true}
-				before="https://bookwalker.jp/author/"
-				after=""
+				linkBeforeAfter={bookwalkerAuthorLink}
+			/>
+			<TextFieldLink
+				form={sForm}
+				type="number"
+				field="wikidata_id"
+				label="Wikidata"
+				resetPadding={true}
+				linkBeforeAfter={wikidataLink}
+			/>
+			<TextFieldLink
+				form={sForm}
+				type="text"
+				field="twitter_id"
+				label="Twitter"
+				resetPadding={true}
+				linkBeforeAfter={twitterLink}
+			/>
+			<TextFieldLink
+				form={sForm}
+				type="number"
+				field="pivix_id"
+				label="Pixiv"
+				resetPadding={true}
+				linkBeforeAfter={pixivLink}
 			/>
 		</div>
 	</section>
