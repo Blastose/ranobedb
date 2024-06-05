@@ -16,6 +16,7 @@
 	import SelectField from '../SelectField.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
+	import LinkInput from '../LinkInput.svelte';
 
 	export let release: ReleaseEdit | undefined;
 	export let releaseForm: SuperValidated<Infer<typeof releaseSchema>>;
@@ -92,6 +93,19 @@
 	</div>
 
 	<ReleaseDateInput form={sForm} field="release_date" label="Release date" />
+
+	<section>
+		<h2 class="text-lg font-bold">Links</h2>
+		<div class="flex flex-col gap-2 max-w-md">
+			<LinkInput form={sForm} field="website" label="Website" resetPadding={true} />
+
+			<LinkInput form={sForm} field="amazon" label="Amazon" resetPadding={true} />
+
+			<LinkInput form={sForm} field="bookwalker" label="Bookwalker" resetPadding={true} />
+
+			<LinkInput form={sForm} field="rakuten" label="Rakuten" resetPadding={true} />
+		</div>
+	</section>
 
 	<TextareaFieldMarkdown
 		form={sForm}

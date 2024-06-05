@@ -88,10 +88,10 @@ export class DBReleaseActions {
 			await trx
 				.updateTable('release')
 				.set({
-					description: data.release.description ?? '',
-					format: data.release.format,
 					hidden,
 					locked,
+					description: data.release.description ?? '',
+					format: data.release.format,
 					isbn13: data.release.isbn13,
 					lang: data.release.lang,
 					pages: data.release.pages,
@@ -108,6 +108,7 @@ export class DBReleaseActions {
 			await trx
 				.insertInto('release_hist')
 				.values({
+					change_id: change.change_id,
 					description: data.release.description ?? '',
 					format: data.release.format,
 					isbn13: data.release.isbn13,
@@ -116,7 +117,10 @@ export class DBReleaseActions {
 					release_date: data.release.release_date,
 					romaji: data.release.romaji,
 					title: data.release.title,
-					change_id: change.change_id,
+					amazon: data.release.amazon,
+					bookwalker: data.release.bookwalker,
+					rakuten: data.release.rakuten,
+					website: data.release.website,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -204,10 +208,10 @@ export class DBReleaseActions {
 			const insertedRelease = await trx
 				.insertInto('release')
 				.values({
-					description: data.release.description ?? '',
-					format: data.release.format,
 					hidden,
 					locked,
+					description: data.release.description ?? '',
+					format: data.release.format,
 					isbn13: data.release.isbn13,
 					lang: data.release.lang,
 					pages: data.release.pages,
@@ -236,6 +240,7 @@ export class DBReleaseActions {
 			await trx
 				.insertInto('release_hist')
 				.values({
+					change_id: change.change_id,
 					description: data.release.description ?? '',
 					format: data.release.format,
 					isbn13: data.release.isbn13,
@@ -244,7 +249,10 @@ export class DBReleaseActions {
 					release_date: data.release.release_date,
 					romaji: data.release.romaji,
 					title: data.release.title,
-					change_id: change.change_id,
+					amazon: data.release.amazon,
+					bookwalker: data.release.bookwalker,
+					rakuten: data.release.rakuten,
+					website: data.release.website,
 				})
 				.executeTakeFirstOrThrow();
 
