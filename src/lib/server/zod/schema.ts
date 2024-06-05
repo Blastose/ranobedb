@@ -194,6 +194,7 @@ export const bookSchema = z.object({
 	description: zDescription,
 	description_ja: zDescription,
 	image_id: z.number().max(2000000).nullish(),
+	olang: z.enum(languagesArray),
 
 	titles: zTitles,
 
@@ -206,7 +207,7 @@ export const bookSchema = z.object({
 					.trim()
 					.min(1, { message: 'Title must be at least 1 character' })
 					.max(2000, { message: 'Title must be at most 2000 characters' }),
-				lang: z.enum(languagesArray),
+				lang: z.enum(languagesArray).nullish(),
 				staff: z
 					.array(
 						z.object({
@@ -385,6 +386,7 @@ export const seriesSchema = z.object({
 				.join('\n'),
 		)
 		.nullish(),
+	olang: z.enum(languagesArray),
 	anidb_id: z.number().max(maxWikidataId).nullish(),
 	start_date: zReleaseDate,
 	end_date: zReleaseDate,

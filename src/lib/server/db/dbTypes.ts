@@ -80,6 +80,7 @@ export interface Book {
 	hidden: boolean;
 	id: Generated<number>;
 	image_id: number | null;
+	olang: Language;
 	locked: boolean;
 	release_date: number;
 }
@@ -87,14 +88,14 @@ export interface Book {
 export interface BookEdition {
 	book_id: number;
 	eid: number;
-	lang: Language;
+	lang: Language | null;
 	title: string;
 }
 
 export interface BookEditionHist {
 	change_id: number;
 	eid: number;
-	lang: Language;
+	lang: Language | null;
 	title: string;
 }
 
@@ -103,6 +104,7 @@ export interface BookHist {
 	description: string;
 	description_ja: string;
 	image_id: number | null;
+	olang: Language;
 	release_date: number;
 }
 
@@ -270,6 +272,7 @@ export interface Series {
 	hidden: boolean;
 	id: Generated<number>;
 	locked: boolean;
+	olang: Language;
 	publication_status: SeriesStatus;
 	start_date: number;
 	web_novel: string | null;
@@ -296,6 +299,7 @@ export interface SeriesHist {
 	change_id: number;
 	description: string;
 	end_date: number;
+	olang: Language;
 	publication_status: SeriesStatus;
 	start_date: number;
 	web_novel: string | null;

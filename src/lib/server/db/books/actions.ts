@@ -105,6 +105,7 @@ export class DBBookActions {
 					locked,
 					image_id: data.book.image_id,
 					release_date: data.book.release_date,
+					olang: data.book.olang,
 				})
 				.where('book.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -117,6 +118,7 @@ export class DBBookActions {
 					change_id: change.change_id,
 					image_id: data.book.image_id,
 					release_date: data.book.release_date,
+					olang: data.book.olang,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -218,6 +220,7 @@ export class DBBookActions {
 					locked,
 					image_id: data.book.image_id,
 					release_date: data.book.release_date,
+					olang: data.book.olang,
 				})
 				.returning('book.id')
 				.executeTakeFirstOrThrow();
@@ -242,6 +245,7 @@ export class DBBookActions {
 					change_id: change.change_id,
 					image_id: data.book.image_id,
 					release_date: data.book.release_date,
+					olang: data.book.olang,
 				})
 				.executeTakeFirstOrThrow();
 			const bookTitleInsert = data.book.titles.map((item) => {

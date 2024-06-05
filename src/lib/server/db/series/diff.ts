@@ -84,6 +84,14 @@ export function getSeriesDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
+			name: 'Original language',
+			words1: prevSeriesHistEdit.olang,
+			words2: seriesHistEdit.olang,
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
 			name: 'Web novel',
 			words1: prevSeriesHistEdit.web_novel,
 			words2: seriesHistEdit.web_novel,

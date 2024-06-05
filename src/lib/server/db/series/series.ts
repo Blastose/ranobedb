@@ -93,6 +93,7 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 				'series.end_date',
 				'series.web_novel',
 				'series.wikidata_id',
+				'series.olang',
 			])
 			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
 			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
@@ -125,6 +126,7 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 				'series_hist.end_date',
 				'series_hist.web_novel',
 				'series_hist.wikidata_id',
+				'series_hist.olang',
 			])
 			.select(['series_title_hist.lang', 'series_title_hist.romaji', 'series_title_hist.title'])
 			.select([
@@ -190,6 +192,7 @@ export class DBSeries {
 				'cte_series.romaji_orig',
 				'cte_series.title',
 				'cte_series.title_orig',
+				'cte_series.olang',
 			]);
 	}
 	getSeriesOne(id: number) {
@@ -215,6 +218,7 @@ export class DBSeries {
 				'cte_series.end_date',
 				'cte_series.web_novel',
 				'cte_series.wikidata_id',
+				'cte_series.olang',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -321,6 +325,7 @@ export class DBSeries {
 				'cte_series.end_date',
 				'cte_series.web_novel',
 				'cte_series.wikidata_id',
+				'cte_series.olang',
 				'change.ilock as locked',
 				'change.ihid as hidden',
 			])
@@ -438,6 +443,7 @@ export class DBSeries {
 				'cte_series.end_date',
 				'cte_series.web_novel',
 				'cte_series.wikidata_id',
+				'cte_series.olang',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -512,6 +518,7 @@ export class DBSeries {
 				'cte_series.end_date',
 				'cte_series.web_novel',
 				'cte_series.wikidata_id',
+				'cte_series.olang',
 				'change.ihid as hidden',
 				'change.ilock as locked',
 			])

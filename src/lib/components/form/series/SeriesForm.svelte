@@ -13,7 +13,7 @@
 	import SeriesBookInput from './SeriesBookInput.svelte';
 	import SeriesRelInput from './SeriesRelInput.svelte';
 	import SelectField from '../SelectField.svelte';
-	import { seriesStatusArray } from '$lib/db/dbConsts';
+	import { languageNames, languagesArray, seriesStatusArray } from '$lib/db/dbConsts';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import TextFieldLink from '../TextFieldLink.svelte';
@@ -93,6 +93,21 @@
 		placeholder="Aliases separated by new lines"
 		textareaRows={3}
 	/>
+
+	<div class="flex gap-4">
+		<SelectField
+			form={sForm}
+			field="olang"
+			dropdownOptions={languagesArray.map((item) => ({
+				display: languageNames[item],
+				value: item,
+			}))}
+			selectedValue={series?.lang ?? 'ja'}
+			label="Language"
+			showRequiredSymbolIfRequired={false}
+			resetPadding={true}
+		/>
+	</div>
 
 	<div class="flex flex-wrap gap-x-4">
 		<ReleaseDateInput form={sForm} field="start_date" label="Start date" />

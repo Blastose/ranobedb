@@ -33,19 +33,19 @@
 					showRequiredSymbolIfRequired={false}
 					disabled={editionIndex === 0}
 				/>
-				<SelectField
-					{form}
-					field="editions[{editionIndex}].lang"
-					dropdownOptions={languagesArray.map((item) => ({
-						display: languageNames[item],
-						value: item,
-					}))}
-					selectedValue={edition.lang ?? 'ja'}
-					label="Language"
-					resetPadding={true}
-					showRequiredSymbolIfRequired={false}
-				/>
 				{#if editionIndex !== 0}
+					<SelectField
+						{form}
+						field="editions[{editionIndex}].lang"
+						dropdownOptions={languagesArray.map((item) => ({
+							display: languageNames[item],
+							value: item,
+						}))}
+						selectedValue={edition.lang ?? 'ja'}
+						label="Language"
+						resetPadding={true}
+						showRequiredSymbolIfRequired={false}
+					/>
 					<button
 						on:click={() => {
 							handleRemoveEdition(editionIndex);

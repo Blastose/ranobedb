@@ -23,6 +23,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			locked: false,
 			description_ja: '',
 			release_date: 20140101,
+			olang: 'ja',
 		})
 		.returning('book.id')
 		.executeTakeFirstOrThrow();
@@ -46,6 +47,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			description: '',
 			description_ja: '',
 			release_date: 20140101,
+			olang: 'ja',
 		})
 		.execute();
 	await db
@@ -175,6 +177,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			aliases: '',
 			end_date: 99999999,
 			start_date: 20120101,
+			olang: 'ja',
 		})
 		.returning('id')
 		.executeTakeFirstOrThrow();
@@ -200,6 +203,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			aliases: '',
 			end_date: 99999999,
 			start_date: 20120101,
+			olang: 'ja',
 		})
 		.execute();
 	await db
@@ -220,6 +224,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			aliases: '',
 			end_date: 99999999,
 			start_date: 20120101,
+			olang: 'ja',
 		})
 		.returning('id')
 		.executeTakeFirstOrThrow();
@@ -245,6 +250,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			aliases: '',
 			end_date: 99999999,
 			start_date: 20120101,
+			olang: 'ja',
 		})
 		.execute();
 	await db

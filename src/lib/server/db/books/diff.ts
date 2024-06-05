@@ -46,6 +46,14 @@ export function getBookDiffs(params: {
 	);
 	pushIfNotUndefined(
 		diffs,
+		getDiffWords({
+			name: 'Original language',
+			words1: prevBookHistEdit.olang,
+			words2: bookHistEdit.olang,
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
 		getDiffLines({
 			lines1: generateBookEditionChangeStringFromEditions(prevBookHistEdit['editions']),
 			lines2: generateBookEditionChangeStringFromEditions(bookHistEdit['editions']),

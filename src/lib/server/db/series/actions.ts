@@ -159,6 +159,7 @@ async function updateReverseSeriesRelations(params: {
 				anidb_id: series_to_update.anidb_id,
 				web_novel: series_to_update.web_novel,
 				wikidata_id: series_to_update.wikidata_id,
+				olang: series_to_update.olang,
 			})
 			.execute();
 		if (batch_add.length > 0) {
@@ -223,6 +224,7 @@ async function removeReverseSeriesRelations(params: {
 				anidb_id: series_to_remove.anidb_id,
 				web_novel: series_to_remove.web_novel,
 				wikidata_id: series_to_remove.wikidata_id,
+				olang: series_to_remove.olang,
 			})
 			.execute();
 		current = current.filter((item) => item.id_child !== params.main_id);
@@ -313,6 +315,7 @@ async function addReverseSeriesRelations(params: {
 				anidb_id: series_to_add.anidb_id,
 				web_novel: series_to_add.web_novel,
 				wikidata_id: series_to_add.wikidata_id,
+				olang: series_to_add.olang,
 			})
 			.execute();
 		if (batch_add.length > 0) {
@@ -408,6 +411,7 @@ export class DBSeriesActions {
 					anidb_id: data.series.anidb_id,
 					web_novel: data.series.web_novel,
 					wikidata_id: data.series.wikidata_id,
+					olang: data.series.olang,
 				})
 				.where('series.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -425,6 +429,7 @@ export class DBSeriesActions {
 					anidb_id: data.series.anidb_id,
 					web_novel: data.series.web_novel,
 					wikidata_id: data.series.wikidata_id,
+					olang: data.series.olang,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -608,6 +613,7 @@ export class DBSeriesActions {
 					anidb_id: data.series.anidb_id,
 					web_novel: data.series.web_novel,
 					wikidata_id: data.series.wikidata_id,
+					olang: data.series.olang,
 				})
 				.returning('series.id')
 				.executeTakeFirstOrThrow();
@@ -637,6 +643,7 @@ export class DBSeriesActions {
 					anidb_id: data.series.anidb_id,
 					web_novel: data.series.web_novel,
 					wikidata_id: data.series.wikidata_id,
+					olang: data.series.olang,
 				})
 				.executeTakeFirstOrThrow();
 			const series_relations = data.series.child_series.map((item) => {

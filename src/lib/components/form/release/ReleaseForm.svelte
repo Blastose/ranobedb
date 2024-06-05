@@ -69,6 +69,7 @@
 			}))}
 			selectedValue={release?.lang ?? 'ja'}
 			label="Language"
+			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
 		/>
 		<SelectField
@@ -77,6 +78,7 @@
 			dropdownOptions={releaseFormatArray.map((item) => ({ display: item, value: item }))}
 			selectedValue={release?.format ?? 'digital'}
 			label="Format"
+			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
 		/>
 	</div>
