@@ -1,4 +1,5 @@
 import type { BookEdit } from '$lib/server/db/books/books';
+import type { PublisherEdit } from '$lib/server/db/publishers/publishers';
 
 function deleteObjKey<T extends Record<K, unknown>, K extends keyof T>(obj: T, key: K) {
 	delete obj[key];
@@ -25,4 +26,17 @@ export function setupBookEditObjsForEqualityTest(
 	deleteKeysFromBookEdit(book1);
 	deleteKeysFromBookEdit(book2);
 	return [book1, book2];
+}
+
+function deleteKeysFromPublisherEdit(publisher: PublisherEdit) {
+	deleteObjKey(publisher, 'id');
+}
+
+export function setupPublisherEditObjsForEqualityTest(
+	publisher1: PublisherEdit,
+	publisher2: PublisherEdit,
+): [unknown, unknown] {
+	deleteKeysFromPublisherEdit(publisher1);
+	deleteKeysFromPublisherEdit(publisher2);
+	return [publisher1, publisher2];
 }

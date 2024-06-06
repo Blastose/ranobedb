@@ -65,7 +65,7 @@ export class DBPublishers {
 			.where('publisher.id', '=', id);
 	}
 
-	getPublisherHist(options: { id: number; revision?: number }) {
+	getPublisherHist(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('publisher_hist')
@@ -86,7 +86,7 @@ export class DBPublishers {
 					eb
 						.selectFrom('release')
 						.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
-						.where('release_publisher.publisher_id', '=', options.id)
+						.where('release_publisher.publisher_id', '=', params.id)
 						.select([
 							'release.title',
 							'release_publisher.publisher_type',
@@ -114,11 +114,11 @@ export class DBPublishers {
 						.whereRef('publisher_relation_hist.change_id', '=', 'change.id'),
 				).as('child_publishers'),
 			])
-			.where('change.item_id', '=', options.id)
+			.where('change.item_id', '=', params.id)
 			.where('change.item_name', '=', 'publisher');
 
-		if (options.revision) {
-			query = query.where('change.revision', '=', options.revision);
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
 		} else {
 			query = query.orderBy('change.revision desc');
 		}
@@ -154,8 +154,8 @@ export class DBPublishers {
 			.where('publisher.id', '=', id);
 	}
 
-	getPublisherHistEdit(params: { id: number; revision: number }) {
-		return this.ranobeDB.db
+	getPublisherHistEdit(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
 			.selectFrom('publisher_hist')
 			.innerJoin('change', 'change.id', 'publisher_hist.change_id')
 			.select([
@@ -180,8 +180,15 @@ export class DBPublishers {
 				).as('child_publishers'),
 			)
 			.where('change.item_id', '=', params.id)
-			.where('change.item_name', '=', 'publisher')
-			.where('change.revision', '=', params.revision);
+			.where('change.item_name', '=', 'publisher');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+
+		return query;
 	}
 
 	getBooksBelongingToPublisher(publisherId: number) {
