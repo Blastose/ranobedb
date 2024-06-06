@@ -4,6 +4,8 @@
 </script>
 
 <script lang="ts" generics="T extends Rec">
+	import { buildLink, type LinkBeforeAfter } from '$lib/components/db-links/db-ext-links';
+
 	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
 	export let form: SuperForm<T, App.Superforms.Message>;
@@ -14,12 +16,11 @@
 	export let showRequiredSymbolIfRequired: boolean = true;
 	export let resetPadding: boolean = false;
 	export let disabled: boolean = false;
-	export let before: string;
-	export let after: string;
+	export let linkBeforeAfter: LinkBeforeAfter;
 
 	const { value, errors, constraints } = formFieldProxy(form, field);
 
-	$: link = `${before}${$value}${after}`;
+	$: link = buildLink({ ...linkBeforeAfter, value: String($value) });
 </script>
 
 <div class="flex flex-col gap-1">
@@ -31,7 +32,7 @@
 			{/if}
 		</span>
 		<span>
-			<span>{before}</span>
+			<span>{linkBeforeAfter.before}</span>
 			{#if type === 'number'}
 				<input
 					type="number"
@@ -61,7 +62,7 @@
 					{...$$restProps}
 				/>
 			{/if}
-			<span>{after}</span>
+			<span>{linkBeforeAfter.after}</span>
 			{#if $value}<a class="link" target="_blank" href={link}>Preview link</a>{/if}
 		</span>
 	</label>

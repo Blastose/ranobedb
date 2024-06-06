@@ -7,7 +7,6 @@ export const permissions: Record<UserRole, Perm[]> = {
 	moderator: ['edit', 'add', 'visibility'],
 	editor: ['edit', 'add'],
 	user: [],
-	unverified: [],
 	banned: [],
 };
 

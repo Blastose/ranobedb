@@ -24,7 +24,15 @@
 				{#each data.series as series (series.id)}
 					{#if series.book}
 						<BookImage
-							book={{ title: series.title, id: series.id, image: series.book.image }}
+							book={{
+								title: series.title,
+								romaji: series.romaji,
+								id: series.id,
+								image: series.book.image,
+								lang: series.lang,
+								romaji_orig: series.romaji_orig,
+								title_orig: series.title_orig,
+							}}
 							urlPrefix="/series/"
 						>
 							{#if series.volumes}

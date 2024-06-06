@@ -53,6 +53,7 @@
 			<button
 				class="relative btn left-2 rounded-full inline-flex items-center justify-center w-8 h-8"
 				type="button"
+				aria-label="Close sidebar"
 				on:click={closeSidebar}><Icon name="close" /></button
 			>
 		{/if}

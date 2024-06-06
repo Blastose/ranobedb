@@ -19,7 +19,7 @@
 
 		$values.push({
 			lang: e.currentTarget.value as Language,
-			official: false,
+			official: true,
 			title: '',
 			romaji: '',
 		});

@@ -7,14 +7,8 @@ import { db } from '$lib/server/db/db.js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { staffTabsSchema } from '$lib/server/zod/schema.js';
-
-import {
-	generateStaffAliasChangeStringFromStaffAliases,
-	getDiffLines,
-	getDiffWords,
-	pushIfNotUndefined,
-	type Diff,
-} from '$lib/components/history/utils.js';
+import { type Diff } from '$lib/components/history/utils.js';
+import { getStaffDiffs } from '$lib/server/db/staff/diff.js';
 
 export const load = async ({ params, locals, url }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
@@ -53,8 +47,7 @@ export const load = async ({ params, locals, url }) => {
 			redirect(302, `/staff/${staffId}`);
 		}
 	}
-	let diff;
-	const diffs: Diff[] = [];
+	let diffs: Diff[] = [];
 	if (previousRevision > 0) {
 		const [prevStaffHistEdit, staffHistEdit] = await Promise.all([
 			dbStaff
@@ -68,30 +61,7 @@ export const load = async ({ params, locals, url }) => {
 		if (!prevStaffHistEdit || !staffHistEdit) {
 			error(404);
 		}
-		diff = getDiffLines({
-			lines1: generateStaffAliasChangeStringFromStaffAliases(prevStaffHistEdit['aliases']),
-			lines2: generateStaffAliasChangeStringFromStaffAliases(staffHistEdit['aliases']),
-			name: 'Names',
-		});
-		pushIfNotUndefined(diffs, diff);
-		diff = getDiffWords({
-			name: 'Hidden',
-			words1: prevStaffHistEdit.hidden.toString(),
-			words2: staffHistEdit.hidden.toString(),
-		});
-		pushIfNotUndefined(diffs, diff);
-		diff = getDiffWords({
-			name: 'Locked',
-			words1: prevStaffHistEdit.locked.toString(),
-			words2: staffHistEdit.locked.toString(),
-		});
-		pushIfNotUndefined(diffs, diff);
-		diff = getDiffWords({
-			name: 'Description',
-			words1: prevStaffHistEdit.description,
-			words2: staffHistEdit.description,
-		});
-		pushIfNotUndefined(diffs, diff);
+		diffs = getStaffDiffs({ prevStaffHistEdit, staffHistEdit });
 	}
 
 	const { count, totalPages, works } = await dbStaff.getWorksPaged({

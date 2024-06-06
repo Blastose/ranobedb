@@ -3,6 +3,7 @@ import {
 	publisherTabs,
 	releasePublisherTypeArray,
 	releaseTypeArray,
+	seriesBookTypeArray,
 	seriesRelTypeArray,
 	seriesStatusArray,
 	staffRolesArray,
@@ -18,6 +19,8 @@ import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 
 dayjs.extend(customParseFormat);
 
+const maxTextLength = 2000;
+const maxWikidataId = 9007199254740991;
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const zUsername = z
 	.string({ required_error: 'Username is required' })
@@ -34,6 +37,7 @@ const zPasswordNew = z
 	.string({ required_error: 'Password is required' })
 	.min(6, { message: 'Password must be between 6 and 255 characters' })
 	.max(255, { message: 'Password must be between 6 and 255 characters' });
+
 function isValidISO8601Date(dateString: string): boolean {
 	const isoDateRegex = /^\d{4,5}-\d{2}-\d{2}$/;
 	if (!isoDateRegex.test(dateString)) {
@@ -80,9 +84,33 @@ export const userListBookSchema = z.object({
 	score: z.number().min(1).max(10).nullish(),
 	started: zISODate.or(z.literal('')).nullish(),
 	finished: zISODate.or(z.literal('')).nullish(),
-	notes: z.string().max(2000, { message: 'Note must between less than 2000 characters' }).nullish(),
+	notes: z
+		.string()
+		.trim()
+		.max(2000, { message: 'Note must between less than 2000 characters' })
+		.nullish(),
 	type: z.enum(userListFormTypes),
 });
+
+const zRomaji = z
+	.string()
+	.trim()
+	.max(maxTextLength, { message: `Romaji must be at most ${maxTextLength} characters` })
+	.nullish()
+	.transform((v) => v || null)
+	.nullish();
+
+const zDescription = z
+	.string()
+	.trim()
+	.max(maxTextLength, { message: `Description must be at most ${maxTextLength} characters` })
+	.nullish();
+
+const zComment = z
+	.string()
+	.trim()
+	.min(1, { message: 'Summary must have at least 1 character' })
+	.max(maxTextLength);
 
 const zTitles = z
 	.array(
@@ -91,9 +119,10 @@ const zTitles = z
 			official: z.boolean(),
 			title: z
 				.string()
+				.trim()
 				.min(1, { message: 'Title must be at least 1 character' })
 				.max(2000, { message: 'Title must be at most 2000 characters' }),
-			romaji: z.string().max(2000, { message: 'Romaji must be at most 2000 characters' }).nullish(),
+			romaji: zRomaji,
 		}),
 	)
 	.min(1, { message: 'There needs to be at least 1 title' })
@@ -108,18 +137,64 @@ const zTitles = z
 		{ message: 'A Japanese title must be included' },
 	);
 
+const zReleaseDate = z
+	.number()
+	.min(10000101)
+	.max(99999999)
+	.refine(
+		(val) => {
+			const dateNumber = new DateNumber(val);
+			if (dateNumber.isFullDate()) {
+				return dayjs(dateNumber.getDateFormatted(), 'YYYY-MM-DD', true).isValid();
+			}
+
+			const { month, day } = dateNumber.extractYearMonthDay();
+			if (month > 12 && month !== 99) {
+				return false;
+			}
+			if (month === 99 && day !== 99) {
+				return false;
+			}
+			if (day > 31 && day !== 99) {
+				return false;
+			}
+
+			return true;
+		},
+		{ message: 'Release date must have correct format.' },
+	);
+
+const zLink = (validHostnames: string[]) =>
+	z
+		.string()
+		.max(maxTextLength)
+		.trim()
+		.refine(
+			(v) => {
+				try {
+					const url = new URL(v);
+					if (validHostnames.length === 0) {
+						return true;
+					}
+					if (validHostnames.includes(url.hostname)) {
+						return true;
+					}
+					return false;
+				} catch {
+					return false;
+				}
+			},
+			{ message: `Invalid url; Url must be one of ${validHostnames.join(', ')}` },
+		)
+		.nullish();
+
 export const bookSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
-	description: z
-		.string()
-		.max(2000, { message: 'Description must be at most 2000 characters' })
-		.nullish(),
-	description_ja: z
-		.string()
-		.max(2000, { message: 'Description must be at most 2000 characters' })
-		.nullish(),
+	description: zDescription,
+	description_ja: zDescription,
 	image_id: z.number().max(2000000).nullish(),
+	olang: z.enum(languagesArray),
 
 	titles: zTitles,
 
@@ -129,9 +204,10 @@ export const bookSchema = z.object({
 				eid: z.number().min(0).max(2000000).nullish(),
 				title: z
 					.string()
+					.trim()
 					.min(1, { message: 'Title must be at least 1 character' })
 					.max(2000, { message: 'Title must be at most 2000 characters' }),
-				lang: z.enum(languagesArray),
+				lang: z.enum(languagesArray).nullish(),
 				staff: z
 					.array(
 						z.object({
@@ -140,7 +216,10 @@ export const bookSchema = z.object({
 							staff_id: z.number().max(2000000),
 							staff_alias_id: z.number().max(2000000),
 							role_type: z.enum(staffRolesArray),
-							note: z.string().max(2000, { message: 'Note must be at most 2000 characters' }),
+							note: z
+								.string()
+								.trim()
+								.max(2000, { message: 'Note must be at most 2000 characters' }),
 						}),
 					)
 					.max(50),
@@ -157,19 +236,43 @@ export const bookSchema = z.object({
 				if (originalEdition.title !== 'Original edition') {
 					return false;
 				}
+				if (originalEdition.lang !== null) {
+					return false;
+				}
 				return true;
 			},
-			{ message: 'Original edition must be first ' },
+			{ message: 'Original edition must be first and lang must be null' },
+		)
+		.refine(
+			(editions) => {
+				for (let i = 1; i < editions.length; i++) {
+					const edition = editions[i];
+					if (edition.title.toLowerCase() === 'Original edition'.toLowerCase()) {
+						return false;
+					}
+					if (edition.lang === null) {
+						return false;
+					}
+				}
+				return true;
+			},
+			{ message: "Cannot name other editions 'Original edition'" },
 		),
 
-	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
+	release_date: zReleaseDate,
+
+	comment: zComment,
 });
 
 export const staffSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
-	description: z.string().max(2000).nullish(),
+	description: zDescription,
 	bookwalker_id: z.number().nullish(),
+	pivix_id: z.number().nullish(),
+	twitter_id: z.string().trim().max(2000).nullish(),
+	website: zLink([]),
+	wikidata_id: z.number().max(maxWikidataId).nullish(),
 
 	aliases: z
 		.array(
@@ -177,8 +280,8 @@ export const staffSchema = z.object({
 				aid: z.number().max(2000000).nullish(),
 				ref_book_id: z.number().max(2000000).nullish(),
 				main_alias: z.boolean(),
-				name: z.string().min(1, { message: 'Name must be at least 1 character' }).max(2000),
-				romaji: z.string().max(2000).nullish(),
+				name: z.string().trim().min(1, { message: 'Name must be at least 1 character' }).max(2000),
+				romaji: zRomaji,
 			}),
 		)
 		.min(1, { message: 'There must be at least 1 alias' })
@@ -190,73 +293,61 @@ export const staffSchema = z.object({
 			}
 			return true;
 		}),
-	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
+	comment: zComment,
 });
 
 export const publisherSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
 
-	name: z.string().max(2000),
-	romaji: z.string().max(2000).nullish(),
-	description: z.string().max(2000).nullish(),
-	bookwalker_id: z.number().nullish(),
+	name: z.string().trim().max(2000),
+	romaji: zRomaji,
+	description: zDescription,
+	bookwalker: zLink(['bookwalker.jp', 'global.bookwalker.jp']),
 
 	child_publishers: z
 		.array(
 			z.object({
-				name: z.string(),
-				romaji: z.string().nullish(),
+				name: z.string().trim(),
+				romaji: z.string().trim().nullish(),
 				id: z.number().max(100000),
 				relation_type: z.enum(publisherRelTypeArray),
 			}),
 		)
 		.max(50, { message: 'The number of publishers must be less than or equal to 50' }),
 
-	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
+	twitter_id: z.string().trim().max(maxTextLength).nullish(),
+	website: zLink([]),
+	wikidata_id: z.number().max(maxWikidataId).nullish(),
+
+	comment: zComment,
 });
 
 export const releaseSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
 
-	title: z.string().max(2000),
-	romaji: z.string().max(2000).nullish(),
-	description: z.string().max(2000).nullish(),
+	title: z.string().trim().max(2000),
+	romaji: zRomaji,
+	description: zDescription,
 
 	format: z.enum(releaseFormatArray),
 	lang: z.enum(languagesArray),
-	release_date: z
-		.number()
-		.min(10000101)
-		.max(99999999)
-		.refine(
-			(val) => {
-				const dateNumber = new DateNumber(val);
-				if (dateNumber.isFullDate()) {
-					return dayjs(dateNumber.getDateFormatted(), 'YYYY-MM-DD', true).isValid();
-				}
-
-				const { month, day } = dateNumber.extractYearMonthDay();
-				if (month > 12 && month !== 99) {
-					return false;
-				}
-				if (day > 31 && day !== 99) {
-					return false;
-				}
-
-				return true;
-			},
-			{ message: 'Release date must have correct format.' },
-		),
+	release_date: zReleaseDate,
 	pages: z.number().min(1).max(200000).nullish(),
 	isbn13: z
 		.string()
-		.min(13)
-		.max(13)
+		.trim()
+		.min(13, { message: 'ISBN must be 13 characters' })
+		.max(13, { message: 'ISBN must be 13 characters' })
 		.nullish()
 		.or(z.literal(''))
 		.transform((v) => (v === '' ? null : v)),
+
+	amazon: zLink(['www.amazon.co.jp', 'www.amazon.com']),
+	bookwalker: zLink(['bookwalker.jp', 'global.bookwalker.jp']),
+	rakuten: zLink(['books.rakuten.co.jp']),
+	website: zLink([]),
 
 	books: z
 		.array(
@@ -280,16 +371,33 @@ export const releaseSchema = z.object({
 		)
 		.max(50, { message: 'The number of publishers must be less than or equal to 50' }),
 
-	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
+	comment: zComment,
 });
 
 export const seriesSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
 
-	description: z.string().max(2000).nullish(),
+	description: zDescription,
 	bookwalker_id: z.number().max(20000000).nullish(),
 	publication_status: z.enum(seriesStatusArray),
+	aliases: z
+		.string()
+		.trim()
+		.max(2000)
+		.transform((v) =>
+			v
+				.split('\n')
+				.map((v) => v.trim())
+				.join('\n'),
+		)
+		.nullish(),
+	olang: z.enum(languagesArray),
+	anidb_id: z.number().max(maxWikidataId).nullish(),
+	start_date: zReleaseDate,
+	end_date: zReleaseDate,
+	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com']),
+	wikidata_id: z.number().max(maxWikidataId).nullish(),
 
 	books: z
 		.array(
@@ -298,6 +406,7 @@ export const seriesSchema = z.object({
 				romaji: z.string().nullish(),
 				lang: z.enum(languagesArray).nullish(),
 				id: z.number().max(100000),
+				book_type: z.enum(seriesBookTypeArray),
 				sort_order: z.number().max(2000),
 			}),
 		)
@@ -315,7 +424,7 @@ export const seriesSchema = z.object({
 		.max(200, { message: 'The total number of related series must be less than or equal to 200' }),
 	titles: zTitles,
 
-	comment: z.string().min(1, { message: 'Summary must have at least 1 character' }).max(2000),
+	comment: zComment,
 });
 
 export const searchNameSchema = z.object({ name: z.string() });

@@ -37,6 +37,8 @@ export function getBooksRL(userId: string, user?: User | null) {
 			'cte_book.romaji_orig',
 			'cte_book.title',
 			'cte_book.title_orig',
+			'cte_book.release_date',
+			'cte_book.olang',
 			'user_list_label.id as label_id',
 			'user_list_label.label',
 		])

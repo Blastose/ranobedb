@@ -1,12 +1,29 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { clearDatabase, db, initDatabase, ranobeBot } from './test-setup';
 import { DBStaffActions } from '$lib/server/db/staff/actions';
-import { DBStaff } from '$lib/server/db/staff/staff';
+import { DBStaff, type StaffEdit } from '$lib/server/db/staff/staff';
+import type { MaybePromise } from '@sveltejs/kit';
+import { setupStaffEditObjsForEqualityTest } from '$lib/db/obj';
 
 beforeAll(async () => {
 	await clearDatabase(db);
 	await initDatabase(db);
 });
+
+async function testStaff(params: { id: number; cb_staff: (stf: StaffEdit) => MaybePromise<void> }) {
+	const { id, cb_staff: cb_publisher } = params;
+	const dbStaff = DBStaff.fromDB(db);
+
+	const staff = await dbStaff.getStaffOneEdit(id).executeTakeFirstOrThrow();
+
+	const staffHist = await dbStaff.getStaffHistOneEdit({ id: id }).executeTakeFirstOrThrow();
+
+	await cb_publisher(staff);
+	await cb_publisher(staffHist);
+
+	setupStaffEditObjsForEqualityTest(staff, staffHist);
+	expect(staff).toStrictEqual(staffHist);
+}
 
 describe('staff actions', () => {
 	it('should edit the staff', async () => {
@@ -31,11 +48,13 @@ describe('staff actions', () => {
 			ranobeBot,
 		);
 		const changedStaff = await dbStaff.getStaffOneEdit(staff.id).executeTakeFirstOrThrow();
-		expect(changedStaff.aliases.length).toBe(3);
-		const changedStaffHist = await dbStaff
-			.getStaffHistOneEdit({ id: staff.id })
-			.executeTakeFirstOrThrow();
-		expect(changedStaffHist.aliases.length).toBe(3);
+
+		await testStaff({
+			id: staff.id,
+			cb_staff: (s) => {
+				expect(s.aliases.length).toBe(3);
+			},
+		});
 
 		await dbStaffActions.editStaff(
 			{
@@ -57,20 +76,28 @@ describe('staff actions', () => {
 			},
 			ranobeBot,
 		);
-		const changedStaffAfter = await dbStaff.getStaffOneEdit(staff.id).executeTakeFirstOrThrow();
-		expect(changedStaffAfter.aliases.length).toBe(3);
-		expect(changedStaffAfter.aliases.find((v) => v.name === 'Bob')?.main_alias).toBe(true);
-		expect(changedStaffAfter.aliases.find((v) => v.name === 'Mary')?.aid).toBe(
-			changedStaff.aliases.find((v) => v.name === 'Mary')?.aid,
-		);
-		const changedStaffHistAfter = await dbStaff
-			.getStaffHistOneEdit({ id: staff.id })
-			.executeTakeFirstOrThrow();
-		expect(changedStaffHistAfter.aliases.length).toBe(3);
-		expect(changedStaffHistAfter.aliases.find((v) => v.name === 'Bob')?.main_alias).toBe(true);
-		expect(changedStaffHistAfter.aliases.find((v) => v.name === 'Mary')?.aid).toBe(
-			changedStaffHist.aliases.find((v) => v.name === 'Mary')?.aid,
-		);
+
+		await testStaff({
+			id: staff.id,
+			cb_staff: (s) => {
+				expect(s.aliases.length).toBe(3);
+				expect(s.aliases.find((v) => v.name === 'Bob')?.main_alias).toBe(true);
+				expect(s.aliases.find((v) => v.name === 'Mary')?.aid).toBe(
+					changedStaff.aliases.find((v) => v.name === 'Mary')?.aid,
+				);
+			},
+		});
+
+		await testStaff({
+			id: staff.id,
+			cb_staff: (s) => {
+				expect(s.aliases.length).toBe(3);
+				expect(s.aliases.find((v) => v.name === 'Bob')?.main_alias).toBe(true);
+				expect(s.aliases.find((v) => v.name === 'Mary')?.aid).toBe(
+					changedStaff.aliases.find((v) => v.name === 'Mary')?.aid,
+				);
+			},
+		});
 	});
 
 	it('should add a staff', async () => {
@@ -86,13 +113,12 @@ describe('staff actions', () => {
 			},
 			ranobeBot,
 		);
-		const dbStaff = DBStaff.fromDB(db);
-		const addedStaff = await dbStaff.getStaffOneEdit(addedStaffId).executeTakeFirstOrThrow();
-		expect(addedStaff.aliases.length).toBe(1);
 
-		const addedStaffHist = await dbStaff
-			.getStaffHistOneEdit({ id: addedStaffId })
-			.executeTakeFirstOrThrow();
-		expect(addedStaffHist.aliases.length).toBe(1);
+		await testStaff({
+			id: addedStaffId,
+			cb_staff: (s) => {
+				expect(s.aliases.length).toBe(1);
+			},
+		});
 	});
 });

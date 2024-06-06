@@ -41,17 +41,6 @@ export class DBPublishers {
 							'release.id',
 							'release.release_date',
 						])
-						// Removed because nested `jsonArrayFrom`s are really slow
-						// .select((eb) => [
-						// 	jsonArrayFrom(
-						// 		eb
-						// 			.selectFrom('cte_book')
-						// 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
-						// 			.whereRef('release_book.release_id', '=', 'release.id')
-						// 			.select(['cte_book.id', 'cte_book.title'])
-						// 			.limit(10),
-						// 	).as('book_releases'),
-						// ])
 						.orderBy('release.release_date desc')
 						.orderBy('release.title')
 						.limit(100),
@@ -76,7 +65,7 @@ export class DBPublishers {
 			.where('publisher.id', '=', id);
 	}
 
-	getPublisherHist(options: { id: number; revision?: number }) {
+	getPublisherHist(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('publisher_hist')
@@ -86,7 +75,10 @@ export class DBPublishers {
 				'publisher_hist.description',
 				'publisher_hist.name',
 				'publisher_hist.romaji',
-				'publisher_hist.bookwalker_id',
+				'publisher_hist.bookwalker',
+				'publisher_hist.twitter_id',
+				'publisher_hist.website',
+				'publisher_hist.wikidata_id',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) => [
@@ -94,22 +86,13 @@ export class DBPublishers {
 					eb
 						.selectFrom('release')
 						.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
-						.where('release_publisher.publisher_id', '=', options.id)
+						.where('release_publisher.publisher_id', '=', params.id)
 						.select([
 							'release.title',
 							'release_publisher.publisher_type',
 							'release.id',
 							'release.release_date',
 						])
-						// .select((eb) => [
-						// 	jsonArrayFrom(
-						// 		eb
-						// 			.selectFrom('cte_book')
-						// 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
-						// 			.whereRef('release_book.release_id', '=', 'release.id')
-						// 			.select(['cte_book.id', 'cte_book.title']),
-						// 	).as('book_releases'),
-						// ])
 						.orderBy('release.release_date desc')
 						.orderBy('release.title')
 						.limit(100),
@@ -131,11 +114,11 @@ export class DBPublishers {
 						.whereRef('publisher_relation_hist.change_id', '=', 'change.id'),
 				).as('child_publishers'),
 			])
-			.where('change.item_id', '=', options.id)
+			.where('change.item_id', '=', params.id)
 			.where('change.item_name', '=', 'publisher');
 
-		if (options.revision) {
-			query = query.where('change.revision', '=', options.revision);
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
 		} else {
 			query = query.orderBy('change.revision desc');
 		}
@@ -153,7 +136,10 @@ export class DBPublishers {
 				'publisher.romaji',
 				'publisher.locked',
 				'publisher.hidden',
-				'publisher.bookwalker_id',
+				'publisher.bookwalker',
+				'publisher.twitter_id',
+				'publisher.website',
+				'publisher.wikidata_id',
 			])
 			.select((eb) =>
 				jsonArrayFrom(
@@ -168,8 +154,8 @@ export class DBPublishers {
 			.where('publisher.id', '=', id);
 	}
 
-	getPublisherHistEdit(params: { id: number; revision: number }) {
-		return this.ranobeDB.db
+	getPublisherHistEdit(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
 			.selectFrom('publisher_hist')
 			.innerJoin('change', 'change.id', 'publisher_hist.change_id')
 			.select([
@@ -177,7 +163,10 @@ export class DBPublishers {
 				'publisher_hist.description',
 				'publisher_hist.name',
 				'publisher_hist.romaji',
-				'publisher_hist.bookwalker_id',
+				'publisher_hist.bookwalker',
+				'publisher_hist.twitter_id',
+				'publisher_hist.website',
+				'publisher_hist.wikidata_id',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) =>
@@ -191,8 +180,15 @@ export class DBPublishers {
 				).as('child_publishers'),
 			)
 			.where('change.item_id', '=', params.id)
-			.where('change.item_name', '=', 'publisher')
-			.where('change.revision', '=', params.revision);
+			.where('change.item_name', '=', 'publisher');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+
+		return query;
 	}
 
 	getBooksBelongingToPublisher(publisherId: number) {

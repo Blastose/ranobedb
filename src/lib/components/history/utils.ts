@@ -183,10 +183,10 @@ export function generatePublisherRelChangeStringFromPublishers(
 type Edition = {
 	book_id: number;
 	title: string;
-	lang: Language;
+	lang: Language | null;
 };
 function generateBookEditionChangeString(edition: Edition): string {
-	return `[${edition.lang}] ${edition.title}`;
+	return `${edition.lang ? `[${edition.lang}]` : ''} ${edition.title}`;
 }
 export function generateBookEditionChangeStringFromEditions(editions: Edition[]) {
 	let str = '';

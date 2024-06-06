@@ -7,6 +7,14 @@
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import Works from './Works.svelte';
+	import DbExtLink from '$lib/components/db-links/DbExtLink.svelte';
+	import {
+		bookwalkerAuthorLink,
+		pixivLink,
+		twitterLink,
+		wikidataLink,
+	} from '$lib/components/db-links/db-ext-links';
+	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 
 	export let staff: Staff;
 	export let works: StaffWorks;
@@ -50,11 +58,23 @@
 
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
-		{#if staff.bookwalker_id}
-			<a class="link" target="_blank" href="https://bookwalker.jp/author/{staff.bookwalker_id}"
-				>Bookwalker</a
-			>
-		{/if}
+		<div class="flex flex-wrap gap-x-4">
+			{#if staff.website}
+				<a href={staff.website} target="_blank" class="link">Website</a>
+			{/if}
+			{#if staff.bookwalker_id}
+				<DbExtLinkShort fullLink={{ ...bookwalkerAuthorLink, value: staff.bookwalker_id }} />
+			{/if}
+			{#if staff.twitter_id}
+				<DbExtLinkShort fullLink={{ ...twitterLink, value: staff.twitter_id }} />
+			{/if}
+			{#if staff.pixiv_id}
+				<DbExtLinkShort fullLink={{ ...pixivLink, value: staff.pixiv_id }} />
+			{/if}
+			{#if staff.wikidata_id}
+				<DbExtLinkShort fullLink={{ ...wikidataLink, value: staff.wikidata_id }} />
+			{/if}
+		</div>
 	</section>
 
 	<Hr />

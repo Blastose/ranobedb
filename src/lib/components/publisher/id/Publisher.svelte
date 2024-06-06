@@ -8,6 +8,12 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 	import Works from './Works.svelte';
+	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
+	import {
+		bookwalkerAuthorLink,
+		twitterLink,
+		wikidataLink,
+	} from '$lib/components/db-links/db-ext-links';
 
 	export let publisher: Publisher;
 	export let isRevision: boolean;
@@ -37,6 +43,24 @@
 		{:else}
 			<p class="italic mb-2">No biography added</p>
 		{/if}
+	</section>
+
+	<section>
+		<h2 class="text-lg font-bold">Links</h2>
+		<div class="flex flex-wrap gap-x-4">
+			{#if publisher.website}
+				<a href={publisher.website} target="_blank" class="link">Website</a>
+			{/if}
+			{#if publisher.bookwalker}
+				<a href={publisher.bookwalker} target="_blank" class="link">Bookwalker</a>
+			{/if}
+			{#if publisher.twitter_id}
+				<DbExtLinkShort fullLink={{ ...twitterLink, value: publisher.twitter_id }} />
+			{/if}
+			{#if publisher.wikidata_id}
+				<DbExtLinkShort fullLink={{ ...wikidataLink, value: publisher.wikidata_id }} />
+			{/if}
+		</div>
 	</section>
 
 	{#if Object.entries(child_publishers).length > 0}

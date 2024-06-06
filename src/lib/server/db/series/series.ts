@@ -8,7 +8,7 @@ import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
 
 function titleCaseBuilder(
-	eb: ExpressionBuilder<DB, 'series_title'>,
+	eb: ExpressionBuilder<DB, 'series_title' | 'series'>,
 	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
@@ -18,16 +18,27 @@ function titleCaseBuilder(
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
-		cb = cb.when('series_title.lang', '=', prio.lang).then(count);
+		if (prio.romaji) {
+			cb = cb
+				.when(
+					eb.and([
+						eb('series_title.lang', '=', prio.lang),
+						eb('series_title.romaji', 'is not', null),
+					]),
+				)
+				.then(count);
+		} else {
+			cb = cb.when(eb.and([eb('series_title.lang', '=', prio.lang)])).then(count);
+		}
 		count++;
 	}
-	// Fallback to jp title if there are no matches
-	cb = cb.when('series_title.lang', '=', 'ja').then(maxCount);
+	// Fallback to original title if there are no matches
+	cb = cb.when('series_title.lang', '=', eb.ref('series.olang')).then(maxCount);
 	return cb.else(maxCount + 1).end();
 }
 
 function titleHistCaseBuilder(
-	eb: ExpressionBuilder<DB, 'series_title_hist'>,
+	eb: ExpressionBuilder<DB, 'series_title_hist' | 'series_hist'>,
 	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
@@ -37,11 +48,22 @@ function titleHistCaseBuilder(
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
-		cb = cb.when('series_title_hist.lang', '=', prio.lang).then(count);
+		if (prio.romaji) {
+			cb = cb
+				.when(
+					eb.and([
+						eb('series_title_hist.lang', '=', prio.lang),
+						eb('series_title_hist.romaji', 'is not', null),
+					]),
+				)
+				.then(count);
+		} else {
+			cb = cb.when(eb.and([eb('series_title_hist.lang', '=', prio.lang)])).then(count);
+		}
 		count++;
 	}
-	// Fallback to jp title if there are no matches
-	cb = cb.when('series_title_hist.lang', '=', 'ja').then(maxCount);
+	// Fallback to original title if there are no matches
+	cb = cb.when('series_title_hist.lang', '=', eb.ref('series_hist.olang')).then(maxCount);
 	return cb.else(maxCount + 1).end();
 }
 
@@ -52,10 +74,10 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 		return eb
 			.selectFrom('series')
 			.innerJoin('series_title', 'series_title.series_id', 'series.id')
-			.innerJoin('series_title as series_title_orig', (join) =>
+			.leftJoin('series_title as series_title_orig', (join) =>
 				join
 					.onRef('series_title_orig.series_id', '=', 'series.id')
-					.on('series_title_orig.lang', '=', 'ja'),
+					.onRef('series_title_orig.lang', '=', 'series.olang'),
 			)
 			.distinctOn('series.id')
 			.select([
@@ -65,10 +87,16 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 				'series.publication_status',
 				'series.bookwalker_id',
 				'series.description',
+				'series.aliases',
+				'series.anidb_id',
+				'series.start_date',
+				'series.end_date',
+				'series.web_novel',
+				'series.wikidata_id',
+				'series.olang',
 			])
 			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
 			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
-			.orderBy('series.id')
 			.orderBy('series.id')
 			.orderBy((eb) => titleCaseBuilder(eb, langPrios ?? defaultLangPrio));
 	};
@@ -81,10 +109,10 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 		return eb
 			.selectFrom('series_hist')
 			.innerJoin('series_title_hist', 'series_title_hist.change_id', 'series_hist.change_id')
-			.innerJoin('series_title_hist as series_title_hist_orig', (join) =>
+			.leftJoin('series_title_hist as series_title_hist_orig', (join) =>
 				join
 					.onRef('series_title_hist_orig.change_id', '=', 'series_hist.change_id')
-					.on('series_title_hist_orig.lang', '=', 'ja'),
+					.onRef('series_title_hist_orig.lang', '=', 'series_hist.olang'),
 			)
 			.distinctOn('series_hist.change_id')
 			.select([
@@ -92,6 +120,13 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 				'series_hist.bookwalker_id',
 				'series_hist.publication_status',
 				'series_hist.description',
+				'series_hist.aliases',
+				'series_hist.anidb_id',
+				'series_hist.start_date',
+				'series_hist.end_date',
+				'series_hist.web_novel',
+				'series_hist.wikidata_id',
+				'series_hist.olang',
 			])
 			.select(['series_title_hist.lang', 'series_title_hist.romaji', 'series_title_hist.title'])
 			.select([
@@ -148,7 +183,17 @@ export class DBSeries {
 						.select(({ fn }) => [fn.countAll().as('count')]),
 				).as('volumes'),
 			])
-			.selectAll('cte_series');
+			.select([
+				'cte_series.id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+				'cte_series.olang',
+			]);
 	}
 	getSeriesOne(id: number) {
 		return this.ranobeDB.db
@@ -167,6 +212,13 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.description',
+				'cte_series.aliases',
+				'cte_series.anidb_id',
+				'cte_series.start_date',
+				'cte_series.end_date',
+				'cte_series.web_novel',
+				'cte_series.wikidata_id',
+				'cte_series.olang',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -183,6 +235,7 @@ export class DBSeries {
 							'cte_book.image_id',
 							'cte_book.lang',
 							'series_book.sort_order',
+							'series_book.book_type',
 						])
 						.select((eb) =>
 							jsonObjectFrom(
@@ -228,8 +281,10 @@ export class DBSeries {
 					eb
 						.selectFrom('staff_alias')
 						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+						.innerJoin('book_edition', 'book_edition.eid', 'book_staff_alias.eid')
 						.innerJoin('series_book', 'series_book.book_id', 'book_staff_alias.book_id')
 						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+						.where('book_edition.lang', 'is', null)
 						.where('staff.hidden', '=', false)
 						.where('series_book.series_id', '=', id)
 						.distinctOn('staff_alias.staff_id')
@@ -246,7 +301,7 @@ export class DBSeries {
 			.where('cte_series.id', '=', id);
 	}
 
-	getSeriesHistOne(options: { id: number; revision?: number }) {
+	getSeriesHistOne(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
@@ -266,6 +321,13 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.description',
+				'cte_series.aliases',
+				'cte_series.anidb_id',
+				'cte_series.start_date',
+				'cte_series.end_date',
+				'cte_series.web_novel',
+				'cte_series.wikidata_id',
+				'cte_series.olang',
 				'change.ilock as locked',
 				'change.ihid as hidden',
 			])
@@ -283,6 +345,7 @@ export class DBSeries {
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
 							'cte_book.lang',
+							'series_book_hist.book_type',
 							'series_book_hist.sort_order',
 						])
 						.select((eb) =>
@@ -348,11 +411,11 @@ export class DBSeries {
 						]),
 				).as('staff'),
 			])
-			.where('change.item_id', '=', options.id)
+			.where('change.item_id', '=', params.id)
 			.where('change.item_name', '=', 'series');
 
-		if (options.revision) {
-			query = query.where('change.revision', '=', options.revision);
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
 		} else {
 			query = query.orderBy('change.revision desc');
 		}
@@ -376,6 +439,13 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.description',
+				'cte_series.aliases',
+				'cte_series.anidb_id',
+				'cte_series.start_date',
+				'cte_series.end_date',
+				'cte_series.web_novel',
+				'cte_series.wikidata_id',
+				'cte_series.olang',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -391,6 +461,7 @@ export class DBSeries {
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
 							'cte_book.lang',
+							'series_book.book_type',
 							'series_book.sort_order',
 						])
 						.orderBy('sort_order asc'),
@@ -423,8 +494,8 @@ export class DBSeries {
 			.where('cte_series.id', '=', id);
 	}
 
-	getSeriesHistOneEdit(params: { id: number; revision: number }) {
-		return this.ranobeDB.db
+	getSeriesHistOneEdit(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.with(
@@ -443,6 +514,13 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.description',
+				'cte_series.aliases',
+				'cte_series.anidb_id',
+				'cte_series.start_date',
+				'cte_series.end_date',
+				'cte_series.web_novel',
+				'cte_series.wikidata_id',
+				'cte_series.olang',
 				'change.ihid as hidden',
 				'change.ilock as locked',
 			])
@@ -460,6 +538,7 @@ export class DBSeries {
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
 							'cte_book.lang',
+							'series_book_hist.book_type',
 							'series_book_hist.sort_order',
 						])
 						.orderBy('sort_order asc'),
@@ -494,8 +573,14 @@ export class DBSeries {
 				).as('child_series'),
 			])
 			.where('change.item_id', '=', params.id)
-			.where('change.item_name', '=', 'series')
-			.where('change.revision', '=', params.revision);
+			.where('change.item_name', '=', 'series');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+		return query;
 	}
 }
 

@@ -18,7 +18,7 @@
 </script>
 
 <section class="flex flex-col gap-2">
-	<h2 class="text-lg font-bold">Staff</h2>
+	<h2 class="text-lg font-bold">Editions</h2>
 	{#each $values as edition, editionIndex}
 		<div class="flex flex-col gap-2">
 			<p class="font-bold">{edition.title}</p>
@@ -33,19 +33,19 @@
 					showRequiredSymbolIfRequired={false}
 					disabled={editionIndex === 0}
 				/>
-				<SelectField
-					{form}
-					field="editions[{editionIndex}].lang"
-					dropdownOptions={languagesArray.map((item) => ({
-						display: languageNames[item],
-						value: item,
-					}))}
-					selectedValue={edition.lang ?? 'ja'}
-					label="Language"
-					resetPadding={true}
-					showRequiredSymbolIfRequired={false}
-				/>
 				{#if editionIndex !== 0}
+					<SelectField
+						{form}
+						field="editions[{editionIndex}].lang"
+						dropdownOptions={languagesArray.map((item) => ({
+							display: languageNames[item],
+							value: item,
+						}))}
+						selectedValue={edition.lang ?? 'ja'}
+						label="Language"
+						resetPadding={true}
+						showRequiredSymbolIfRequired={false}
+					/>
 					<button
 						on:click={() => {
 							handleRemoveEdition(editionIndex);
@@ -68,7 +68,6 @@
 		type="button"
 		class="primary-btn w-fit mt-2"
 		on:click={() => {
-			console.log('adjskdj');
 			$values.push({
 				staff: [],
 				lang: 'ja',

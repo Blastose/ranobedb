@@ -1,12 +1,29 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { DBBookActions } from '$lib/server/db/books/actions';
 import { clearDatabase, db, initDatabase, ranobeBot } from './test-setup';
-import { DBBooks } from '$lib/server/db/books/books';
+import { DBBooks, type BookEdit } from '$lib/server/db/books/books';
+import { setupBookEditObjsForEqualityTest } from '$lib/db/obj';
+import type { MaybePromise } from '@sveltejs/kit';
 
 beforeAll(async () => {
 	await clearDatabase(db);
 	await initDatabase(db);
 });
+
+async function testBooks(params: { id: number; cb_book: (b: BookEdit) => MaybePromise<void> }) {
+	const { id, cb_book } = params;
+	const dbBooks = DBBooks.fromDB(db);
+
+	const book = await dbBooks.getBookEdit(id).executeTakeFirstOrThrow();
+
+	const bookHist = await dbBooks.getBookHistEdit({ id: id }).executeTakeFirstOrThrow();
+
+	await cb_book(book);
+	await cb_book(bookHist);
+
+	setupBookEditObjsForEqualityTest(book, bookHist);
+	expect(book).toStrictEqual(bookHist);
+}
 
 describe('book actions', () => {
 	it('should edit the book', async () => {
@@ -27,16 +44,21 @@ describe('book actions', () => {
 						},
 					],
 					description: 'Hello',
+					release_date: 99999999,
+					olang: 'ja',
 				},
 				id: book.id,
 			},
 			ranobeBot,
 		);
-		const dbBooks = DBBooks.fromDB(db);
-		const changedBook = await dbBooks.getBook(book.id).executeTakeFirstOrThrow();
-		expect(changedBook.description).toBe('Hello');
-		expect(changedBook.editions.length).toBe(0);
-		expect(changedBook.titles.length).toBe(1);
+		testBooks({
+			id: book.id,
+			cb_book: (b) => {
+				expect(b.description).toBe('Hello');
+				expect(b.editions.length).toBe(0);
+				expect(b.titles.length).toBe(1);
+			},
+		});
 	});
 
 	it('should add a book', async () => {
@@ -54,7 +76,7 @@ describe('book actions', () => {
 					locked: false,
 					editions: [
 						{
-							lang: 'ja',
+							lang: null,
 							title: 'Ofiicial edition',
 							staff: [
 								{
@@ -74,19 +96,20 @@ describe('book actions', () => {
 							title: 'My Book',
 						},
 					],
+					release_date: 99999999,
+					olang: 'ja',
 				},
 			},
 			ranobeBot,
 		);
-		const dbBooks = DBBooks.fromDB(db);
-		const addedBook = await dbBooks.getBook(addedBookId).executeTakeFirstOrThrow();
-		expect(addedBook.titles.length).toBe(1);
-		expect(addedBook.editions.length).toBe(1);
-		expect(addedBook.editions[0].staff.length).toBe(1);
 
-		const addedBookHist = await dbBooks.getBookHist(addedBookId).executeTakeFirstOrThrow();
-		expect(addedBookHist.titles.length).toBe(1);
-		expect(addedBookHist.editions.length).toBe(1);
-		expect(addedBook.editions[0].staff.length).toBe(1);
+		testBooks({
+			id: addedBookId,
+			cb_book: (b) => {
+				expect(b.titles.length).toBe(1);
+				expect(b.editions.length).toBe(1);
+				expect(b.editions[0].staff.length).toBe(1);
+			},
+		});
 	});
 });

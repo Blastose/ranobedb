@@ -10,6 +10,14 @@
 	import Description from '$lib/components/book/Description.svelte';
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
 	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
+	import { DateNumber } from '$lib/components/form/release/releaseDate';
+	import {
+		aniDbLink,
+		bookwalkerSeriesLink,
+		wikidataLink,
+	} from '$lib/components/db-links/db-ext-links';
+	import DbExtLink from '$lib/components/db-links/DbExtLink.svelte';
+	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -27,16 +35,48 @@
 	{user}
 	item={series}
 >
-	<p class="sub-text">
-		{series.books.length} primary books • {series.books.length} total books
-	</p>
+	<div>
+		<p class="sub-text">
+			{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
+			total books
+		</p>
+
+		<p class="sub-text">
+			Original run: {new DateNumber(series.start_date).getDateFormatted()} – {new DateNumber(
+				series.end_date,
+			).getDateFormatted()}
+		</p>
+
+		<div class="flex gap-2 sub-text">
+			<dt>Publication status:</dt>
+			<dd>{series.publication_status}</dd>
+		</div>
+	</div>
 
 	<Description description={series.description} maxHeight={100} />
 
-	<div class="flex gap-2">
-		<dt>Publication status:</dt>
-		<dd>{series.publication_status}</dd>
-	</div>
+	<section>
+		<h2 class="font-bold text-lg">Aliases</h2>
+		<p>{series.aliases.split('\n').join(', ')}</p>
+	</section>
+
+	<section>
+		<h2 class="font-bold text-lg">Links</h2>
+		<div class="flex flex-wrap gap-x-4">
+			{#if series.web_novel}
+				<a href={series.web_novel} target="_blank" class="link">Web novel</a>
+			{/if}
+			{#if series.bookwalker_id}
+				<DbExtLinkShort fullLink={{ ...bookwalkerSeriesLink, value: series.bookwalker_id }} />
+			{/if}
+			{#if series.anidb_id}
+				<DbExtLinkShort fullLink={{ ...aniDbLink, value: series.anidb_id }} />
+			{/if}
+			{#if series.wikidata_id}
+				<DbExtLinkShort fullLink={{ ...wikidataLink, value: series.wikidata_id }} />
+			{/if}
+		</div>
+	</section>
 
 	<Hr />
 

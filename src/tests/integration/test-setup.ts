@@ -21,6 +21,9 @@ export async function initDatabase(db: Kysely<DB>) {
 			description: '',
 			hidden: false,
 			locked: false,
+			description_ja: '',
+			release_date: 20140101,
+			olang: 'ja',
 		})
 		.returning('book.id')
 		.executeTakeFirstOrThrow();
@@ -42,6 +45,9 @@ export async function initDatabase(db: Kysely<DB>) {
 		.values({
 			change_id: changeBook.id,
 			description: '',
+			description_ja: '',
+			release_date: 20140101,
+			olang: 'ja',
 		})
 		.execute();
 	await db
@@ -163,7 +169,16 @@ export async function initDatabase(db: Kysely<DB>) {
 		.execute();
 	const series = await db
 		.insertInto('series')
-		.values({ hidden: false, locked: false, publication_status: 'unknown', description: '' })
+		.values({
+			hidden: false,
+			locked: false,
+			publication_status: 'unknown',
+			description: '',
+			aliases: '',
+			end_date: 99999999,
+			start_date: 20120101,
+			olang: 'ja',
+		})
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changeSeries = await db
@@ -181,7 +196,15 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('series_hist')
-		.values({ change_id: changeSeries.id, publication_status: 'unknown', description: '' })
+		.values({
+			change_id: changeSeries.id,
+			publication_status: 'unknown',
+			description: '',
+			aliases: '',
+			end_date: 99999999,
+			start_date: 20120101,
+			olang: 'ja',
+		})
 		.execute();
 	await db
 		.insertInto('series_title')
@@ -193,7 +216,16 @@ export async function initDatabase(db: Kysely<DB>) {
 		.execute();
 	const series2 = await db
 		.insertInto('series')
-		.values({ hidden: false, locked: false, publication_status: 'unknown', description: '' })
+		.values({
+			hidden: false,
+			locked: false,
+			publication_status: 'unknown',
+			description: '',
+			aliases: '',
+			end_date: 99999999,
+			start_date: 20120101,
+			olang: 'ja',
+		})
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changeSeries2 = await db
@@ -211,7 +243,15 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('series_hist')
-		.values({ change_id: changeSeries2.id, publication_status: 'unknown', description: '' })
+		.values({
+			change_id: changeSeries2.id,
+			publication_status: 'unknown',
+			description: '',
+			aliases: '',
+			end_date: 99999999,
+			start_date: 20120101,
+			olang: 'ja',
+		})
 		.execute();
 	await db
 		.insertInto('series_title')

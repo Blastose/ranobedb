@@ -6,7 +6,7 @@
 
 	export let book: {
 		title: string;
-		title_orig?: string;
+		title_orig?: string | null;
 		romaji?: string | null;
 		romaji_orig?: string | null;
 		lang?: Language;
@@ -22,15 +22,24 @@
 
 <a href="{urlPrefix}{book.id}" class="flex flex-col gap-1">
 	<div class="overflow-hidden rounded-md relative">
-		<img
-			width={book?.image?.width}
-			height={book?.image?.height}
-			src="{PUBLIC_IMAGE_URL}{book?.image?.filename}"
-			alt=""
-			class="rounded-md object-cover"
-			style="aspect-ratio: 0.70381231671554252199413489736072;"
-			loading="lazy"
-		/>
+		{#if book?.image}
+			<img
+				width={book?.image?.width}
+				height={book?.image?.height}
+				src="{PUBLIC_IMAGE_URL}{book?.image?.filename}"
+				alt=""
+				class="rounded-md object-cover"
+				style="aspect-ratio: 0.70381231671554252199413489736072;"
+				loading="lazy"
+			/>
+		{:else}
+			<div
+				class="bg-neutral-500 w-full h-full"
+				style="aspect-ratio: 0.70381231671554252199413489736072;"
+			>
+				<p class="p-4">No cover</p>
+			</div>
+		{/if}
 		<slot />
 	</div>
 	<p class="line-clamp-2">

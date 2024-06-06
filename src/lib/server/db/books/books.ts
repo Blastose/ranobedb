@@ -7,24 +7,8 @@ import { defaultLangPrio } from '$lib/db/dbConsts';
 import type { User } from 'lucia';
 import { withSeriesTitleCte } from '../series/series';
 
-function titleCaseBuilder(eb: ExpressionBuilder<DB, 'book_title'>, langPrios: LanguagePriority[]) {
-	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
-	// so we need to make it as any
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let cb = eb.case() as unknown as any;
-	let count = 1;
-	const maxCount = 9999;
-	for (const prio of langPrios) {
-		cb = cb.when('book_title.lang', '=', prio.lang).then(count);
-		count++;
-	}
-	// Fallback to jp title if there are no matches
-	cb = cb.when('book_title.lang', '=', 'ja').then(maxCount);
-	return cb.else(maxCount + 1).end();
-}
-
-function titleHistCaseBuilder(
-	eb: ExpressionBuilder<DB, 'book_title_hist'>,
+function titleCaseBuilder(
+	eb: ExpressionBuilder<DB, 'book_title' | 'book'>,
 	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
@@ -34,11 +18,49 @@ function titleHistCaseBuilder(
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
-		cb = cb.when('book_title_hist.lang', '=', prio.lang).then(count);
+		if (prio.romaji) {
+			cb = cb
+				.when(
+					eb.and([eb('book_title.lang', '=', prio.lang), eb('book_title.romaji', 'is not', null)]),
+				)
+				.then(count);
+		} else {
+			cb = cb.when(eb.and([eb('book_title.lang', '=', prio.lang)])).then(count);
+		}
 		count++;
 	}
-	// Fallback to jp title if there are no matches
-	cb = cb.when('book_title_hist.lang', '=', 'ja').then(maxCount);
+	// Fallback to original title if there are no matches
+	cb = cb.when('book_title.lang', '=', eb.ref('book.olang')).then(maxCount);
+	return cb.else(maxCount + 1).end();
+}
+
+function titleHistCaseBuilder(
+	eb: ExpressionBuilder<DB, 'book_title_hist' | 'book_hist'>,
+	langPrios: LanguagePriority[],
+) {
+	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
+	// so we need to make it as any
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	let cb = eb.case() as unknown as any;
+	let count = 1;
+	const maxCount = 9999;
+	for (const prio of langPrios) {
+		if (prio.romaji) {
+			cb = cb
+				.when(
+					eb.and([
+						eb('book_title_hist.lang', '=', prio.lang),
+						eb('book_title_hist.romaji', 'is not', null),
+					]),
+				)
+				.then(count);
+		} else {
+			cb = cb.when(eb.and([eb('book_title_hist.lang', '=', prio.lang)])).then(count);
+		}
+		count++;
+	}
+	// Fallback to original title if there are no matches
+	cb = cb.when('book_title_hist.lang', '=', eb.ref('book_hist.olang')).then(maxCount);
 	return cb.else(maxCount + 1).end();
 }
 
@@ -48,8 +70,10 @@ export function withBookTitleCte(langPrios?: LanguagePriority[]) {
 		return eb
 			.selectFrom('book')
 			.innerJoin('book_title', 'book_title.book_id', 'book.id')
-			.innerJoin('book_title as book_title_orig', (join) =>
-				join.onRef('book_title_orig.book_id', '=', 'book.id').on('book_title_orig.lang', '=', 'ja'),
+			.leftJoin('book_title as book_title_orig', (join) =>
+				join
+					.onRef('book_title_orig.book_id', '=', 'book.id')
+					.onRef('book_title_orig.lang', '=', 'book.olang'),
 			)
 			.distinctOn('book.id')
 			.selectAll('book')
@@ -66,10 +90,10 @@ export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
 		return eb
 			.selectFrom('book_hist')
 			.innerJoin('book_title_hist', 'book_title_hist.change_id', 'book_hist.change_id')
-			.innerJoin('book_title_hist as book_title_hist_orig', (join) =>
+			.leftJoin('book_title_hist as book_title_hist_orig', (join) =>
 				join
 					.onRef('book_title_hist_orig.change_id', '=', 'book_hist.change_id')
-					.on('book_title_hist_orig.lang', '=', 'ja'),
+					.onRef('book_title_hist_orig.lang', '=', 'book_hist.olang'),
 			)
 			.distinctOn('book_hist.change_id')
 			.select([
@@ -77,6 +101,8 @@ export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
 				'book_hist.description',
 				'book_hist.description_ja',
 				'book_hist.image_id',
+				'book_hist.release_date',
+				'book_hist.olang',
 			])
 			.select(['book_title_hist.lang', 'book_title_hist.romaji', 'book_title_hist.title'])
 			.select([
@@ -117,6 +143,8 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
+				'cte_book.olang',
 				'cte_book.locked',
 				'cte_book.hidden',
 			])
@@ -252,6 +280,8 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
+				'cte_book.olang',
 				'change.ilock as locked',
 				'change.ihid as hidden',
 			])
@@ -399,6 +429,8 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
+				'cte_book.olang',
 				'cte_book.locked',
 				'cte_book.hidden',
 				'image.filename',
@@ -450,8 +482,8 @@ export class DBBooks {
 			.where('cte_book.id', '=', id);
 	}
 
-	getBookHistEdit(params: { id: number; revision: number }) {
-		return this.ranobeDB.db
+	getBookHistEdit(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
 			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
@@ -466,6 +498,8 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
+				'cte_book.olang',
 				'change.ilock as locked',
 				'change.ihid as hidden',
 				'image.filename',
@@ -521,8 +555,15 @@ export class DBBooks {
 				).as('editions'),
 			])
 			.where('change.item_id', '=', params.id)
-			.where('change.item_name', '=', 'book')
-			.where('change.revision', '=', params.revision);
+			.where('change.item_name', '=', 'book');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+
+		return query;
 	}
 
 	getBooks() {
@@ -539,6 +580,8 @@ export class DBBooks {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.release_date',
+				'cte_book.olang',
 			])
 			.select((eb) =>
 				jsonObjectFrom(
@@ -548,8 +591,7 @@ export class DBBooks {
 						.whereRef('image.id', '=', 'cte_book.image_id')
 						.limit(1),
 				).as('image'),
-			)
-			.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
+			);
 	}
 }
 
