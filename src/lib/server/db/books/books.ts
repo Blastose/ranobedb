@@ -70,7 +70,7 @@ export function withBookTitleCte(langPrios?: LanguagePriority[]) {
 		return eb
 			.selectFrom('book')
 			.innerJoin('book_title', 'book_title.book_id', 'book.id')
-			.innerJoin('book_title as book_title_orig', (join) =>
+			.leftJoin('book_title as book_title_orig', (join) =>
 				join
 					.onRef('book_title_orig.book_id', '=', 'book.id')
 					.onRef('book_title_orig.lang', '=', 'book.olang'),
@@ -90,7 +90,7 @@ export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
 		return eb
 			.selectFrom('book_hist')
 			.innerJoin('book_title_hist', 'book_title_hist.change_id', 'book_hist.change_id')
-			.innerJoin('book_title_hist as book_title_hist_orig', (join) =>
+			.leftJoin('book_title_hist as book_title_hist_orig', (join) =>
 				join
 					.onRef('book_title_hist_orig.change_id', '=', 'book_hist.change_id')
 					.onRef('book_title_hist_orig.lang', '=', 'book_hist.olang'),

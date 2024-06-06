@@ -6,7 +6,7 @@
 
 	export let book: {
 		title: string;
-		title_orig?: string;
+		title_orig?: string | null;
 		romaji?: string | null;
 		romaji_orig?: string | null;
 		lang?: Language;

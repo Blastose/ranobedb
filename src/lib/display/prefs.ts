@@ -58,14 +58,14 @@ export function getNameDisplaySub(params: {
 
 export type TitleDisplay = {
 	title: string;
-	title_orig?: string;
+	title_orig?: string | null;
 	romaji: string | null;
 	romaji_orig?: string | null;
 	lang: Language;
 };
 export type TitleDisplayFull = {
 	title: string;
-	title_orig: string;
+	title_orig: string | null;
 	romaji: string | null;
 	romaji_orig: string | null;
 	lang: Language;
@@ -92,5 +92,5 @@ export function getTitleDisplaySub(params: {
 	if (params.obj.title_orig === mainTitle) {
 		return params.obj.romaji_orig || '';
 	}
-	return params.obj.title_orig;
+	return params.obj.title_orig || '';
 }
