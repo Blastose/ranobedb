@@ -29,7 +29,7 @@ async function testSeries(params: {
 }
 
 describe('series actions', () => {
-	it.only('should edit the series', async () => {
+	it('should edit the series', async () => {
 		const dbSeriesActions = DBSeriesActions.fromDB(db);
 		const series = await db.selectFrom('series').select('id').executeTakeFirstOrThrow();
 		const otherSeries = await db

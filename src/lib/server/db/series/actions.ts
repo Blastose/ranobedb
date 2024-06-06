@@ -656,6 +656,17 @@ export class DBSeriesActions {
 			if (series_relations.length > 0) {
 				await trx.insertInto('series_relation').values(series_relations).execute();
 			}
+			// series_relation_hist
+			const series_relations_hist = data.series.child_series.map((item) => {
+				return {
+					change_id: change.change_id,
+					id_child: item.id,
+					relation_type: item.relation_type,
+				};
+			}) satisfies Insertable<SeriesRelationHist>[];
+			if (series_relations_hist.length > 0) {
+				await trx.insertInto('series_relation_hist').values(series_relations_hist).execute();
+			}
 
 			// add reverse series rels
 			if (data.series.child_series.length > 0) {
