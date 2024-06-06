@@ -60,7 +60,7 @@ test.describe('add release mod', () => {
 		await page.getByLabel('Add publisher').click();
 		await page.getByLabel('Add publisher').fill('kado');
 		await page.getByText('#12 KADOKAWA').click();
-		await page.getByLabel('Type: labelpublisher').selectOption('publisher');
+		await page.getByLabel('Type: imprintpublisher').selectOption('publisher');
 
 		await page.getByLabel('Edit summary').fill('Add Nyanko');
 
