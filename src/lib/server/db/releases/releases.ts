@@ -78,7 +78,7 @@ export class DBReleases {
 			.where('release.id', '=', id);
 	}
 
-	getReleaseHist(options: { id: number; revision?: number }) {
+	getReleaseHist(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release_hist')
@@ -141,10 +141,10 @@ export class DBReleases {
 						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
 			])
-			.where('change.item_id', '=', options.id)
+			.where('change.item_id', '=', params.id)
 			.where('change.item_name', '=', 'release');
-		if (options.revision) {
-			query = query.where('change.revision', '=', options.revision);
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
 		} else {
 			query = query.orderBy('change.revision desc');
 		}
@@ -203,8 +203,8 @@ export class DBReleases {
 			.where('release.id', '=', id);
 	}
 
-	getReleaseHistEdit(params: { id: number; revision: number }) {
-		return this.ranobeDB.db
+	getReleaseHistEdit(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release_hist')
 			.innerJoin('change', 'change.id', 'release_hist.change_id')
@@ -256,8 +256,15 @@ export class DBReleases {
 				).as('books'),
 			])
 			.where('change.item_id', '=', params.id)
-			.where('change.item_name', '=', 'release')
-			.where('change.revision', '=', params.revision);
+			.where('change.item_name', '=', 'release');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision desc');
+		}
+
+		return query;
 	}
 }
 
