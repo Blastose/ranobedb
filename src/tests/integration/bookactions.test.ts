@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { DBBookActions } from '$lib/server/db/books/actions';
 import { clearDatabase, db, initDatabase, ranobeBot } from './test-setup';
 import { DBBooks } from '$lib/server/db/books/books';
+import { setupBookEditObjsForEqualityTest } from '$lib/db/obj';
 
 beforeAll(async () => {
 	await clearDatabase(db);
@@ -35,10 +36,15 @@ describe('book actions', () => {
 			ranobeBot,
 		);
 		const dbBooks = DBBooks.fromDB(db);
-		const changedBook = await dbBooks.getBook(book.id).executeTakeFirstOrThrow();
+		const changedBook = await dbBooks.getBookEdit(book.id).executeTakeFirstOrThrow();
 		expect(changedBook.description).toBe('Hello');
 		expect(changedBook.editions.length).toBe(0);
 		expect(changedBook.titles.length).toBe(1);
+		const changedBookHist = await dbBooks
+			.getBookHistEdit({ id: book.id })
+			.executeTakeFirstOrThrow();
+		setupBookEditObjsForEqualityTest(changedBook, changedBookHist);
+		expect(changedBookHist).toStrictEqual(changedBook);
 	});
 
 	it('should add a book', async () => {
@@ -56,7 +62,7 @@ describe('book actions', () => {
 					locked: false,
 					editions: [
 						{
-							lang: 'ja',
+							lang: null,
 							title: 'Ofiicial edition',
 							staff: [
 								{
@@ -83,14 +89,15 @@ describe('book actions', () => {
 			ranobeBot,
 		);
 		const dbBooks = DBBooks.fromDB(db);
-		const addedBook = await dbBooks.getBook(addedBookId).executeTakeFirstOrThrow();
+		const addedBook = await dbBooks.getBookEdit(addedBookId).executeTakeFirstOrThrow();
 		expect(addedBook.titles.length).toBe(1);
 		expect(addedBook.editions.length).toBe(1);
 		expect(addedBook.editions[0].staff.length).toBe(1);
 
-		const addedBookHist = await dbBooks.getBookHist(addedBookId).executeTakeFirstOrThrow();
-		expect(addedBookHist.titles.length).toBe(1);
-		expect(addedBookHist.editions.length).toBe(1);
-		expect(addedBook.editions[0].staff.length).toBe(1);
+		const addedBookHist = await dbBooks
+			.getBookHistEdit({ id: addedBookId })
+			.executeTakeFirstOrThrow();
+		setupBookEditObjsForEqualityTest(addedBook, addedBookHist);
+		expect(addedBookHist).toStrictEqual(addedBook);
 	});
 });
