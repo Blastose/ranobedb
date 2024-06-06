@@ -32,10 +32,12 @@ export const load = async ({ locals, url }) => {
 			editions: [
 				{
 					staff: [],
-					lang: 'ja',
+					lang: null,
 					title: 'Original edition',
 				},
 			],
+			olang: 'ja',
+			release_date: 99999999,
 		},
 		zod(bookSchema),
 		{ errors: false },

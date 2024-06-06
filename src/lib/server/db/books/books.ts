@@ -7,7 +7,10 @@ import { defaultLangPrio } from '$lib/db/dbConsts';
 import type { User } from 'lucia';
 import { withSeriesTitleCte } from '../series/series';
 
-function titleCaseBuilder(eb: ExpressionBuilder<DB, 'book_title'>, langPrios: LanguagePriority[]) {
+function titleCaseBuilder(
+	eb: ExpressionBuilder<DB, 'book_title' | 'book'>,
+	langPrios: LanguagePriority[],
+) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
 	// so we need to make it as any
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,13 +29,13 @@ function titleCaseBuilder(eb: ExpressionBuilder<DB, 'book_title'>, langPrios: La
 		}
 		count++;
 	}
-	// Fallback to jp title if there are no matches
-	cb = cb.when('book_title.lang', '=', 'ja').then(maxCount);
+	// Fallback to original title if there are no matches
+	cb = cb.when('book_title.lang', '=', eb.ref('book.olang')).then(maxCount);
 	return cb.else(maxCount + 1).end();
 }
 
 function titleHistCaseBuilder(
-	eb: ExpressionBuilder<DB, 'book_title_hist'>,
+	eb: ExpressionBuilder<DB, 'book_title_hist' | 'book_hist'>,
 	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
@@ -56,8 +59,8 @@ function titleHistCaseBuilder(
 		}
 		count++;
 	}
-	// Fallback to jp title if there are no matches
-	cb = cb.when('book_title_hist.lang', '=', 'ja').then(maxCount);
+	// Fallback to original title if there are no matches
+	cb = cb.when('book_title_hist.lang', '=', eb.ref('book_hist.olang')).then(maxCount);
 	return cb.else(maxCount + 1).end();
 }
 
@@ -68,7 +71,9 @@ export function withBookTitleCte(langPrios?: LanguagePriority[]) {
 			.selectFrom('book')
 			.innerJoin('book_title', 'book_title.book_id', 'book.id')
 			.innerJoin('book_title as book_title_orig', (join) =>
-				join.onRef('book_title_orig.book_id', '=', 'book.id').on('book_title_orig.lang', '=', 'ja'),
+				join
+					.onRef('book_title_orig.book_id', '=', 'book.id')
+					.onRef('book_title_orig.lang', '=', 'book.olang'),
 			)
 			.distinctOn('book.id')
 			.selectAll('book')
@@ -88,7 +93,7 @@ export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
 			.innerJoin('book_title_hist as book_title_hist_orig', (join) =>
 				join
 					.onRef('book_title_hist_orig.change_id', '=', 'book_hist.change_id')
-					.on('book_title_hist_orig.lang', '=', 'ja'),
+					.onRef('book_title_hist_orig.lang', '=', 'book_hist.olang'),
 			)
 			.distinctOn('book_hist.change_id')
 			.select([

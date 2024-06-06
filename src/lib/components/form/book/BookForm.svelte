@@ -13,6 +13,8 @@
 	import BookEditionStaffInput from './BookEditionStaffInput.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import ReleaseDateInput from '../release/ReleaseDateInput.svelte';
+	import { languageNames, languagesArray } from '$lib/db/dbConsts';
+	import SelectField from '../SelectField.svelte';
 
 	export let book: BookEdit | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
@@ -69,6 +71,21 @@
 		placeholder="Description (japanese)"
 		labelId="descriptionjp-md"
 	/>
+
+	<div class="flex gap-4">
+		<SelectField
+			form={sForm}
+			field="olang"
+			dropdownOptions={languagesArray.map((item) => ({
+				display: languageNames[item],
+				value: item,
+			}))}
+			selectedValue={book?.lang ?? 'ja'}
+			label="Language"
+			showRequiredSymbolIfRequired={false}
+			resetPadding={true}
+		/>
+	</div>
 
 	<ReleaseDateInput form={sForm} field="release_date" label="Release date" />
 

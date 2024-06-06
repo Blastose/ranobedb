@@ -8,7 +8,7 @@ import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
 
 function titleCaseBuilder(
-	eb: ExpressionBuilder<DB, 'series_title'>,
+	eb: ExpressionBuilder<DB, 'series_title' | 'series'>,
 	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
@@ -32,13 +32,13 @@ function titleCaseBuilder(
 		}
 		count++;
 	}
-	// Fallback to jp title if there are no matches
-	cb = cb.when('series_title.lang', '=', 'ja').then(maxCount);
+	// Fallback to original title if there are no matches
+	cb = cb.when('series_title.lang', '=', eb.ref('series.olang')).then(maxCount);
 	return cb.else(maxCount + 1).end();
 }
 
 function titleHistCaseBuilder(
-	eb: ExpressionBuilder<DB, 'series_title_hist'>,
+	eb: ExpressionBuilder<DB, 'series_title_hist' | 'series_hist'>,
 	langPrios: LanguagePriority[],
 ) {
 	// Kysely's CaseBuilder is not able to be assigned dynamically in a loop
@@ -62,8 +62,8 @@ function titleHistCaseBuilder(
 		}
 		count++;
 	}
-	// Fallback to jp title if there are no matches
-	cb = cb.when('series_title_hist.lang', '=', 'ja').then(maxCount);
+	// Fallback to original title if there are no matches
+	cb = cb.when('series_title_hist.lang', '=', eb.ref('series_hist.olang')).then(maxCount);
 	return cb.else(maxCount + 1).end();
 }
 
@@ -77,7 +77,7 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 			.innerJoin('series_title as series_title_orig', (join) =>
 				join
 					.onRef('series_title_orig.series_id', '=', 'series.id')
-					.on('series_title_orig.lang', '=', 'ja'),
+					.onRef('series_title_orig.lang', '=', 'series.olang'),
 			)
 			.distinctOn('series.id')
 			.select([
@@ -112,7 +112,7 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 			.innerJoin('series_title_hist as series_title_hist_orig', (join) =>
 				join
 					.onRef('series_title_hist_orig.change_id', '=', 'series_hist.change_id')
-					.on('series_title_hist_orig.lang', '=', 'ja'),
+					.onRef('series_title_hist_orig.lang', '=', 'series_hist.olang'),
 			)
 			.distinctOn('series_hist.change_id')
 			.select([
@@ -281,8 +281,10 @@ export class DBSeries {
 					eb
 						.selectFrom('staff_alias')
 						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
+						.innerJoin('book_edition', 'book_edition.eid', 'book_staff_alias.eid')
 						.innerJoin('series_book', 'series_book.book_id', 'book_staff_alias.book_id')
 						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+						.where('book_edition.lang', 'is', null)
 						.where('staff.hidden', '=', false)
 						.where('series_book.series_id', '=', id)
 						.distinctOn('staff_alias.staff_id')

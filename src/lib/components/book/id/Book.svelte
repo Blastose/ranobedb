@@ -50,7 +50,7 @@
 						loading="lazy"
 					/>
 				{:else}
-					<div class="bg-neutral-500 w-[240px] h-[360px]">
+					<div class="bg-neutral-500 w-[240px] h-[320px] rounded-md">
 						<p class="p-4">No cover</p>
 					</div>
 				{/if}
@@ -111,7 +111,10 @@
 			<div class="flex flex-wrap gap-4">
 				{#each book.editions as edition}
 					<div class="flex flex-col gap-2">
-						<p class="font-semibold">{edition.title} - {edition.lang}</p>
+						<p class="font-semibold">
+							{edition.title}
+							{#if edition.lang}- {edition.lang}{/if}
+						</p>
 						<StaffsSectionSnippet staffs={edition.staff} />
 					</div>
 				{/each}

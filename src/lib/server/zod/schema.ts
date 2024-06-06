@@ -236,15 +236,21 @@ export const bookSchema = z.object({
 				if (originalEdition.title !== 'Original edition') {
 					return false;
 				}
+				if (originalEdition.lang !== null) {
+					return false;
+				}
 				return true;
 			},
-			{ message: 'Original edition must be first ' },
+			{ message: 'Original edition must be first and lang must be null' },
 		)
 		.refine(
 			(editions) => {
 				for (let i = 1; i < editions.length; i++) {
 					const edition = editions[i];
 					if (edition.title.toLowerCase() === 'Original edition'.toLowerCase()) {
+						return false;
+					}
+					if (edition.lang === null) {
 						return false;
 					}
 				}

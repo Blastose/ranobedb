@@ -59,6 +59,16 @@
 
 	<SeriesTitlesInput form={sForm} />
 
+	<TextField
+		form={sForm}
+		type="textarea"
+		field="aliases"
+		label="Aliases"
+		showRequiredSymbolIfRequired={false}
+		placeholder="Aliases separated by new lines"
+		textareaRows={3}
+	/>
+
 	<TextareaFieldMarkdown
 		form={sForm}
 		type="textarea"
@@ -83,16 +93,6 @@
 			showRequiredSymbolIfRequired={false}
 		/>
 	</div>
-
-	<TextField
-		form={sForm}
-		type="textarea"
-		field="aliases"
-		label="Aliases"
-		showRequiredSymbolIfRequired={false}
-		placeholder="Aliases separated by new lines"
-		textareaRows={3}
-	/>
 
 	<div class="flex gap-4">
 		<SelectField
@@ -137,7 +137,7 @@
 		form={sForm}
 		type="number"
 		field="bookwalker_id"
-		label="Bookwalker Id"
+		label="Bookwalker id"
 		resetPadding={true}
 		linkBeforeAfter={bookwalkerSeriesLink}
 	/>
