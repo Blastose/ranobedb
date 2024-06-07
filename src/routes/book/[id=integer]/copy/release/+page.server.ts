@@ -1,5 +1,5 @@
 import { DBBooks } from '$lib/server/db/books/books';
-import { bookSchema, revisionSchema } from '$lib/server/zod/schema.js';
+import { languageSchema, releaseSchema, revisionSchema } from '$lib/server/zod/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -43,9 +43,30 @@ export const load = async ({ params, locals, url }) => {
 		error(403);
 	}
 
-	const form = await superValidate({ ...book }, zod(bookSchema), {
-		errors: false,
-	});
+	const lang = await superValidate(url, zod(languageSchema));
+	const bookTitle = book.titles.find((v) => v.lang === lang.data.lang) || book.titles.at(0);
+
+	const form = await superValidate(
+		{
+			lang: lang.data.lang || book.lang,
+			release_date: book.release_date,
+			romaji: bookTitle?.romaji || undefined,
+			title: bookTitle?.title || undefined,
+			books: [
+				{
+					id: bookId,
+					rtype: 'complete',
+					title: book.title,
+					romaji: book.romaji,
+					lang: book.lang,
+				},
+			],
+		},
+		zod(releaseSchema),
+		{
+			errors: false,
+		},
+	);
 
 	return { book, form };
 };

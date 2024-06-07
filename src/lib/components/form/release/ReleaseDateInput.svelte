@@ -19,7 +19,7 @@
 	const { value, errors, constraints } = formFieldProxy(form, field);
 	const proxy = numberProxy(form, field);
 
-	const years = ['TBA', ...Array.from({ length: 131 }, (_, index) => 2030 - index)] as const;
+	const years = ['TBA', ...Array.from({ length: 81 }, (_, index) => 2030 - index)] as const;
 	const months = [
 		'-month-',
 		'Jan.',

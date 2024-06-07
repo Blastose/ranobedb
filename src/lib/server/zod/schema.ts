@@ -141,6 +141,7 @@ const zReleaseDate = z
 	.number()
 	.min(10000101)
 	.max(99999999)
+	.default(99999999)
 	.refine(
 		(val) => {
 			const dateNumber = new DateNumber(val);
@@ -431,6 +432,7 @@ export const seriesSchema = z.object({
 
 export const searchNameSchema = z.object({ name: z.string() });
 export const revisionSchema = z.object({ revision: z.number().nullish() });
+export const languageSchema = z.object({ lang: z.enum(languagesArray).nullish() });
 export const staffTabsSchema = z.object({ tab: z.enum(staffTabs) });
 export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs) });
 

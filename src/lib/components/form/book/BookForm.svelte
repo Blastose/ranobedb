@@ -80,7 +80,7 @@
 				display: languageNames[item],
 				value: item,
 			}))}
-			selectedValue={book?.lang ?? 'ja'}
+			selectedValue={bookForm.data.olang}
 			label="Language"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}

@@ -88,7 +88,7 @@
 				display: item,
 				value: item,
 			}))}
-			selectedValue={series?.publication_status ?? 'ongoing'}
+			selectedValue={seriesForm.data.publication_status}
 			label="Publication status"
 			resetPadding={true}
 			showRequiredSymbolIfRequired={false}
@@ -103,7 +103,7 @@
 				display: languageNames[item],
 				value: item,
 			}))}
-			selectedValue={series?.lang ?? 'ja'}
+			selectedValue={seriesForm.data.olang}
 			label="Language"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}

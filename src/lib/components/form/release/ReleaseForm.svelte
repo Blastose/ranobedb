@@ -68,7 +68,7 @@
 				display: languageNames[item],
 				value: item,
 			}))}
-			selectedValue={release?.lang ?? 'ja'}
+			selectedValue={releaseForm.data.lang}
 			label="Language"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
@@ -77,7 +77,7 @@
 			form={sForm}
 			field="format"
 			dropdownOptions={releaseFormatArray.map((item) => ({ display: item, value: item }))}
-			selectedValue={release?.format ?? 'digital'}
+			selectedValue={releaseForm.data.format}
 			label="Format"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}

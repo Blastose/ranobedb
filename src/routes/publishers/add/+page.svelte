@@ -5,7 +5,7 @@
 	export let data;
 </script>
 
-<PageTitle title="Adding publisher" />
+<PageTitle title="Add publisher" />
 
 <main class="container-rndb">
 	<PublisherForm publisherForm={data.form} publisher={undefined} type="add" user={data.user} />

@@ -5,7 +5,7 @@
 	export let data;
 </script>
 
-<PageTitle title="Adding staff" />
+<PageTitle title="Add staff" />
 
 <main class="container-rndb">
 	<StaffForm staff={undefined} staffForm={data.form} type="add" user={data.user} />
