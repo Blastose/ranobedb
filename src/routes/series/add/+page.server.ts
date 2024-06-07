@@ -31,8 +31,6 @@ export const load = async ({ locals, url }) => {
 				},
 			],
 			olang: 'ja',
-			start_date: 99999999,
-			end_date: 99999999,
 		},
 		zod(seriesSchema),
 		{
