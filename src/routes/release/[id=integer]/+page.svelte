@@ -23,5 +23,5 @@
 <PageTitle title={getNameDisplay({ obj: release, prefs: $diplayPrefs.names })} />
 
 <DbRouteShell theme={$theme} {bgImageStyle}>
-	<Release isRevision={false} {release} user={data.user} />
+	<Release revision={undefined} {release} user={data.user} />
 </DbRouteShell>

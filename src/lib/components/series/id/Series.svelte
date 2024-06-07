@@ -20,7 +20,7 @@
 
 	export let series: Series;
 	export let user: User | null;
-	export let isRevision: boolean;
+	export let revision: number | undefined;
 
 	$: child_series = groupBy(series.child_series, (item) => item.relation_type);
 	const displayPrefs = getDisplayPrefsContext();
@@ -28,7 +28,7 @@
 
 <DBItemShell
 	dbItem="series"
-	{isRevision}
+	{revision}
 	name={getTitleDisplay({ obj: series, prefs: $displayPrefs.title_prefs })}
 	subName={getTitleDisplaySub({ obj: series, prefs: $displayPrefs.title_prefs })}
 	{user}

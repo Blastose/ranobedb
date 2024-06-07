@@ -25,7 +25,11 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="content">
-			<Release isRevision={true} {release} user={data.user} />
+			<Release
+				revision={data.revision.revision}
+				release={{ ...release, id: data.releaseId }}
+				user={data.user}
+			/>
 		</svelte:fragment>
 	</RevisionContainer>
 </div>

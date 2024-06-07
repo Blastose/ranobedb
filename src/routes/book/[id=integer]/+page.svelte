@@ -12,4 +12,4 @@
 
 <PageTitle {title} />
 
-<Book {book} userListForm={data.userListForm} user={data.user} isRevision={false} />
+<Book {book} userListForm={data.userListForm} user={data.user} revision={undefined} />

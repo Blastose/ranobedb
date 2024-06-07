@@ -20,7 +20,7 @@
 		{staff}
 		works={data.works}
 		user={data.user}
-		isRevision={false}
+		revision={undefined}
 		currentPage={data.currentPage}
 		totalPages={data.totalPages}
 		results={data.count}

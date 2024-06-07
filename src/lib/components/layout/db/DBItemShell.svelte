@@ -10,7 +10,7 @@
 	export let user: User | null;
 	export let name: string;
 	export let subName: Nullish<string>;
-	export let isRevision: boolean;
+	export let revision: number | undefined;
 	export let item: Rec;
 	export let copyTo: CopyTo | undefined = undefined;
 </script>
@@ -28,11 +28,9 @@
 				{/if}
 			</div>
 
-			{#if !isRevision}
-				<section class="whitespace-nowrap w-min mt-1">
-					<VisibilityDisplay {item} type={dbItem} {user} {copyTo} />
-				</section>
-			{/if}
+			<section class="whitespace-nowrap w-min mt-1">
+				<VisibilityDisplay {item} type={dbItem} {user} {copyTo} {revision} />
+			</section>
 		</div>
 	</section>
 

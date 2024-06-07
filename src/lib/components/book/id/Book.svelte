@@ -20,7 +20,7 @@
 	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
 
 	export let book: BookR;
-	export let isRevision: boolean;
+	export let revision: number | undefined;
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
 
@@ -31,7 +31,7 @@
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
-	<div class="banner-img {isRevision ? 'h-[128px]' : 'h-[256px]'}" style={bgImageStyle}>
+	<div class="banner-img {revision ? 'h-[128px]' : 'h-[256px]'}" style={bgImageStyle}>
 		<div class="blur-image" />
 	</div>
 
@@ -74,16 +74,15 @@
 				</h1>
 				<p class="sub-text"><TitleDisplay obj={book} type="sub" /></p>
 
-				{#if !isRevision}
-					<section class="pt-4">
-						<VisibilityDisplay
-							item={book}
-							type="book"
-							{user}
-							copyTo={{ to: ['release', 'series'], langs: book.titles.map((t) => t.lang) }}
-						/>
-					</section>
-				{/if}
+				<section class="pt-4">
+					<VisibilityDisplay
+						item={book}
+						type="book"
+						{user}
+						copyTo={{ to: ['release', 'series'], langs: book.titles.map((t) => t.lang) }}
+						{revision}
+					/>
+				</section>
 
 				<section class="mt-2">
 					<VisibilityDisplayPerm item={book} {user} />

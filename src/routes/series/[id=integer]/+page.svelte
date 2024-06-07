@@ -24,5 +24,5 @@
 <PageTitle {title} />
 
 <DbRouteShell theme={$theme} {bgImageStyle}>
-	<Series isRevision={false} {series} user={data.user} />
+	<Series revision={undefined} {series} user={data.user} />
 </DbRouteShell>
