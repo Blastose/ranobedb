@@ -8,14 +8,12 @@
 	import Description from '$lib/components/book/Description.svelte';
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
-	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import BookImage from '../BookImage.svelte';
 	import BookCarousel from '../BookCarousel.svelte';
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
 	import { getDisplayPrefsContext } from '$lib/display/prefs';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
 	import BookReleases from './BookReleases.svelte';
@@ -78,7 +76,12 @@
 
 				{#if !isRevision}
 					<section class="pt-4">
-						<VisibilityDisplay item={book} type="book" {user} />
+						<VisibilityDisplay
+							item={book}
+							type="book"
+							{user}
+							copyTo={{ to: ['release', 'series'], langs: book.titles.map((t) => t.lang) }}
+						/>
 					</section>
 				{/if}
 

@@ -24,6 +24,7 @@
 	export let staffForm: SuperValidated<Infer<typeof staffSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
+	export let actionUrl: string | undefined = undefined;
 
 	const sForm = superForm(staffForm, {
 		dataType: 'json',
@@ -41,8 +42,8 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" class="flex flex-col gap-4" use:enhance>
-	{#if staff}
+<form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
+	{#if staff && type === 'edit'}
 		<h1 class="font-bold text-xl">
 			Editing <NameDisplay obj={staff} fallback="staff" />
 		</h1>

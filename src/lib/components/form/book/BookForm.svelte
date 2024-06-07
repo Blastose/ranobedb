@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { bookSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import BookTitlesInput from './BookTitlesInput.svelte';
 	import type { BookEdit } from '$lib/server/db/books/books';
@@ -20,6 +19,7 @@
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
+	export let actionUrl: string | undefined = undefined;
 
 	const sForm = superForm(bookForm, {
 		dataType: 'json',
@@ -37,8 +37,8 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" class="flex flex-col gap-4" use:enhance>
-	{#if book}
+<form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
+	{#if book && type === 'edit'}
 		<h1 class="font-bold text-xl">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add book</h1>

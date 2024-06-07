@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { DbItem } from '$lib/server/db/dbTypes';
 	import type { User } from 'lucia';
-	import type { Rec } from '$lib/components/layout/db/VisibilityDisplay.svelte';
+	import type { CopyTo, Rec } from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplay from './VisibilityDisplay.svelte';
 	import type { Nullish } from '$lib/server/zod/schema';
 	import VisibilityDisplayPerm from './VisibilityDisplayPerm.svelte';
@@ -12,6 +12,7 @@
 	export let subName: Nullish<string>;
 	export let isRevision: boolean;
 	export let item: Rec;
+	export let copyTo: CopyTo | undefined = undefined;
 </script>
 
 <section class="flex flex-col gap-2">
@@ -29,7 +30,7 @@
 
 			{#if !isRevision}
 				<section class="whitespace-nowrap w-min mt-1">
-					<VisibilityDisplay {item} type={dbItem} {user} />
+					<VisibilityDisplay {item} type={dbItem} {user} {copyTo} />
 				</section>
 			{/if}
 		</div>

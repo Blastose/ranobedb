@@ -250,6 +250,17 @@ export class DBSeries {
 				).as('books'),
 				jsonArrayFrom(
 					eb
+						.selectFrom('series_title')
+						.whereRef('series_title.series_id', '=', 'cte_series.id')
+						.select([
+							'series_title.title',
+							'series_title.romaji',
+							'series_title.lang',
+							'series_title.official',
+						]),
+				).as('titles'),
+				jsonArrayFrom(
+					eb
 						.selectFrom('series_relation')
 						.innerJoin('cte_series as child_series', 'child_series.id', 'series_relation.id_child')
 						.select([
@@ -359,6 +370,17 @@ export class DBSeries {
 						)
 						.orderBy('sort_order asc'),
 				).as('books'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_title_hist')
+						.whereRef('series_title_hist.change_id', '=', 'cte_series.id')
+						.select([
+							'series_title_hist.lang',
+							'series_title_hist.official',
+							'series_title_hist.title',
+							'series_title_hist.romaji',
+						]),
+				).as('titles'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('series_relation_hist')

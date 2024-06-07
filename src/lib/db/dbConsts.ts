@@ -155,12 +155,12 @@ export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
 };
 
 export const staffRolesArray = [
-	'artist',
 	'author',
+	'artist',
 	'editor',
+	'staff',
 	'translator',
 	'narrator',
-	'staff',
 ] as const;
 
 export const seriesStatusArray = [
