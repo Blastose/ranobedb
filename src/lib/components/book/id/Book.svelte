@@ -8,21 +8,19 @@
 	import Description from '$lib/components/book/Description.svelte';
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
-	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import BookImage from '../BookImage.svelte';
 	import BookCarousel from '../BookCarousel.svelte';
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
 	import { getDisplayPrefsContext } from '$lib/display/prefs';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
 	import BookReleases from './BookReleases.svelte';
 	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
 
 	export let book: BookR;
-	export let isRevision: boolean;
+	export let revision: number | undefined;
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
 
@@ -33,7 +31,7 @@
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
-	<div class="banner-img {isRevision ? 'h-[128px]' : 'h-[256px]'}" style={bgImageStyle}>
+	<div class="banner-img {revision ? 'h-[128px]' : 'h-[256px]'}" style={bgImageStyle}>
 		<div class="blur-image" />
 	</div>
 
@@ -76,11 +74,15 @@
 				</h1>
 				<p class="sub-text"><TitleDisplay obj={book} type="sub" /></p>
 
-				{#if !isRevision}
-					<section class="pt-4">
-						<VisibilityDisplay item={book} type="book" {user} />
-					</section>
-				{/if}
+				<section class="pt-4">
+					<VisibilityDisplay
+						item={book}
+						type="book"
+						{user}
+						copyTo={{ to: ['release', 'series'], langs: book.titles.map((t) => t.lang) }}
+						{revision}
+					/>
+				</section>
 
 				<section class="mt-2">
 					<VisibilityDisplayPerm item={book} {user} />

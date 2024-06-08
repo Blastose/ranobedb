@@ -22,6 +22,7 @@
 	export let releaseForm: SuperValidated<Infer<typeof releaseSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
+	export let actionUrl: string | undefined = undefined;
 
 	const sForm = superForm(releaseForm, {
 		dataType: 'json',
@@ -39,8 +40,8 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" class="flex flex-col gap-4" use:enhance>
-	{#if release}
+<form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
+	{#if release && type === 'edit'}
 		<h1 class="font-bold text-xl">Editing <NameDisplay obj={release} /></h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add release</h1>
@@ -67,7 +68,7 @@
 				display: languageNames[item],
 				value: item,
 			}))}
-			selectedValue={release?.lang ?? 'ja'}
+			selectedValue={releaseForm.data.lang}
 			label="Language"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
@@ -76,7 +77,7 @@
 			form={sForm}
 			field="format"
 			dropdownOptions={releaseFormatArray.map((item) => ({ display: item, value: item }))}
-			selectedValue={release?.format ?? 'digital'}
+			selectedValue={releaseForm.data.format}
 			label="Format"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}

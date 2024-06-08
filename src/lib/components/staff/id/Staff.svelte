@@ -7,7 +7,6 @@
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import Works from './Works.svelte';
-	import DbExtLink from '$lib/components/db-links/DbExtLink.svelte';
 	import {
 		bookwalkerAuthorLink,
 		pixivLink,
@@ -19,7 +18,7 @@
 	export let staff: Staff;
 	export let works: StaffWorks;
 	export let user: User | null;
-	export let isRevision: boolean;
+	export let revision: number | undefined;
 	export let results: number;
 	export let currentPage: number;
 	export let totalPages: number;
@@ -29,7 +28,7 @@
 
 <DBItemShell
 	dbItem="staff"
-	{isRevision}
+	{revision}
 	name={getNameDisplay({ obj: staff, prefs: $displayPrefs.names })}
 	subName={getNameDisplaySub({ obj: staff, prefs: $displayPrefs.names })}
 	{user}

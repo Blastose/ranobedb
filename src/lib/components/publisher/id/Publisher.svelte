@@ -16,7 +16,7 @@
 	} from '$lib/components/db-links/db-ext-links';
 
 	export let publisher: Publisher;
-	export let isRevision: boolean;
+	export let revision: number | undefined;
 	export let works: PublisherWorks;
 	export let user: User | null;
 	export let results: number;
@@ -30,7 +30,7 @@
 
 <DBItemShell
 	dbItem="publisher"
-	{isRevision}
+	{revision}
 	name={getNameDisplay({ obj: publisher, prefs: $displayPrefs.names })}
 	subName={getNameDisplaySub({ obj: publisher, prefs: $displayPrefs.names })}
 	{user}

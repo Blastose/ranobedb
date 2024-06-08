@@ -26,10 +26,10 @@
 
 		<svelte:fragment slot="content">
 			<Staff
-				{staff}
+				staff={{ ...staff, id: data.staffId }}
 				works={data.works}
 				user={data.user}
-				isRevision={true}
+				revision={data.revision.revision}
 				results={data.count}
 				currentPage={data.currentPage}
 				totalPages={data.totalPages}

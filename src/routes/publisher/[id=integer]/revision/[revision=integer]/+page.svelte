@@ -26,9 +26,9 @@
 
 		<svelte:fragment slot="content">
 			<Publisher
-				{publisher}
+				publisher={{ ...publisher, id: data.publisherId }}
 				works={data.works}
-				isRevision={true}
+				revision={data.revision.revision}
 				user={data.user}
 				currentPage={data.currentPage}
 				results={data.count}

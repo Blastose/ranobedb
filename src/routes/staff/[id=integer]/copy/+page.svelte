@@ -3,10 +3,12 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
 	export let data;
+
+	$: staff = data.staff;
 </script>
 
 <PageTitle title="Add staff" />
 
 <main class="container-rndb">
-	<StaffForm staff={undefined} staffForm={data.form} type="add" user={data.user} />
+	<StaffForm {staff} staffForm={data.form} type="add" user={data.user} actionUrl="/staff/add" />
 </main>

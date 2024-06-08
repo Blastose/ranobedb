@@ -128,7 +128,7 @@ export const publisherTypeReverseMap: Record<PublisherRelType, PublisherRelType>
 	'parent company': 'subsidiary',
 };
 
-export const releaseFormatArray = ['audio', 'digital', 'print'] as const;
+export const releaseFormatArray = ['digital', 'print', 'audio'] as const;
 
 export const releasePublisherTypeArray = ['imprint', 'publisher'] as const;
 
@@ -155,12 +155,12 @@ export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
 };
 
 export const staffRolesArray = [
-	'artist',
 	'author',
+	'artist',
 	'editor',
+	'staff',
 	'translator',
 	'narrator',
-	'staff',
 ] as const;
 
 export const seriesStatusArray = [

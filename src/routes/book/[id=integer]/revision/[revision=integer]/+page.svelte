@@ -25,7 +25,11 @@
 		</svelte:fragment>
 
 		<div slot="content" class="mt-[150px]">
-			<Book {book} user={data.user} isRevision={true} />
+			<Book
+				book={{ ...book, id: data.bookId }}
+				user={data.user}
+				revision={data.revision.revision}
+			/>
 		</div>
 	</RevisionContainer>
 </div>

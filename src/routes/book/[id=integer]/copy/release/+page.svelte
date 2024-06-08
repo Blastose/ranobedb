@@ -8,5 +8,11 @@
 <PageTitle title="Add release" />
 
 <main class="container-rndb">
-	<ReleaseForm release={undefined} releaseForm={data.form} type="add" user={data.user} />
+	<ReleaseForm
+		release={undefined}
+		releaseForm={data.form}
+		type="add"
+		user={data.user}
+		actionUrl="/releases/add"
+	/>
 </main>

@@ -214,10 +214,10 @@ export class DBBookActions {
 			const insertedBook = await trx
 				.insertInto('book')
 				.values({
-					description: data.book.description ?? '',
-					description_ja: data.book.description_ja ?? '',
 					hidden,
 					locked,
+					description: data.book.description ?? '',
+					description_ja: data.book.description_ja ?? '',
 					image_id: data.book.image_id,
 					release_date: data.book.release_date,
 					olang: data.book.olang,
@@ -240,9 +240,9 @@ export class DBBookActions {
 			await trx
 				.insertInto('book_hist')
 				.values({
+					change_id: change.change_id,
 					description: data.book.description ?? '',
 					description_ja: data.book.description_ja ?? '',
-					change_id: change.change_id,
 					image_id: data.book.image_id,
 					release_date: data.book.release_date,
 					olang: data.book.olang,

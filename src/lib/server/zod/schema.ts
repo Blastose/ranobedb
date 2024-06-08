@@ -20,7 +20,7 @@ import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 dayjs.extend(customParseFormat);
 
 const maxTextLength = 2000;
-const maxWikidataId = 9007199254740991;
+const maxNumberValue = 2147483647;
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const zUsername = z
 	.string({ required_error: 'Username is required' })
@@ -141,6 +141,7 @@ const zReleaseDate = z
 	.number()
 	.min(10000101)
 	.max(99999999)
+	.default(99999999)
 	.refine(
 		(val) => {
 			const dateNumber = new DateNumber(val);
@@ -184,7 +185,9 @@ const zLink = (validHostnames: string[]) =>
 					return false;
 				}
 			},
-			{ message: `Invalid url; Url must be one of ${validHostnames.join(', ')}` },
+			{
+				message: `Invalid url${validHostnames.length > 0 ? `; Url must be one of ${validHostnames.join(', ')}` : ``}`,
+			},
 		)
 		.nullish();
 
@@ -268,11 +271,11 @@ export const staffSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
 	description: zDescription,
-	bookwalker_id: z.number().nullish(),
-	pivix_id: z.number().nullish(),
+	bookwalker_id: z.number().max(maxNumberValue).nullish(),
+	pivix_id: z.number().max(maxNumberValue).nullish(),
 	twitter_id: z.string().trim().max(2000).nullish(),
 	website: zLink([]),
-	wikidata_id: z.number().max(maxWikidataId).nullish(),
+	wikidata_id: z.number().max(maxNumberValue).nullish(),
 
 	aliases: z
 		.array(
@@ -318,7 +321,7 @@ export const publisherSchema = z.object({
 
 	twitter_id: z.string().trim().max(maxTextLength).nullish(),
 	website: zLink([]),
-	wikidata_id: z.number().max(maxWikidataId).nullish(),
+	wikidata_id: z.number().max(maxNumberValue).nullish(),
 
 	comment: zComment,
 });
@@ -393,11 +396,11 @@ export const seriesSchema = z.object({
 		)
 		.nullish(),
 	olang: z.enum(languagesArray),
-	anidb_id: z.number().max(maxWikidataId).nullish(),
+	anidb_id: z.number().max(maxNumberValue).nullish(),
 	start_date: zReleaseDate,
 	end_date: zReleaseDate,
 	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com']),
-	wikidata_id: z.number().max(maxWikidataId).nullish(),
+	wikidata_id: z.number().max(maxNumberValue).nullish(),
 
 	books: z
 		.array(
@@ -429,6 +432,7 @@ export const seriesSchema = z.object({
 
 export const searchNameSchema = z.object({ name: z.string() });
 export const revisionSchema = z.object({ revision: z.number().nullish() });
+export const languageSchema = z.object({ lang: z.enum(languagesArray).nullish() });
 export const staffTabsSchema = z.object({ tab: z.enum(staffTabs) });
 export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs) });
 

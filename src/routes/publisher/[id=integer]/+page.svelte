@@ -19,7 +19,7 @@
 	<Publisher
 		{publisher}
 		works={data.works}
-		isRevision={false}
+		revision={undefined}
 		user={data.user}
 		currentPage={data.currentPage}
 		results={data.count}

@@ -16,12 +16,11 @@
 		bookwalkerSeriesLink,
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
-	import DbExtLink from '$lib/components/db-links/DbExtLink.svelte';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 
 	export let series: Series;
 	export let user: User | null;
-	export let isRevision: boolean;
+	export let revision: number | undefined;
 
 	$: child_series = groupBy(series.child_series, (item) => item.relation_type);
 	const displayPrefs = getDisplayPrefsContext();
@@ -29,13 +28,15 @@
 
 <DBItemShell
 	dbItem="series"
-	{isRevision}
+	{revision}
 	name={getTitleDisplay({ obj: series, prefs: $displayPrefs.title_prefs })}
 	subName={getTitleDisplaySub({ obj: series, prefs: $displayPrefs.title_prefs })}
 	{user}
 	item={series}
+	copyTo={{ to: ['book'], langs: series.titles.map((t) => t.lang) }}
 >
-	<div>
+	<Description description={series.description} maxHeight={100} />
+	<div class="text-sm">
 		<p class="sub-text">
 			{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
 			total books
@@ -53,12 +54,12 @@
 		</div>
 	</div>
 
-	<Description description={series.description} maxHeight={100} />
-
-	<section>
-		<h2 class="font-bold text-lg">Aliases</h2>
-		<p>{series.aliases.split('\n').join(', ')}</p>
-	</section>
+	{#if series.aliases}
+		<section>
+			<h2 class="font-bold text-lg">Aliases</h2>
+			<p>{series.aliases.split('\n').join(', ')}</p>
+		</section>
+	{/if}
 
 	<section>
 		<h2 class="font-bold text-lg">Links</h2>

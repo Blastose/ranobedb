@@ -11,7 +11,7 @@
 	import BookImage from '$lib/components/book/BookImage.svelte';
 
 	export let release: Release;
-	export let isRevision: boolean;
+	export let revision: number | undefined;
 	export let user: User | null;
 
 	const displayPrefs = getDisplayPrefsContext();
@@ -19,11 +19,12 @@
 
 <DBItemShell
 	dbItem="release"
-	{isRevision}
+	{revision}
 	name={getNameDisplay({ obj: release, prefs: $displayPrefs.names })}
 	subName={getNameDisplaySub({ obj: release, prefs: $displayPrefs.names })}
 	{user}
 	item={release}
+	copyTo={{ to: ['book', 'series'] }}
 >
 	{#if release.description}
 		<section>

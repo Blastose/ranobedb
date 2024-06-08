@@ -8,5 +8,11 @@
 <PageTitle title="Add series" />
 
 <main class="container-rndb">
-	<SeriesForm series={undefined} seriesForm={data.form} type="add" user={data.user} />
+	<SeriesForm
+		series={undefined}
+		seriesForm={data.form}
+		type="add"
+		user={data.user}
+		actionUrl="/series/add"
+	/>
 </main>

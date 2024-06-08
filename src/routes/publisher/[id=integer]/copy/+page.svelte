@@ -3,10 +3,18 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
 	export let data;
+
+	$: publisher = data.publisher;
 </script>
 
 <PageTitle title="Add publisher" />
 
 <main class="container-rndb">
-	<PublisherForm publisherForm={data.form} publisher={undefined} type="add" user={data.user} />
+	<PublisherForm
+		publisherForm={data.form}
+		{publisher}
+		type="add"
+		user={data.user}
+		actionUrl="/publishers/add"
+	/>
 </main>

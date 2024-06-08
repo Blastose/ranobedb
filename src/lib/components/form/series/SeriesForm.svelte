@@ -29,6 +29,7 @@
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
 	export let type: 'add' | 'edit';
 	export let user: User | null;
+	export let actionUrl: string | undefined = undefined;
 
 	const sForm = superForm(seriesForm, {
 		dataType: 'json',
@@ -46,8 +47,8 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" class="flex flex-col gap-4" use:enhance>
-	{#if series}
+<form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
+	{#if series && type === 'edit'}
 		<h1 class="font-bold text-xl">Editing <TitleDisplay obj={series} /></h1>
 	{:else}
 		<h1 class="font-bold text-xl">Add series</h1>
@@ -87,7 +88,7 @@
 				display: item,
 				value: item,
 			}))}
-			selectedValue={series?.publication_status ?? 'ongoing'}
+			selectedValue={seriesForm.data.publication_status}
 			label="Publication status"
 			resetPadding={true}
 			showRequiredSymbolIfRequired={false}
@@ -102,7 +103,7 @@
 				display: languageNames[item],
 				value: item,
 			}))}
-			selectedValue={series?.lang ?? 'ja'}
+			selectedValue={seriesForm.data.olang}
 			label="Language"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
