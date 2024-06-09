@@ -54,6 +54,15 @@
 		</div>
 	</div>
 
+	<section>
+		<h2 class="font-bold text-lg">Titles</h2>
+		<div>
+			{#each series.titles as title}
+				<p>{title.lang} - {title.title}</p>
+			{/each}
+		</div>
+	</section>
+
 	{#if series.aliases}
 		<section>
 			<h2 class="font-bold text-lg">Aliases</h2>
