@@ -59,7 +59,9 @@ export class DBPublishers {
 							'child_publisher.id',
 							'publisher_relation.relation_type',
 						])
-						.where('publisher_relation.id_parent', '=', id),
+						.where('publisher_relation.id_parent', '=', id)
+						.orderBy('publisher_relation.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name')),
 				).as('child_publishers'),
 			])
 			.where('publisher.id', '=', id);
@@ -111,7 +113,9 @@ export class DBPublishers {
 							'child_publisher.id',
 							'publisher_relation_hist.relation_type',
 						])
-						.whereRef('publisher_relation_hist.change_id', '=', 'change.id'),
+						.whereRef('publisher_relation_hist.change_id', '=', 'change.id')
+						.orderBy('publisher_relation_hist.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name')),
 				).as('child_publishers'),
 			])
 			.where('change.item_id', '=', params.id)
@@ -145,10 +149,16 @@ export class DBPublishers {
 				jsonArrayFrom(
 					eb
 						.selectFrom('publisher_relation')
-						.innerJoin('publisher as child_pub', 'child_pub.id', 'publisher_relation.id_child')
-						.select(['child_pub.name', 'child_pub.romaji', 'child_pub.id'])
+						.innerJoin(
+							'publisher as child_publisher',
+							'child_publisher.id',
+							'publisher_relation.id_child',
+						)
+						.select(['child_publisher.name', 'child_publisher.romaji', 'child_publisher.id'])
 						.select('publisher_relation.relation_type')
-						.whereRef('publisher_relation.id_parent', '=', 'publisher.id'),
+						.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
+						.orderBy('publisher_relation.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name')),
 				).as('child_publishers'),
 			)
 			.where('publisher.id', '=', id);
@@ -173,10 +183,16 @@ export class DBPublishers {
 				jsonArrayFrom(
 					eb
 						.selectFrom('publisher_relation_hist')
-						.innerJoin('publisher as child_pub', 'child_pub.id', 'publisher_relation_hist.id_child')
-						.select(['child_pub.name', 'child_pub.romaji', 'child_pub.id'])
+						.innerJoin(
+							'publisher as child_publisher',
+							'child_publisher.id',
+							'publisher_relation_hist.id_child',
+						)
+						.select(['child_publisher.name', 'child_publisher.romaji', 'child_publisher.id'])
 						.select('publisher_relation_hist.relation_type')
-						.whereRef('publisher_relation_hist.change_id', '=', 'publisher_hist.change_id'),
+						.whereRef('publisher_relation_hist.change_id', '=', 'publisher_hist.change_id')
+						.orderBy('publisher_relation_hist.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name')),
 				).as('child_publishers'),
 			)
 			.where('change.item_id', '=', params.id)

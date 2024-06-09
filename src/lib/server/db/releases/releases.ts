@@ -18,18 +18,7 @@ export class DBReleases {
 	}
 
 	getReleases() {
-		return this.ranobeDB.db
-			.selectFrom('release')
-			.selectAll('release')
-			.select((eb) => [
-				jsonArrayFrom(
-					eb
-						.selectFrom('publisher')
-						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
-						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher.romaji', 'publisher_type']),
-				).as('publishers'),
-			]);
+		return this.ranobeDB.db.selectFrom('release').selectAll('release');
 	}
 
 	getRelease(id: number) {
@@ -43,7 +32,9 @@ export class DBReleases {
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.orderBy('release_publisher.publisher_type')
+						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -109,7 +100,9 @@ export class DBReleases {
 							'publisher.id',
 						)
 						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
-						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.orderBy('release_publisher_hist.publisher_type')
+						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -179,7 +172,9 @@ export class DBReleases {
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
-						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.orderBy('release_publisher.publisher_type')
+						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -234,7 +229,9 @@ export class DBReleases {
 							'publisher.id',
 						)
 						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
-						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id']),
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.orderBy('release_publisher_hist.publisher_type')
+						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb

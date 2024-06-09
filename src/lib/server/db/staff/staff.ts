@@ -45,7 +45,8 @@ export class DBStaff {
 						.selectFrom('staff_alias as all_aliases')
 						.whereRef('all_aliases.staff_id', '=', 'staff.id')
 						.where('all_aliases.main_alias', '=', false)
-						.selectAll('all_aliases'),
+						.selectAll('all_aliases')
+						.orderBy((eb) => eb.fn.coalesce('all_aliases.romaji', 'all_aliases.name')),
 				).as('aliases'),
 			)
 			.where('staff.id', '=', id);
@@ -84,7 +85,8 @@ export class DBStaff {
 							'all_aliases.main_alias',
 							'all_aliases.name',
 							'all_aliases.romaji',
-						]),
+						])
+						.orderBy((eb) => eb.fn.coalesce('all_aliases.romaji', 'all_aliases.name')),
 				).as('aliases'),
 			)
 			.where('change.item_id', '=', options.id)
