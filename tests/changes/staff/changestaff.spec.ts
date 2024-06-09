@@ -25,20 +25,30 @@ test.describe('edit staff mod', () => {
 test.describe('edit staff user invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
-	test('User cannot edit staff due to invalid permissions', async ({ page }) => {
+	test('User cannot edit staff due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/staff/1/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/staff/1/edit', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
 
 test.describe('edit staff editor invalid permissions locked', () => {
 	test.use({ storageState: 'storage-state/storageStateEditor.json' });
 
-	test('Editor cannot edit locked staff due to invalid permissions', async ({ page }) => {
+	test('Editor cannot edit locked staff due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/staff/2');
 		await expect(page.getByText('Locked')).toBeVisible();
 		await page.goto('/staff/2/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/staff/2/edit', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
 
@@ -69,8 +79,13 @@ test.describe('add staff mod', () => {
 test.describe('add staff user invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
-	test('User cannot edit staff due to invalid permissions', async ({ page }) => {
+	test('User cannot add staff due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/staff/add');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/staff/add', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });

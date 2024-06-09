@@ -50,20 +50,33 @@ test.describe('edit publisher mod', () => {
 test.describe('edit publisher user invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
-	test('User cannot edit publisher due to invalid permissions', async ({ page }) => {
+	test('User cannot edit publisher due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/publisher/1/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/publisher/1/edit', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
 
 test.describe('edit publisher editor invalid permissions locked', () => {
 	test.use({ storageState: 'storage-state/storageStateEditor.json' });
 
-	test('Editor cannot edit locked publisher due to invalid permissions', async ({ page }) => {
+	test('Editor cannot edit locked publisher due to invalid permissions', async ({
+		page,
+		request,
+	}) => {
 		await page.goto('/publisher/2');
 		await expect(page.getByText('Locked')).toBeVisible();
 		await page.goto('/publisher/2/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/publisher/2/edit', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
 
@@ -95,8 +108,13 @@ test.describe('add publisher mod', () => {
 test.describe('add publisher user invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
-	test('User cannot edit publisher due to invalid permissions', async ({ page }) => {
+	test('User cannot add publisher due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/publishers/add');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/publishers/add', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });

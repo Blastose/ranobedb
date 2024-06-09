@@ -25,20 +25,30 @@ test.describe('edit book mod', () => {
 test.describe('edit book user invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
-	test('User cannot edit book due to invalid permissions', async ({ page }) => {
+	test('User cannot edit book due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/book/1/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/book/1/edit', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
 
 test.describe('edit book editor invalid permissions locked', () => {
 	test.use({ storageState: 'storage-state/storageStateEditor.json' });
 
-	test('Editor cannot edit locked book due to invalid permissions', async ({ page }) => {
+	test('Editor cannot edit locked book due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/book/2');
 		await expect(page.getByText('Locked')).toBeVisible();
 		await page.goto('/book/2/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/book/2/edit', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
 
@@ -66,8 +76,14 @@ test.describe('add book mod', () => {
 test.describe('add book user invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
-	test('User cannot edit book due to invalid permissions', async ({ page }) => {
+	test('User cannot add book due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/books/add');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+
+		const response = await request.post('/books/add', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
