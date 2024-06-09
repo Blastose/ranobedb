@@ -15,6 +15,7 @@ async function getSeriesByTitle(title: string, titleAsNumber: number, user: User
 	return await db
 		.with('cte_series', withSeriesTitleCte(user?.display_prefs.title_prefs))
 		.selectFrom('cte_series')
+		.select(['cte_series.title as name', 'cte_series.id', 'cte_series.romaji', 'cte_series.lang'])
 		.where(({ eb }) => {
 			const ors: Expression<SqlBool>[] = [];
 			ors.push(eb('cte_series.title', 'ilike', title));
@@ -25,7 +26,6 @@ async function getSeriesByTitle(title: string, titleAsNumber: number, user: User
 			return eb.or(ors);
 		})
 		.where('cte_series.hidden', '=', false)
-		.select(['cte_series.title as name', 'cte_series.id', 'cte_series.romaji', 'cte_series.lang'])
 		.limit(16)
 		.execute();
 }
