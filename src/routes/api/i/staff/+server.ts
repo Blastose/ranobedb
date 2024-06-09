@@ -13,6 +13,13 @@ async function getStaffByName(name: string, nameAsNumber: number) {
 	return await db
 		.selectFrom('staff')
 		.innerJoin('staff_alias', 'staff.id', 'staff_alias.staff_id')
+		.select([
+			'staff_alias.name',
+			'staff_alias.id',
+			'staff_alias.staff_id',
+			'staff_alias.romaji',
+			'staff_alias.id as aid',
+		])
 		.where(({ eb }) => {
 			const ors: Expression<SqlBool>[] = [];
 			ors.push(eb('staff_alias.name', 'ilike', name));
@@ -23,13 +30,6 @@ async function getStaffByName(name: string, nameAsNumber: number) {
 			return eb.or(ors);
 		})
 		.where('staff.hidden', '=', false)
-		.select([
-			'staff_alias.name',
-			'staff_alias.id',
-			'staff_alias.staff_id',
-			'staff_alias.romaji',
-			'staff_alias.id as aid',
-		])
 		.limit(16)
 		.execute();
 }
