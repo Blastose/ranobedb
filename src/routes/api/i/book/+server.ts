@@ -15,6 +15,7 @@ async function getBookByTitle(title: string, titleAsNumber: number, user: User |
 	return await db
 		.with('cte_book', withBookTitleCte(user?.display_prefs.title_prefs))
 		.selectFrom('cte_book')
+		.select(['cte_book.title as name', 'cte_book.id', 'cte_book.romaji', 'cte_book.lang'])
 		.where(({ eb }) => {
 			const ors: Expression<SqlBool>[] = [];
 			ors.push(eb('cte_book.title', 'ilike', title));
@@ -25,7 +26,6 @@ async function getBookByTitle(title: string, titleAsNumber: number, user: User |
 			return eb.or(ors);
 		})
 		.where('cte_book.hidden', '=', false)
-		.select(['cte_book.title as name', 'cte_book.id', 'cte_book.romaji', 'cte_book.lang'])
 		.limit(16)
 		.execute();
 }
