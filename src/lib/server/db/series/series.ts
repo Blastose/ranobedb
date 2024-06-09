@@ -257,7 +257,8 @@ export class DBSeries {
 							'series_title.romaji',
 							'series_title.lang',
 							'series_title.official',
-						]),
+						])
+						.orderBy('series_title.lang'),
 				).as('titles'),
 				jsonArrayFrom(
 					eb
@@ -269,7 +270,8 @@ export class DBSeries {
 							'child_series.romaji',
 							'series_relation.relation_type',
 						])
-						.whereRef('series_relation.id_parent', '=', 'cte_series.id'),
+						.whereRef('series_relation.id_parent', '=', 'cte_series.id')
+						.orderBy('series_relation.relation_type'),
 				).as('child_series'),
 				jsonArrayFrom(
 					eb
@@ -279,14 +281,15 @@ export class DBSeries {
 						.innerJoin('release', 'release.id', 'release_book.release_id')
 						.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
 						.where('series_book.series_id', '=', id)
-						.distinctOn(['publisher.id', 'release.lang'])
+						.distinctOn(['publisher.id', 'release.lang', 'release_publisher.publisher_type'])
 						.select([
 							'publisher.id',
 							'publisher.name',
 							'publisher.romaji',
 							'release_publisher.publisher_type',
 							'release.lang',
-						]),
+						])
+						.orderBy('release_publisher.publisher_type'),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -302,7 +305,7 @@ export class DBSeries {
 						.where('book_edition.lang', 'is', null)
 						.where('staff.hidden', '=', false)
 						.where('series_book.series_id', '=', id)
-						.distinctOn('staff_alias.staff_id')
+						.distinctOn(['staff_alias.staff_id', 'book_staff_alias.role_type'])
 						.select([
 							'book_staff_alias.role_type',
 							'staff_alias.name',
@@ -310,7 +313,8 @@ export class DBSeries {
 							'staff_alias.staff_id',
 							'staff_alias.id as staff_alias_id',
 							'book_staff_alias.note',
-						]),
+						])
+						.orderBy('book_staff_alias.role_type'),
 				).as('staff'),
 			])
 			.where('cte_series.id', '=', id);
@@ -383,7 +387,8 @@ export class DBSeries {
 							'series_title_hist.official',
 							'series_title_hist.title',
 							'series_title_hist.romaji',
-						]),
+						])
+						.orderBy('series_title_hist.lang'),
 				).as('titles'),
 				jsonArrayFrom(
 					eb
@@ -399,7 +404,8 @@ export class DBSeries {
 							'child_series.romaji',
 							'series_relation_hist.relation_type',
 						])
-						.whereRef('series_relation_hist.change_id', '=', 'change.id'),
+						.whereRef('series_relation_hist.change_id', '=', 'change.id')
+						.orderBy('series_relation_hist.relation_type'),
 				).as('child_series'),
 				jsonArrayFrom(
 					eb
@@ -409,14 +415,15 @@ export class DBSeries {
 						.innerJoin('release', 'release.id', 'release_book.release_id')
 						.innerJoin('series_book_hist', 'series_book_hist.book_id', 'release_book.book_id')
 						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
-						.distinctOn(['publisher.id', 'release.lang'])
+						.distinctOn(['publisher.id', 'release.lang', 'release_publisher.publisher_type'])
 						.select([
 							'publisher.id',
 							'publisher.name',
 							'publisher.romaji',
 							'release_publisher.publisher_type',
 							'release.lang',
-						]),
+						])
+						.orderBy('release_publisher.publisher_type'),
 				).as('publishers'),
 				jsonArrayFrom(
 					eb
@@ -440,7 +447,8 @@ export class DBSeries {
 							'staff_alias.staff_id',
 							'staff_alias.id as staff_alias_id',
 							'book_staff_alias.note',
-						]),
+						])
+						.orderBy('book_staff_alias.role_type'),
 				).as('staff'),
 			])
 			.where('change.item_id', '=', params.id)
@@ -507,7 +515,8 @@ export class DBSeries {
 							'series_title.official',
 							'series_title.title',
 							'series_title.romaji',
-						]),
+						])
+						.orderBy('series_title.lang'),
 				).as('titles'),
 				jsonArrayFrom(
 					eb
@@ -520,7 +529,8 @@ export class DBSeries {
 							'child_series.lang',
 							'series_relation.relation_type',
 						])
-						.whereRef('series_relation.id_parent', '=', 'cte_series.id'),
+						.whereRef('series_relation.id_parent', '=', 'cte_series.id')
+						.orderBy('series_relation.relation_type'),
 				).as('child_series'),
 			])
 			.where('cte_series.id', '=', id);
@@ -584,7 +594,8 @@ export class DBSeries {
 							'series_title_hist.official',
 							'series_title_hist.title',
 							'series_title_hist.romaji',
-						]),
+						])
+						.orderBy('series_title_hist.lang'),
 				).as('titles'),
 				jsonArrayFrom(
 					eb
@@ -601,7 +612,8 @@ export class DBSeries {
 							'child_series.lang',
 							'series_relation_hist.relation_type',
 						])
-						.whereRef('series_relation_hist.change_id', '=', 'cte_series.id'),
+						.whereRef('series_relation_hist.change_id', '=', 'cte_series.id')
+						.orderBy('series_relation_hist.relation_type'),
 				).as('child_series'),
 			])
 			.where('change.item_id', '=', params.id)
