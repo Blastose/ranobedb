@@ -292,8 +292,12 @@ export class DBSeries {
 					eb
 						.selectFrom('staff_alias')
 						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
-						.innerJoin('book_edition', 'book_edition.eid', 'book_staff_alias.eid')
 						.innerJoin('series_book', 'series_book.book_id', 'book_staff_alias.book_id')
+						.innerJoin('book_edition', (join) =>
+							join
+								.onRef('book_edition.eid', '=', 'book_staff_alias.eid')
+								.onRef('book_edition.book_id', '=', 'series_book.book_id'),
+						)
 						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
 						.where('book_edition.lang', 'is', null)
 						.where('staff.hidden', '=', false)
@@ -419,7 +423,13 @@ export class DBSeries {
 						.selectFrom('staff_alias')
 						.innerJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'staff_alias.id')
 						.innerJoin('series_book_hist', 'series_book_hist.book_id', 'book_staff_alias.book_id')
+						.innerJoin('book_edition', (join) =>
+							join
+								.onRef('book_edition.eid', '=', 'book_staff_alias.eid')
+								.onRef('book_edition.book_id', '=', 'series_book_hist.book_id'),
+						)
 						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+						.where('book_edition.lang', 'is', null)
 						.where('staff.hidden', '=', false)
 						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
 						.distinctOn('staff_alias.staff_id')

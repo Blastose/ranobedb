@@ -18,6 +18,7 @@
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
 	import BookReleases from './BookReleases.svelte';
 	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
+	import { sortByLang } from '$lib/db/array';
 
 	export let book: BookR;
 	export let revision: number | undefined;
@@ -110,8 +111,8 @@
 
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
-			<div class="flex flex-wrap gap-4">
-				{#each book.editions as edition}
+			<div class="flex flex-col gap-y-2 gap-x-4">
+				{#each sortByLang(book.editions, book.olang) as edition}
 					<div class="flex flex-col gap-2">
 						<p class="font-semibold">
 							{edition.title}
@@ -123,9 +124,9 @@
 			</div>
 		</section>
 
-		<PublishersSection publishers={book.publishers} />
+		<PublishersSection publishers={book.publishers} olang={book.olang} />
 
-		<BookReleases releases={book.releases} />
+		<BookReleases releases={book.releases} olang={book.olang} />
 
 		<section>
 			<h2 class="font-bold text-lg">Series</h2>

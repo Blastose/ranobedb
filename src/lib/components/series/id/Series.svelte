@@ -102,7 +102,7 @@
 		<StaffsSectionSnippet staffs={series.staff} />
 	</section>
 
-	<PublishersSection publishers={series.publishers} />
+	<PublishersSection publishers={series.publishers} olang={series.olang} />
 
 	<section class="flex flex-col gap-2">
 		<h2 class="text-lg font-bold">Books in series</h2>
