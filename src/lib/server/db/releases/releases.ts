@@ -33,6 +33,7 @@ export class DBReleases {
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.whereRef('release_publisher.release_id', '=', 'release.id')
 						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.where('publisher.hidden', '=', false)
 						.orderBy('release_publisher.publisher_type')
 						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 				).as('publishers'),
@@ -45,6 +46,7 @@ export class DBReleases {
 								.onRef('release_book.release_id', '=', 'release.id'),
 						)
 						.leftJoin('series_book', 'series_book.book_id', 'release_book.book_id')
+						.leftJoin('series', 'series.id', 'series_book.series_id')
 						.select([
 							'cte_book.id',
 							'cte_book.title',
@@ -63,6 +65,8 @@ export class DBReleases {
 									.limit(1),
 							).as('image'),
 						)
+						.where('cte_book.hidden', '=', false)
+						.where('series.hidden', '=', false)
 						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
 			])
@@ -99,8 +103,9 @@ export class DBReleases {
 							'release_publisher_hist.publisher_id',
 							'publisher.id',
 						)
-						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
 						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
+						.where('publisher.hidden', '=', false)
 						.orderBy('release_publisher_hist.publisher_type')
 						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 				).as('publishers'),
@@ -113,6 +118,7 @@ export class DBReleases {
 								.onRef('release_book_hist.change_id', '=', 'release_hist.change_id'),
 						)
 						.leftJoin('series_book', 'series_book.book_id', 'release_book_hist.book_id')
+						.leftJoin('series', 'series.id', 'series_book.series_id')
 						.select([
 							'cte_book.id',
 							'cte_book.title',
@@ -131,6 +137,8 @@ export class DBReleases {
 									.limit(1),
 							).as('image'),
 						)
+						.where('cte_book.hidden', '=', false)
+						.where('series.hidden', '=', false)
 						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
 			])
@@ -171,8 +179,9 @@ export class DBReleases {
 					eb
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
-						.whereRef('release_publisher.release_id', '=', 'release.id')
 						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.whereRef('release_publisher.release_id', '=', 'release.id')
+						.where('publisher.hidden', '=', false)
 						.orderBy('release_publisher.publisher_type')
 						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 				).as('publishers'),
@@ -192,7 +201,8 @@ export class DBReleases {
 							'cte_book.romaji_orig',
 							'cte_book.lang',
 							'release_book.rtype',
-						]),
+						])
+						.where('cte_book.hidden', '=', false),
 				).as('books'),
 			])
 			.where('release.id', '=', id);
@@ -228,8 +238,9 @@ export class DBReleases {
 							'release_publisher_hist.publisher_id',
 							'publisher.id',
 						)
-						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
 						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
+						.where('publisher.hidden', '=', false)
 						.orderBy('release_publisher_hist.publisher_type')
 						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name')),
 				).as('publishers'),
@@ -249,7 +260,8 @@ export class DBReleases {
 							'cte_book.romaji_orig',
 							'cte_book.lang',
 							'release_book_hist.rtype',
-						]),
+						])
+						.where('cte_book.hidden', '=', false),
 				).as('books'),
 			])
 			.where('change.item_id', '=', params.id)
