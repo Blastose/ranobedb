@@ -24,7 +24,7 @@
 	subName={getNameDisplaySub({ obj: release, prefs: $displayPrefs.names })}
 	{user}
 	item={release}
-	copyTo={{ to: ['book', 'series'] }}
+	copyTo={{ to: ['book'] }}
 >
 	{#if release.description}
 		<section>

@@ -50,10 +50,10 @@ export const load = async ({ params, locals, url }) => {
 			olang: release.lang,
 			titles: [
 				{
-					lang: 'ja',
+					lang: release.lang,
 					official: true,
-					title: '',
-					romaji: '',
+					title: release.title,
+					romaji: release.romaji,
 				},
 			],
 			editions: [
