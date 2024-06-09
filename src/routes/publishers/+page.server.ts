@@ -9,6 +9,7 @@ export const load = async ({ url, locals }) => {
 
 	let query = dbPublishers
 		.getPublishers()
+		.where('publisher.hidden', '=', false)
 		.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
 
 	if (q) {
