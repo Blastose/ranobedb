@@ -1,3 +1,5 @@
+import { getDisplayPrefsUser, getTitleDisplay } from '$lib/display/prefs.js';
+import { itemHiddenError } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
 import { error } from '@sveltejs/kit';
@@ -10,6 +12,14 @@ export const load = async ({ params, locals }) => {
 	if (!series) {
 		error(404);
 	}
+
+	await itemHiddenError({
+		item: series,
+		itemId: id,
+		itemName: 'series',
+		title: getTitleDisplay({ obj: series, prefs: getDisplayPrefsUser(locals.user).title_prefs }),
+		user: locals.user,
+	});
 
 	return {
 		series,

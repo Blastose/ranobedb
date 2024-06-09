@@ -1,6 +1,9 @@
 import type { DB, DbItem } from '$lib/server/db/dbTypes';
 import type { InferResult, Transaction } from 'kysely';
 import { db } from '../db';
+import type { User } from 'lucia';
+import { error } from '@sveltejs/kit';
+import { hasVisibilityPerms } from '$lib/db/permissions';
 
 export type Change = InferResult<ReturnType<typeof getChanges>>[number];
 export const historyItemsPerPage = 25;
@@ -54,4 +57,27 @@ export async function addChange(
 		.returning('change.id')
 		.executeTakeFirstOrThrow();
 	return { change_id: change.id, revision: revisionNumber };
+}
+
+export async function itemHiddenError<T extends { hidden: boolean }>(params: {
+	item: T;
+	itemName: DbItem;
+	itemId: number;
+	user: User | null;
+	title: string;
+}) {
+	const { item, itemId, itemName, user, title } = params;
+	if (item.hidden) {
+		if (!user || (user && !hasVisibilityPerms(user))) {
+			const change = await getChanges(itemName, itemId)
+				.orderBy('change.revision desc')
+				.executeTakeFirstOrThrow();
+			error(403, {
+				dbItemDeleted: {
+					reason: change.comments,
+					title: title,
+				},
+			});
+		}
+	}
 }
