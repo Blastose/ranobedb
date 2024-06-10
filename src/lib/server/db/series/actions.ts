@@ -4,7 +4,7 @@ import { RanobeDB } from '../db';
 import type { User } from 'lucia';
 import { addChange } from '../change/change';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
-import { ChangePermissionError, HasRelationsError } from '../errors/errors';
+import { ChangePermissionError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import {
 	type DB,
@@ -35,20 +35,19 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 						'series_relation.relation_type',
 					])
 					.select(['series_child.id'])
-					.whereRef('series_relation.id_parent', '=', 'series.id')
-					.where('series.hidden', '=', false),
+					.whereRef('series_relation.id_parent', '=', 'series.id'),
 			).as('child_series'),
 			jsonArrayFrom(
 				eb
 					.selectFrom('book')
 					.innerJoin('series_book', 'series_book.book_id', 'book.id')
-					.whereRef('series_book.series_id', '=', 'series.id')
 					.select([
 						'series_book.book_id',
 						'series_book.series_id',
 						'series_book.sort_order',
 						'series_book.book_type',
-					]),
+					])
+					.whereRef('series_book.series_id', '=', 'series.id'),
 			).as('books'),
 			jsonArrayFrom(
 				eb
@@ -353,16 +352,14 @@ export class DBSeriesActions {
 							.selectFrom('series_relation')
 							.innerJoin('series', 'series.id', 'series_relation.id_child')
 							.select(['series_relation.id_child as id', 'series_relation.relation_type'])
-							.where('series_relation.id_parent', '=', data.id)
-							.where('series.hidden', '=', false),
+							.where('series_relation.id_parent', '=', data.id),
 					).as('child_series'),
 					jsonArrayFrom(
 						eb
 							.selectFrom('book')
 							.innerJoin('series_book', 'series_book.book_id', 'book.id')
-							.whereRef('series_book.series_id', '=', 'series.id')
 							.select(['book.id', 'series_book.sort_order', 'series_book.book_type'])
-							.orderBy('sort_order desc'),
+							.whereRef('series_book.series_id', '=', 'series.id'),
 					).as('books'),
 				])
 				.executeTakeFirstOrThrow();
@@ -376,12 +373,6 @@ export class DBSeriesActions {
 			if (currentSeries.hidden || currentSeries.locked) {
 				if (!userHasVisibilityPerms) {
 					throw new ChangePermissionError('');
-				}
-			}
-
-			if (!currentSeries.hidden && data.series.hidden) {
-				if (currentSeries.child_series.length + currentSeries.books.length > 0) {
-					throw new HasRelationsError('');
 				}
 			}
 

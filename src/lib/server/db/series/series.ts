@@ -454,7 +454,7 @@ export class DBSeries {
 								.onRef('book_edition.book_id', '=', 'series_book_hist.book_id'),
 						)
 						.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
-						.distinctOn('staff_alias.staff_id')
+						.distinctOn(['staff_alias.staff_id', 'book_staff_alias.role_type'])
 						.select([
 							'book_staff_alias.role_type',
 							'staff_alias.name',

@@ -3,7 +3,7 @@ import type { Infer } from 'sveltekit-superforms';
 import type { User } from 'lucia';
 import { addChange } from '../change/change';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
-import { ChangePermissionError, HasRelationsError } from '../errors/errors';
+import { ChangePermissionError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import type { StaffAlias, StaffAliasHist } from '$lib/server/db/dbTypes';
 import type { Insertable, Kysely } from 'kysely';
@@ -47,12 +47,6 @@ export class DBStaffActions {
 			if (currentStaff.hidden || currentStaff.locked) {
 				if (!userHasVisibilityPerms) {
 					throw new ChangePermissionError('');
-				}
-			}
-
-			if (!currentStaff.hidden && data.staff.hidden) {
-				if (currentStaff.aliases.length > 0) {
-					throw new HasRelationsError('');
 				}
 			}
 

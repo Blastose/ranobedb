@@ -8,7 +8,7 @@ const { DatabaseError } = pkg;
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
-import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
+import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { db } from '$lib/server/db/db.js';
@@ -94,12 +94,6 @@ export const actions = {
 				}
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
-			} else if (e instanceof HasRelationsError) {
-				return setError(
-					form,
-					'hidden',
-					'Cannot hide book. Remove any relations to the book and try again.',
-				);
 			}
 		}
 

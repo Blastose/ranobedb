@@ -4,7 +4,7 @@ import { RanobeDB } from '../db';
 import type { User } from 'lucia';
 import { addChange } from '../change/change';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
-import { ChangePermissionError, HasRelationsError } from '../errors/errors';
+import { ChangePermissionError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import {
 	type PublisherRelation,
@@ -35,6 +35,8 @@ export class DBPublisherActions {
 	// Why is this needed?
 	// We need to add the publisher to the changes hist,
 	// which should have everything, so we need the previous ones
+	// We don't use where hidden = true here, since if it does have a hidden publisher relation,
+	// it will not do the reverse when we remove it (since it is skipped in the select) (same for reverse series)
 	async getPublishersForReverseRelation(params: { trx: Transaction<DB>; publisher_ids: number[] }) {
 		return await params.trx
 			.selectFrom('publisher')
@@ -53,8 +55,7 @@ export class DBPublisherActions {
 							'publisher_relation.relation_type',
 						])
 						.select(['publisher_child.name'])
-						.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
-						.where('publisher_child.hidden', '=', false),
+						.whereRef('publisher_relation.id_parent', '=', 'publisher.id'),
 				).as('child_publishers'),
 			)
 			.select([
@@ -302,24 +303,8 @@ export class DBPublisherActions {
 							.innerJoin('publisher', 'publisher.id', 'publisher_relation.id_child')
 							.select(['publisher_relation.id_child as id', 'publisher_relation.relation_type'])
 							.select(['publisher.description', 'publisher.name', 'publisher.romaji'])
-							.where('publisher_relation.id_parent', '=', data.id)
-							.where('publisher.hidden', '=', false),
+							.where('publisher_relation.id_parent', '=', data.id),
 					).as('child_publishers'),
-					jsonArrayFrom(
-						eb
-							.selectFrom('publisher_relation')
-							.innerJoin('publisher', 'publisher.id', 'publisher_relation.id_parent')
-							.select(['publisher_relation.id_parent as id', 'publisher_relation.relation_type'])
-							.where('publisher_relation.id_child', '=', data.id)
-							.where('publisher.hidden', '=', false),
-					).as('parent_publishers'),
-					jsonArrayFrom(
-						eb
-							.selectFrom('release_publisher')
-							.innerJoin('release', 'release.id', 'release_publisher.release_id')
-							.select('release.id as release_id')
-							.where('release_publisher.publisher_id', '=', data.id),
-					).as('release_publisher'),
 				])
 				.executeTakeFirstOrThrow();
 
@@ -332,15 +317,6 @@ export class DBPublisherActions {
 			if (currentPublisher.hidden || currentPublisher.locked) {
 				if (!userHasVisibilityPerms) {
 					throw new ChangePermissionError('');
-				}
-			}
-
-			if (!currentPublisher.hidden && data.publisher.hidden) {
-				if (
-					currentPublisher.child_publishers.length + currentPublisher.release_publisher.length >
-					0
-				) {
-					throw new HasRelationsError('');
 				}
 			}
 

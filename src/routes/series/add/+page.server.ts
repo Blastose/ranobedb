@@ -6,7 +6,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasAddPerms } from '$lib/db/permissions';
 import { DBSeriesActions } from '$lib/server/db/series/actions.js';
-import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
+import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { db } from '$lib/server/db/db.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
 const { DatabaseError } = pkg;
@@ -94,12 +94,6 @@ export const actions = {
 				}
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
-			} else if (e instanceof HasRelationsError) {
-				return setError(
-					form,
-					'hidden',
-					'Cannot hide series. Remove any relations to the series and try again.',
-				);
 			}
 		}
 

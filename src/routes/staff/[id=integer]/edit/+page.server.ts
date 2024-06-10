@@ -3,10 +3,10 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
-import { setError, superValidate } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
-import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
+import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
 import { DBStaffActions } from '$lib/server/db/staff/actions.js';
@@ -86,12 +86,6 @@ export const actions = {
 				return fail(400, { form });
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
-			} else if (e instanceof HasRelationsError) {
-				return setError(
-					form,
-					'hidden',
-					'Cannot hide staff. Remove any relations to the staff and try again.',
-				);
 			}
 			console.log(e);
 		}
