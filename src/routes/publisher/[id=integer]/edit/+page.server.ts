@@ -52,7 +52,7 @@ export const load = async ({ params, locals, url }) => {
 	}
 
 	const prefilledComment = revision.data.revision
-		? revertedRevisionMarkdown('p', 'publisher', publisherId, revision.data.revision)
+		? revertedRevisionMarkdown('publisher', publisherId, revision.data.revision)
 		: undefined;
 
 	const form = await superValidate(

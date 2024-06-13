@@ -96,7 +96,6 @@ export class DBPublisherActions {
 				params.trx,
 				{
 					comments: reverseRelationUpdateMarkdown(
-						'p',
 						'publisher',
 						params.main_id,
 						params.og_change.revision,
@@ -168,7 +167,6 @@ export class DBPublisherActions {
 				params.trx,
 				{
 					comments: reverseRelationUpdateMarkdown(
-						'p',
 						'publisher',
 						params.main_id,
 						params.og_change.revision,
@@ -241,7 +239,6 @@ export class DBPublisherActions {
 				params.trx,
 				{
 					comments: reverseRelationUpdateMarkdown(
-						'p',
 						'publisher',
 						params.main_id,
 						params.og_change.revision,

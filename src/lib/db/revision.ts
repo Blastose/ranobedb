@@ -12,33 +12,16 @@ const dbItemMap: Record<DbItem, DbItemPrefix> = {
 	staff: 'st',
 };
 
-export function buildRevisionMarkdownLink(
-	prefix: string,
-	dbItem: DbItem,
-	id: number,
-	revision: number,
-) {
-	return `[${prefix}${id}.${revision}](/${dbItem}/${id}/revision/${revision})`;
+export function buildRevisionMarkdownLink(dbItem: DbItem, id: number, revision: number) {
+	return `[${dbItemMap[dbItem]}${id}.${revision}](/${dbItem}/${id}/revision/${revision})`;
 }
 
-export function revertedRevisionMarkdown(
-	prefix: string,
-	dbItem: DbItem,
-	id: number,
-	revision: number,
-) {
-	return `Reverted to revision ${buildRevisionMarkdownLink(prefix, dbItem, id, revision)}`;
+export function revertedRevisionMarkdown(dbItem: DbItem, id: number, revision: number) {
+	return `Reverted to revision ${buildRevisionMarkdownLink(dbItem, id, revision)}`;
 }
 
-// TODO replace prefix with dbItemMap[dbItem]
-export function reverseRelationUpdateMarkdown(
-	prefix: string,
-	dbItem: DbItem,
-	id: number,
-	revision: number,
-) {
+export function reverseRelationUpdateMarkdown(dbItem: DbItem, id: number, revision: number) {
 	return `Reverse relation update caused by revision ${buildRevisionMarkdownLink(
-		prefix,
 		dbItem,
 		id,
 		revision,

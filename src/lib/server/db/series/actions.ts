@@ -111,7 +111,6 @@ async function updateReverseSeriesRelations(params: {
 			params.trx,
 			{
 				comments: reverseRelationUpdateMarkdown(
-					's',
 					'series',
 					params.main_id,
 					params.og_change.revision,
@@ -192,7 +191,6 @@ async function removeReverseSeriesRelations(params: {
 			params.trx,
 			{
 				comments: reverseRelationUpdateMarkdown(
-					's',
 					'series',
 					params.main_id,
 					params.og_change.revision,
@@ -271,7 +269,6 @@ async function addReverseSeriesRelations(params: {
 			params.trx,
 			{
 				comments: reverseRelationUpdateMarkdown(
-					's',
 					'series',
 					params.main_id,
 					params.og_change.revision,
