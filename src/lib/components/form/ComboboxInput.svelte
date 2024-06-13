@@ -68,7 +68,7 @@
 
 	<div class="relative w-full max-w-sm">
 		<div class="absolute left-2 top-1/2 -translate-y-1/2"><Icon name="search" /></div>
-		<input use:melt={$input} class="input w-full !pl-10 !pr-8" placeholder="Name" />
+		<input use:melt={$input} class="combobox input w-full !pl-10 !pr-8" placeholder="Name" />
 		<div class="absolute right-2 top-1/2 z-10 -translate-y-1/2 text-magnum-900">
 			{#if $open && $inputValue.length > 0}
 				<Icon name="chevronUp" />

@@ -37,7 +37,7 @@
 	</div>
 
 	<div class="-mt-32 z-10 flex flex-col gap-4">
-		<div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] md:grid-cols-[256px_1fr] gap-6 sm:gap-12">
+		<div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] md:grid-cols-[256px_1fr] gap-6 sm:gap-8">
 			<div class="flex flex-col items-center gap-4">
 				{#if book.image}
 					<img
