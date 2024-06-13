@@ -434,13 +434,13 @@ input[type='number'].input.reset-padding {
 	font-size: 0.67rem;
 }
 .markdown a {
-	color: rgb(92, 92, 226);
+	color: var(--link);
 }
 .markdown a:hover {
 	text-decoration: underline;
 }
 .dark .markdown a {
-	color: rgb(150, 150, 255);
+	color: var(--link-dark);
 }
 .markdown li {
 	display: list-item;
