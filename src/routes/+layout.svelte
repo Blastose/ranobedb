@@ -9,6 +9,7 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { getDisplayPrefsUser } from '$lib/display/prefs';
+	import Progress from '$lib/components/layout/Progress.svelte';
 
 	onNavigate((navigation) => {
 		// if (!document.startViewTransition) return;
@@ -49,6 +50,8 @@
 </script>
 
 <svelte:document on:keydown={handleKeyDown} />
+
+<Progress />
 
 <Layout user={data.user} url={data.url}>
 	<slot />
