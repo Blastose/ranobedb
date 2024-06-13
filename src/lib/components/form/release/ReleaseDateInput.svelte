@@ -110,7 +110,7 @@
 		<span>{label}</span>
 		<div class="flex gap-2" bind:this={selectContainer}>
 			<select on:change={handleYearChange} class="input reset-padding" name="" id="">
-				{#each years as year}
+				{#each years as year (year)}
 					<option
 						value={year}
 						selected={year === initalDate.getYear() ||
@@ -120,7 +120,7 @@
 			</select>
 			{#if !hideMonth}
 				<select on:change={handleMonthChange} class="input reset-padding" name="" id="">
-					{#each months as month, index}
+					{#each months as month, index (month)}
 						<option
 							class="month-option"
 							value={index}
@@ -133,7 +133,7 @@
 			{/if}
 			{#if !hideDay}
 				<select on:change={handleDayChange} class="input reset-padding" name="" id="">
-					{#each days as day, index}
+					{#each days as day, index (day)}
 						{@const currentDateNumber = new DateNumber(Number($proxy))}
 						{@const maxNumberOfDays = new Date(
 							currentDateNumber.getYear(),

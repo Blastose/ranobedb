@@ -21,7 +21,7 @@
 </script>
 
 <nav class="flex gap-4">
-	{#each tabs as tab}
+	{#each tabs as tab (tab)}
 		{@const active = tab === currentTab}
 		<div class="flex flex-col gap-2">
 			<a

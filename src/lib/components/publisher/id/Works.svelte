@@ -36,7 +36,7 @@
 		{#if worksMain.length > 0}
 			{#if works.type === 'books'}
 				<BookImageContainer moreColumns={true}>
-					{#each works.books as book}
+					{#each works.books as book (book.id)}
 						<BookImage {book} urlPrefix="/book/">
 							<BookImageBadge badges={book.publisher_type} />
 						</BookImage>
@@ -44,7 +44,7 @@
 				</BookImageContainer>
 			{:else if works.type === 'series'}
 				<BookImageContainer moreColumns={true}>
-					{#each works.series as series}
+					{#each works.series as series (series.id)}
 						<BookImage
 							book={{ title: series.title, id: series.id, image: series.book?.image }}
 							urlPrefix="/series/"
@@ -60,7 +60,7 @@
 					{/each}
 				</BookImageContainer>
 			{:else}
-				{#each works.releases as release}
+				{#each works.releases as release (release.id)}
 					<p>
 						<a class="link" href="/release/{release.id}"
 							>{release.title} - {release.release_date} - {release.publisher_type}</a

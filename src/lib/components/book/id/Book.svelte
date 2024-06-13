@@ -112,7 +112,7 @@
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
 			<div class="flex flex-col gap-y-2 gap-x-4">
-				{#each sortByLang(book.editions, book.olang) as edition}
+				{#each sortByLang(book.editions, book.olang) as edition (edition.eid)}
 					<div class="flex flex-col gap-2">
 						<p class="font-semibold">
 							{edition.title}
@@ -131,7 +131,7 @@
 		<section>
 			<h2 class="font-bold text-lg">Series</h2>
 			<div class="flex flex-col gap-2">
-				{#each book.series as series}
+				{#each book.series as series (series.id)}
 					<BookCarousel>
 						<svelte:fragment slot="link">
 							<a class="link w-fit font-bold" href="/series/{series.id}"

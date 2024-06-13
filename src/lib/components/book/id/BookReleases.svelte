@@ -23,7 +23,7 @@
 		{#each sortByLangObjEntries(Object.entries(groupedReleasesByLang), olang) as [key, releases]}
 			<section>
 				<h3 class="font-semibold">{getLanguageFromString(key)}</h3>
-				{#each releases as release}
+				{#each releases as release (release.id)}
 					<p>
 						<a class="link" href="/release/{release.id}"
 							><NameDisplay obj={release} /> - {release.format}

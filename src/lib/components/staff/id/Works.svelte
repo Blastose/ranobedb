@@ -26,7 +26,7 @@
 		{#if worksMain.length > 0}
 			{#if works.type === 'books'}
 				<BookImageContainer moreColumns={true}>
-					{#each works.books as book}
+					{#each works.books as book (book.id)}
 						<BookImage {book} urlPrefix="/book/">
 							<BookImageBadge badges={book.role_types} />
 						</BookImage>
@@ -34,7 +34,7 @@
 				</BookImageContainer>
 			{:else}
 				<BookImageContainer moreColumns={true}>
-					{#each works.series as series}
+					{#each works.series as series (series.id)}
 						<BookImage
 							book={{ title: series.title, id: series.id, image: series.book?.image }}
 							urlPrefix="/series/"

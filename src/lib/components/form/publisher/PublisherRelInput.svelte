@@ -46,7 +46,7 @@
 						class="input reset-padding"
 						bind:value={$values[i].relation_type}
 					>
-						{#each publisherRelTypeArray as rel_type}
+						{#each publisherRelTypeArray as rel_type (rel_type)}
 							<option value={rel_type} selected={rel_type === $values[i].relation_type}
 								>{rel_type}</option
 							>

@@ -38,7 +38,7 @@
 		<section>
 			<h2 class="text-lg font-bold">Other names</h2>
 
-			{#each staff.aliases as alias}
+			{#each staff.aliases as alias (alias.id)}
 				<p><NameDisplay obj={alias} /></p>
 			{:else}
 				<p>No other names</p>

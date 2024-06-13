@@ -30,7 +30,7 @@
 			</thead>
 
 			<tbody>
-				{#each changes as change}
+				{#each changes as change (change.revision)}
 					<tr>
 						<td
 							><a class="link" href={buildRevisionLink(change.item_id, change.revision)}

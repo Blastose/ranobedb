@@ -97,7 +97,7 @@
 				{#each Object.entries(child_series) as [key, series]}
 					<div class="flex flex-col">
 						<h3 class="font-semibold capitalize">{key}:</h3>
-						{#each series as serie}
+						{#each series as serie (serie.id)}
 							<a class="link" href="/series/{serie.id}">{serie.title}</a>
 						{/each}
 					</div>
@@ -118,7 +118,7 @@
 
 		{#if series.books.length > 0}
 			<BookImageContainer moreColumns={true}>
-				{#each series.books as book}
+				{#each series.books as book (book.id)}
 					<BookImage {book} urlPrefix="/book/" />
 				{/each}
 			</BookImageContainer>

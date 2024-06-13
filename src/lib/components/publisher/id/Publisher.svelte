@@ -69,7 +69,7 @@
 			{#each Object.entries(child_publishers) as [key, publishers]}
 				<div class="flex flex-wrap gap-x-4">
 					<h3 class="font-semibold capitalize">{key}:</h3>
-					{#each publishers as publisher, index}
+					{#each publishers as publisher, index (publisher.id)}
 						<span>
 							<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a
 							>{#if index < publishers.length - 1},{/if}
