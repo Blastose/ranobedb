@@ -5,6 +5,7 @@ import { DeduplicateJoinsPlugin } from 'kysely';
 
 export const load = async ({ url, locals }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
+	// TODO searchParams to zod for validation
 	const q = url.searchParams.get('q');
 
 	const user = locals.user;

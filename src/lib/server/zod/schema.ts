@@ -170,8 +170,10 @@ const zLink = (validHostnames: string[]) =>
 		.string()
 		.max(maxTextLength)
 		.trim()
+		.transform((v) => (v === '' ? null : v))
 		.refine(
 			(v) => {
+				if (v === null) return true;
 				try {
 					const url = new URL(v);
 					if (validHostnames.length === 0) {
