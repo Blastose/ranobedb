@@ -1,11 +1,12 @@
 <script lang="ts">
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
-	import { groupBy } from '$lib/db/array';
+	import { groupBy, sortByLangObjEntries } from '$lib/db/array';
 	import { languageNames } from '$lib/db/dbConsts';
 	import type { BookR } from '$lib/server/db/books/books';
 	import type { Language } from '$lib/server/db/dbTypes';
 
 	export let publishers: BookR['publishers'];
+	export let olang: Language;
 
 	$: groupedPublishersByLang = groupBy(publishers, (item) => item.lang);
 
@@ -19,11 +20,11 @@
 	<h2 class="font-bold text-lg">Publishers</h2>
 
 	<div class="flex flex-wrap gap-x-4 gap-y-1">
-		{#each Object.entries(groupedPublishersByLang) as [key, publishers]}
+		{#each sortByLangObjEntries(Object.entries(groupedPublishersByLang), olang) as [key, publishers]}
 			<section>
 				<h3 class="font-semibold">{getLanguageFromString(key)}</h3>
 				<p>
-					{#each publishers as publisher, index}
+					{#each publishers as publisher, index (publisher.id)}
 						<span>
 							<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a>
 							<span class="text-xs">{publisher.publisher_type}</span

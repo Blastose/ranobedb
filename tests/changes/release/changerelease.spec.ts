@@ -25,20 +25,33 @@ test.describe('edit release mod', () => {
 test.describe('edit release user invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
-	test('User cannot edit release due to invalid permissions', async ({ page }) => {
+	test('User cannot edit release due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/release/1/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/release/1/edit', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
 
 test.describe('edit release editor invalid permissions locked', () => {
 	test.use({ storageState: 'storage-state/storageStateEditor.json' });
 
-	test('Editor cannot edit locked release due to invalid permissions', async ({ page }) => {
+	test('Editor cannot edit locked release due to invalid permissions', async ({
+		page,
+		request,
+	}) => {
 		await page.goto('/release/2');
 		await expect(page.getByText('Locked')).toBeVisible();
 		await page.goto('/release/2/edit');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/release/2/edit', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });
 
@@ -80,8 +93,13 @@ test.describe('add release mod', () => {
 test.describe('add release user invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
-	test('User cannot edit release due to invalid permissions', async ({ page }) => {
+	test('User cannot add release due to invalid permissions', async ({ page, request }) => {
 		await page.goto('/releases/add');
 		await expect(page.locator('h1')).toHaveText('Access Denied');
+		const response = await request.post('/releases/add', {
+			data: '',
+			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+		});
+		expect(response.status()).toBe(403);
 	});
 });

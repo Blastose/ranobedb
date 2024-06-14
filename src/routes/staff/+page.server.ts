@@ -10,7 +10,6 @@ export const load = async ({ url, locals }) => {
 	let query = dbStaff
 		.getStaff()
 		.where('staff.hidden', '=', false)
-		.where('staff.locked', '=', false)
 		.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'));
 	if (q) {
 		query = query.where((eb) =>

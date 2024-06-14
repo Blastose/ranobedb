@@ -4,7 +4,7 @@ import { RanobeDB } from '../db';
 import type { User } from 'lucia';
 import { addChange } from '../change/change';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
-import { ChangePermissionError, HasRelationsError } from '../errors/errors';
+import { ChangePermissionError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { arrayDiff, arrayIntersection } from '$lib/db/array';
 import type { Insertable, Kysely } from 'kysely';
@@ -64,12 +64,6 @@ export class DBReleaseActions {
 			if (currentRelease.hidden || currentRelease.locked) {
 				if (!userHasVisibilityPerms) {
 					throw new ChangePermissionError('');
-				}
-			}
-
-			if (!currentRelease.hidden && data.release.hidden) {
-				if (currentRelease.books.length + currentRelease.publishers.length > 0) {
-					throw new HasRelationsError('');
 				}
 			}
 

@@ -12,6 +12,7 @@ function addCharacterBetweenString(str: string, char: string) {
 async function getPublisherByName(name: string, nameAsNumber: number) {
 	return await db
 		.selectFrom('publisher')
+		.select(['publisher.name', 'publisher.id', 'publisher.romaji'])
 		.where(({ eb }) => {
 			const ors: Expression<SqlBool>[] = [];
 			ors.push(eb('publisher.name', 'ilike', name));
@@ -22,7 +23,6 @@ async function getPublisherByName(name: string, nameAsNumber: number) {
 			return eb.or(ors);
 		})
 		.where('publisher.hidden', '=', false)
-		.select(['publisher.name', 'publisher.id', 'publisher.romaji'])
 		.limit(16)
 		.execute();
 }

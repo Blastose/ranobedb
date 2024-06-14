@@ -45,7 +45,8 @@ export class DBStaff {
 						.selectFrom('staff_alias as all_aliases')
 						.whereRef('all_aliases.staff_id', '=', 'staff.id')
 						.where('all_aliases.main_alias', '=', false)
-						.selectAll('all_aliases'),
+						.selectAll('all_aliases')
+						.orderBy((eb) => eb.fn.coalesce('all_aliases.romaji', 'all_aliases.name')),
 				).as('aliases'),
 			)
 			.where('staff.id', '=', id);
@@ -84,7 +85,8 @@ export class DBStaff {
 							'all_aliases.main_alias',
 							'all_aliases.name',
 							'all_aliases.romaji',
-						]),
+						])
+						.orderBy((eb) => eb.fn.coalesce('all_aliases.romaji', 'all_aliases.name')),
 				).as('aliases'),
 			)
 			.where('change.item_id', '=', options.id)
@@ -181,7 +183,6 @@ export class DBStaff {
 					.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
 					.on('staff_alias.staff_id', '=', staffId),
 			)
-			.where('staff_alias.staff_id', '=', staffId)
 			.clearSelect()
 			.select([
 				'cte_book.id',
@@ -211,6 +212,7 @@ export class DBStaff {
 						.limit(1),
 				).as('image'),
 			)
+			.where('cte_book.hidden', '=', false)
 			.groupBy([
 				'cte_book.id',
 				'cte_book.image_id',
@@ -230,13 +232,13 @@ export class DBStaff {
 		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
 			.getSeries()
 			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
+			.innerJoin('book', 'book.id', 'series_book.book_id')
 			.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'series_book.book_id')
 			.innerJoin('staff_alias', (join) =>
 				join
 					.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
 					.on('staff_alias.staff_id', '=', staffId),
 			)
-			.where('staff_alias.staff_id', '=', staffId)
 			.clearSelect()
 			.select([
 				'cte_series.title',
@@ -261,6 +263,8 @@ export class DBStaff {
 				jsonObjectFrom(
 					eb
 						.selectFrom('series_book as sb3')
+						.innerJoin('book', 'book.id', 'sb3.book_id')
+						.where('book.hidden', '=', false)
 						.whereRef('sb3.series_id', '=', 'cte_series.id')
 						.select(({ fn }) => [fn.countAll().as('count')]),
 				).as('volumes'),
@@ -270,7 +274,6 @@ export class DBStaff {
 					eb
 						.selectFrom('book')
 						.innerJoin('series_book as sb2', 'sb2.series_id', 'cte_series.id')
-						.whereRef('sb2.book_id', '=', 'book.id')
 						.select('book.id')
 						.select((eb) =>
 							jsonObjectFrom(
@@ -281,10 +284,14 @@ export class DBStaff {
 									.limit(1),
 							).as('image'),
 						)
+						.where('book.hidden', '=', false)
+						.whereRef('sb2.book_id', '=', 'book.id')
 						.orderBy('sb2.sort_order asc')
 						.limit(1),
 				).as('book'),
 			])
+			.where('cte_series.hidden', '=', false)
+			.where('book.hidden', '=', false)
 			.groupBy([
 				'cte_series.title',
 				'cte_series.bookwalker_id',

@@ -16,12 +16,5 @@
 <PageTitle {title} />
 
 <main class="container-rndb">
-	<HistoryPaged
-		{changes}
-		{title}
-		dbItem="publisher"
-		prefix="p"
-		currentPage={data.currentPage}
-		totalPages={data.totalPages}
-	/>
+	<HistoryPaged {changes} {title} currentPage={data.currentPage} totalPages={data.totalPages} />
 </main>

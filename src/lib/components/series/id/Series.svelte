@@ -54,6 +54,15 @@
 		</div>
 	</div>
 
+	<section>
+		<h2 class="font-bold text-lg">Titles</h2>
+		<div>
+			{#each series.titles as title}
+				<p>{title.lang} - {title.title}</p>
+			{/each}
+		</div>
+	</section>
+
 	{#if series.aliases}
 		<section>
 			<h2 class="font-bold text-lg">Aliases</h2>
@@ -88,7 +97,7 @@
 				{#each Object.entries(child_series) as [key, series]}
 					<div class="flex flex-col">
 						<h3 class="font-semibold capitalize">{key}:</h3>
-						{#each series as serie}
+						{#each series as serie (serie.id)}
 							<a class="link" href="/series/{serie.id}">{serie.title}</a>
 						{/each}
 					</div>
@@ -102,14 +111,14 @@
 		<StaffsSectionSnippet staffs={series.staff} />
 	</section>
 
-	<PublishersSection publishers={series.publishers} />
+	<PublishersSection publishers={series.publishers} olang={series.olang} />
 
 	<section class="flex flex-col gap-2">
 		<h2 class="text-lg font-bold">Books in series</h2>
 
 		{#if series.books.length > 0}
 			<BookImageContainer moreColumns={true}>
-				{#each series.books as book}
+				{#each series.books as book (book.id)}
 					<BookImage {book} urlPrefix="/book/" />
 				{/each}
 			</BookImageContainer>

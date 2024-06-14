@@ -6,7 +6,7 @@
 </script>
 
 <div class="flex flex-wrap gap-4">
-	{#each staffs as staff}
+	{#each staffs as staff (`${staff.staff_id}${staff.role_type}`)}
 		<div>
 			<a class="flex flex-col link-box px-4 py-2 rounded-md" href="/staff/{staff.staff_id}">
 				<span><NameDisplay obj={staff} /></span>

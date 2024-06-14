@@ -6,7 +6,7 @@ export const load = async ({ url, locals }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const dbSeries = DBSeries.fromDB(db, locals.user);
 	const q = url.searchParams.get('q');
-	let query = dbSeries.getSeries();
+	let query = dbSeries.getSeries().where('cte_series.hidden', '=', false);
 	if (q) {
 		query = query.where('cte_series.title', 'ilike', `%${q}%`);
 	}

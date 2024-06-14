@@ -1,16 +1,14 @@
 <script lang="ts">
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
+	import { buildRevisionLink, getHistoryEntryTitle } from '$lib/db/revision';
+	import { getDisplayPrefsContext } from '$lib/display/prefs';
 	import type { Change } from '$lib/server/db/change/change';
-	import type { DbItem } from '$lib/server/db/dbTypes';
 
 	export let changes: Change[];
 	export let title: string | undefined = undefined;
-	export let prefix: string;
-	export let dbItem: DbItem;
+	export let showItemTitle: boolean;
 
-	function buildRevisionLink(item_id: number, revision: number) {
-		return `/${dbItem}/${item_id}/revision/${revision}`;
-	}
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <div class="flex flex-col gap-4">
@@ -30,17 +28,16 @@
 			</thead>
 
 			<tbody>
-				{#each changes as change}
+				{#each changes as change (change.id)}
+					{@const link = buildRevisionLink(change.item_name, change.item_id, change.revision)}
 					<tr>
-						<td
-							><a class="link" href={buildRevisionLink(change.item_id, change.revision)}
-								>{prefix}{change.item_id}.{change.revision}</a
-							></td
-						>
+						<td><a class="link" href={link.href}>{link.text}</a></td>
 						<td class="table-date">{new Date(change.added).toLocaleString()}</td>
 						<td><a class="link" href="/user/{change.username}">{change.username}</a></td>
 						<td class="table-summary"
-							><MarkdownToHtml markdown={change.comments} type="singleline" /></td
+							>{#if showItemTitle}<a class="link" href={link.href}
+									>{getHistoryEntryTitle(change, $displayPrefs)}</a
+								>{/if}<MarkdownToHtml markdown={change.comments} type="singleline" /></td
 						>
 					</tr>
 				{/each}

@@ -24,7 +24,7 @@
 	subName={getNameDisplaySub({ obj: release, prefs: $displayPrefs.names })}
 	{user}
 	item={release}
-	copyTo={{ to: ['book', 'series'] }}
+	copyTo={{ to: ['book'] }}
 >
 	{#if release.description}
 		<section>
@@ -86,7 +86,7 @@
 		<section>
 			<h2 class="text-lg font-bold">Publishers</h2>
 			<p>
-				{#each release.publishers as publisher, index}
+				{#each release.publishers as publisher, index (publisher.id)}
 					<span>
 						<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a>
 						<span class="text-xs">{publisher.publisher_type}</span
@@ -102,7 +102,7 @@
 
 		{#if release.books.length > 0}
 			<BookImageContainer moreColumns={true}>
-				{#each release.books as book}
+				{#each release.books as book (book.id)}
 					<BookImage {book} urlPrefix="/book/" />
 				{/each}
 			</BookImageContainer>

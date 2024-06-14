@@ -34,13 +34,14 @@ export class DBPublishers {
 					eb
 						.selectFrom('release')
 						.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
-						.whereRef('release_publisher.publisher_id', '=', 'publisher.id')
 						.select([
 							'release.title',
 							'release_publisher.publisher_type',
 							'release.id',
 							'release.release_date',
 						])
+						.whereRef('release_publisher.publisher_id', '=', 'publisher.id')
+						.where('release.hidden', '=', false)
 						.orderBy('release.release_date desc')
 						.orderBy('release.title')
 						.limit(100),
@@ -59,7 +60,10 @@ export class DBPublishers {
 							'child_publisher.id',
 							'publisher_relation.relation_type',
 						])
-						.where('publisher_relation.id_parent', '=', id),
+						.where('publisher_relation.id_parent', '=', id)
+						.where('child_publisher.hidden', '=', false)
+						.orderBy('publisher_relation.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name')),
 				).as('child_publishers'),
 			])
 			.where('publisher.id', '=', id);
@@ -86,13 +90,14 @@ export class DBPublishers {
 					eb
 						.selectFrom('release')
 						.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
-						.where('release_publisher.publisher_id', '=', params.id)
 						.select([
 							'release.title',
 							'release_publisher.publisher_type',
 							'release.id',
 							'release.release_date',
 						])
+						.where('release_publisher.publisher_id', '=', params.id)
+						.where('release.hidden', '=', false)
 						.orderBy('release.release_date desc')
 						.orderBy('release.title')
 						.limit(100),
@@ -111,7 +116,10 @@ export class DBPublishers {
 							'child_publisher.id',
 							'publisher_relation_hist.relation_type',
 						])
-						.whereRef('publisher_relation_hist.change_id', '=', 'change.id'),
+						.whereRef('publisher_relation_hist.change_id', '=', 'change.id')
+						.where('child_publisher.hidden', '=', false)
+						.orderBy('publisher_relation_hist.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name')),
 				).as('child_publishers'),
 			])
 			.where('change.item_id', '=', params.id)
@@ -145,10 +153,17 @@ export class DBPublishers {
 				jsonArrayFrom(
 					eb
 						.selectFrom('publisher_relation')
-						.innerJoin('publisher as child_pub', 'child_pub.id', 'publisher_relation.id_child')
-						.select(['child_pub.name', 'child_pub.romaji', 'child_pub.id'])
+						.innerJoin(
+							'publisher as child_publisher',
+							'child_publisher.id',
+							'publisher_relation.id_child',
+						)
+						.select(['child_publisher.name', 'child_publisher.romaji', 'child_publisher.id'])
 						.select('publisher_relation.relation_type')
-						.whereRef('publisher_relation.id_parent', '=', 'publisher.id'),
+						.whereRef('publisher_relation.id_parent', '=', 'publisher.id')
+						.where('child_publisher.hidden', '=', false)
+						.orderBy('publisher_relation.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name')),
 				).as('child_publishers'),
 			)
 			.where('publisher.id', '=', id);
@@ -173,10 +188,17 @@ export class DBPublishers {
 				jsonArrayFrom(
 					eb
 						.selectFrom('publisher_relation_hist')
-						.innerJoin('publisher as child_pub', 'child_pub.id', 'publisher_relation_hist.id_child')
-						.select(['child_pub.name', 'child_pub.romaji', 'child_pub.id'])
+						.innerJoin(
+							'publisher as child_publisher',
+							'child_publisher.id',
+							'publisher_relation_hist.id_child',
+						)
+						.select(['child_publisher.name', 'child_publisher.romaji', 'child_publisher.id'])
 						.select('publisher_relation_hist.relation_type')
-						.whereRef('publisher_relation_hist.change_id', '=', 'publisher_hist.change_id'),
+						.whereRef('publisher_relation_hist.change_id', '=', 'publisher_hist.change_id')
+						.where('child_publisher.hidden', '=', false)
+						.orderBy('publisher_relation_hist.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name')),
 				).as('child_publishers'),
 			)
 			.where('change.item_id', '=', params.id)
@@ -196,6 +218,9 @@ export class DBPublishers {
 			.getBooks()
 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
 			.innerJoin('release_publisher', 'release_book.release_id', 'release_publisher.release_id')
+			.innerJoin('release', 'release.id', 'release_book.release_id')
+			.where('cte_book.hidden', '=', false)
+			.where('release.hidden', '=', false)
 			.where('release_publisher.publisher_id', '=', publisherId)
 			.clearSelect()
 			.select([
@@ -242,7 +267,10 @@ export class DBPublishers {
 			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
 			.innerJoin('release_book', 'release_book.book_id', 'series_book.book_id')
 			.innerJoin('release_publisher', 'release_publisher.release_id', 'release_book.release_id')
+			.innerJoin('release', 'release.id', 'release_book.release_id')
 			.where('release_publisher.publisher_id', '=', publisherId)
+			.where('cte_series.hidden', '=', false)
+			.where('release.hidden', '=', false)
 			.clearSelect()
 			.select([
 				'cte_series.title',
@@ -270,7 +298,6 @@ export class DBPublishers {
 					eb
 						.selectFrom('book')
 						.innerJoin('series_book as sb2', 'sb2.series_id', 'cte_series.id')
-						.whereRef('sb2.book_id', '=', 'book.id')
 						.select('book.id')
 						.select((eb) =>
 							jsonObjectFrom(
@@ -281,6 +308,8 @@ export class DBPublishers {
 									.limit(1),
 							).as('image'),
 						)
+						.whereRef('sb2.book_id', '=', 'book.id')
+						.where('book.hidden', '=', false)
 						.orderBy('sb2.sort_order asc')
 						.limit(1),
 				).as('book'),
@@ -289,6 +318,8 @@ export class DBPublishers {
 				jsonObjectFrom(
 					eb
 						.selectFrom('series_book as sb3')
+						.innerJoin('book', 'book.id', 'sb3.book_id')
+						.where('book.hidden', '=', false)
 						.whereRef('sb3.series_id', '=', 'cte_series.id')
 						.select(({ fn }) => [fn.countAll().as('count')]),
 				).as('volumes'),
@@ -315,6 +346,7 @@ export class DBPublishers {
 			.innerJoin('release', 'release.id', 'release_publisher.release_id')
 			.selectAll('release')
 			.select('release_publisher.publisher_type')
+			.where('release.hidden', '=', false)
 			.where('publisher.id', '=', publisherId);
 	}
 

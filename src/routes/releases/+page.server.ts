@@ -9,6 +9,7 @@ export const load = async ({ url, locals }) => {
 
 	let query = dbReleases
 		.getReleases()
+		.where('release.hidden', '=', false)
 		.orderBy((eb) => eb.fn.coalesce('release.romaji', 'release.title'));
 
 	if (q) {

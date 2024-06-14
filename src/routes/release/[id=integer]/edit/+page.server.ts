@@ -6,7 +6,7 @@ const { DatabaseError } = pkg;
 import { setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
-import { ChangePermissionError, HasRelationsError } from '$lib/server/db/errors/errors.js';
+import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { DBReleases } from '$lib/server/db/releases/releases.js';
@@ -51,7 +51,7 @@ export const load = async ({ params, locals, url }) => {
 	}
 
 	const prefilledComment = revision.data.revision
-		? revertedRevisionMarkdown('r', 'release', releaseId, revision.data.revision)
+		? revertedRevisionMarkdown('release', releaseId, revision.data.revision)
 		: undefined;
 
 	const form = await superValidate({ ...release, comment: prefilledComment }, zod(releaseSchema), {
@@ -110,12 +110,6 @@ export const actions = {
 				}
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
-			} else if (e instanceof HasRelationsError) {
-				return setError(
-					form,
-					'hidden',
-					'Cannot hide release. Remove any relations to the release and try again.',
-				);
 			}
 		}
 

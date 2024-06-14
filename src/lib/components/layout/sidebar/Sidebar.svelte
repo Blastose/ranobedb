@@ -143,6 +143,12 @@
 				icon="publishers"
 			/>
 			<SidebarListItem
+				active={$page.url.pathname === '/history'}
+				href="/history"
+				text="Recent changes"
+				icon="history"
+			/>
+			<SidebarListItem
 				active={$page.url.pathname === '/add'}
 				href="/add"
 				text="Add to database"

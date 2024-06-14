@@ -9,22 +9,25 @@ import type { DisplayPrefs } from '$lib/server/zod/schema';
 import type { LanguagePriority } from '$lib/server/zod/schema';
 
 export const languagesArray = [
-	'en',
 	'ja',
+	'en',
+	'zh-Hans',
+	'zh-Hant',
+	'fr',
+	'es',
+	'ko',
 	'ar',
 	'bg',
 	'ca',
-	'ck',
 	'cs',
+	'ck',
 	'da',
 	'de',
 	'el',
 	'eo',
-	'es',
 	'eu',
 	'fa',
 	'fi',
-	'fr',
 	'ga',
 	'gd',
 	'he',
@@ -34,17 +37,16 @@ export const languagesArray = [
 	'id',
 	'it',
 	'iu',
-	'ko',
+	'mk',
+	'ms',
 	'la',
 	'lt',
 	'lv',
-	'mk',
-	'ms',
 	'nl',
 	'no',
 	'pl',
-	'pt-br',
 	'pt-pt',
+	'pt-br',
 	'ro',
 	'ru',
 	'sk',
@@ -57,9 +59,15 @@ export const languagesArray = [
 	'uk',
 	'ur',
 	'vi',
-	'zh-Hans',
-	'zh-Hant',
 ] as const;
+
+export const languageSortPrio: Record<Language, number> = languagesArray.reduce(
+	(acc, currV, currIndex) => {
+		acc[currV] = currIndex;
+		return acc;
+	},
+	{} as Record<Language, number>,
+);
 
 export const languageNames: Record<Language, string> = {
 	ar: 'Arabic',
@@ -209,3 +217,6 @@ export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconT
 	series: 'bookshelf',
 	releases: 'file',
 };
+
+export const historyFilterChangeType = ['all', 'edit', 'add'] as const;
+export const historyFilterVisibilitys = ['all', 'public', 'deleted', 'locked'] as const;

@@ -1,12 +1,13 @@
 <script lang="ts">
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
-	import { groupBy } from '$lib/db/array';
+	import { groupBy, sortByLangObjEntries } from '$lib/db/array';
 	import { languageNames } from '$lib/db/dbConsts';
 	import type { BookR } from '$lib/server/db/books/books';
 	import type { Language } from '$lib/server/db/dbTypes';
 
 	export let releases: BookR['releases'];
+	export let olang: Language;
 
 	$: groupedReleasesByLang = groupBy(releases, (item) => item.lang);
 
@@ -19,10 +20,10 @@
 <section>
 	<h2 class="font-bold text-lg">Releases</h2>
 	<div class="flex flex-col gap-1">
-		{#each Object.entries(groupedReleasesByLang) as [key, releases]}
+		{#each sortByLangObjEntries(Object.entries(groupedReleasesByLang), olang) as [key, releases]}
 			<section>
 				<h3 class="font-semibold">{getLanguageFromString(key)}</h3>
-				{#each releases as release}
+				{#each releases as release (release.id)}
 					<p>
 						<a class="link" href="/release/{release.id}"
 							><NameDisplay obj={release} /> - {release.format}

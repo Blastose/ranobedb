@@ -52,7 +52,7 @@
 				<label class="flex gap-2 items-center"
 					><span>Type: </span>
 					<select name="book-type" class="input reset-padding" bind:value={$values[i].rtype}>
-						{#each releaseTypeArray as rel_type}
+						{#each releaseTypeArray as rel_type (rel_type)}
 							<option value={rel_type} selected={rel_type === $values[i].rtype}>{rel_type}</option>
 						{/each}
 					</select>

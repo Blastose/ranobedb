@@ -31,12 +31,17 @@
 </script>
 
 <div class="flex items-center lg:hidden pr-4">
-	<button type="button" use:melt={$trigger} class="btn rounded-sm p-1" aria-label="Open sidebar">
+	<button type="button" use:melt={$trigger} class="btn rounded-full p-1" aria-label="Open sidebar">
 		<Icon name="menu" />
 	</button>
 </div>
 <div class="hidden items-center lg:flex pr-4">
-	<button type="button" on:click={openSidebar} class="btn rounded-sm p-1" aria-label="Open sidebar">
+	<button
+		type="button"
+		on:click={openSidebar}
+		class="btn rounded-full p-1"
+		aria-label="Open sidebar"
+	>
 		<Icon name="menu" />
 	</button>
 </div>

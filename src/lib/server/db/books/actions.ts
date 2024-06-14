@@ -14,7 +14,7 @@ import type {
 	DB,
 } from '$lib/server/db/dbTypes';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
-import { ChangePermissionError, HasRelationsError } from '../errors/errors';
+import { ChangePermissionError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 
 export class DBBookActions {
@@ -44,22 +44,6 @@ export class DBBookActions {
 							.select('staff_alias.id')
 							.limit(1),
 					).as('staff'),
-					jsonArrayFrom(
-						eb
-							.selectFrom('release')
-							.innerJoin('release_book', 'release.id', 'release_book.release_id')
-							.whereRef('release_book.book_id', '=', 'book.id')
-							.select('release.id')
-							.limit(1),
-					).as('releases'),
-					jsonArrayFrom(
-						eb
-							.selectFrom('series')
-							.innerJoin('series_book', 'series.id', 'series_book.series_id')
-							.whereRef('series_book.book_id', '=', 'book.id')
-							.select('series.id')
-							.limit(1),
-					).as('series'),
 				])
 				.executeTakeFirstOrThrow();
 
@@ -72,15 +56,6 @@ export class DBBookActions {
 			if (currentBook.hidden || currentBook.locked) {
 				if (!userHasVisibilityPerms) {
 					throw new ChangePermissionError('');
-				}
-			}
-
-			if (!currentBook.hidden && data.book.hidden) {
-				if (
-					currentBook.releases.length + currentBook.series.length + currentBook.staff.length >
-					0
-				) {
-					throw new HasRelationsError('');
 				}
 			}
 

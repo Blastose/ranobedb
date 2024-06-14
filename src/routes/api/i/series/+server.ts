@@ -15,17 +15,31 @@ async function getSeriesByTitle(title: string, titleAsNumber: number, user: User
 	return await db
 		.with('cte_series', withSeriesTitleCte(user?.display_prefs.title_prefs))
 		.selectFrom('cte_series')
+		.select(['cte_series.title as name', 'cte_series.id', 'cte_series.romaji', 'cte_series.lang'])
 		.where(({ eb }) => {
 			const ors: Expression<SqlBool>[] = [];
-			ors.push(eb('cte_series.title', 'ilike', title));
-			ors.push(eb('cte_series.romaji', 'ilike', title));
+			ors.push(
+				eb('cte_series.id', 'in', (eb) =>
+					eb
+						.selectFrom('series')
+						.innerJoin('series_title', (join) =>
+							join.onRef('series_title.series_id', '=', 'series.id'),
+						)
+						.where((eb2) =>
+							eb2.or([
+								eb2('series_title.title', 'ilike', title),
+								eb2('series_title.romaji', 'ilike', title),
+							]),
+						)
+						.select('series.id'),
+				),
+			);
 			if (!isNaN(titleAsNumber)) {
 				ors.push(eb('cte_series.id', '=', titleAsNumber));
 			}
 			return eb.or(ors);
 		})
 		.where('cte_series.hidden', '=', false)
-		.select(['cte_series.title as name', 'cte_series.id', 'cte_series.romaji', 'cte_series.lang'])
 		.limit(16)
 		.execute();
 }

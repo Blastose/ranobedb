@@ -8,7 +8,8 @@
 	import { page } from '$app/stores';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { defaultDisplayPrefs } from '$lib/db/dbConsts';
+	import { getDisplayPrefsUser } from '$lib/display/prefs';
+	import Progress from '$lib/components/layout/Progress.svelte';
 
 	onNavigate((navigation) => {
 		// if (!document.startViewTransition) return;
@@ -36,7 +37,7 @@
 	}
 
 	const displayPrefs = writable();
-	$: displayPrefs.set(data.user?.display_prefs ?? defaultDisplayPrefs);
+	$: displayPrefs.set(getDisplayPrefsUser(data.user));
 	setContext('displayPrefs', displayPrefs);
 
 	const sidebarOpen = writable<'open' | 'closed'>();
@@ -49,6 +50,8 @@
 </script>
 
 <svelte:document on:keydown={handleKeyDown} />
+
+<Progress />
 
 <Layout user={data.user} url={data.url}>
 	<slot />

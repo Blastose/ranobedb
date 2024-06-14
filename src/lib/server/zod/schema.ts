@@ -1,5 +1,8 @@
 import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
+	dbItemArray,
+	historyFilterChangeType,
+	historyFilterVisibilitys,
 	publisherTabs,
 	releasePublisherTypeArray,
 	releaseTypeArray,
@@ -170,8 +173,10 @@ const zLink = (validHostnames: string[]) =>
 		.string()
 		.max(maxTextLength)
 		.trim()
+		.transform((v) => (v === '' ? null : v))
 		.refine(
 			(v) => {
+				if (v === null) return true;
 				try {
 					const url = new URL(v);
 					if (validHostnames.length === 0) {
@@ -429,6 +434,17 @@ export const seriesSchema = z.object({
 
 	comment: zComment,
 });
+
+export const historyFiltersSchema = z.object({
+	items: z
+		.array(z.enum(dbItemArray))
+		.max(dbItemArray.length)
+		.default(dbItemArray.map((v) => v)),
+	change_type: z.enum(historyFilterChangeType),
+	visibility: z.enum(historyFilterVisibilitys),
+	hide_automated: z.boolean().nullish(),
+});
+export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
 
 export const searchNameSchema = z.object({ name: z.string() });
 export const revisionSchema = z.object({ revision: z.number().nullish() });

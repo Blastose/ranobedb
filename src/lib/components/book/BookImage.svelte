@@ -42,7 +42,7 @@
 		{/if}
 		<slot />
 	</div>
-	<p class="line-clamp-2">
+	<p class="line-clamp-2 text-sm sm:text-base">
 		<TitleDisplay
 			obj={{
 				lang: book.lang ?? 'en',
