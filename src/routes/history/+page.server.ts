@@ -1,4 +1,5 @@
-import { getChangesAll, historyItemsPerPage } from '$lib/server/db/change/change.js';
+import { DBChanges, historyItemsPerPage } from '$lib/server/db/change/change.js';
+import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { historyFiltersSchema } from '$lib/server/zod/schema.js';
 import { superValidate } from 'sveltekit-superforms';
@@ -14,7 +15,7 @@ export const load = async ({ url, locals }) => {
 		count,
 		totalPages,
 	} = await paginationBuilderExecuteWithCount(
-		getChangesAll({ user: locals.user, filters: form.data }),
+		new DBChanges(db).getChangesAll({ user: locals.user, filters: form.data }),
 		{
 			limit: historyItemsPerPage,
 			page: currentPage,

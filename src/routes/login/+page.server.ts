@@ -1,11 +1,13 @@
 import { loginSchema } from '$lib/server/zod/schema';
 import { fail, redirect } from '@sveltejs/kit';
-import { getUser, lucia } from '$lib/server/lucia';
+import { lucia } from '$lib/server/lucia';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { Argon2id } from 'oslo/password';
 import { buildUrlFromRedirect } from '$lib/utils/url.js';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
+import { db } from '$lib/server/db/db.js';
+import { DBUsers } from '$lib/server/db/user/user.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) {
@@ -27,8 +29,9 @@ export const actions = {
 
 		const usernameemail = form.data.usernameemail;
 		const password = form.data.password;
+		const dbUsers = new DBUsers(db);
 
-		const user = await getUser(usernameemail);
+		const user = await dbUsers.getUser(usernameemail);
 		if (!user) {
 			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
 		}

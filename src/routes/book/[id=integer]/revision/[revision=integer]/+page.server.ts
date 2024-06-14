@@ -1,5 +1,5 @@
 import { DBBooks } from '$lib/server/db/books/books.js';
-import { getChanges } from '$lib/server/db/change/change.js';
+import { DBChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
@@ -17,11 +17,9 @@ export const load = async ({ params, locals }) => {
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
 	const bookPromise = dbBooks.getBookHist(bookId, revision).executeTakeFirst();
-	const changesPromise = getChanges('book', bookId, [
-		previousRevision,
-		revision,
-		revision + 1,
-	]).execute();
+	const changesPromise = new DBChanges(db)
+		.getChanges('book', bookId, [previousRevision, revision, revision + 1])
+		.execute();
 
 	const [book, changes] = await Promise.all([bookPromise, changesPromise]);
 

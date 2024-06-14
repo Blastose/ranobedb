@@ -1,4 +1,4 @@
-import { getChanges } from '$lib/server/db/change/change.js';
+import { DBChanges } from '$lib/server/db/change/change.js';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { error, redirect } from '@sveltejs/kit';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
@@ -18,11 +18,9 @@ export const load = async ({ params, locals }) => {
 	const seriesPromise = dbSeries
 		.getSeriesHistOne({ id: seriesId, revision: revision })
 		.executeTakeFirst();
-	const changesPromise = getChanges('series', seriesId, [
-		previousRevision,
-		revision,
-		revision + 1,
-	]).execute();
+	const changesPromise = new DBChanges(db)
+		.getChanges('series', seriesId, [previousRevision, revision, revision + 1])
+		.execute();
 
 	const [series, changes] = await Promise.all([seriesPromise, changesPromise]);
 

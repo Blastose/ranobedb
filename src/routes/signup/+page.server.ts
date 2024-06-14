@@ -1,12 +1,13 @@
-import { createUser, lucia } from '$lib/server/lucia.js';
+import { lucia } from '$lib/server/lucia.js';
+import { DBUsers } from '$lib/server/db/user/user';
 import { signupSchema } from '$lib/server/zod/schema';
 import { redirect } from '@sveltejs/kit';
 import { generateId } from 'lucia';
-import { Argon2id } from 'oslo/password';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { db } from '$lib/server/db/db';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
@@ -27,13 +28,14 @@ export const actions = {
 		const email = form.data.email;
 		const username = form.data.username;
 		const password = form.data.password;
-		const hashed_password = await new Argon2id().hash(password);
 		const userId = generateId(15);
 
+		const dbUsers = new DBUsers(db);
+
 		try {
-			await createUser({
+			await dbUsers.createUser({
 				email,
-				hashed_password,
+				password,
 				id: userId,
 				username,
 			});

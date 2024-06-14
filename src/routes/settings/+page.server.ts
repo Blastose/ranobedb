@@ -1,4 +1,4 @@
-import { changePassword, changeUsername, getUser, lucia } from '$lib/server/lucia.js';
+import { lucia } from '$lib/server/lucia.js';
 import { displayPrefsSchema, passwordSchema, usernameSchema } from '$lib/server/zod/schema.js';
 import { Argon2id } from 'oslo/password';
 import {
@@ -12,6 +12,7 @@ import {
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { db } from '$lib/server/db/db.js';
+import { DBUsers } from '$lib/server/db/user/user.js';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -62,8 +63,9 @@ export const actions = {
 
 		const newUsername = usernameForm.data.username;
 		const password = usernameForm.data.password;
+		const dbUsers = new DBUsers(db);
 
-		const user = await getUser(locals.user.username);
+		const user = await dbUsers.getUser(locals.user.username);
 		if (!user) {
 			return message(
 				usernameForm,
@@ -78,7 +80,7 @@ export const actions = {
 		}
 
 		try {
-			await changeUsername({
+			await dbUsers.changeUsername({
 				userId: user.id,
 				newUsername,
 			});
@@ -117,7 +119,9 @@ export const actions = {
 		const passwordForm = await superValidate(request, zod(passwordSchema));
 		if (!passwordForm.valid) return fail(400, { passwordForm });
 
-		const user = await getUser(locals.user.username);
+		const dbUsers = new DBUsers(db);
+
+		const user = await dbUsers.getUser(locals.user.username);
 		if (!user) {
 			return message(
 				passwordForm,
@@ -133,9 +137,8 @@ export const actions = {
 		if (!validPassword) {
 			return message(passwordForm, { type: 'error', text: 'Invalid password' }, { status: 400 });
 		}
-		const newHashedPassword = await new Argon2id().hash(newPassword);
 
-		await changePassword({ userId: user.id, newHashedPassword: newHashedPassword });
+		await dbUsers.changePassword({ userId: user.id, newPassword });
 
 		await lucia.invalidateUserSessions(user.id);
 		const session = await lucia.createSession(user.id, {});
@@ -155,13 +158,11 @@ export const actions = {
 		const displayPrefsForm = await superValidate(request, zod(displayPrefsSchema));
 		if (!displayPrefsForm.valid) return fail(400, { displayPrefsForm });
 
-		await db
-			.updateTable('auth_user')
-			.set({
-				display_prefs: JSON.stringify(displayPrefsForm.data),
-			})
-			.where('auth_user.id', '=', locals.user.id)
-			.execute();
+		const dbUsers = new DBUsers(db);
+		await dbUsers.updateDisplayPrefs({
+			userId: locals.user.id,
+			displayPrefs: displayPrefsForm.data,
+		});
 
 		return message(displayPrefsForm, { text: 'Updated display preferences!', type: 'success' });
 	},
