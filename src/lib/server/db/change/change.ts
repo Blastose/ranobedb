@@ -7,11 +7,13 @@ import { hasVisibilityPerms } from '$lib/db/permissions';
 import { withBookHistTitleCte } from '../books/books';
 import { withSeriesHistTitleCte } from '../series/series';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
+import type { HistoryFilters } from '$lib/server/zod/schema';
+import { ranobeBot } from '../user/ranobebot';
 
 export type Change = InferResult<ReturnType<typeof getChangesAll>>[number];
 export const historyItemsPerPage = 25;
-export function getChangesAll(params: { user: User | null; item_names: DbItem[] }) {
-	const { user, item_names } = params;
+export function getChangesAll(params: { user: User | null; filters: HistoryFilters }) {
+	const { user, filters } = params;
 	let query = db
 		.with('cte_book_hist', withBookHistTitleCte(user?.display_prefs.title_prefs))
 		.with('cte_series_hist', withSeriesHistTitleCte(user?.display_prefs.title_prefs))
@@ -78,14 +80,32 @@ export function getChangesAll(params: { user: User | null; item_names: DbItem[] 
 		.select('auth_user.username')
 		.orderBy('change.added desc');
 
-	if (item_names.length > 0) {
+	if (filters.items.length > 0) {
 		query = query.where(({ eb }) => {
 			const ors: Expression<SqlBool>[] = [];
-			for (const item_name of item_names) {
-				ors.push(eb('change.item_name', '=', item_name));
+			for (const item of filters.items) {
+				ors.push(eb('change.item_name', '=', item));
 			}
 			return eb.or(ors);
 		});
+	}
+
+	if (filters.hide_automated) {
+		query = query.where('change.user_id', '!=', ranobeBot.id);
+	}
+
+	if (filters.change_type === 'add') {
+		query = query.where('change.revision', '=', 1);
+	} else if (filters.change_type === 'edit') {
+		query = query.where('change.revision', '!=', 1);
+	}
+
+	if (filters.visibility === 'deleted') {
+		query = query.where('change.ihid', '=', true);
+	} else if (filters.visibility === 'public') {
+		query = query.where('change.ihid', '=', false);
+	} else if (filters.visibility === 'locked') {
+		query = query.where('change.ilock', '=', true);
 	}
 
 	return query;

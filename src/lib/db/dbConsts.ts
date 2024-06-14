@@ -217,3 +217,6 @@ export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconT
 	series: 'bookshelf',
 	releases: 'file',
 };
+
+export const historyFilterChangeType = ['all', 'edit', 'add'] as const;
+export const historyFilterVisibilitys = ['all', 'public', 'deleted', 'locked'] as const;

@@ -12,7 +12,10 @@
 
 <div class="flex flex-col gap-2">
 	<h1 class="font-semibold text-2xl">{title}</h1>
+
+	<slot />
+
 	<PaginationContainer {currentPage} {totalPages} showTopPages={true} results={undefined}>
-		<History {changes} {showItemTitle} />
+		<History {changes} {showItemTitle}></History>
 	</PaginationContainer>
 </div>

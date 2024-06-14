@@ -1,4 +1,5 @@
 <script lang="ts">
+	import HistoryFilters from '$lib/components/form/history/HistoryFilters.svelte';
 	import HistoryPaged from '$lib/components/history/HistoryPaged.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
@@ -17,5 +18,7 @@
 		currentPage={data.currentPage}
 		totalPages={data.totalPages}
 		showItemTitle={true}
-	/>
+	>
+		<HistoryFilters filtersForm={data.form} />
+	</HistoryPaged>
 </main>
