@@ -33,7 +33,7 @@
 					<tr>
 						<td><a class="link" href={link.href}>{link.text}</a></td>
 						<td class="table-date">{new Date(change.added).toLocaleString()}</td>
-						<td><a class="link" href="/user/{change.username}">{change.username}</a></td>
+						<td><a class="link" href="/user/{change.id_numeric}">{change.username}</a></td>
 						<td class="table-summary"
 							>{#if showItemTitle}<a class="link" href={link.href}
 									>{getHistoryEntryTitle(change, $displayPrefs)}</a

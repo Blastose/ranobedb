@@ -47,7 +47,7 @@
 			<nav>
 				<ul class="flex flex-col gap-2">
 					<li>
-						<ProfileItem href="/user/{user.username}/list" {item} text="My List">
+						<ProfileItem href="/user/{user.id_numeric}/list" {item} text="My List">
 							<Icon name="bookMultiple" />
 						</ProfileItem>
 					</li>

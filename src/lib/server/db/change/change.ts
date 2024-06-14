@@ -77,7 +77,7 @@ export function getChangesAll(params: { user: User | null; filters: HistoryFilte
 				).as('staff'),
 			]),
 		)
-		.select('auth_user.username')
+		.select(['auth_user.username', 'auth_user.id_numeric'])
 		.orderBy('change.added desc');
 
 	if (filters.items.length > 0) {
@@ -101,6 +101,7 @@ export function getChangesAll(params: { user: User | null; filters: HistoryFilte
 	}
 
 	if (filters.visibility === 'deleted') {
+		// TODO Right now, this just queries items that are hidden at that revision, not items that the latest revision and hidden
 		query = query.where('change.ihid', '=', true);
 	} else if (filters.visibility === 'public') {
 		query = query.where('change.ihid', '=', false);
@@ -120,7 +121,7 @@ export function getChanges(item_name: DbItem, item_id: number, revisions?: numbe
 			qb.where((eb) => eb.or(revisions!.map((item) => eb('change.revision', '=', item)))),
 		)
 		.selectAll('change')
-		.select('auth_user.username')
+		.select(['auth_user.username', 'auth_user.id_numeric'])
 		.orderBy('change.revision desc');
 }
 

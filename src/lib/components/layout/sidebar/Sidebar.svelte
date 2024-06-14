@@ -67,8 +67,8 @@
 		{#if user}
 			<SidebarSection sectionHeading={user.username}>
 				<SidebarListItem
-					active={$page.url.pathname.startsWith(`/user/${user.username}/list`)}
-					href="/user/{user.username}/list"
+					active={$page.url.pathname.startsWith(`/user/${user.id_numeric}/list`)}
+					href="/user/{user.id_numeric}/list"
 					text="My List"
 					icon="mylist"
 				/>
@@ -143,6 +143,12 @@
 				icon="publishers"
 			/>
 			<SidebarListItem
+				active={$page.url.pathname === '/users'}
+				href="/users"
+				text="Users"
+				icon="profile"
+			/>
+			<SidebarListItem
 				active={$page.url.pathname === '/history'}
 				href="/history"
 				text="Recent changes"
@@ -155,41 +161,6 @@
 				icon="add"
 			/>
 		</SidebarSection>
-
-		{#if user && hasVisibilityPerms(user)}
-			<SidebarSection sectionHeading="Moderator">
-				<SidebarListItem
-					active={$page.url.pathname === '/mod/books'}
-					href="/mod/books"
-					text="Books"
-					icon="books"
-				/>
-				<SidebarListItem
-					active={$page.url.pathname === '/mod/series'}
-					href="/mod/series"
-					text="Series"
-					icon="series"
-				/>
-				<SidebarListItem
-					active={$page.url.pathname === '/mod/releases'}
-					href="/mod/releases"
-					text="Releases"
-					icon="releases"
-				/>
-				<SidebarListItem
-					active={$page.url.pathname === '/mod/staff'}
-					href="/mod/staff"
-					text="Staff"
-					icon="people"
-				/>
-				<SidebarListItem
-					active={$page.url.pathname === '/mod/publishers'}
-					href="/mod/publishers"
-					text="Publishers"
-					icon="publishers"
-				/>
-			</SidebarSection>
-		{/if}
 	</nav>
 </aside>
 

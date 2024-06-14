@@ -5,13 +5,14 @@
 
 	export let changes: Change[];
 	export let title: string;
+	export let titleSize: 'normal' | 'big' = 'normal';
 	export let currentPage: number;
 	export let totalPages: number;
 	export let showItemTitle: boolean = false;
 </script>
 
-<div class="flex flex-col gap-2">
-	<h1 class="font-semibold text-2xl">{title}</h1>
+<div class="flex flex-col gap-4">
+	<h1 class="font-bold {titleSize === 'big' ? 'text-4xl' : 'text-2xl'}">{title}</h1>
 
 	<slot />
 

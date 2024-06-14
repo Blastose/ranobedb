@@ -6,7 +6,7 @@ import type { Expression, SqlBool } from 'kysely';
 
 export const load = async ({ url, params, locals }) => {
 	const user = locals.user;
-	const listUserUsername = params.username;
+	const userIdNumeric = Number(params.id);
 	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const query = url.searchParams.get('q');
 	const labels = url.searchParams.getAll('l').map((l) => Number(l) || 1);
@@ -14,7 +14,7 @@ export const load = async ({ url, params, locals }) => {
 	const listUser = await db
 		.selectFrom('auth_user')
 		.select(['auth_user.username', 'auth_user.id'])
-		.where('auth_user.username', '=', listUserUsername)
+		.where('auth_user.id_numeric', '=', userIdNumeric)
 		.executeTakeFirst();
 
 	if (!listUser) {
@@ -54,7 +54,7 @@ export const load = async ({ url, params, locals }) => {
 		currentPage,
 		totalPages,
 		userLabelCounts,
-		isMyList: user?.username === listUserUsername,
+		isMyList: user?.id_numeric === userIdNumeric,
 		listUser,
 	};
 };
