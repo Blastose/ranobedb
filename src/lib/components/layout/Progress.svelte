@@ -21,12 +21,13 @@
 		width = 0;
 		progressIntervalId = setInterval(() => {
 			if (width >= 50) {
-				width += Math.random() * 3;
+				width += Math.random() * 2;
+			} else if (width >= 80) {
+				if (Math.random() > 0.5) {
+					width += Math.random() * 2 + 1;
+				}
 			} else {
 				width += Math.random() * 2 + 3;
-			}
-			if (width >= 80) {
-				width = 80;
 			}
 		}, 250);
 	}
@@ -72,7 +73,7 @@
 > -->
 {#if progressRunning}
 	<div class="progress-container" in:fade out:fade>
-		<div class="progress" style="width: {width}%"></div>
+		<div class="progress {width >= 100 ? 'animate-pulse' : ''}" style="width: {width}%"></div>
 	</div>
 {/if}
 
