@@ -105,6 +105,9 @@ importers:
       sveltekit-flash-message:
         specifier: ^2.4.4
         version: 2.4.4(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.0(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(svelte@4.2.18)
+      sveltekit-rate-limiter:
+        specifier: ^0.5.1
+        version: 0.5.1(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.0(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))
       sveltekit-superforms:
         specifier: ^2.14.0
         version: 2.14.0(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.0(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(@types/json-schema@7.0.15)(esbuild-runner@2.2.2(esbuild@0.21.4))(esbuild@0.21.4)(svelte@4.2.18)
@@ -490,6 +493,10 @@ packages:
 
   '@internationalized/date@3.5.4':
     resolution: {integrity: sha512-qoVJVro+O0rBaw+8HPjUB1iH8Ihf8oziEnqMnvhJUSuVIrHOuZ6eNLHNvzXJKUvAtaDiqMnRlg8Z2mgh09BlUw==}
+
+  '@isaacs/ttlcache@1.4.1':
+    resolution: {integrity: sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA==}
+    engines: {node: '>=12'}
 
   '@jest/schemas@29.6.3':
     resolution: {integrity: sha512-mo5j5X+jIZmJQveBKeS/clAueipV7KgiX1vMgCxam1RNYiqE1w62n0/tJJnHtjW8ZHcQco5gY85jA3mi0L+nSA==}
@@ -2341,6 +2348,11 @@ packages:
       '@sveltejs/kit': 1.x || 2.x
       svelte: 3.x || 4.x || >=5.0.0-next.51
 
+  sveltekit-rate-limiter@0.5.1:
+    resolution: {integrity: sha512-Q2C7mT9PdoL6v3VXgxngyXiEg2i3Dp0iVjVvKi722lroTM7oHxAJsmj66607BiSw8mdQk1Me6nhE6uRXrkDVIg==}
+    peerDependencies:
+      '@sveltejs/kit': 1.x || 2.x
+
   sveltekit-superforms@2.14.0:
     resolution: {integrity: sha512-TRN+x2+ENCnvDw70U5HLfmGQGFi4kpevpWaPpQ06AB0Wf5qCYxshbZBofMAXb8KOyetw8dhWpj86AQRPNwhzDg==}
     peerDependencies:
@@ -2823,6 +2835,8 @@ snapshots:
   '@internationalized/date@3.5.4':
     dependencies:
       '@swc/helpers': 0.5.11
+
+  '@isaacs/ttlcache@1.4.1': {}
 
   '@jest/schemas@29.6.3':
     dependencies:
@@ -4639,6 +4653,11 @@ snapshots:
     dependencies:
       '@sveltejs/kit': 2.5.10(@sveltejs/vite-plugin-svelte@3.1.0(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12))
       svelte: 4.2.18
+
+  sveltekit-rate-limiter@0.5.1(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.0(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12))):
+    dependencies:
+      '@isaacs/ttlcache': 1.4.1
+      '@sveltejs/kit': 2.5.10(@sveltejs/vite-plugin-svelte@3.1.0(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12))
 
   sveltekit-superforms@2.14.0(@sveltejs/kit@2.5.10(@sveltejs/vite-plugin-svelte@3.1.0(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.2.13(@types/node@20.12.12)))(@types/json-schema@7.0.15)(esbuild-runner@2.2.2(esbuild@0.21.4))(esbuild@0.21.4)(svelte@4.2.18):
     dependencies:

@@ -65,7 +65,7 @@ export const actions = {
 		const password = usernameForm.data.password;
 		const dbUsers = new DBUsers(db);
 
-		const user = await dbUsers.getUser(locals.user.username);
+		const user = await dbUsers.getUserFull(locals.user.username);
 		if (!user) {
 			return message(
 				usernameForm,
@@ -121,7 +121,7 @@ export const actions = {
 
 		const dbUsers = new DBUsers(db);
 
-		const user = await dbUsers.getUser(locals.user.username);
+		const user = await dbUsers.getUserFull(locals.user.username);
 		if (!user) {
 			return message(
 				passwordForm,

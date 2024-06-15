@@ -26,21 +26,21 @@ describe('users', () => {
 			username,
 		});
 
-		let userFromDb = await dbUsers.getUser(username);
+		let userFromDb = await dbUsers.getUserFull(username);
 		expect(userFromDb?.username).toBe(username);
 
-		userFromDb = await dbUsers.getUser(email);
+		userFromDb = await dbUsers.getUserFull(email);
 		expect(userFromDb?.email).toBe(email);
 		if (!userFromDb) {
 			throw Error('');
 		}
 
-		const notUserFromDb = await dbUsers.getUser('randomtexthere');
+		const notUserFromDb = await dbUsers.getUserFull('randomtexthere');
 		expect(notUserFromDb).toBeUndefined();
 
 		const newUsername = 'Yippee';
 		await dbUsers.changeUsername({ userId: userFromDb.user_id, newUsername });
-		userFromDb = await dbUsers.getUser(newUsername);
+		userFromDb = await dbUsers.getUserFull(newUsername);
 		expect(userFromDb?.username).toBe(newUsername);
 	});
 

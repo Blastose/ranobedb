@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
 import { getBooksRL, getUserLabelCounts } from '$lib/server/db/user/list';
+import { DBUsers } from '$lib/server/db/user/user.js';
 import { error } from '@sveltejs/kit';
 import type { Expression, SqlBool } from 'kysely';
 
@@ -11,11 +12,7 @@ export const load = async ({ url, params, locals }) => {
 	const query = url.searchParams.get('q');
 	const labels = url.searchParams.getAll('l').map((l) => Number(l) || 1);
 
-	const listUser = await db
-		.selectFrom('auth_user')
-		.select(['auth_user.username', 'auth_user.id'])
-		.where('auth_user.id_numeric', '=', userIdNumeric)
-		.executeTakeFirst();
+	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
 
 	if (!listUser) {
 		error(404);
@@ -32,6 +29,19 @@ export const load = async ({ url, params, locals }) => {
 		k = k.where((eb) => {
 			const ors: Expression<SqlBool>[] = [];
 			for (const l of labels) {
+				ors.push(eb('user_list_book_label.label_id', '=', l));
+			}
+
+			return eb.or(ors);
+		});
+	} else {
+		// Hack?
+		// Without this, the query planner will loop over the entries of the user's user_list_label rows (normally 5 times for the default labels)
+		// This fixes it so that it will not loop 5 times
+		// Will need to do something else for custom labels
+		k = k.where((eb) => {
+			const ors: Expression<SqlBool>[] = [];
+			for (const l of [1, 2, 3, 4, 5]) {
 				ors.push(eb('user_list_book_label.label_id', '=', l));
 			}
 

@@ -73,8 +73,8 @@
 					icon="mylist"
 				/>
 				<SidebarListItem
-					active={$page.url.pathname === '/profile'}
-					href="/profile"
+					active={$page.url.pathname === `/user/${user.id_numeric}`}
+					href="/user/{user.id_numeric}"
 					text="Profile"
 					icon="profile"
 				/>

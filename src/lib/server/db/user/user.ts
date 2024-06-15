@@ -4,6 +4,7 @@ import type { Insertable, Kysely, Transaction } from 'kysely';
 import { Argon2id } from 'oslo/password';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
 import { deletedUser } from './ranobebot';
+import type { User } from 'lucia';
 
 export async function insertDefaultUserListLabels(trx: Transaction<DB>, userId: string) {
 	const defaultUserListLabelValues = defaultUserListLabels.map((v) => {
@@ -73,12 +74,29 @@ export class DBUsers {
 			.executeTakeFirst();
 	}
 
-	async getUser(usernameemail: string) {
+	async getUserFull(usernameemail: string) {
 		if (usernameemail.includes('@')) {
 			return await this.getUserByEmail(usernameemail);
 		} else {
 			return await this.getUserByUsername(usernameemail);
 		}
+	}
+
+	async getUserByIdNumbericSafe(id_numeric: number) {
+		return await this.db
+			.selectFrom('auth_user')
+			.where('auth_user.id_numeric', '=', id_numeric)
+			.select(['auth_user.id_numeric', 'auth_user.username', 'auth_user.joined', 'auth_user.id'])
+			.executeTakeFirstOrThrow();
+	}
+
+	transformUserToSafeUser(user: User & { joined: Date }): SafeUser {
+		return {
+			id: user.id,
+			id_numeric: user.id_numeric,
+			joined: user.joined,
+			username: user.username,
+		};
 	}
 
 	async changeUsername(params: { userId: string; newUsername: string }) {
@@ -136,3 +154,5 @@ export class DBUsers {
 		});
 	}
 }
+
+export type SafeUser = Awaited<ReturnType<DBUsers['getUserByIdNumbericSafe']>>;

@@ -176,7 +176,7 @@ test.describe('auth', () => {
 	});
 
 	test('User cannot access login required pages', async ({ page }) => {
-		await page.goto('/profile');
-		await expect(page).toHaveURL('/login?redirect=/profile');
+		await page.goto('/books/add');
+		await expect(page).toHaveURL('/login?redirect=/books/add');
 	});
 });

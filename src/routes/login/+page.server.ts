@@ -31,7 +31,7 @@ export const actions = {
 		const password = form.data.password;
 		const dbUsers = new DBUsers(db);
 
-		const user = await dbUsers.getUser(usernameemail);
+		const user = await dbUsers.getUserFull(usernameemail);
 		if (!user) {
 			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
 		}
