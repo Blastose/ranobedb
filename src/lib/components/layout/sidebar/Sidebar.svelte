@@ -8,6 +8,7 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
+	import Hr from '../Hr.svelte';
 
 	export let user: User | null;
 	export let isDrawer: boolean = false;
@@ -84,7 +85,7 @@
 					text="Settings"
 					icon="settings"
 				/>
-				<SidebarFormButton text="Sign out" action="/logout">
+				<SidebarFormButton text="Sign out" textLoading="Signing out..." action="/logout">
 					<Icon name="logout" />
 				</SidebarFormButton>
 			</SidebarSection>
@@ -161,6 +162,8 @@
 				icon="add"
 			/>
 		</SidebarSection>
+
+		<Hr />
 	</nav>
 </aside>
 

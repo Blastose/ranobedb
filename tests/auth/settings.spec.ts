@@ -49,7 +49,7 @@ test.describe('settings', () => {
 
 	test('user can change their username', async ({ page }) => {
 		await page.goto('/settings');
-		await page.getByLabel('Username').fill('MyCoolUsername');
+		await page.getByLabel('New username').fill('MyCoolUsername');
 		await page.getByLabel('Current password').first().fill('password');
 		await page.getByRole('button', { name: 'Update username' }).click();
 		await expect(page.locator('.toast-container')).toHaveText('Updated username!');

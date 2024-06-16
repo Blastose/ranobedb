@@ -8,6 +8,7 @@ import { buildUrlFromRedirect } from '$lib/utils/url.js';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { db } from '$lib/server/db/db.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
+import { validateTurnstile } from '$lib/server/cf.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) {
@@ -21,7 +22,18 @@ export const load = async ({ locals }) => {
 
 export const actions = {
 	default: async ({ request, cookies, url }) => {
-		const form = await superValidate(request, zod(loginSchema));
+		const formData = await request.formData();
+
+		const form = await superValidate(formData, zod(loginSchema));
+
+		const turnstileSuccess = await validateTurnstile({ request, body: formData });
+		if (!turnstileSuccess) {
+			return message(
+				form,
+				{ type: 'error', text: 'Cloudflare validation failed' },
+				{ status: 400 },
+			);
+		}
 
 		if (!form.valid) {
 			return fail(400, { form });

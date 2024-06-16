@@ -320,8 +320,12 @@ input[type='number'].input.reset-padding {
 	transition: background-color 150ms;
 }
 
+.primary-btn:disabled {
+	background-color: var(--primary-800);
+}
+
 .primary-btn.loading,
-.primary-btn:hover {
+.primary-btn:hover:not(:disabled) {
 	background-color: var(--primary-800);
 }
 

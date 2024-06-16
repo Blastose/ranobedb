@@ -1,11 +1,19 @@
 <script lang="ts">
 	import SubmitButton from './SubmitButton.svelte';
+	import Turnstile from './cf/Turnstile.svelte';
 
 	export let enhance: (e: HTMLFormElement) => {};
 	export let headingText: string;
 	export let submitText: string;
 	export let submitting: boolean;
 	export let delayed: boolean;
+	export let turnstileKey: number;
+
+	let cfValid = false;
+
+	$: if (turnstileKey) {
+		cfValid = false;
+	}
 </script>
 
 <section class="auth-form-shell">
@@ -18,7 +26,17 @@
 			<slot name="form" />
 		</section>
 
-		<SubmitButton {submitting} {delayed} text={submitText} />
+		{#key turnstileKey}
+			<Turnstile
+				callback={(token) => {
+					if (token) {
+						cfValid = true;
+					}
+				}}
+			/>
+		{/key}
+
+		<SubmitButton {submitting} {delayed} text={submitText} disabled={!cfValid} />
 	</form>
 
 	<slot name="bottom" />

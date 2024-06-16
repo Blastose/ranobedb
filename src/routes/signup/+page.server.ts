@@ -8,6 +8,7 @@ const { DatabaseError } = pkg;
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { db } from '$lib/server/db/db';
+import { validateTurnstile } from '$lib/server/cf.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
@@ -19,7 +20,18 @@ export const load = async ({ locals }) => {
 
 export const actions = {
 	default: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod(signupSchema));
+		const formData = await request.formData();
+
+		const form = await superValidate(formData, zod(signupSchema));
+
+		const turnstileSuccess = await validateTurnstile({ request, body: formData });
+		if (!turnstileSuccess) {
+			return message(
+				form,
+				{ type: 'error', text: 'Cloudflare validation failed' },
+				{ status: 400 },
+			);
+		}
 
 		if (!form.valid) {
 			return message(form, { text: 'Invalid form', type: 'error' });

@@ -7,12 +7,17 @@
 
 	export let data;
 
-	const form = superForm(data.form);
-	const { enhance, message, delayed, submitting } = form;
+	let turnstileKey = 0;
 
-	$: if (!$delayed && $message) {
-		addToast({ data: { title: $message.text, type: $message.type } });
-	}
+	const form = superForm(data.form, {
+		onUpdated({ form: f }) {
+			if (!f.valid) {
+				addToast({ data: { title: f.message?.text || 'Error in form!', type: 'error' } });
+				turnstileKey++;
+			}
+		},
+	});
+	const { enhance, message, delayed, submitting } = form;
 </script>
 
 <PageTitle title="Log in" />
@@ -23,6 +28,7 @@
 		submitting={$submitting}
 		delayed={$delayed}
 		submitText="Log in"
+		{turnstileKey}
 		{enhance}
 	>
 		<svelte:fragment slot="form">
@@ -44,9 +50,12 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="bottom">
-			<p>
-				Don't have an account? <a href="/signup" class="link">Sign up</a> now!
-			</p>
+			<div class="flex flex-col gap-1">
+				<p>
+					Don't have an account? <a href="/signup" class="link">Sign up</a> now!
+				</p>
+				<p><a href="/forgot-password" class="link">Forgot password?</a></p>
+			</div>
 		</svelte:fragment>
 	</AuthFormShell>
 </main>
