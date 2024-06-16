@@ -127,20 +127,21 @@ export interface Book {
 	id: Generated<number>;
 	image_id: number | null;
 	locked: boolean;
+	olang: Language;
 	release_date: number;
 }
 
 export interface BookEdition {
 	book_id: number;
 	eid: number;
-	lang: Language;
+	lang: Language | null;
 	title: string;
 }
 
 export interface BookEditionHist {
 	change_id: number;
 	eid: number;
-	lang: Language;
+	lang: Language | null;
 	title: string;
 }
 
@@ -149,6 +150,7 @@ export interface BookHist {
 	description: string;
 	description_ja: string;
 	image_id: number | null;
+	olang: Language;
 	release_date: number;
 }
 
@@ -211,6 +213,13 @@ export interface Image {
 	nsfw: boolean;
 	spoiler: boolean;
 	width: number;
+}
+
+export interface PasswordResetToken {
+	expires_at: Timestamp;
+	id: Generated<number>;
+	token_hash: string;
+	user_id: string;
 }
 
 export interface Publisher {
@@ -316,6 +325,7 @@ export interface Series {
 	hidden: boolean;
 	id: Generated<number>;
 	locked: boolean;
+	olang: Language;
 	publication_status: SeriesStatus;
 	start_date: number;
 	web_novel: string | null;
@@ -343,6 +353,7 @@ export interface SeriesHist {
 	change_id: number;
 	description: string;
 	end_date: number;
+	olang: Language;
 	publication_status: SeriesStatus;
 	start_date: number;
 	web_novel: string | null;
@@ -453,6 +464,7 @@ export interface DB {
 	change: Change;
 	email_verification_code: EmailVerificationCode;
 	image: Image;
+	password_reset_token: PasswordResetToken;
 	publisher: Publisher;
 	publisher_hist: PublisherHist;
 	publisher_relation: PublisherRelation;

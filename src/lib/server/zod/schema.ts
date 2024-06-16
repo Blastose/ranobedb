@@ -65,6 +65,23 @@ export const loginSchema = z.object({
 	password: zPasswordEntry,
 });
 
+export const forgotPasswordSchema = z.object({
+	email: z
+		.string({ required_error: 'Email is required' })
+		.email({ message: 'Invalid email address' })
+		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
+});
+
+export const resetPasswordSchema = z
+	.object({
+		password: zPasswordNew,
+		confirm_password: zPasswordNew,
+	})
+	.refine((data) => data.password === data.confirm_password, {
+		message: 'Passwords do not match',
+		path: ['confirm_password'],
+	});
+
 export const signupSchema = z.object({
 	email: z
 		.string({ required_error: 'Email is required' })

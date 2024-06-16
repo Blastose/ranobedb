@@ -8,8 +8,9 @@
 	export let submitting: boolean;
 	export let delayed: boolean;
 	export let turnstileKey: number;
+	export let useTurnstile: boolean = true;
 
-	let cfValid: boolean;
+	let cfValid: boolean = !useTurnstile;
 </script>
 
 <section class="auth-form-shell">
@@ -22,9 +23,11 @@
 			<slot name="form" />
 		</section>
 
-		{#key turnstileKey}
-			<Turnstile bind:validToken={cfValid} />
-		{/key}
+		{#if useTurnstile}
+			{#key turnstileKey}
+				<Turnstile bind:validToken={cfValid} />
+			{/key}
+		{/if}
 
 		<SubmitButton {submitting} {delayed} text={submitText} disabled={!cfValid} />
 	</form>

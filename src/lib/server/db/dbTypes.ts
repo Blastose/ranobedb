@@ -169,6 +169,13 @@ export interface Image {
 	width: number;
 }
 
+export interface PasswordResetToken {
+	expires_at: Timestamp;
+	id: Generated<number>;
+	token_hash: string;
+	user_id: string;
+}
+
 export interface Publisher {
 	bookwalker: string | null;
 	description: string;
@@ -285,6 +292,7 @@ export interface SeriesBook {
 	series_id: number;
 	sort_order: number;
 }
+
 export interface SeriesBookHist {
 	book_id: number;
 	book_type: SeriesBookType;
@@ -409,6 +417,7 @@ export interface DB {
 	change: Change;
 	email_verification_code: EmailVerificationCode;
 	image: Image;
+	password_reset_token: PasswordResetToken;
 	publisher: Publisher;
 	publisher_hist: PublisherHist;
 	publisher_relation: PublisherRelation;
