@@ -30,7 +30,7 @@ export async function validateTurnstile(params: { request: Request; body: FormDa
 	}
 
 	const { request, body } = params;
-	const token = body.get('cf-turnstile-response') ?? '';
+	const token = body.get('cf-turnstile-response') ?? 'none';
 	const ip = request.headers.get('CF-Connecting-IP') ?? '';
 
 	const formData = new FormData();

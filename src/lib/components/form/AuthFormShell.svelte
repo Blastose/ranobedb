@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_CF_TURNSTILE_SITE_KEY } from '$env/static/public';
 	import SubmitButton from './SubmitButton.svelte';
 	import Turnstile from './cf/Turnstile.svelte';
 
@@ -9,7 +10,7 @@
 	export let delayed: boolean;
 	export let turnstileKey: number;
 
-	let cfValid = false;
+	let cfValid = PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA';
 
 	$: if (turnstileKey) {
 		cfValid = false;

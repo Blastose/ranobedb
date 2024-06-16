@@ -58,8 +58,10 @@
 	{/if}
 </svelte:head>
 
-{#if loaded && mounted}
-	<div class="w-[300px] h-[65px]" use:turnstile />
-{:else}
-	<div class="w-[300px] h-[65px]" />
+{#if PUBLIC_CF_TURNSTILE_SITE_KEY !== '1x00000000000000000000AA'}
+	{#if loaded && mounted}
+		<div class="w-[300px] h-[65px]" use:turnstile />
+	{:else}
+		<div class="w-[300px] h-[65px]" />
+	{/if}
 {/if}
