@@ -6,6 +6,7 @@
 	import type { Action } from 'svelte/action';
 
 	export let callback: (token: string) => void = () => {};
+	export let validToken = PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA';
 
 	let loaded = hasTurnstile();
 	let mounted = false;
@@ -33,9 +34,14 @@
 	}
 
 	const turnstile: Action = (node) => {
+		validToken = PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA';
+
 		const id = window.turnstile.render(node, {
 			sitekey: PUBLIC_CF_TURNSTILE_SITE_KEY,
-			callback,
+			callback: (token: string) => {
+				validToken = true;
+				callback(token);
+			},
 		});
 
 		widgetId = id ?? undefined;
@@ -49,7 +55,7 @@
 </script>
 
 <svelte:head>
-	{#if mounted && !loaded}
+	{#if mounted && !loaded && PUBLIC_CF_TURNSTILE_SITE_KEY !== '1x00000000000000000000AA'}
 		<script
 			src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
 			on:load={loadCallback}

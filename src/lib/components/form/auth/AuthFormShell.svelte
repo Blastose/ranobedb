@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { PUBLIC_CF_TURNSTILE_SITE_KEY } from '$env/static/public';
-	import SubmitButton from './SubmitButton.svelte';
-	import Turnstile from './cf/Turnstile.svelte';
+	import SubmitButton from '../SubmitButton.svelte';
+	import Turnstile from '../cf/Turnstile.svelte';
 
 	export let enhance: (e: HTMLFormElement) => {};
 	export let headingText: string;
@@ -10,11 +9,7 @@
 	export let delayed: boolean;
 	export let turnstileKey: number;
 
-	let cfValid = PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA';
-
-	$: if (turnstileKey) {
-		cfValid = false;
-	}
+	let cfValid: boolean;
 </script>
 
 <section class="auth-form-shell">
@@ -28,13 +23,7 @@
 		</section>
 
 		{#key turnstileKey}
-			<Turnstile
-				callback={(token) => {
-					if (token) {
-						cfValid = true;
-					}
-				}}
-			/>
+			<Turnstile bind:validToken={cfValid} />
 		{/key}
 
 		<SubmitButton {submitting} {delayed} text={submitText} disabled={!cfValid} />
