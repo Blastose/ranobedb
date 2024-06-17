@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_CF_TURNSTILE_SITE_KEY } from '$env/static/public';
 	import SubmitButton from '../SubmitButton.svelte';
 	import Turnstile from '../cf/Turnstile.svelte';
 
@@ -10,7 +11,8 @@
 	export let turnstileKey: number;
 	export let useTurnstile: boolean = true;
 
-	let cfValid: boolean = !useTurnstile;
+	let cfValid: boolean =
+		!useTurnstile || PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA';
 </script>
 
 <section class="auth-form-shell">

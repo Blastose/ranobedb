@@ -3,6 +3,13 @@ import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
 import { generateRandomString, alphabet } from 'oslo/crypto';
 import type { DB } from '../db/dbTypes';
 import type { User } from 'lucia';
+import { dev } from '$app/environment';
+
+export class EmailSender {
+	constructor() {}
+
+	async sendEmail() {}
+}
 
 export class EmailVerification {
 	db: Kysely<DB>;
@@ -27,9 +34,12 @@ export class EmailVerification {
 	}
 
 	async sendVerificationCode(email: string, verificationCode: string) {
-		// TODO
-		email;
-		verificationCode;
+		if (dev) {
+			console.log(verificationCode);
+			return;
+		}
+		// TODO Send email
+		await new EmailSender().sendEmail();
 	}
 
 	async verifyVerificationCode(user: User, code: string): Promise<boolean> {
@@ -65,18 +75,19 @@ export class EmailVerification {
 
 	async setUserEmailStatusToVerified(user: User) {
 		await this.db.transaction().execute(async (trx) => {
-			if (user.role !== 'user') {
-				return;
-			}
-
 			await trx
 				.updateTable('auth_user_credentials')
 				.set({
 					email_verified: true,
 				})
+				.where('auth_user_credentials.user_id', '=', user.id)
 				.execute();
 			if (user.role === 'user') {
-				await trx.updateTable('auth_user').set({ role: 'editor' }).execute();
+				await trx
+					.updateTable('auth_user')
+					.set({ role: 'editor' })
+					.where('auth_user.id', '=', user.id)
+					.execute();
 			}
 		});
 	}

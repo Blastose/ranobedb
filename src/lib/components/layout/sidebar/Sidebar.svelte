@@ -6,7 +6,6 @@
 	import type { User } from 'lucia';
 	import SidebarFormButton from './SidebarFormButton.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
-	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 	import Hr from '../Hr.svelte';
 

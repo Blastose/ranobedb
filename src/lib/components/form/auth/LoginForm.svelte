@@ -1,6 +1,5 @@
 <script lang="ts">
 	import TextField from '$lib/components/form/TextField.svelte';
-	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import AuthFormShell from '$lib/components/form/auth/AuthFormShell.svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';

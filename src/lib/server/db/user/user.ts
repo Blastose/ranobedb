@@ -56,6 +56,14 @@ export class DBUsers {
 		});
 	}
 
+	async getEmail(userId: string) {
+		return await this.db
+			.selectFrom('auth_user_credentials')
+			.select(['email', 'email_verified'])
+			.where('auth_user_credentials.user_id', '=', userId)
+			.executeTakeFirstOrThrow();
+	}
+
 	async getUserByEmail(email: string) {
 		return await this.db
 			.selectFrom('auth_user')
