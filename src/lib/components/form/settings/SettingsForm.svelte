@@ -85,10 +85,10 @@
 		<h2 class="font-bold text-2xl">Email settings</h2>
 		<div class="flex flex-col gap-4 max-w-lg">
 			<!-- TODO Implement -->
-			<!-- <section>
+			<section>
 				<ChangeEmailForm {changeEmailForm} {email_verified} />
 			</section>
-			<Hr /> -->
+			<Hr />
 
 			<section>
 				<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />

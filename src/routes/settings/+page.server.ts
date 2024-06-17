@@ -22,6 +22,8 @@ import { db } from '$lib/server/db/db.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { validateTurnstile } from '$lib/server/cf.js';
 import { EmailVerification } from '$lib/server/email/email.js';
+import { dev } from '$app/environment';
+import { ORIGIN } from '$env/static/private';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -57,7 +59,7 @@ export const load = async ({ locals, url }) => {
 		zod(usernameSchema),
 	);
 	const passwordForm = await superValidate(zod(passwordSchema));
-	const changeEmailForm = await superValidate({ new_email: user.email }, zod(changeEmailSchema));
+	const changeEmailForm = await superValidate(zod(changeEmailSchema));
 	const verifyEmailForm = await superValidate(zod(verifyEmailSchema));
 	const sendEmailVerificationForm = await superValidate(zod(sendEmailVerificationSchema));
 	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod(displayPrefsSchema));
@@ -214,7 +216,11 @@ export const actions = {
 
 		const emailVerification = new EmailVerification(db);
 		const code = await emailVerification.generateEmailVerificationCode(locals.user.id, user.email);
-		await emailVerification.sendVerificationCode(user.email, code);
+		await emailVerification.sendVerificationCodeEmail({
+			email: user.email,
+			verificationCode: code,
+			username: user.username,
+		});
 
 		return message(form, {
 			text: 'Sent a verification code to your email address!',
@@ -243,41 +249,76 @@ export const actions = {
 		return message(verifyEmailForm, { text: 'Verified email!', type: 'success' });
 	},
 
-	changeemail: async () => {
-		return fail(400);
-		// TODO
-		// if (!locals.user) return fail(401);
+	changeemail: async ({ locals, request }) => {
+		if (!locals.user) return fail(401);
 
-		// const formData = await request.formData();
+		const formData = await request.formData();
 
-		// const changeEmailForm = await superValidate(formData, zod(changeEmailSchema));
+		const changeEmailForm = await superValidate(formData, zod(changeEmailSchema));
 
-		// const turnstileSuccess = await validateTurnstile({ request, body: formData });
-		// if (!turnstileSuccess) {
-		// 	return fail(400, { changeEmailForm });
-		// }
+		const turnstileSuccess = await validateTurnstile({ request, body: formData });
+		if (!turnstileSuccess) {
+			return fail(400, { changeEmailForm });
+		}
 
-		// if (!changeEmailForm.valid) return fail(400, { changeEmailForm });
+		if (!changeEmailForm.valid) return fail(400, { changeEmailForm });
 
-		// const dbUsers = new DBUsers(db);
+		const dbUsers = new DBUsers(db);
 
-		// const user = await dbUsers.getUserFull(locals.user.username);
+		const user = await dbUsers.getUserFull(locals.user.username);
 
-		// if (!user) {
-		// 	return message(changeEmailForm, { type: 'error', text: 'Error' }, { status: 400 });
-		// }
+		if (!user) {
+			return message(changeEmailForm, { type: 'error', text: 'Error' }, { status: 400 });
+		}
 
-		// const validPassword = await new Argon2id().verify(
-		// 	user.hashed_password,
-		// 	changeEmailForm.data.password,
-		// );
-		// if (!validPassword) {
-		// 	return message(changeEmailForm, { type: 'error', text: 'Invalid password' }, { status: 400 });
-		// }
+		if (user.email === changeEmailForm.data.new_email) {
+			return message(
+				changeEmailForm,
+				{ type: 'error', text: 'New email cannot be the same as current email' },
+				{ status: 400 },
+			);
+		}
 
-		// return message(changeEmailForm, {
-		// 	text: 'Sent an email to new email address!',
-		// 	type: 'success',
-		// });
+		const validPassword = await new Argon2id().verify(
+			user.hashed_password,
+			changeEmailForm.data.password,
+		);
+		if (!validPassword) {
+			return message(
+				changeEmailForm,
+				{ type: 'error', text: 'Invalid credentials!' },
+				{ status: 400 },
+			);
+		}
+
+		if (user.email !== changeEmailForm.data.current_email) {
+			return message(
+				changeEmailForm,
+				{ type: 'error', text: 'Invalid credentials!' },
+				{ status: 400 },
+			);
+		}
+
+		const emailVerification = new EmailVerification(db);
+		const verificationToken = await emailVerification.createEmailVerificationToken(
+			user.user_id,
+			changeEmailForm.data.new_email,
+		);
+		const verificationLink = ORIGIN + '/email-verification?token=' + verificationToken;
+
+		if (dev) {
+			console.log(verificationLink);
+		} else {
+			await emailVerification.sendVerificationTokenUrlEmail({
+				email: changeEmailForm.data.new_email,
+				username: user.username,
+				verificationTokenUrl: verificationLink,
+			});
+		}
+
+		return message(changeEmailForm, {
+			text: 'Sent an email to new email address!',
+			type: 'success',
+		});
 	},
 };

@@ -5,7 +5,6 @@
 	import TextField from '$lib/components/form/TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Turnstile from '../../cf/Turnstile.svelte';
-	import { PUBLIC_CF_TURNSTILE_SITE_KEY } from '$env/static/public';
 
 	export let sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	export let verifyEmailForm: SuperValidated<Infer<typeof verifyEmailSchema>>;
@@ -16,9 +15,7 @@
 	const sFormEmailVerify = superForm(sendEmailVerificationForm, {
 		onUpdated({ form: f }) {
 			if (!f.valid) {
-				if (PUBLIC_CF_TURNSTILE_SITE_KEY !== '1x00000000000000000000AA') {
-					turnstileKeyE++;
-				}
+				turnstileKeyE++;
 			}
 		},
 	});

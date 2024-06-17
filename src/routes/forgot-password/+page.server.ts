@@ -9,6 +9,7 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { createPasswordResetToken } from '$lib/server/password/password.js';
 import { dev } from '$app/environment';
 import { ORIGIN } from '$env/static/private';
+import { EmailBuilder, EmailSender } from '$lib/server/email/sender.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) {
@@ -43,7 +44,7 @@ export const actions = {
 		const dbUsers = new DBUsers(db);
 
 		const user = await dbUsers.getUserFull(email);
-		console.log(user);
+
 		if (user) {
 			if (user.email_verified) {
 				const verificationToken = await createPasswordResetToken(user.user_id);
@@ -52,7 +53,11 @@ export const actions = {
 				if (dev) {
 					console.log(verificationLink);
 				} else {
-					// Send email;
+					const builtEmail = new EmailBuilder({ to: email }).createPasswordResetEmail(
+						user.username,
+						verificationLink,
+					);
+					await new EmailSender().sendEmail(builtEmail);
 				}
 			}
 		}

@@ -24,7 +24,7 @@
 			<section>
 				<h3 class="font-semibold">{getLanguageFromString(key)}</h3>
 				<p>
-					{#each publishers as publisher, index (publisher.id)}
+					{#each publishers as publisher, index}
 						<span>
 							<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a>
 							<span class="text-xs">{publisher.publisher_type}</span

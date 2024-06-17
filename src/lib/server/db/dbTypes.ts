@@ -160,6 +160,14 @@ export interface EmailVerificationCode {
 	user_id: string;
 }
 
+export interface EmailVerificationToken {
+	expires_at: Timestamp;
+	id: Generated<number>;
+	new_email: string;
+	token_hash: string;
+	user_id: string;
+}
+
 export interface Image {
 	filename: string;
 	height: number;
@@ -416,6 +424,7 @@ export interface DB {
 	book_title_hist: BookTitleHist;
 	change: Change;
 	email_verification_code: EmailVerificationCode;
+	email_verification_token: EmailVerificationToken;
 	image: Image;
 	password_reset_token: PasswordResetToken;
 	publisher: Publisher;

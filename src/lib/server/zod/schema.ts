@@ -100,6 +100,10 @@ export const sendEmailVerificationSchema = z.object({
 });
 
 export const changeEmailSchema = z.object({
+	current_email: z
+		.string({ required_error: 'Email is required' })
+		.email({ message: 'Invalid email address' })
+		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
 	new_email: z
 		.string({ required_error: 'Email is required' })
 		.email({ message: 'Invalid email address' })

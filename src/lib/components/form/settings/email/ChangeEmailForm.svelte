@@ -9,10 +9,11 @@
 	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	export let email_verified: boolean;
 
+	let turnstileKey = 0;
 	const sForm = superForm(changeEmailForm, {
 		onUpdated({ form: f }) {
 			if (!f.valid) {
-				// Do something
+				turnstileKey++;
 			}
 		},
 	});
@@ -32,23 +33,25 @@
 		<h2 class="font-bold text-lg">Change email</h2>
 		{#if !email_verified}
 			<p class="text-sm">Your current email is not verified.</p>
-		{:else}
-			<p class="text-sm"></p>
 		{/if}
+		<p class="text-sm">A verification email will be sent to your new email address</p>
 	</div>
 
 	<div class="flex flex-col gap-1">
+		<TextField form={sForm} field={'current_email'} placeholder="Email" label="Current email" />
 		<TextField form={sForm} field={'new_email'} placeholder="Email" label="New email" />
 		<TextField
 			form={sForm}
 			field={'password'}
 			type="password"
 			placeholder="Password"
-			label="Password"
+			label="Current password"
 		/>
 	</div>
 
-	<Turnstile bind:validToken />
+	{#key turnstileKey}
+		<Turnstile bind:validToken />
+	{/key}
 
 	<SubmitButton
 		delayed={$delayed}

@@ -20,6 +20,7 @@
 		"db-seed:test": "pg_restore --clean -U postgres -d rndb-testing db-seed.dump"
 	},
 	"devDependencies": {
+		"@aws-sdk/client-ses": "^3.598.0",
 		"@lucia-auth/adapter-postgresql": "^3.1.2",
 		"@melt-ui/pp": "^0.3.2",
 		"@melt-ui/svelte": "^0.79.1",
