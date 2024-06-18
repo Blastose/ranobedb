@@ -72,6 +72,28 @@ export const actions = {
 			})
 			.execute();
 
+		await db.transaction().execute(async (trx) => {
+			const user = await trx
+				.selectFrom('auth_user')
+				.where('auth_user.id', '=', token.user_id)
+				.selectAll()
+				.executeTakeFirstOrThrow();
+			await trx
+				.updateTable('auth_user_credentials')
+				.set({
+					email_verified: true,
+				})
+				.where('auth_user_credentials.user_id', '=', token.user_id)
+				.execute();
+			if (user.role === 'user') {
+				await trx
+					.updateTable('auth_user')
+					.set({ role: 'editor' })
+					.where('auth_user.id', '=', token.user_id)
+					.execute();
+			}
+		});
+
 		flashRedirect(303, '/login', { type: 'success', message: 'Updated password!' }, cookies);
 	},
 };

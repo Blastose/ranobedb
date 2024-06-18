@@ -85,7 +85,7 @@
 				<TextField form={sForm} field={'code'} type="text" placeholder="Code" label="Code" />
 			</div>
 
-			<SubmitButton delayed={$delayed} submitting={$submitting} text={'Verify email'} />
+			<SubmitButton delayed={$delayed} submitting={$submitting} text={'Verify'} />
 		</form>
 	</div>
 {:else}

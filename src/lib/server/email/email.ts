@@ -16,7 +16,13 @@ export class EmailVerification {
 
 	async generateEmailVerificationCode(userId: string, email: string): Promise<string> {
 		await this.db.deleteFrom('email_verification_code').where('user_id', '=', userId).execute();
-		const code = generateRandomString(8, alphabet('0-9'));
+		let code: string;
+		if (getMode() === 'production') {
+			code = generateRandomString(8, alphabet('0-9'));
+		} else {
+			code = '99999999';
+		}
+
 		await this.db
 			.insertInto('email_verification_code')
 			.values({

@@ -84,14 +84,14 @@
 	{:else if view === 'email'}
 		<h2 class="font-bold text-2xl">Email settings</h2>
 		<div class="flex flex-col gap-4 max-w-lg">
-			<!-- TODO Implement -->
 			<section>
-				<ChangeEmailForm {changeEmailForm} {email_verified} />
+				<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />
 			</section>
+
 			<Hr />
 
 			<section>
-				<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />
+				<ChangeEmailForm {changeEmailForm} {email_verified} />
 			</section>
 		</div>
 	{/if}
