@@ -4,7 +4,7 @@ import { Kysely, PostgresDialect } from 'kysely';
 import pkg from 'pg';
 const { Pool } = pkg;
 import type { DB } from '$lib/server/db/dbTypes';
-import { generateId } from 'lucia';
+import { DBUsers } from '$lib/server/db/user/user';
 
 dotenv.config({ path: '.env.testing' });
 
@@ -18,27 +18,15 @@ const db = new Kysely<DB>({
 
 test.describe('settings', () => {
 	test.beforeAll(async () => {
-		const userId = generateId(16);
-		await db
-			.insertInto('auth_user')
-			.values({
-				username: 'UsernameHere',
-				username_lowercase: 'usernamehere',
-				id: userId,
-			})
-			.returning('id')
-			.executeTakeFirstOrThrow();
-		await db
-			.insertInto('auth_user_credentials')
-			.values({
-				email: 'mynotreal@email.com',
-				// Unhashed password is `password`
-				hashed_password:
-					'$argon2id$v=19$m=19456,t=2,p=1$KXosrnaI50U0xiXDxyoGxA$axycEXkr/fz3OhsPJafCaAaj7I7vM1bBUPfZuRfWzvQ',
-				user_id: userId,
-			})
-			.execute();
+		const dbUsers = new DBUsers(db);
+		await dbUsers.createUser({
+			email: 'mynotreal@email.com',
+			id: 'hdrsrdsgsfsrrgsfwde',
+			password: 'password',
+			username: 'UsernameHere',
+		});
 	});
+
 	test.beforeEach(async ({ page }) => {
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill('mynotreal@email.com');
