@@ -22,8 +22,8 @@ import { db } from '$lib/server/db/db.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { validateTurnstile } from '$lib/server/cf.js';
 import { EmailVerification } from '$lib/server/email/email.js';
-import { dev } from '$app/environment';
 import { ORIGIN } from '$env/static/private';
+import { getMode } from '$lib/mode/mode.js';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -306,7 +306,7 @@ export const actions = {
 		);
 		const verificationLink = ORIGIN + '/email-verification?token=' + verificationToken;
 
-		if (dev) {
+		if (getMode() !== 'production') {
 			console.log(verificationLink);
 		} else {
 			await emailVerification.sendVerificationTokenUrlEmail({

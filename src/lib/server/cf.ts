@@ -1,5 +1,5 @@
-import { dev } from '$app/environment';
 import { CF_TURNSTILE_SECRET_KEY } from '$env/static/private';
+import { getMode } from '$lib/mode/mode';
 
 type TurnStileErrorCode =
 	| 'missing-input-secret'
@@ -21,10 +21,10 @@ type TurnstileResponse = {
 
 export async function validateTurnstile(params: { request: Request; body: FormData }) {
 	let secretKey: string;
-	if (dev) {
-		// secretKey = '1x0000000000000000000000000000000AA';
+	if (getMode() !== 'production') {
+		secretKey = '1x0000000000000000000000000000000AA';
 		// secretKey = '2x0000000000000000000000000000000AA';
-		secretKey = CF_TURNSTILE_SECRET_KEY;
+		// secretKey = CF_TURNSTILE_SECRET_KEY;
 	} else {
 		secretKey = CF_TURNSTILE_SECRET_KEY;
 	}

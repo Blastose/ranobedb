@@ -2,9 +2,10 @@ import type { Kysely } from 'kysely';
 import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
 import { generateRandomString, alphabet } from 'oslo/crypto';
 import type { DB } from '../db/dbTypes';
-import { generateIdFromEntropySize, type User } from 'lucia';
-import { dev } from '$app/environment';
+import { type User } from 'lucia';
 import { EmailBuilder, EmailSender } from './sender';
+import { getMode } from '$lib/mode/mode';
+import { generateId } from '../lucia';
 
 export class EmailVerification {
 	db: Kysely<DB>;
@@ -34,7 +35,7 @@ export class EmailVerification {
 		verificationCode: string;
 	}) {
 		const { username, email, verificationCode } = params;
-		if (dev) {
+		if (getMode() !== 'production') {
 			console.log(verificationCode);
 		} else {
 			const builtEmail = new EmailBuilder({ to: email }).createVerificationCodeEmail(
@@ -82,7 +83,7 @@ export class EmailVerification {
 		verificationTokenUrl: string;
 	}) {
 		const { username, email, verificationTokenUrl } = params;
-		if (dev) {
+		if (getMode() !== 'production') {
 			console.log(verificationTokenUrl);
 		} else {
 			const builtEmail = new EmailBuilder({ to: email }).createVerificationTokenEmail(
@@ -95,7 +96,7 @@ export class EmailVerification {
 
 	async createEmailVerificationToken(userId: string, new_email: string): Promise<string> {
 		await this.db.deleteFrom('email_verification_token').where('user_id', '=', userId).execute();
-		const tokenId = generateIdFromEntropySize(25);
+		const tokenId = generateId();
 		await this.db
 			.insertInto('email_verification_token')
 			.values({

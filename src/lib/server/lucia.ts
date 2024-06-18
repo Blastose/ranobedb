@@ -1,9 +1,10 @@
-import { Lucia } from 'lucia';
+import { Lucia, generateIdFromEntropySize } from 'lucia';
 import { dev } from '$app/environment';
 import { NodePostgresAdapter } from '@lucia-auth/adapter-postgresql';
 import { pool } from '$lib/server/db/db';
 import type { UserRole } from '$lib/server/db/dbTypes';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
+import { getMode } from '$lib/mode/mode';
 
 const adapter = new NodePostgresAdapter(pool, {
 	session: 'auth_session',
@@ -25,6 +26,14 @@ export const lucia = new Lucia(adapter, {
 		};
 	},
 });
+
+export function generateId(): string {
+	if (getMode() === 'production') {
+		return generateIdFromEntropySize(25);
+	} else {
+		return 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+	}
+}
 
 declare module 'lucia' {
 	interface Register {

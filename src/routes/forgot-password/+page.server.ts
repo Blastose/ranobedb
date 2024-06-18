@@ -7,9 +7,9 @@ import { validateTurnstile } from '$lib/server/cf.js';
 import { zod } from 'sveltekit-superforms/adapters';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { createPasswordResetToken } from '$lib/server/password/password.js';
-import { dev } from '$app/environment';
 import { ORIGIN } from '$env/static/private';
 import { EmailBuilder, EmailSender } from '$lib/server/email/sender.js';
+import { getMode } from '$lib/mode/mode.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) {
@@ -50,7 +50,7 @@ export const actions = {
 				const verificationToken = await createPasswordResetToken(user.user_id);
 				const verificationLink = ORIGIN + '/reset-password?token=' + verificationToken;
 
-				if (dev) {
+				if (getMode() !== 'production') {
 					console.log(verificationLink);
 				} else {
 					const builtEmail = new EmailBuilder({ to: email }).createPasswordResetEmail(
