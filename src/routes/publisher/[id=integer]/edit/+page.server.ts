@@ -25,7 +25,7 @@ export const load = async ({ params, locals, url }) => {
 
 	const dbPublishers = DBPublishers.fromDB(db, locals.user);
 	const revision = await superValidate(url, zod(revisionSchema));
-	if (revision.data.revision) {
+	if (revision.valid && revision.data.revision) {
 		publisher = await dbPublishers
 			.getPublisherHistEdit({
 				id: publisherId,

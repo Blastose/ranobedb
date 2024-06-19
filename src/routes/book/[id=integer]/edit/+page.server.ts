@@ -26,7 +26,7 @@ export const load = async ({ params, locals, url }) => {
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
 	const revision = await superValidate(url, zod(revisionSchema));
-	if (revision.data.revision) {
+	if (revision.valid && revision.data.revision) {
 		book = await dbBooks
 			.getBookHistEdit({ id: bookId, revision: revision.data.revision })
 			.executeTakeFirst();

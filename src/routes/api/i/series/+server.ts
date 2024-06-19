@@ -47,6 +47,9 @@ export type ApiSeries = Awaited<ReturnType<typeof getSeriesByTitle>>;
 
 export const GET: RequestHandler = async ({ url, locals }) => {
 	const form = await superValidate(url.searchParams, zod(searchNameSchema));
+	if (!form.valid) {
+		return json([]);
+	}
 
 	const nameAsNumber = Number(form.data.name);
 	let name = form.data.name;

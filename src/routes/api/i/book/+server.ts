@@ -45,6 +45,9 @@ export type ApiBook = Awaited<ReturnType<typeof getBookByTitle>>;
 
 export const GET: RequestHandler = async ({ url, locals }) => {
 	const form = await superValidate(url.searchParams, zod(searchNameSchema));
+	if (!form.valid) {
+		return json([]);
+	}
 
 	const nameAsNumber = Number(form.data.name);
 	let name = form.data.name;

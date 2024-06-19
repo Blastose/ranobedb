@@ -3,6 +3,7 @@ import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { historyFiltersSchema } from '$lib/server/zod/schema.js';
+import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -15,6 +16,10 @@ export const load = async ({ url, params, locals }) => {
 	const routeUser = await dbUsers.getUserByIdNumbericSafe(userIdNumeric);
 
 	const form = await superValidate(url, zod(historyFiltersSchema));
+
+	if (!form.valid) {
+		error(400);
+	}
 
 	const {
 		result: changes,

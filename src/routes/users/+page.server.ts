@@ -1,9 +1,21 @@
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
+import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
+import { error } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ url }) => {
-	const currentPage = Number(url.searchParams.get('page')) || 1;
-	const q = url.searchParams.get('q');
+	const page = await superValidate(url, zod(pageSchema));
+	const qq = await superValidate(url, zod(qSchema));
+	console.log(page);
+
+	if (!page.valid || !qq.valid) {
+		error(400);
+	}
+
+	const currentPage = page.data.page;
+	const q = qq.data.q;
 
 	let query = db
 		.selectFrom('auth_user')

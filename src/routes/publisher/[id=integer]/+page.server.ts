@@ -10,6 +10,9 @@ import { zod } from 'sveltekit-superforms/adapters';
 export const load = async ({ params, locals, url }) => {
 	const currentPage = Number(url.searchParams.get('page')) || 1;
 	const svTab = await superValidate(url, zod(publisherTabsSchema));
+	if (!svTab.valid) {
+		error(400);
+	}
 	const tab = svTab.data.tab;
 	const id = Number(params.id);
 

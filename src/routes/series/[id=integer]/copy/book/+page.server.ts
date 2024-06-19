@@ -19,7 +19,7 @@ export const load = async ({ params, locals, url }) => {
 
 	const dbSeries = DBSeries.fromDB(db, locals.user);
 	const revision = await superValidate(url, zod(revisionSchema));
-	if (revision.data.revision) {
+	if (revision.valid && revision.data.revision) {
 		series = await dbSeries
 			.getSeriesHistOneEdit({
 				id: seriesId,

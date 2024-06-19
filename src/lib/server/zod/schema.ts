@@ -491,11 +491,19 @@ export const historyFiltersSchema = z.object({
 });
 export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
 
-export const searchNameSchema = z.object({ name: z.string() });
-export const revisionSchema = z.object({ revision: z.number().nullish() });
+export const searchNameSchema = z.object({ name: z.string().max(maxTextLength) });
+export const revisionSchema = z.object({ revision: z.number().max(maxNumberValue).nullish() });
 export const languageSchema = z.object({ lang: z.enum(languagesArray).nullish() });
 export const staffTabsSchema = z.object({ tab: z.enum(staffTabs) });
 export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs) });
+
+export const pageSchema = z.object({
+	page: z.number().max(maxNumberValue).default(1),
+});
+
+export const qSchema = z.object({
+	q: z.string().max(maxTextLength).nullish().default(null),
+});
 
 const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),

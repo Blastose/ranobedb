@@ -30,6 +30,9 @@ export type ApiPublisher = Awaited<ReturnType<typeof getPublisherByName>>;
 
 export const GET: RequestHandler = async ({ url }) => {
 	const form = await superValidate(url.searchParams, zod(searchNameSchema));
+	if (!form.valid) {
+		return json([]);
+	}
 
 	const nameAsNumber = Number(form.data.name);
 	let name = form.data.name;
