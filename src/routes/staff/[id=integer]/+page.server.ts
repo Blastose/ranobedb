@@ -1,5 +1,5 @@
 import { getDisplayPrefsUser, getNameDisplay } from '$lib/display/prefs.js';
-import { itemHiddenError } from '$lib/server/db/change/change.js';
+import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBStaff, type StaffWorks } from '$lib/server/db/staff/staff';
@@ -20,7 +20,7 @@ export const load = async ({ params, locals, url }) => {
 		error(404);
 	}
 
-	await itemHiddenError({
+	await new DBChanges(db).itemHiddenError({
 		item: staff,
 		itemId: id,
 		itemName: 'staff',

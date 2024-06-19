@@ -21,7 +21,7 @@
 	<h2 class="font-bold text-lg">Update username</h2>
 
 	<div class="flex flex-col gap-1">
-		<TextField form={sForm} field={'username'} placeholder="Username" label="Username" />
+		<TextField form={sForm} field={'username'} placeholder="Username" label="New username" />
 		<TextField
 			form={sForm}
 			field={'password'}

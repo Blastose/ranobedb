@@ -15,6 +15,7 @@
 	<HistoryPaged
 		{changes}
 		{title}
+		titleSize="big"
 		currentPage={data.currentPage}
 		totalPages={data.totalPages}
 		showItemTitle={true}

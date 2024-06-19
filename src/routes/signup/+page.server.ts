@@ -1,12 +1,14 @@
-import { createUser, lucia } from '$lib/server/lucia.js';
+import { lucia } from '$lib/server/lucia.js';
+import { DBUsers } from '$lib/server/db/user/user';
 import { signupSchema } from '$lib/server/zod/schema';
 import { redirect } from '@sveltejs/kit';
 import { generateId } from 'lucia';
-import { Argon2id } from 'oslo/password';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
+import { db } from '$lib/server/db/db';
+import { validateTurnstile } from '$lib/server/cf.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
@@ -18,7 +20,18 @@ export const load = async ({ locals }) => {
 
 export const actions = {
 	default: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod(signupSchema));
+		const formData = await request.formData();
+
+		const form = await superValidate(formData, zod(signupSchema));
+
+		const turnstileSuccess = await validateTurnstile({ request, body: formData });
+		if (!turnstileSuccess) {
+			return message(
+				form,
+				{ type: 'error', text: 'Cloudflare validation failed' },
+				{ status: 400 },
+			);
+		}
 
 		if (!form.valid) {
 			return message(form, { text: 'Invalid form', type: 'error' });
@@ -27,13 +40,14 @@ export const actions = {
 		const email = form.data.email;
 		const username = form.data.username;
 		const password = form.data.password;
-		const hashed_password = await new Argon2id().hash(password);
 		const userId = generateId(15);
 
+		const dbUsers = new DBUsers(db);
+
 		try {
-			await createUser({
+			await dbUsers.createUser({
 				email,
-				hashed_password,
+				password,
 				id: userId,
 				username,
 			});

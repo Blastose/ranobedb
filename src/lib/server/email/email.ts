@@ -2,7 +2,10 @@ import type { Kysely } from 'kysely';
 import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
 import { generateRandomString, alphabet } from 'oslo/crypto';
 import type { DB } from '../db/dbTypes';
-import type { User } from 'lucia';
+import { type User } from 'lucia';
+import { EmailBuilder, EmailSender } from './sender';
+import { getMode } from '$lib/mode/mode';
+import { generateId } from '../lucia';
 
 export class EmailVerification {
 	db: Kysely<DB>;
@@ -13,7 +16,13 @@ export class EmailVerification {
 
 	async generateEmailVerificationCode(userId: string, email: string): Promise<string> {
 		await this.db.deleteFrom('email_verification_code').where('user_id', '=', userId).execute();
-		const code = generateRandomString(8, alphabet('0-9'));
+		let code: string;
+		if (getMode() === 'production') {
+			code = generateRandomString(8, alphabet('0-9'));
+		} else {
+			code = '99999999';
+		}
+
 		await this.db
 			.insertInto('email_verification_code')
 			.values({
@@ -26,10 +35,21 @@ export class EmailVerification {
 		return code;
 	}
 
-	async sendVerificationCode(email: string, verificationCode: string) {
-		// TODO
-		email;
-		verificationCode;
+	async sendVerificationCodeEmail(params: {
+		username: string;
+		email: string;
+		verificationCode: string;
+	}) {
+		const { username, email, verificationCode } = params;
+		if (getMode() !== 'production') {
+			console.log(verificationCode);
+		} else {
+			const builtEmail = new EmailBuilder({ to: email }).createVerificationCodeEmail(
+				username,
+				verificationCode,
+			);
+			await new EmailSender().sendEmail(builtEmail);
+		}
 	}
 
 	async verifyVerificationCode(user: User, code: string): Promise<boolean> {
@@ -63,20 +83,79 @@ export class EmailVerification {
 		});
 	}
 
+	async sendVerificationTokenUrlEmail(params: {
+		username: string;
+		email: string;
+		verificationTokenUrl: string;
+	}) {
+		const { username, email, verificationTokenUrl } = params;
+		if (getMode() !== 'production') {
+			console.log(verificationTokenUrl);
+		} else {
+			const builtEmail = new EmailBuilder({ to: email }).createVerificationTokenEmail(
+				username,
+				verificationTokenUrl,
+			);
+			await new EmailSender().sendEmail(builtEmail);
+		}
+	}
+
+	async createEmailVerificationToken(userId: string, new_email: string): Promise<string> {
+		await this.db.deleteFrom('email_verification_token').where('user_id', '=', userId).execute();
+		const tokenId = generateId();
+		await this.db
+			.insertInto('email_verification_token')
+			.values({
+				token_hash: tokenId,
+				user_id: userId,
+				new_email: new_email,
+				expires_at: createDate(new TimeSpan(2, 'h')),
+			})
+			.execute();
+
+		return tokenId;
+	}
+
+	async updateUserEmail(userId: string, new_email: string) {
+		await this.db.transaction().execute(async (trx) => {
+			const user = await trx
+				.selectFrom('auth_user')
+				.where('auth_user.id', '=', userId)
+				.selectAll()
+				.executeTakeFirstOrThrow();
+			await trx
+				.updateTable('auth_user_credentials')
+				.set({
+					email: new_email,
+					email_verified: true,
+				})
+				.where('auth_user_credentials.user_id', '=', userId)
+				.execute();
+			if (user.role === 'user') {
+				await trx
+					.updateTable('auth_user')
+					.set({ role: 'editor' })
+					.where('auth_user.id', '=', userId)
+					.execute();
+			}
+		});
+	}
+
 	async setUserEmailStatusToVerified(user: User) {
 		await this.db.transaction().execute(async (trx) => {
-			if (user.role !== 'user') {
-				return;
-			}
-
 			await trx
 				.updateTable('auth_user_credentials')
 				.set({
 					email_verified: true,
 				})
+				.where('auth_user_credentials.user_id', '=', user.id)
 				.execute();
 			if (user.role === 'user') {
-				await trx.updateTable('auth_user').set({ role: 'editor' }).execute();
+				await trx
+					.updateTable('auth_user')
+					.set({ role: 'editor' })
+					.where('auth_user.id', '=', user.id)
+					.execute();
 			}
 		});
 	}

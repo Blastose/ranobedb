@@ -1,4 +1,4 @@
-import { getChanges, historyItemsPerPage } from '$lib/server/db/change/change.js';
+import { DBChanges, historyItemsPerPage } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
@@ -13,7 +13,7 @@ export const load = async ({ params, locals, url }) => {
 		result: changes,
 		count,
 		totalPages,
-	} = await paginationBuilderExecuteWithCount(getChanges('staff', staffId), {
+	} = await paginationBuilderExecuteWithCount(new DBChanges(db).getChanges('staff', staffId), {
 		limit: historyItemsPerPage,
 		page: currentPage,
 	});

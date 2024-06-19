@@ -1,5 +1,5 @@
 import { DBBooks } from '$lib/server/db/books/books.js';
-import { getChanges, historyItemsPerPage } from '$lib/server/db/change/change.js';
+import { DBChanges, historyItemsPerPage } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { error } from '@sveltejs/kit';
@@ -13,7 +13,7 @@ export const load = async ({ params, locals, url }) => {
 		result: changes,
 		count,
 		totalPages,
-	} = await paginationBuilderExecuteWithCount(getChanges('book', bookId), {
+	} = await paginationBuilderExecuteWithCount(new DBChanges(db).getChanges('book', bookId), {
 		limit: historyItemsPerPage,
 		page: currentPage,
 	});

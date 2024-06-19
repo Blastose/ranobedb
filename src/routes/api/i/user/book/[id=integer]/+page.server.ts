@@ -4,7 +4,8 @@ import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { userListBookSchema } from '$lib/server/zod/schema';
 import { defaultUserListLabelsMap } from '$lib/db/dbConsts';
-import { addBookToList, editBookInList, removeBookFromList } from '$lib/server/db/user/list';
+import { DBListActions } from '$lib/server/db/user/list';
+import { db } from '$lib/server/db/db';
 
 export const actions = {
 	default: async ({ params, request, locals }) => {
@@ -34,15 +35,16 @@ export const actions = {
 		};
 
 		let messageText = '';
+		const dbListActions = new DBListActions(db);
 		try {
 			if (form.data.type === 'add') {
-				await addBookToList(addBookParams);
+				await dbListActions.addBookToList(addBookParams);
 				messageText = 'Added book to list';
 			} else if (form.data.type === 'update') {
-				await editBookInList(addBookParams);
+				await dbListActions.editBookInList(addBookParams);
 				messageText = 'Updated book successfully';
 			} else if (form.data.type === 'delete') {
-				await removeBookFromList(addBookParams);
+				await dbListActions.removeBookFromList(addBookParams);
 				messageText = 'Removed book from list';
 			}
 		} catch (e) {

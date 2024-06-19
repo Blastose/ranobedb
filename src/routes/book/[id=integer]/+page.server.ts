@@ -1,5 +1,5 @@
 import { DBBooks } from '$lib/server/db/books/books';
-import { itemHiddenError } from '$lib/server/db/change/change.js';
+import { DBChanges } from '$lib/server/db/change/change.js';
 import {
 	getUserListBookWithLabels,
 	type UserListBookWithLabels,
@@ -28,7 +28,7 @@ export const load = async ({ params, locals }) => {
 		error(404);
 	}
 
-	await itemHiddenError({
+	await new DBChanges(db).itemHiddenError({
 		item: book,
 		itemId: bookId,
 		itemName: 'book',

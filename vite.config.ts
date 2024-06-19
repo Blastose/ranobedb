@@ -7,4 +7,7 @@ export default defineConfig({
 		include: ['src/**/*.{test,spec}.{js,ts}'],
 		exclude: ['src/tests/integration/**'],
 	},
+	optimizeDeps: {
+		exclude: ['@node-rs/argon2'],
+	},
 });

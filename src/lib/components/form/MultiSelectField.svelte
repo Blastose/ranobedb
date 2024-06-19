@@ -119,6 +119,7 @@
 		border-radius: 9999px;
 		font-size: 0.875rem;
 		line-height: 1.25rem;
+		font-weight: 600;
 		color: var(--text-dark);
 		background-color: var(--primary-500);
 		overflow: hidden;

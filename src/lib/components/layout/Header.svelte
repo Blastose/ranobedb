@@ -14,7 +14,8 @@
 			pathname.startsWith('/series/') ||
 			pathname.startsWith('/release/') ||
 			pathname.startsWith('/staff/') ||
-			pathname.startsWith('/publisher/')
+			pathname.startsWith('/publisher/') ||
+			pathname.startsWith('/user/')
 		) {
 			return true;
 		}

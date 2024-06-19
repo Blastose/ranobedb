@@ -65,6 +65,23 @@ export const loginSchema = z.object({
 	password: zPasswordEntry,
 });
 
+export const forgotPasswordSchema = z.object({
+	email: z
+		.string({ required_error: 'Email is required' })
+		.email({ message: 'Invalid email address' })
+		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
+});
+
+export const resetPasswordSchema = z
+	.object({
+		password: zPasswordNew,
+		confirm_password: zPasswordNew,
+	})
+	.refine((data) => data.password === data.confirm_password, {
+		message: 'Passwords do not match',
+		path: ['confirm_password'],
+	});
+
 export const signupSchema = z.object({
 	email: z
 		.string({ required_error: 'Email is required' })
@@ -73,6 +90,34 @@ export const signupSchema = z.object({
 	username: zUsername,
 	password: zPasswordNew,
 });
+
+export const verifyEmailSchema = z.object({
+	code: z.string().min(8).max(8),
+});
+
+export const sendEmailVerificationSchema = z.object({
+	password: zPasswordEntry,
+});
+
+export const changeEmailSchema = z.object({
+	current_email: z
+		.string({ required_error: 'Email is required' })
+		.email({ message: 'Invalid email address' })
+		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
+	new_email: z
+		.string({ required_error: 'Email is required' })
+		.email({ message: 'Invalid email address' })
+		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
+	password: zPasswordEntry,
+});
+
+export const usernameSchema = z.object({ username: zUsername, password: zPasswordEntry });
+export const passwordSchema = z.object({
+	currentPassword: zPasswordEntry,
+	newPassword: zPasswordNew,
+});
+
+export const emptySchema = z.object({});
 
 const userListFormTypes = ['add', 'update', 'delete'] as const;
 export type UserListFormType = (typeof userListFormTypes)[number];
@@ -464,11 +509,5 @@ export const displayPrefsSchema = z.object({
 	descriptions: z.enum(['en', 'ja'] as const),
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
-
-export const usernameSchema = z.object({ username: zUsername, password: zPasswordEntry });
-export const passwordSchema = z.object({
-	currentPassword: zPasswordEntry,
-	newPassword: zPasswordNew,
-});
 
 export type Nullish<T> = T | null | undefined;

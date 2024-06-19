@@ -1,5 +1,5 @@
 import { getDisplayPrefsUser, getNameDisplay } from '$lib/display/prefs.js';
-import { itemHiddenError } from '$lib/server/db/change/change.js';
+import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { DBReleases } from '$lib/server/db/releases/releases.js';
 import { error } from '@sveltejs/kit';
@@ -13,7 +13,7 @@ export const load = async ({ params, locals }) => {
 		error(404);
 	}
 
-	await itemHiddenError({
+	await new DBChanges(db).itemHiddenError({
 		item: release,
 		itemId: id,
 		itemName: 'release',

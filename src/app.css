@@ -155,6 +155,7 @@ a {
 
 input.combobox.input,
 input[type='text'].input,
+input[type='password'].input,
 input[type='date'].input,
 input[type='number'].input {
 	border-radius: 9999rem;
@@ -176,6 +177,7 @@ input[type='radio'] {
 }
 
 input[type='text'].input.reset-padding,
+input[type='password'].input.reset-padding,
 input[type='number'].input.reset-padding {
 	padding: 0.125rem 0.5rem;
 }
@@ -318,8 +320,12 @@ input[type='number'].input.reset-padding {
 	transition: background-color 150ms;
 }
 
+.primary-btn:disabled {
+	background-color: var(--primary-800);
+}
+
 .primary-btn.loading,
-.primary-btn:hover {
+.primary-btn:hover:not(:disabled) {
 	background-color: var(--primary-800);
 }
 

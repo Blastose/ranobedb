@@ -160,6 +160,14 @@ export interface EmailVerificationCode {
 	user_id: string;
 }
 
+export interface EmailVerificationToken {
+	expires_at: Timestamp;
+	id: Generated<number>;
+	new_email: string;
+	token_hash: string;
+	user_id: string;
+}
+
 export interface Image {
 	filename: string;
 	height: number;
@@ -167,6 +175,13 @@ export interface Image {
 	nsfw: boolean;
 	spoiler: boolean;
 	width: number;
+}
+
+export interface PasswordResetToken {
+	expires_at: Timestamp;
+	id: Generated<number>;
+	token_hash: string;
+	user_id: string;
 }
 
 export interface Publisher {
@@ -285,6 +300,7 @@ export interface SeriesBook {
 	series_id: number;
 	sort_order: number;
 }
+
 export interface SeriesBookHist {
 	book_id: number;
 	book_type: SeriesBookType;
@@ -408,7 +424,9 @@ export interface DB {
 	book_title_hist: BookTitleHist;
 	change: Change;
 	email_verification_code: EmailVerificationCode;
+	email_verification_token: EmailVerificationToken;
 	image: Image;
+	password_reset_token: PasswordResetToken;
 	publisher: Publisher;
 	publisher_hist: PublisherHist;
 	publisher_relation: PublisherRelation;

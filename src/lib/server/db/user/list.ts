@@ -1,10 +1,11 @@
 import { db } from '$lib/server/db/db';
 import type { Nullish } from '$lib/server/zod/schema';
 import { defaultUserListLabels } from '$lib/db/dbConsts';
-import { sql, type InferResult } from 'kysely';
+import { Kysely, sql, type InferResult } from 'kysely';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
+import type { DB } from '../dbTypes';
 
 // TODO Refactor with getBooks
 export function getBooksRL(userId: string, user?: User | null) {
@@ -113,125 +114,132 @@ export type UserListBookWithLabels = InferResult<
 	ReturnType<typeof getUserListBookWithLabels>
 >[number];
 
-export async function addBookToList(params: {
-	userId: string;
-	bookId: number;
-	labelIds: number[];
-	readingStatusId: number;
-	score: Nullish<number>;
-	started: Nullish<string>;
-	finished: Nullish<string>;
-	notes: Nullish<string>;
-}) {
-	await db.transaction().execute(async (trx) => {
-		await trx
-			.insertInto('user_list_book')
-			.values({
-				book_id: params.bookId,
-				score: params.score,
-				user_id: params.userId,
-				started: params.started,
-				finished: params.finished,
-				notes: params.notes ?? '',
-			})
-			.execute();
-
-		params.labelIds.push(params.readingStatusId);
-		const userListBookLabels = params.labelIds.map((labelId) => {
-			return {
-				book_id: params.bookId,
-				user_id: params.userId,
-				label_id: labelId,
-			};
-		});
-		if (userListBookLabels.length > 0) {
-			await trx.insertInto('user_list_book_label').values(userListBookLabels).execute();
-		}
-	});
-}
-
-// TODO refactor with array diff / intersection functions
 function getToAddAndToRemoveFromArrays(arr1: number[], arr2: number[]) {
 	const toAdd = arr1.filter((x) => !arr2.includes(x));
 	const toRemove = arr2.filter((x) => !arr1.includes(x));
 	return { toAdd, toRemove };
 }
 
-export async function editBookInList(params: {
-	userId: string;
-	bookId: number;
-	labelIds: number[];
-	readingStatusId: number;
-	score: Nullish<number>;
-	started: Nullish<string>;
-	finished: Nullish<string>;
-	notes: Nullish<string>;
-}) {
-	await db.transaction().execute(async (trx) => {
-		const oldLabelIds = (
+export class DBListActions {
+	db: Kysely<DB>;
+
+	constructor(db: Kysely<DB>) {
+		this.db = db;
+	}
+
+	async addBookToList(params: {
+		userId: string;
+		bookId: number;
+		labelIds: number[];
+		readingStatusId: number;
+		score: Nullish<number>;
+		started: Nullish<string>;
+		finished: Nullish<string>;
+		notes: Nullish<string>;
+	}) {
+		await this.db.transaction().execute(async (trx) => {
 			await trx
-				.selectFrom('user_list_book_label')
-				.select('label_id')
+				.insertInto('user_list_book')
+				.values({
+					book_id: params.bookId,
+					score: params.score,
+					user_id: params.userId,
+					started: params.started,
+					finished: params.finished,
+					notes: params.notes ?? '',
+				})
+				.execute();
+
+			params.labelIds.push(params.readingStatusId);
+			const userListBookLabels = params.labelIds.map((labelId) => {
+				return {
+					book_id: params.bookId,
+					user_id: params.userId,
+					label_id: labelId,
+				};
+			});
+			if (userListBookLabels.length > 0) {
+				await trx.insertInto('user_list_book_label').values(userListBookLabels).execute();
+			}
+		});
+	}
+
+	async editBookInList(params: {
+		userId: string;
+		bookId: number;
+		labelIds: number[];
+		readingStatusId: number;
+		score: Nullish<number>;
+		started: Nullish<string>;
+		finished: Nullish<string>;
+		notes: Nullish<string>;
+	}) {
+		await this.db.transaction().execute(async (trx) => {
+			const oldLabelIds = (
+				await trx
+					.selectFrom('user_list_book_label')
+					.select('label_id')
+					.where('user_id', '=', params.userId)
+					.execute()
+			).map((v) => v.label_id);
+
+			const { toAdd, toRemove } = getToAddAndToRemoveFromArrays(params.labelIds, oldLabelIds);
+
+			await trx
+				.updateTable('user_list_book')
+				.set({
+					book_id: params.bookId,
+					score: params.score,
+					user_id: params.userId,
+					started: params.started,
+					finished: params.finished,
+					notes: params.notes ?? '',
+				})
+				.where('book_id', '=', params.bookId)
 				.where('user_id', '=', params.userId)
-				.execute()
-		).map((v) => v.label_id);
+				.execute();
 
-		const { toAdd, toRemove } = getToAddAndToRemoveFromArrays(params.labelIds, oldLabelIds);
+			// Remove all default reaind status list ids
+			toRemove.push(...defaultUserListLabels.map((v) => v.id));
+			if (toRemove.length > 0) {
+				await trx
+					.deleteFrom('user_list_book_label')
+					.where((eb) =>
+						eb.and([
+							eb('book_id', '=', params.bookId),
+							eb('user_id', '=', params.userId),
+							eb('label_id', 'in', toRemove),
+						]),
+					)
+					.execute();
+			}
 
-		await trx
-			.updateTable('user_list_book')
-			.set({
-				book_id: params.bookId,
-				score: params.score,
-				user_id: params.userId,
-				started: params.started,
-				finished: params.finished,
-				notes: params.notes ?? '',
-			})
-			.where('book_id', '=', params.bookId)
-			.where('user_id', '=', params.userId)
-			.execute();
+			toAdd.push(params.readingStatusId);
+			const toAddLabels = toAdd.map((labelId) => {
+				return {
+					book_id: params.bookId,
+					user_id: params.userId,
+					label_id: labelId,
+				};
+			});
+			if (toAddLabels.length > 0) {
+				await trx.insertInto('user_list_book_label').values(toAddLabels).execute();
+			}
+		});
+	}
 
-		// Remove all default reaind status list ids
-		toRemove.push(...defaultUserListLabels.map((v) => v.id));
-		if (toRemove.length > 0) {
+	async removeBookFromList(params: { userId: string; bookId: number }) {
+		await this.db.transaction().execute(async (trx) => {
 			await trx
 				.deleteFrom('user_list_book_label')
-				.where((eb) =>
-					eb.and([
-						eb('book_id', '=', params.bookId),
-						eb('user_id', '=', params.userId),
-						eb('label_id', 'in', toRemove),
-					]),
-				)
+				.where('book_id', '=', params.bookId)
+				.where('user_id', '=', params.userId)
 				.execute();
-		}
-
-		toAdd.push(params.readingStatusId);
-		const toAddLabels = toAdd.map((labelId) => {
-			return {
-				book_id: params.bookId,
-				user_id: params.userId,
-				label_id: labelId,
-			};
+			await trx
+				.deleteFrom('user_list_book')
+				.where('book_id', '=', params.bookId)
+				.where('user_id', '=', params.userId)
+				.execute();
 		});
-		if (toAddLabels.length > 0) {
-			await trx.insertInto('user_list_book_label').values(toAddLabels).execute();
-		}
-	});
-}
-
-export async function removeBookFromList(params: { userId: string; bookId: number }) {
-	await db.transaction().execute(async (trx) => {
-		await trx
-			.deleteFrom('user_list_book_label')
-			.where('book_id', '=', params.bookId)
-			.where('user_id', '=', params.userId)
-			.execute();
-		await trx
-			.deleteFrom('user_list_book')
-			.where('book_id', '=', params.bookId)
-			.where('user_id', '=', params.userId)
-			.execute();
-	});
+	}
 }

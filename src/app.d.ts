@@ -33,6 +33,18 @@ declare global {
 	interface Document {
 		startViewTransition(updateCallback: () => Promise<void>): ViewTransition;
 	}
+
+	interface Window {
+		turnstile: {
+			ready(callback: () => void): void;
+			render(container: string | HTMLElement, params?: RenderParameters): string | null | undefined;
+			execute(container: string | HTMLElement, params?: RenderParameters): void;
+			reset(container?: string | HTMLElement): void;
+			remove(container?: string | HTMLElement): void;
+			getResponse(container?: string | HTMLElement): string | undefined;
+			isExpired(container?: string | HTMLElement): boolean;
+		};
+	}
 }
 
 export {};

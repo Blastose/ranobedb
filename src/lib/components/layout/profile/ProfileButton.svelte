@@ -36,7 +36,7 @@
 {#if $open}
 	<section class="profile-menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
 		{#if user}
-			<a use:melt={$item} href="/profile" class="flex items-center">
+			<a use:melt={$item} href="/user/{user.id_numeric}" class="flex items-center">
 				<div class="profile-button" class:logged-in={user}>
 					{user.username.at(0)}
 				</div>
@@ -47,12 +47,12 @@
 			<nav>
 				<ul class="flex flex-col gap-2">
 					<li>
-						<ProfileItem href="/user/{user.username}/list" {item} text="My List">
+						<ProfileItem href="/user/{user.id_numeric}/list" {item} text="My List">
 							<Icon name="bookMultiple" />
 						</ProfileItem>
 					</li>
 					<li>
-						<ProfileItem href="/profile" {item} text="Profile">
+						<ProfileItem href="/user/{user.id_numeric}" {item} text="Profile">
 							<Icon name="profile" />
 						</ProfileItem>
 					</li>

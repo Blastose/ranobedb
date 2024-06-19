@@ -1,5 +1,5 @@
 import { getDisplayPrefsUser, getNameDisplay } from '$lib/display/prefs.js';
-import { itemHiddenError } from '$lib/server/db/change/change.js';
+import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
 import { publisherTabsSchema } from '$lib/server/zod/schema.js';
@@ -20,7 +20,7 @@ export const load = async ({ params, locals, url }) => {
 		error(404);
 	}
 
-	await itemHiddenError({
+	await new DBChanges(db).itemHiddenError({
 		item: publisher,
 		itemId: id,
 		itemName: 'publisher',
