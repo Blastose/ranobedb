@@ -4,6 +4,7 @@ import {
 	displayPrefsSchema,
 	passwordSchema,
 	sendEmailVerificationSchema,
+	settingsTabsSchema,
 	usernameSchema,
 	verifyEmailSchema,
 } from '$lib/server/zod/schema.js';
@@ -24,6 +25,7 @@ import { validateTurnstile } from '$lib/server/cf.js';
 import { EmailVerification } from '$lib/server/email/email.js';
 import { ORIGIN } from '$env/static/private';
 import { getMode } from '$lib/mode/mode.js';
+import type { SettingsTab } from '$lib/db/dbConsts.js';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -38,7 +40,7 @@ type SettingsWithUser = {
 	sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
-	view: 'account' | 'display' | 'email';
+	view: SettingsTab;
 };
 type SettingsLoad = SettingsWithoutUser | SettingsWithUser;
 
@@ -64,6 +66,7 @@ export const load = async ({ locals, url }) => {
 	const sendEmailVerificationForm = await superValidate(zod(sendEmailVerificationSchema));
 	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod(displayPrefsSchema));
 
+	const settingsTabs = await superValidate(url, zod(settingsTabsSchema));
 	return {
 		type: 'user',
 		email_verified: user.email_verified,
@@ -73,7 +76,7 @@ export const load = async ({ locals, url }) => {
 		verifyEmailForm,
 		sendEmailVerificationForm,
 		displayPrefsForm,
-		view: (url.searchParams.get('view') as 'account' | 'display') || 'account',
+		view: settingsTabs.data.view,
 	} satisfies SettingsLoad;
 };
 

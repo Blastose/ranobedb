@@ -8,16 +8,14 @@ import { db } from '$lib/server/db/db.js';
 import { getDisplayPrefsUser } from '$lib/display/prefs.js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { publisherTabsSchema } from '$lib/server/zod/schema.js';
+import { pageSchema, publisherTabsSchema } from '$lib/server/zod/schema.js';
 import { getPublisherDiffs } from '$lib/server/db/publishers/diff.js';
 
 export const load = async ({ params, locals, url }) => {
-	const currentPage = Number(url.searchParams.get('page')) || 1;
+	const page = await superValidate(url, zod(pageSchema));
+	const currentPage = page.data.page;
 	const id = params.id;
 	const svTab = await superValidate(url, zod(publisherTabsSchema));
-	if (!svTab.valid) {
-		error(400);
-	}
 	const tab = svTab.data.tab;
 	const publisherId = Number(id);
 	const revision = Number(params.revision);

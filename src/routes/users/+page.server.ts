@@ -1,21 +1,15 @@
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
-import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ url }) => {
 	const page = await superValidate(url, zod(pageSchema));
-	const qq = await superValidate(url, zod(qSchema));
-	console.log(page);
-
-	if (!page.valid || !qq.valid) {
-		error(400);
-	}
+	const qS = await superValidate(url, zod(qSchema));
 
 	const currentPage = page.data.page;
-	const q = qq.data.q;
+	const q = qS.data.q;
 
 	let query = db
 		.selectFrom('auth_user')

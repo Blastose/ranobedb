@@ -1,10 +1,16 @@
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
+import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ url, locals }) => {
-	const currentPage = Number(url.searchParams.get('page')) || 1;
-	const q = url.searchParams.get('q');
+	const page = await superValidate(url, zod(pageSchema));
+	const currentPage = page.data.page;
+	const qS = await superValidate(url, zod(qSchema));
+	const q = qS.data.q;
+
 	const dbStaff = DBStaff.fromDB(db, locals.user);
 
 	let query = dbStaff

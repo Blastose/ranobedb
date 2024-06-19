@@ -9,6 +9,7 @@ import {
 	seriesBookTypeArray,
 	seriesRelTypeArray,
 	seriesStatusArray,
+	settingsTabs,
 	staffRolesArray,
 	staffTabs,
 } from '$lib/db/dbConsts';
@@ -480,31 +481,6 @@ export const seriesSchema = z.object({
 	comment: zComment,
 });
 
-export const historyFiltersSchema = z.object({
-	items: z
-		.array(z.enum(dbItemArray))
-		.max(dbItemArray.length)
-		.default(dbItemArray.map((v) => v)),
-	change_type: z.enum(historyFilterChangeType),
-	visibility: z.enum(historyFilterVisibilitys),
-	hide_automated: z.boolean().nullish(),
-});
-export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
-
-export const searchNameSchema = z.object({ name: z.string().max(maxTextLength) });
-export const revisionSchema = z.object({ revision: z.number().max(maxNumberValue).nullish() });
-export const languageSchema = z.object({ lang: z.enum(languagesArray).nullish() });
-export const staffTabsSchema = z.object({ tab: z.enum(staffTabs) });
-export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs) });
-
-export const pageSchema = z.object({
-	page: z.number().max(maxNumberValue).default(1),
-});
-
-export const qSchema = z.object({
-	q: z.string().max(maxTextLength).nullish().default(null),
-});
-
 const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),
 	romaji: z.boolean(),
@@ -517,5 +493,32 @@ export const displayPrefsSchema = z.object({
 	descriptions: z.enum(['en', 'ja'] as const),
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
+
+// Url searchparams schemas
+export const historyFiltersSchema = z.object({
+	items: z
+		.array(z.enum(dbItemArray))
+		.max(dbItemArray.length)
+		.default(dbItemArray.map((v) => v)),
+	change_type: z.enum(historyFilterChangeType),
+	visibility: z.enum(historyFilterVisibilitys),
+	hide_automated: z.boolean().nullish(),
+});
+export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
+export const searchNameSchema = z.object({ name: z.string().max(maxTextLength) });
+export const tokenSchema = z.object({ token: z.string().max(maxTextLength).nullish() });
+export const redirectSchema = z.object({ redirect: z.string().max(maxTextLength).nullish() });
+export const revisionSchema = z.object({ revision: z.number().max(maxNumberValue).nullish() });
+export const languageSchema = z.object({ lang: z.enum(languagesArray).nullish() });
+export const listLabelsSchema = z.object({ l: z.array(z.number().max(maxNumberValue)).max(20) });
+export const staffTabsSchema = z.object({ tab: z.enum(staffTabs).catch(staffTabs[0]) });
+export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs).catch(publisherTabs[0]) });
+export const settingsTabsSchema = z.object({ view: z.enum(settingsTabs).catch(settingsTabs[0]) });
+export const pageSchema = z.object({
+	page: z.number().max(maxNumberValue).catch(1),
+});
+export const qSchema = z.object({
+	q: z.string().max(maxTextLength).nullish().catch(null),
+});
 
 export type Nullish<T> = T | null | undefined;

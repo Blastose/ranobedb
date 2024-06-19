@@ -17,6 +17,7 @@
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import ChangeEmailForm from './email/ChangeEmailForm.svelte';
 	import VerifyEmailForm from './email/VerifyEmailForm.svelte';
+	import type { SettingsTab } from '$lib/db/dbConsts';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
@@ -25,10 +26,7 @@
 	export let sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	export let displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
-	export let view: 'account' | 'display' | 'email';
-
-	// Used to silence not used warning
-	changeEmailForm;
+	export let view: SettingsTab;
 </script>
 
 <div class="grid gap-4">

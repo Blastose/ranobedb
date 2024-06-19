@@ -45,8 +45,6 @@ export const GET: RequestHandler = async ({ url }) => {
 	let name = form.data.name;
 	if (name !== '') name = addCharacterBetweenString(name, '%');
 
-	if (!url.searchParams.get('name')) return json([]);
-
 	const s = await getStaffByName(name, nameAsNumber);
 	return json(s);
 };

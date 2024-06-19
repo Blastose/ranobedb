@@ -1,12 +1,17 @@
 import { DBBooks } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
+import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { DeduplicateJoinsPlugin } from 'kysely';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ url, locals }) => {
-	const currentPage = Number(url.searchParams.get('page')) || 1;
-	// TODO searchParams to zod for validation
-	const q = url.searchParams.get('q');
+	const page = await superValidate(url, zod(pageSchema));
+	const qS = await superValidate(url, zod(qSchema));
+
+	const currentPage = page.data.page;
+	const q = qS.data.q;
 
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);

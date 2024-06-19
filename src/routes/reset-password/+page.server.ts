@@ -1,4 +1,4 @@
-import { resetPasswordSchema } from '$lib/server/zod/schema';
+import { resetPasswordSchema, tokenSchema } from '$lib/server/zod/schema';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
 import { db } from '$lib/server/db/db.js';
@@ -15,8 +15,9 @@ export const load = async ({ locals, setHeaders, url }) => {
 		redirect(302, '/');
 	}
 
-	if (!url.searchParams.get('token')) {
-		error(404);
+	const verificationToken = await superValidate(url, zod(tokenSchema));
+	if (!verificationToken.valid || !verificationToken.data.token) {
+		error(400);
 	}
 
 	setHeaders({
@@ -42,8 +43,13 @@ export const actions = {
 			return fail(400, { form });
 		}
 
-		const verificationToken = url.searchParams.get('token') || '';
-		const tokenHash = encodeHex(await sha256(new TextEncoder().encode(verificationToken)));
+		const verificationToken = await superValidate(url, zod(tokenSchema));
+		if (!verificationToken.valid || !verificationToken.data.token) {
+			return fail(400, { form });
+		}
+		const tokenHash = encodeHex(
+			await sha256(new TextEncoder().encode(verificationToken.data.token)),
+		);
 		const token = await db
 			.selectFrom('password_reset_token')
 			.selectAll()

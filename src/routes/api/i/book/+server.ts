@@ -53,8 +53,6 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 	let name = form.data.name;
 	if (name !== '') name = addCharacterBetweenString(name, '%');
 
-	if (!url.searchParams.get('name')) return json([]);
-
 	const s = await getBookByTitle(name, nameAsNumber, locals.user);
 	return json(s);
 };

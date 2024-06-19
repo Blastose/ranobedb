@@ -217,6 +217,8 @@ export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconT
 	series: 'bookshelf',
 	releases: 'file',
 };
+export const settingsTabs = ['account', 'display', 'email'] as const;
+export type SettingsTab = (typeof settingsTabs)[number];
 
 export const historyFilterChangeType = ['all', 'edit', 'add'] as const;
 export const historyFilterVisibilitys = ['all', 'public', 'deleted', 'locked'] as const;
