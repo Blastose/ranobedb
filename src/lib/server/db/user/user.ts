@@ -94,7 +94,13 @@ export class DBUsers {
 		return await this.db
 			.selectFrom('auth_user')
 			.where('auth_user.id_numeric', '=', id_numeric)
-			.select(['auth_user.id_numeric', 'auth_user.username', 'auth_user.joined', 'auth_user.id'])
+			.select([
+				'auth_user.id_numeric',
+				'auth_user.username',
+				'auth_user.joined',
+				'auth_user.id',
+				'auth_user.role',
+			])
 			.executeTakeFirstOrThrow();
 	}
 
@@ -104,6 +110,7 @@ export class DBUsers {
 			id_numeric: user.id_numeric,
 			joined: user.joined,
 			username: user.username,
+			role: user.role,
 		};
 	}
 

@@ -19,6 +19,8 @@
 				<div>
 					<dt>Joined</dt>
 					<dd>{new Date(data.routeUser.joined).toLocaleDateString('sv')}</dd>
+					<dt>Role</dt>
+					<dd>{data.routeUser.role}</dd>
 				</div>
 			</dl>
 
