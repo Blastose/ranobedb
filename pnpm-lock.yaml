@@ -8,10 +8,6 @@ importers:
 
   .:
     dependencies:
-      oslo:
-        specifier: ^1.2.0
-        version: 1.2.0
-    devDependencies:
       '@aws-sdk/client-ses':
         specifier: ^3.598.0
         version: 3.598.0
@@ -24,6 +20,61 @@ importers:
       '@melt-ui/svelte':
         specifier: ^0.79.1
         version: 0.79.1(svelte@4.2.18)
+      autoprefixer:
+        specifier: ^10.4.19
+        version: 10.4.19(postcss@8.4.38)
+      dayjs:
+        specifier: ^1.11.11
+        version: 1.11.11
+      diff:
+        specifier: ^5.2.0
+        version: 5.2.0
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
+      kysely:
+        specifier: ^0.27.3
+        version: 0.27.3
+      kysely-codegen:
+        specifier: ^0.15.0
+        version: 0.15.0(kysely@0.27.3)(pg@8.12.0)
+      lucia:
+        specifier: ^3.2.0
+        version: 3.2.0
+      oslo:
+        specifier: ^1.2.0
+        version: 1.2.0
+      pg:
+        specifier: ^8.12.0
+        version: 8.12.0
+      postcss:
+        specifier: ^8.4.38
+        version: 8.4.38
+      simple-markdown:
+        specifier: ^0.7.3
+        version: 0.7.3
+      svelte-sequential-preprocessor:
+        specifier: ^2.0.1
+        version: 2.0.1
+      sveltekit-flash-message:
+        specifier: ^2.4.4
+        version: 2.4.4(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)
+      sveltekit-rate-limiter:
+        specifier: ^0.5.1
+        version: 0.5.1(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))
+      sveltekit-superforms:
+        specifier: ^2.15.1
+        version: 2.15.1(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)
+      tailwindcss:
+        specifier: ^3.4.4
+        version: 3.4.4
+      xss:
+        specifier: ^1.0.15
+        version: 1.0.15
+      zod:
+        specifier: ^3.23.8
+        version: 3.23.8
+    devDependencies:
       '@playwright/test':
         specifier: ^1.44.0
         version: 1.44.0
@@ -51,18 +102,6 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^7.13.1
         version: 7.13.1(eslint@8.57.0)(typescript@5.4.5)
-      autoprefixer:
-        specifier: ^10.4.19
-        version: 10.4.19(postcss@8.4.38)
-      dayjs:
-        specifier: ^1.11.11
-        version: 1.11.11
-      diff:
-        specifier: ^5.2.0
-        version: 5.2.0
-      dotenv:
-        specifier: ^16.4.5
-        version: 16.4.5
       eslint:
         specifier: ^8.56.0
         version: 8.57.0
@@ -72,51 +111,18 @@ importers:
       eslint-plugin-svelte:
         specifier: ^2.40.0
         version: 2.40.0(eslint@8.57.0)(svelte@4.2.18)
-      kysely:
-        specifier: ^0.27.3
-        version: 0.27.3
-      kysely-codegen:
-        specifier: ^0.15.0
-        version: 0.15.0(kysely@0.27.3)(pg@8.12.0)
-      lucia:
-        specifier: ^3.2.0
-        version: 3.2.0
-      pg:
-        specifier: ^8.12.0
-        version: 8.12.0
-      postcss:
-        specifier: ^8.4.38
-        version: 8.4.38
       prettier:
         specifier: ^3.3.2
         version: 3.3.2
       prettier-plugin-svelte:
         specifier: ^3.2.4
         version: 3.2.4(prettier@3.3.2)(svelte@4.2.18)
-      simple-markdown:
-        specifier: ^0.7.3
-        version: 0.7.3
       svelte:
         specifier: ^4.2.18
         version: 4.2.18
       svelte-check:
         specifier: ^3.8.1
         version: 3.8.1(postcss-load-config@5.1.0(jiti@1.21.0)(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.18)
-      svelte-sequential-preprocessor:
-        specifier: ^2.0.1
-        version: 2.0.1
-      sveltekit-flash-message:
-        specifier: ^2.4.4
-        version: 2.4.4(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)
-      sveltekit-rate-limiter:
-        specifier: ^0.5.1
-        version: 0.5.1(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))
-      sveltekit-superforms:
-        specifier: ^2.15.1
-        version: 2.15.1(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)
-      tailwindcss:
-        specifier: ^3.4.4
-        version: 3.4.4
       tslib:
         specifier: ^2.6.3
         version: 2.6.3
@@ -129,12 +135,6 @@ importers:
       vitest:
         specifier: ^1.6.0
         version: 1.6.0(@types/node@20.12.12)
-      xss:
-        specifier: ^1.0.15
-        version: 1.0.15
-      zod:
-        specifier: ^3.23.8
-        version: 3.23.8
 
 packages:
 
