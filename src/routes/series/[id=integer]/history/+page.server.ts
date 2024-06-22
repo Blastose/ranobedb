@@ -23,7 +23,17 @@ export const load = async ({ params, locals, url }) => {
 	});
 
 	const dbSeries = DBSeries.fromDB(db, locals.user);
-	const series = await dbSeries.getSeriesOne(seriesId).executeTakeFirstOrThrow();
+	const series = await dbSeries
+		.getSeriesOne(seriesId)
+		.clearSelect()
+		.select([
+			'cte_series.title',
+			'cte_series.romaji',
+			'cte_series.title_orig',
+			'cte_series.romaji_orig',
+			'cte_series.lang',
+		])
+		.executeTakeFirstOrThrow();
 	if (!series) {
 		error(404);
 	}
