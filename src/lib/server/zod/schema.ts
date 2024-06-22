@@ -464,7 +464,16 @@ export const seriesSchema = z.object({
 				sort_order: z.number().max(2000),
 			}),
 		)
-		.max(200, { message: 'The total number of books must be less than or equal to 200' }),
+		.max(200, { message: 'The total number of books must be less than or equal to 200' })
+		.refine(
+			(v) => {
+				const vSet = new Set(v.map((vv) => vv.sort_order));
+				return vSet.size === v.length;
+			},
+			{
+				message: 'Cannot have same sort orders for books',
+			},
+		),
 	child_series: z
 		.array(
 			z.object({
@@ -505,7 +514,7 @@ export const historyFiltersSchema = z.object({
 	hide_automated: z.boolean().nullish(),
 });
 export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
-export const searchNameSchema = z.object({ name: z.string().max(maxTextLength) });
+export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });
 export const tokenSchema = z.object({ token: z.string().max(maxTextLength).nullish() });
 export const redirectSchema = z.object({ redirect: z.string().max(maxTextLength).nullish() });
 export const revisionSchema = z.object({ revision: z.number().max(maxNumberValue).nullish() });
@@ -518,7 +527,7 @@ export const pageSchema = z.object({
 	page: z.number().max(maxNumberValue).catch(1),
 });
 export const qSchema = z.object({
-	q: z.string().max(maxTextLength).nullish().catch(null),
+	q: z.string().max(maxTextLength).trim().nullish().catch(null),
 });
 
 export type Nullish<T> = T | null | undefined;
