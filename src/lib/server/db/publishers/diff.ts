@@ -43,7 +43,7 @@ export function getPublisherDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffLines({
-			name: 'Series relations',
+			name: 'Publisher relations',
 			lines1: generatePublisherRelChangeStringFromPublishers(
 				prevPublisherHistEdit['child_publishers'],
 				displayPrefs.names,

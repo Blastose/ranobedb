@@ -168,7 +168,7 @@ function generatePublisherRelChangeString(
 	publisher: PublisherRel,
 	prefs: DisplayPrefs['names'],
 ): string {
-	return `${getNameDisplay({ obj: publisher, prefs })} [${publisher.relation_type}]`;
+	return `${generateLink(`/publisher/${publisher.id}`, getNameDisplay({ obj: publisher, prefs }))} [${publisher.relation_type}]`;
 }
 export function generatePublisherRelChangeStringFromPublishers(
 	publishers: PublisherRel[],
