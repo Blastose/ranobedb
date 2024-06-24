@@ -22,7 +22,11 @@ export const load = async ({ params, locals, url }) => {
 		page: currentPage,
 	});
 	const dbStaff = DBStaff.fromDB(db, locals.user);
-	const staff = await dbStaff.getStaffOne(staffId).executeTakeFirstOrThrow();
+	const staff = await dbStaff
+		.getStaffOne(staffId)
+		.clearSelect()
+		.select(['staff_alias.name', 'staff_alias.romaji'])
+		.executeTakeFirstOrThrow();
 	if (!staff) {
 		error(404);
 	}

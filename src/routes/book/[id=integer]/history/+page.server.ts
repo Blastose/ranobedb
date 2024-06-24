@@ -24,7 +24,17 @@ export const load = async ({ params, locals, url }) => {
 
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
-	const book = await dbBooks.getBook(bookId).executeTakeFirstOrThrow();
+	const book = await dbBooks
+		.getBook(bookId)
+		.clearSelect()
+		.select([
+			'cte_book.title',
+			'cte_book.romaji',
+			'cte_book.title_orig',
+			'cte_book.romaji_orig',
+			'cte_book.lang',
+		])
+		.executeTakeFirstOrThrow();
 	if (!book) {
 		error(404);
 	}

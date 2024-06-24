@@ -23,7 +23,11 @@ export const load = async ({ params, locals, url }) => {
 	});
 
 	const dbReleases = DBReleases.fromDB(db, locals.user);
-	const release = await dbReleases.getRelease(releaseId).executeTakeFirstOrThrow();
+	const release = await dbReleases
+		.getRelease(releaseId)
+		.clearSelect()
+		.select(['release.title', 'release.romaji'])
+		.executeTakeFirstOrThrow();
 	if (!release) {
 		error(404);
 	}

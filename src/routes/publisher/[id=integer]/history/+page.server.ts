@@ -25,7 +25,11 @@ export const load = async ({ params, locals, url }) => {
 		},
 	);
 	const dbPublishers = DBPublishers.fromDB(db, locals.user);
-	const publisher = await dbPublishers.getPublisher(publisherId).executeTakeFirstOrThrow();
+	const publisher = await dbPublishers
+		.getPublisher(publisherId)
+		.clearSelect()
+		.select(['publisher.name', 'publisher.romaji'])
+		.executeTakeFirstOrThrow();
 	if (!publisher) {
 		error(404);
 	}
