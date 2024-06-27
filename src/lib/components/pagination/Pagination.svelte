@@ -11,7 +11,7 @@
 		const newUrl = new URL(url);
 		if (page < 1) {
 			page = 1;
-		} else if (page > totalPages) {
+		} else if (page > totalPages && totalPages !== 0) {
 			page = totalPages;
 		}
 		newUrl.searchParams.set('page', String(page));
@@ -77,10 +77,10 @@
 
 	$: pageItems = getPageItems(currentPage, totalPages, siblingCount);
 	$: isPreviousDisabled = leftDisabled(currentPage);
-	$: isNextDisabled = rightDisabled(currentPage, totalPages);
+	$: isNextDisabled = rightDisabled(currentPage, totalPages) || totalPages === 0;
 </script>
 
-{#if currentPage <= totalPages && currentPage > 0}
+{#if currentPage > 0}
 	<nav class="pagination-container">
 		<div class="flex gap-2 flex-wrap">
 			{#if isPreviousDisabled}
@@ -104,7 +104,7 @@
 			{#each pageItems as page (page.key)}
 				{#if page.type === 'ellipsis'}
 					<span class="flex items-end"><Icon name="dotsHorizontal" /></span>
-				{:else}
+				{:else if page.value !== 0}
 					<a
 						class:active={currentPage === page.value}
 						class="pagination-button"
