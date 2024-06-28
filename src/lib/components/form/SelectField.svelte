@@ -10,7 +10,7 @@
 	export let field: FormPathLeaves<T>;
 	export let label: string = '';
 	export let selectedValue: string;
-	export let dropdownOptions: ReadonlyArray<DropdownOption> | Array<DropdownOption>;
+	export let dropdownOptions: ReadonlyArray<DropdownOption>;
 	export let showRequiredSymbolIfRequired: boolean = true;
 	export let resetPadding: boolean = false;
 

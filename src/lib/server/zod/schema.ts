@@ -3,6 +3,7 @@ import {
 	dbItemArray,
 	historyFilterChangeType,
 	historyFilterVisibilitys,
+	logicalOps,
 	publisherTabs,
 	releasePublisherTypeArray,
 	releaseTypeArray,
@@ -514,6 +515,14 @@ export const historyFiltersSchema = z.object({
 	hide_automated: z.boolean().nullish(),
 });
 export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
+
+export const bookFiltersSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rll: z.enum(logicalOps).catch('or'),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	rfl: z.enum(logicalOps).catch('or'),
+});
+
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });
 export const tokenSchema = z.object({ token: z.string().max(maxTextLength).nullish() });
 export const redirectSchema = z.object({ redirect: z.string().max(maxTextLength).nullish() });
@@ -524,7 +533,7 @@ export const staffTabsSchema = z.object({ tab: z.enum(staffTabs).catch(staffTabs
 export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs).catch(publisherTabs[0]) });
 export const settingsTabsSchema = z.object({ view: z.enum(settingsTabs).catch(settingsTabs[0]) });
 export const pageSchema = z.object({
-	page: z.number().max(maxNumberValue).catch(1),
+	page: z.number().positive().max(maxNumberValue).catch(1),
 });
 export const qSchema = z.object({
 	q: z.string().max(maxTextLength).trim().nullish().catch(null),

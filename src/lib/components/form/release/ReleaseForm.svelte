@@ -84,7 +84,7 @@
 		/>
 	</div>
 
-	<div class="flex gap-4">
+	<div class="flex flex-wrap gap-x-4">
 		<TextField form={sForm} type="text" field="isbn13" label="ISBN 13" placeholder="ISBN 13" />
 		<TextField
 			form={sForm}

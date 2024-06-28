@@ -21,6 +21,8 @@
 			<div class="flex flex-col gap-2">
 				<SearchInput {inputPlaceholder} ariaLabel={inputPlaceholder} />
 
+				<slot name="filters" />
+
 				<div class="w-fit">
 					<SubmitButton text="Search" delayed={false} submitting={false} />
 				</div>

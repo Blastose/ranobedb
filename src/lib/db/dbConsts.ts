@@ -222,3 +222,6 @@ export type SettingsTab = (typeof settingsTabs)[number];
 
 export const historyFilterChangeType = ['all', 'edit', 'add'] as const;
 export const historyFilterVisibilitys = ['all', 'public', 'deleted', 'locked'] as const;
+
+export const logicalOps = ['and', 'or'] as const;
+export type LogicalOp = (typeof logicalOps)[number];
