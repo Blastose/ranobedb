@@ -1,5 +1,6 @@
 import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
+	booksSortArray,
 	dbItemArray,
 	historyFilterChangeType,
 	historyFilterVisibilitys,
@@ -521,6 +522,7 @@ export const bookFiltersSchema = z.object({
 	rll: z.enum(logicalOps).catch('or'),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
+	sort: z.enum(booksSortArray).catch('Title asc'),
 });
 
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });

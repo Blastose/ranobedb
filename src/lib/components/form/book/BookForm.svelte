@@ -72,20 +72,19 @@
 		labelId="descriptionjp-md"
 	/>
 
-	<div class="flex gap-4">
-		<SelectField
-			form={sForm}
-			field="olang"
-			dropdownOptions={languagesArray.map((item) => ({
-				display: languageNames[item],
-				value: item,
-			}))}
-			selectedValue={bookForm.data.olang}
-			label="Language"
-			showRequiredSymbolIfRequired={false}
-			resetPadding={true}
-		/>
-	</div>
+	<SelectField
+		form={sForm}
+		field="olang"
+		dropdownOptions={languagesArray.map((item) => ({
+			display: languageNames[item],
+			value: item,
+		}))}
+		selectedValue={bookForm.data.olang}
+		label="Language"
+		showRequiredSymbolIfRequired={false}
+		resetPadding={true}
+		fit={true}
+	/>
 
 	<ReleaseDateInput form={sForm} field="release_date" label="Release date" />
 

@@ -80,35 +80,33 @@
 		labelId="description"
 	/>
 
-	<div class="flex">
-		<SelectField
-			form={sForm}
-			field="publication_status"
-			dropdownOptions={seriesStatusArray.map((item) => ({
-				display: item,
-				value: item,
-			}))}
-			selectedValue={seriesForm.data.publication_status}
-			label="Publication status"
-			resetPadding={true}
-			showRequiredSymbolIfRequired={false}
-		/>
-	</div>
+	<SelectField
+		form={sForm}
+		field="publication_status"
+		dropdownOptions={seriesStatusArray.map((item) => ({
+			display: item,
+			value: item,
+		}))}
+		selectedValue={seriesForm.data.publication_status}
+		label="Publication status"
+		resetPadding={true}
+		showRequiredSymbolIfRequired={false}
+		fit={true}
+	/>
 
-	<div class="flex gap-4">
-		<SelectField
-			form={sForm}
-			field="olang"
-			dropdownOptions={languagesArray.map((item) => ({
-				display: languageNames[item],
-				value: item,
-			}))}
-			selectedValue={seriesForm.data.olang}
-			label="Language"
-			showRequiredSymbolIfRequired={false}
-			resetPadding={true}
-		/>
-	</div>
+	<SelectField
+		form={sForm}
+		field="olang"
+		dropdownOptions={languagesArray.map((item) => ({
+			display: languageNames[item],
+			value: item,
+		}))}
+		selectedValue={seriesForm.data.olang}
+		label="Language"
+		showRequiredSymbolIfRequired={false}
+		resetPadding={true}
+		fit={true}
+	/>
 
 	<div class="flex flex-wrap gap-x-4">
 		<ReleaseDateInput form={sForm} field="start_date" label="Start date" />

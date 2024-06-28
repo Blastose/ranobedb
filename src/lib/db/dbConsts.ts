@@ -225,3 +225,10 @@ export const historyFilterVisibilitys = ['all', 'public', 'deleted', 'locked'] a
 
 export const logicalOps = ['and', 'or'] as const;
 export type LogicalOp = (typeof logicalOps)[number];
+
+export const booksSortArray = [
+	'Title asc',
+	'Title desc',
+	'Release date asc',
+	'Release date desc',
+] as const;

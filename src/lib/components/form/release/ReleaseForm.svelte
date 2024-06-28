@@ -72,6 +72,7 @@
 			label="Language"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
+			fit={true}
 		/>
 		<SelectField
 			form={sForm}
@@ -81,17 +82,26 @@
 			label="Format"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
+			fit={true}
 		/>
 	</div>
 
 	<div class="flex flex-wrap gap-x-4">
-		<TextField form={sForm} type="text" field="isbn13" label="ISBN 13" placeholder="ISBN 13" />
+		<TextField
+			form={sForm}
+			type="text"
+			field="isbn13"
+			label="ISBN 13"
+			placeholder="ISBN 13"
+			resetPadding={true}
+		/>
 		<TextField
 			form={sForm}
 			type="number"
 			field="pages"
 			label="Number of pages"
 			placeholder="Pages"
+			resetPadding={true}
 		/>
 	</div>
 

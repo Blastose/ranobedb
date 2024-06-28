@@ -18,13 +18,26 @@ export const load = async ({ url, locals }) => {
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
 	let query = dbBooks.getBooks();
-	query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
+
+	const sort = form.data.sort;
+	if (sort === 'Title asc') {
+		query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'asc');
+	} else if (sort === 'Title desc') {
+		query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'desc');
+	} else if (sort === 'Release date asc') {
+		query = query.orderBy('cte_book.release_date asc');
+	} else if (sort === 'Release date desc') {
+		query = query.orderBy('cte_book.release_date desc');
+	}
+
 	query = query.where('cte_book.hidden', '=', false);
+
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 
-	console.log(form.data);
+	// console.log(form.data);
+
 	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb('cte_book.id', 'in', (eb) =>

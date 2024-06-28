@@ -42,6 +42,7 @@
 				label="Change type"
 				showRequiredSymbolIfRequired={false}
 				resetPadding={true}
+				fit={true}
 			/>
 
 			<SelectField
@@ -55,6 +56,7 @@
 				label="Item visibility"
 				showRequiredSymbolIfRequired={false}
 				resetPadding={true}
+				fit={true}
 			/>
 
 			<CheckboxField
