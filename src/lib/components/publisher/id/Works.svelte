@@ -46,7 +46,13 @@
 				<BookImageContainer moreColumns={true}>
 					{#each works.series as series (series.id)}
 						<BookImage
-							book={{ title: series.title, id: series.id, image: series.book?.image }}
+							book={{
+								title: series.title,
+								romaji: series.romaji,
+								lang: series.lang,
+								id: series.id,
+								image: series.book?.image,
+							}}
 							urlPrefix="/series/"
 						>
 							<BookImageBadge badges={series.publisher_types} />

@@ -24,7 +24,7 @@ export const load = async ({ params, locals, url }) => {
 	let release;
 	const dbReleases = DBReleases.fromDB(db, locals.user);
 	const revision = await superValidate(url, zod(revisionSchema));
-	if (revision.data.revision) {
+	if (revision.valid && revision.data.revision) {
 		release = await dbReleases
 			.getReleaseHistEdit({
 				id: releaseId,

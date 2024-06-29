@@ -42,8 +42,6 @@
 		</div>
 
 		<div class="flex gap-4">
-			<SearchInput ariaLabel="Quick search" inputPlaceholder="Search" />
-
 			<ProfileButton {user} />
 		</div>
 	</div>

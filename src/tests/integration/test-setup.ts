@@ -178,6 +178,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			end_date: 99999999,
 			start_date: 20120101,
 			olang: 'ja',
+			c_num_books: 0,
 		})
 		.returning('id')
 		.executeTakeFirstOrThrow();
@@ -225,6 +226,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			end_date: 99999999,
 			start_date: 20120101,
 			olang: 'ja',
+			c_num_books: 0,
 		})
 		.returning('id')
 		.executeTakeFirstOrThrow();

@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import type { UserLabel } from '$lib/server/db/user/list';
 	import Label from './Label.svelte';
 
 	export let userLabels: UserLabel[];
-	$: activeLabels = $page.url.searchParams.getAll('l').map((v) => Number(v) || 1);
+	export let activeLabels: number[];
 </script>
 
 <nav class="grid">

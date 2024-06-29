@@ -8,13 +8,13 @@
 	export let showOpenDrawerButton: boolean = false;
 </script>
 
-<div class="flex items-center">
+<div class="flex items-center px-2">
 	{#if showOpenDrawerButton}
 		<Drawer {user} />
 	{/if}
 	<h2 class="text-2xl font-bold">
 		<a aria-label="Home" class="logo-link" href="/">
-			<img class="logo" height="28" width="42" src="/rndb_logo.png" alt="" />
+			<img class="logo" height="48" width="48" src="/rndb_logo.png" alt="" />
 			<span class:logo-text={hideTextWhenWidthSmall}>RanobeDB</span>
 		</a>
 	</h2>
@@ -22,8 +22,8 @@
 
 <style>
 	.logo {
-		height: 28px;
-		width: 42px;
+		height: 24px;
+		width: 24px;
 	}
 
 	.logo-link {

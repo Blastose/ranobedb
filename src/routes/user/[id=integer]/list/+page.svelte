@@ -20,7 +20,7 @@
 	inputPlaceholder="Search by book title"
 >
 	<svelte:fragment slot="info">
-		<LabelContainer userLabels={data.userLabelCounts} />
+		<LabelContainer userLabels={data.userLabelCounts} activeLabels={data.labels} />
 	</svelte:fragment>
 
 	<svelte:fragment slot="display">

@@ -25,8 +25,7 @@
 	export let actionUrl: string | undefined = undefined;
 
 	const sForm = superForm(releaseForm, {
-		dataType: 'json',
-		resetForm: false,
+		dataType: 'json', 
 		onUpdated({ form: f }) {
 			if (!f.valid) {
 				addToast({ data: { title: 'Error in form!', type: 'error' } });
@@ -72,6 +71,7 @@
 			label="Language"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
+			fit={true}
 		/>
 		<SelectField
 			form={sForm}
@@ -81,17 +81,26 @@
 			label="Format"
 			showRequiredSymbolIfRequired={false}
 			resetPadding={true}
+			fit={true}
 		/>
 	</div>
 
-	<div class="flex gap-4">
-		<TextField form={sForm} type="text" field="isbn13" label="ISBN 13" placeholder="ISBN 13" />
+	<div class="flex flex-wrap gap-x-4">
+		<TextField
+			form={sForm}
+			type="text"
+			field="isbn13"
+			label="ISBN 13"
+			placeholder="ISBN 13"
+			resetPadding={true}
+		/>
 		<TextField
 			form={sForm}
 			type="number"
 			field="pages"
 			label="Number of pages"
 			placeholder="Pages"
+			resetPadding={true}
 		/>
 	</div>
 

@@ -10,7 +10,7 @@
 </script>
 
 <div class="flex flex-col gap-4">
-	{#if showTopPages && results}
+	{#if showTopPages && results !== undefined}
 		<div class="flex flex-col gap-2">
 			<Pagination url={$page.url} {currentPage} {totalPages} />
 			<p>{results} results</p>
@@ -20,13 +20,17 @@
 			<Pagination url={$page.url} {currentPage} {totalPages} />
 		{/if}
 
-		{#if results}
+		{#if results !== undefined}
 			<p>{results} results</p>
 		{/if}
 	{/if}
 
 	<Fly key={$page.url.searchParams.toString()}>
-		<slot />
+		{#if results !== 0 && currentPage <= totalPages}
+			<slot />
+		{:else}
+			<p class="text-center sub-text">There are no results</p>
+		{/if}
 	</Fly>
 
 	<Pagination url={$page.url} {currentPage} {totalPages} />

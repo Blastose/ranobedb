@@ -1,6 +1,7 @@
 <script lang="ts">
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
+	import SeriesFilters from '$lib/components/form/series/filters/SeriesFilters.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
@@ -18,6 +19,10 @@
 	results={data.count}
 	inputPlaceholder="Search by series title"
 >
+	<svelte:fragment slot="filters">
+		<SeriesFilters filtersForm={data.filtersForm} />
+	</svelte:fragment>
+
 	<svelte:fragment slot="display">
 		<div>
 			<BookImageContainer moreColumns={true}>

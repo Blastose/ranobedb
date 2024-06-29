@@ -1,4 +1,4 @@
-import { loginSchema } from '$lib/server/zod/schema';
+import { loginSchema, redirectSchema } from '$lib/server/zod/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { lucia } from '$lib/server/lucia';
 import { superValidate, message } from 'sveltekit-superforms';
@@ -60,10 +60,10 @@ export const actions = {
 			...sessionCookie.attributes,
 		});
 
-		const redirect = url.searchParams.get('redirect');
+		const redirect = await superValidate(url, zod(redirectSchema));
 		let redirectUrl = '/';
-		if (redirect) {
-			redirectUrl = buildUrlFromRedirect(url, redirect);
+		if (redirect.valid && redirect.data.redirect) {
+			redirectUrl = buildUrlFromRedirect(url, redirect.data.redirect);
 		}
 		flashRedirect(
 			303,

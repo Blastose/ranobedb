@@ -13,11 +13,11 @@ test.describe('edit staff mod', () => {
 	});
 
 	test('Mod can edit locked staff', async ({ page }) => {
-		await page.goto('/staff/1/edit');
+		await page.goto('/staff/2/edit');
 		await page.getByLabel('Edit summary').fill('Add change');
 		await page.locator('main form button[type="submit"]').click();
 
-		await expect(page).toHaveURL('/staff/1');
+		await expect(page).toHaveURL('/staff/2');
 		await expect(page.locator('.toast-container')).toHaveText('Successfully edited staff!');
 	});
 });

@@ -20,7 +20,7 @@ export const load = async ({ params, locals, url }) => {
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
 	const revision = await superValidate(url, zod(revisionSchema));
-	if (revision.data.revision) {
+	if (revision.valid && revision.data.revision) {
 		book = await dbBooks
 			.getBookHistEdit({ id: bookId, revision: revision.data.revision })
 			.executeTakeFirst();
@@ -44,6 +44,9 @@ export const load = async ({ params, locals, url }) => {
 	}
 
 	const lang = await superValidate(url, zod(languageSchema));
+	if (!lang.valid) {
+		error(400);
+	}
 	const bookTitle = book.titles.find((v) => v.lang === lang.data.lang) || book.titles.at(0);
 
 	const form = await superValidate(

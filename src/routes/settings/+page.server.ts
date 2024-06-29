@@ -4,6 +4,7 @@ import {
 	displayPrefsSchema,
 	passwordSchema,
 	sendEmailVerificationSchema,
+	settingsTabsSchema,
 	usernameSchema,
 	verifyEmailSchema,
 } from '$lib/server/zod/schema.js';
@@ -24,6 +25,7 @@ import { validateTurnstile } from '$lib/server/cf.js';
 import { EmailVerification } from '$lib/server/email/email.js';
 import { ORIGIN } from '$env/static/private';
 import { getMode } from '$lib/mode/mode.js';
+import type { SettingsTab } from '$lib/db/dbConsts.js';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -38,7 +40,7 @@ type SettingsWithUser = {
 	sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
-	view: 'account' | 'display' | 'email';
+	view: SettingsTab;
 };
 type SettingsLoad = SettingsWithoutUser | SettingsWithUser;
 
@@ -64,6 +66,7 @@ export const load = async ({ locals, url }) => {
 	const sendEmailVerificationForm = await superValidate(zod(sendEmailVerificationSchema));
 	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod(displayPrefsSchema));
 
+	const settingsTabs = await superValidate(url, zod(settingsTabsSchema));
 	return {
 		type: 'user',
 		email_verified: user.email_verified,
@@ -73,17 +76,21 @@ export const load = async ({ locals, url }) => {
 		verifyEmailForm,
 		sendEmailVerificationForm,
 		displayPrefsForm,
-		view: (url.searchParams.get('view') as 'account' | 'display') || 'account',
+		view: settingsTabs.data.view,
 	} satisfies SettingsLoad;
 };
 
 export const actions = {
 	username: async ({ request, locals }) => {
-		if (!locals.user) return fail(401);
+		if (!locals.user) {
+			return fail(401);
+		}
 
 		const usernameForm = await superValidate(request, zod(usernameSchema));
 
-		if (!usernameForm.valid) return fail(400, { usernameForm });
+		if (!usernameForm.valid) {
+			return fail(400, { usernameForm });
+		}
 
 		const newUsername = usernameForm.data.username;
 		const password = usernameForm.data.password;
@@ -138,10 +145,14 @@ export const actions = {
 	},
 
 	password: async ({ request, locals, cookies }) => {
-		if (!locals.user) return fail(401);
+		if (!locals.user) {
+			return fail(401);
+		}
 
 		const passwordForm = await superValidate(request, zod(passwordSchema));
-		if (!passwordForm.valid) return fail(400, { passwordForm });
+		if (!passwordForm.valid) {
+			return fail(400, { passwordForm });
+		}
 
 		const dbUsers = new DBUsers(db);
 
@@ -176,7 +187,9 @@ export const actions = {
 		if (!locals.user) return fail(401);
 
 		const displayPrefsForm = await superValidate(request, zod(displayPrefsSchema));
-		if (!displayPrefsForm.valid) return fail(400, { displayPrefsForm });
+		if (!displayPrefsForm.valid) {
+			return fail(400, { displayPrefsForm });
+		}
 
 		const dbUsers = new DBUsers(db);
 		await dbUsers.updateDisplayPrefs({
@@ -193,6 +206,9 @@ export const actions = {
 		const formData = await request.formData();
 
 		const form = await superValidate(formData, zod(sendEmailVerificationSchema));
+		if (!form.valid) {
+			return fail(400, { form });
+		}
 		const turnstileSuccess = await validateTurnstile({ request, body: formData });
 		if (!turnstileSuccess) {
 			return fail(400);
@@ -229,10 +245,14 @@ export const actions = {
 	},
 
 	verifyemail: async ({ request, locals }) => {
-		if (!locals.user) return fail(401);
+		if (!locals.user) {
+			return fail(401);
+		}
 
 		const verifyEmailForm = await superValidate(request, zod(verifyEmailSchema));
-		if (!verifyEmailForm.valid) return fail(400, { verifyEmailForm });
+		if (!verifyEmailForm.valid) {
+			return fail(400, { verifyEmailForm });
+		}
 
 		const emailVerification = new EmailVerification(db);
 
@@ -250,7 +270,9 @@ export const actions = {
 	},
 
 	changeemail: async ({ locals, request }) => {
-		if (!locals.user) return fail(401);
+		if (!locals.user) {
+			return fail(401);
+		}
 
 		const formData = await request.formData();
 
@@ -261,7 +283,9 @@ export const actions = {
 			return fail(400, { changeEmailForm });
 		}
 
-		if (!changeEmailForm.valid) return fail(400, { changeEmailForm });
+		if (!changeEmailForm.valid) {
+			return fail(400, { changeEmailForm });
+		}
 
 		const dbUsers = new DBUsers(db);
 

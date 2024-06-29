@@ -6,7 +6,7 @@
 	export let data;
 
 	$: changes = data.changes;
-	let title = `Edit history of ${data.routeUser.username}`;
+	$: title = `Edit history of ${data.routeUser.username}`;
 </script>
 
 <PageTitle {title} />

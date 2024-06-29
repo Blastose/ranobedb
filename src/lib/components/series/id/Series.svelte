@@ -48,10 +48,10 @@
 			).getDateFormatted()}
 		</p>
 
-		<div class="flex gap-2 sub-text">
+		<dl class="flex gap-2 sub-text">
 			<dt>Publication status:</dt>
 			<dd>{series.publication_status}</dd>
-		</div>
+		</dl> 
 	</div>
 
 	<section>

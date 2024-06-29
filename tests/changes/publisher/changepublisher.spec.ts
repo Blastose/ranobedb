@@ -38,11 +38,11 @@ test.describe('edit publisher mod', () => {
 	});
 
 	test('Mod can edit locked publisher', async ({ page }) => {
-		await page.goto('/publisher/1/edit');
+		await page.goto('/publisher/2/edit');
 		await page.getByLabel('Edit summary').fill('Add change');
 		await page.locator('main form button[type="submit"]').click();
 
-		await expect(page).toHaveURL('/publisher/1');
+		await expect(page).toHaveURL('/publisher/2');
 		await expect(page.locator('.toast-container')).toHaveText('Successfully edited publisher!');
 	});
 });

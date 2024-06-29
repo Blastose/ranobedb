@@ -5,13 +5,11 @@
 	import SelectField from '../SelectField.svelte';
 	import { dbItemArray, historyFilterChangeType, historyFilterVisibilitys } from '$lib/db/dbConsts';
 	import CheckboxField from '../CheckboxField.svelte';
+	import Keyed from '../Keyed.svelte';
 	import MultiSelectField from '../MultiSelectField.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof historyFiltersSchema>>;
-	const sForm = superForm(filtersForm, {
-		dataType: 'json',
-		resetForm: false,
-	});
+	const sForm = superForm(filtersForm);
 	const { form, enhance, delayed, submitting } = sForm;
 </script>
 
@@ -20,13 +18,15 @@
 
 	<div class="flex flex-col gap-4">
 		<div class="w-fit flex flex-wrap gap-x-8 gap-y-2 items-end">
-			<MultiSelectField
-				form={sForm}
-				field="items"
-				allSelectedText="All"
-				labelText="Items"
-				dropdownOptions={dbItemArray.map((v) => ({ display: v, value: v }))}
-			/>
+			<Keyed>
+				<MultiSelectField
+					form={sForm}
+					field="items"
+					allSelectedText="All"
+					labelText="Items"
+					dropdownOptions={dbItemArray.map((v) => ({ display: v, value: v }))}
+				/>
+			</Keyed>
 
 			<SelectField
 				form={sForm}
@@ -39,6 +39,7 @@
 				label="Change type"
 				showRequiredSymbolIfRequired={false}
 				resetPadding={true}
+				fit={true}
 			/>
 
 			<SelectField
@@ -52,6 +53,7 @@
 				label="Item visibility"
 				showRequiredSymbolIfRequired={false}
 				resetPadding={true}
+				fit={true}
 			/>
 
 			<CheckboxField

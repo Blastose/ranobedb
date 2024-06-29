@@ -7,7 +7,7 @@ import { error } from '@sveltejs/kit';
 export const load = async ({ params, locals }) => {
 	const id = Number(params.id);
 	const dbSeries = DBSeries.fromDB(db, locals.user);
-	const series = await dbSeries.getSeriesOne(id).executeTakeFirst();
+	const series = await dbSeries.getSeriesOne(id).limit(1).executeTakeFirst();
 
 	if (!series) {
 		error(404);

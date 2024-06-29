@@ -16,39 +16,16 @@ const db = new Kysely<DB>({
 	}),
 });
 
-let createdUser1: Awaited<ReturnType<DBUsers['createUser']>>;
-let createdUser2: Awaited<ReturnType<DBUsers['createUser']>>;
-let createdUser3: Awaited<ReturnType<DBUsers['createUser']>>;
-
 test.describe('auth', () => {
-	test.beforeAll(async () => {
+	test('user can verify their email', async ({ page }) => {
 		const dbUsers = new DBUsers(db);
-		createdUser1 = await dbUsers.createUser({
+		const createdUser1 = await dbUsers.createUser({
 			email: 'aaaa+4231@aaaa.ca',
 			id: 'asdfedsefedesfe',
 			password: 'passwordpassword',
 			username: 'jimmystevebob',
 		});
-		createdUser2 = await dbUsers.createUser({
-			email: 'aaaa+12432@aaaa.ca',
-			id: 'aljeibndkfjekdj',
-			password: 'passwordpassword',
-			username: 'alicemaryjane',
-		});
-		createdUser3 = await dbUsers.createUser({
-			email: 'aaaa+31234@aaaa.ca',
-			id: 'ikdjekdlsnekdje',
-			password: 'passwordpassword',
-			username: 'qwertyuiop',
-		});
-		await db
-			.updateTable('auth_user_credentials')
-			.set({ email_verified: true })
-			.where('auth_user_credentials.user_id', '=', createdUser2.id)
-			.execute();
-	});
 
-	test('user can verify their email', async ({ page }) => {
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill(createdUser1.username);
 		await page.getByLabel('password').fill('passwordpassword');
@@ -74,6 +51,14 @@ test.describe('auth', () => {
 	});
 
 	test('user can change their email', async ({ page }) => {
+		const dbUsers = new DBUsers(db);
+		const createdUser3 = await dbUsers.createUser({
+			email: 'aaaa+31234@aaaa.ca',
+			id: 'ikdjekdlsnekdje',
+			password: 'passwordpassword',
+			username: 'qwertyuiop',
+		});
+
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill(createdUser3.username);
 		await page.getByLabel('password').fill('passwordpassword');
@@ -118,6 +103,19 @@ test.describe('auth', () => {
 	});
 
 	test('user can reset their password', async ({ page }) => {
+		const dbUsers = new DBUsers(db);
+		const createdUser2 = await dbUsers.createUser({
+			email: 'aaaa+12432@aaaa.ca',
+			id: 'aljeibndkfjekdj',
+			password: 'passwordpassword',
+			username: 'alicemaryjane',
+		});
+		await db
+			.updateTable('auth_user_credentials')
+			.set({ email_verified: true })
+			.where('auth_user_credentials.user_id', '=', createdUser2.id)
+			.execute();
+
 		await page.goto('/forgot-password');
 		await page.getByLabel('email').fill('aaaa+12432@aaaa.ca');
 		await page.getByRole('button', { name: 'Reset password' }).click();

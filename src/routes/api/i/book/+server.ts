@@ -45,12 +45,13 @@ export type ApiBook = Awaited<ReturnType<typeof getBookByTitle>>;
 
 export const GET: RequestHandler = async ({ url, locals }) => {
 	const form = await superValidate(url.searchParams, zod(searchNameSchema));
+	if (!form.valid) {
+		return json([]);
+	}
 
 	const nameAsNumber = Number(form.data.name);
 	let name = form.data.name;
 	if (name !== '') name = addCharacterBetweenString(name, '%');
-
-	if (!url.searchParams.get('name')) return json([]);
 
 	const s = await getBookByTitle(name, nameAsNumber, locals.user);
 	return json(s);

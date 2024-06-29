@@ -37,12 +37,13 @@ export type ApiStaff = Awaited<ReturnType<typeof getStaffByName>>;
 
 export const GET: RequestHandler = async ({ url }) => {
 	const form = await superValidate(url.searchParams, zod(searchNameSchema));
+	if (!form.valid) {
+		return json([]);
+	}
 
 	const nameAsNumber = Number(form.data.name);
 	let name = form.data.name;
 	if (name !== '') name = addCharacterBetweenString(name, '%');
-
-	if (!url.searchParams.get('name')) return json([]);
 
 	const s = await getStaffByName(name, nameAsNumber);
 	return json(s);

@@ -3,11 +3,15 @@
 </script>
 
 <script lang="ts" generics="T extends Rec">
+	import type { Language } from '$lib/server/db/dbTypes';
+
+	import { languageNames } from '$lib/db/dbConsts';
+
 	import { fly } from 'svelte/transition';
 
 	import { type SuperForm, arrayProxy, type FormPathArrays } from 'sveltekit-superforms';
 	import { createSelect, melt, type SelectOption } from '@melt-ui/svelte';
-	import { writable, type Writable } from 'svelte/store';
+	import { type Writable } from 'svelte/store';
 	import Icon from '../icon/Icon.svelte';
 	import HiddenInput from './HiddenInput.svelte';
 
@@ -19,19 +23,6 @@
 	export let allSelectedText: string;
 
 	let { values } = arrayProxy(form, field) as { values: Writable<string[]> };
-
-	let selectedMeltStore = writable<SelectOption<string>[]>(
-		$values.map((i) => {
-			return {
-				value: i,
-				label: i,
-			};
-		}),
-	);
-
-	$: {
-		values.set($selectedMeltStore.map((v) => v.value));
-	}
 
 	const {
 		elements: { trigger, menu, option, label },
@@ -46,8 +37,24 @@
 		},
 		multiple: true,
 		preventScroll: false,
-		selected: selectedMeltStore,
+		defaultSelected: $values.map((v) => ({
+			value: v,
+			label: languageNames[v as Language],
+		})),
+		onSelectedChange: handleSelectedChange,
 	});
+
+	function handleSelectedChange(args: {
+		curr: SelectOption<string>[] | undefined;
+		next: SelectOption<string>[] | undefined;
+	}): SelectOption<string>[] | undefined {
+		if (!args.next) {
+			return undefined;
+		}
+		console.log(args.next);
+		values.set(args.next.map((v) => v.value));
+		return args.next;
+	}
 </script>
 
 {#each $values as sel}
@@ -99,7 +106,7 @@
 					<div class="check {$isSelected(dropdownOption.value) ? 'block' : 'hidden'}">
 						<Icon name="checkCircle" width="18" height="18" />
 					</div>
-					{dropdownOption.value}
+					{dropdownOption.display}
 				</div>
 			{/each}
 		</div>

@@ -217,6 +217,38 @@ export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconT
 	series: 'bookshelf',
 	releases: 'file',
 };
+export const settingsTabs = ['account', 'display', 'email'] as const;
+export type SettingsTab = (typeof settingsTabs)[number];
 
 export const historyFilterChangeType = ['all', 'edit', 'add'] as const;
 export const historyFilterVisibilitys = ['all', 'public', 'deleted', 'locked'] as const;
+
+export const logicalOps = ['and', 'or'] as const;
+export type LogicalOp = (typeof logicalOps)[number];
+
+export const booksSortArray = [
+	'Title asc',
+	'Title desc',
+	'Release date asc',
+	'Release date desc',
+] as const;
+
+export const seriesSortArray = [
+	'Title asc',
+	'Title desc',
+	'Start date asc',
+	'Start date desc',
+	'End date asc',
+	'End date desc',
+	'Num. books asc',
+	'Num. books desc',
+] as const;
+
+export const releaseSortArray = [
+	'Title asc',
+	'Title desc',
+	'Release date asc',
+	'Release date desc',
+	'Pages asc',
+	'Pages desc',
+] as const;

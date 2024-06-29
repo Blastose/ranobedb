@@ -1,14 +1,19 @@
 import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
+	booksSortArray,
 	dbItemArray,
 	historyFilterChangeType,
 	historyFilterVisibilitys,
+	logicalOps,
 	publisherTabs,
 	releasePublisherTypeArray,
+	releaseSortArray,
 	releaseTypeArray,
 	seriesBookTypeArray,
 	seriesRelTypeArray,
+	seriesSortArray,
 	seriesStatusArray,
+	settingsTabs,
 	staffRolesArray,
 	staffTabs,
 } from '$lib/db/dbConsts';
@@ -463,7 +468,16 @@ export const seriesSchema = z.object({
 				sort_order: z.number().max(2000),
 			}),
 		)
-		.max(200, { message: 'The total number of books must be less than or equal to 200' }),
+		.max(200, { message: 'The total number of books must be less than or equal to 200' })
+		.refine(
+			(v) => {
+				const vSet = new Set(v.map((vv) => vv.sort_order));
+				return vSet.size === v.length;
+			},
+			{
+				message: 'Cannot have same sort orders for books',
+			},
+		),
 	child_series: z
 		.array(
 			z.object({
@@ -480,23 +494,6 @@ export const seriesSchema = z.object({
 	comment: zComment,
 });
 
-export const historyFiltersSchema = z.object({
-	items: z
-		.array(z.enum(dbItemArray))
-		.max(dbItemArray.length)
-		.default(dbItemArray.map((v) => v)),
-	change_type: z.enum(historyFilterChangeType),
-	visibility: z.enum(historyFilterVisibilitys),
-	hide_automated: z.boolean().nullish(),
-});
-export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
-
-export const searchNameSchema = z.object({ name: z.string() });
-export const revisionSchema = z.object({ revision: z.number().nullish() });
-export const languageSchema = z.object({ lang: z.enum(languagesArray).nullish() });
-export const staffTabsSchema = z.object({ tab: z.enum(staffTabs) });
-export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs) });
-
 const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),
 	romaji: z.boolean(),
@@ -509,5 +506,56 @@ export const displayPrefsSchema = z.object({
 	descriptions: z.enum(['en', 'ja'] as const),
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
+
+// Url searchparams schemas
+export const historyFiltersSchema = z.object({
+	items: z
+		.array(z.enum(dbItemArray))
+		.max(dbItemArray.length)
+		.default(dbItemArray.map((v) => v)),
+	change_type: z.enum(historyFilterChangeType),
+	visibility: z.enum(historyFilterVisibilitys),
+	hide_automated: z.boolean().nullish(),
+});
+export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
+
+export const bookFiltersSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rll: z.enum(logicalOps).catch('or'),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	rfl: z.enum(logicalOps).catch('or'),
+	sort: z.enum(booksSortArray).catch('Title asc'),
+});
+
+export const seriesFiltersSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rll: z.enum(logicalOps).catch('or'),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	rfl: z.enum(logicalOps).catch('or'),
+	sort: z.enum(seriesSortArray).catch('Title asc'),
+	staff: z.array(z.number().max(maxNumberValue)).catch([]),
+});
+
+export const releaseFiltersSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	sort: z.enum(releaseSortArray).catch('Title asc'),
+});
+
+export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });
+export const tokenSchema = z.object({ token: z.string().max(maxTextLength).nullish() });
+export const redirectSchema = z.object({ redirect: z.string().max(maxTextLength).nullish() });
+export const revisionSchema = z.object({ revision: z.number().max(maxNumberValue).nullish() });
+export const languageSchema = z.object({ lang: z.enum(languagesArray).nullish() });
+export const listLabelsSchema = z.object({ l: z.array(z.number().max(maxNumberValue)).max(20) });
+export const staffTabsSchema = z.object({ tab: z.enum(staffTabs).catch(staffTabs[0]) });
+export const publisherTabsSchema = z.object({ tab: z.enum(publisherTabs).catch(publisherTabs[0]) });
+export const settingsTabsSchema = z.object({ view: z.enum(settingsTabs).catch(settingsTabs[0]) });
+export const pageSchema = z.object({
+	page: z.number().positive().max(maxNumberValue).catch(1),
+});
+export const qSchema = z.object({
+	q: z.string().max(maxTextLength).trim().nullish().catch(null),
+});
 
 export type Nullish<T> = T | null | undefined;

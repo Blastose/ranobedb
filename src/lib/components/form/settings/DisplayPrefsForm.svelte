@@ -23,37 +23,36 @@
 
 	<div>
 		<h3 class="text-lg font-bold">Release titles, staff and publisher names</h3>
-		<div class="w-fit">
-			<SelectField
-				form={sForm}
-				dropdownOptions={[
-					{ display: 'Romaji (e.g. Kawahara Reki, Dengeki Bunko)', value: 'romaji' },
-					{ display: 'Native (e.g. 川原礫, 電撃文庫)', value: 'native' },
-				]}
-				field="names"
-				label="Display name"
-				selectedValue={$form.names}
-				resetPadding={true}
-				showRequiredSymbolIfRequired={false}
-			/>
-		</div>
+		<SelectField
+			form={sForm}
+			dropdownOptions={[
+				{ display: 'Romaji (e.g. Kawahara Reki, Dengeki Bunko)', value: 'romaji' },
+				{ display: 'Native (e.g. 川原礫, 電撃文庫)', value: 'native' },
+			]}
+			field="names"
+			label="Display name"
+			selectedValue={$form.names}
+			resetPadding={true}
+			showRequiredSymbolIfRequired={false}
+			fit={true}
+		/>
 	</div>
 	<div>
 		<h3 class="text-lg font-bold">Book descriptions</h3>
-		<div class="w-fit">
-			<SelectField
-				form={sForm}
-				dropdownOptions={[
-					{ display: 'English', value: 'en' },
-					{ display: 'Japanese', value: 'ja' },
-				]}
-				field="descriptions"
-				label="Descriptions"
-				selectedValue={$form.descriptions}
-				resetPadding={true}
-				showRequiredSymbolIfRequired={false}
-			/>
-		</div>
+
+		<SelectField
+			form={sForm}
+			dropdownOptions={[
+				{ display: 'English', value: 'en' },
+				{ display: 'Japanese', value: 'ja' },
+			]}
+			field="descriptions"
+			label="Descriptions"
+			selectedValue={$form.descriptions}
+			resetPadding={true}
+			showRequiredSymbolIfRequired={false}
+			fit={true}
+		/>
 	</div>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Save preferences'} />

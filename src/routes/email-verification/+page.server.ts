@@ -1,13 +1,19 @@
 import { db } from '$lib/server/db/db.js';
 import { EmailVerification } from '$lib/server/email/email.js';
+import { tokenSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { isWithinExpirationDate } from 'oslo';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ setHeaders, url }) => {
-	const urlToken = url.searchParams.get('token');
-	if (!urlToken) {
+	const urlToken = await superValidate(url, zod(tokenSchema));
+
+	if (!urlToken.valid || !urlToken.data.token) {
 		error(404);
 	}
+
+	const token_hash = urlToken.data.token;
 
 	setHeaders({
 		'Referrer-Policy': 'no-referrer',
@@ -16,13 +22,13 @@ export const load = async ({ setHeaders, url }) => {
 	const token = await db.transaction().execute(async (trx) => {
 		const token = await trx
 			.selectFrom('email_verification_token')
-			.where('token_hash', '=', urlToken)
+			.where('token_hash', '=', token_hash)
 			.selectAll()
 			.executeTakeFirst();
 		if (token) {
 			await trx
 				.deleteFrom('email_verification_token')
-				.where('email_verification_token.token_hash', '=', urlToken)
+				.where('email_verification_token.token_hash', '=', token_hash)
 				.execute();
 		}
 		return token;

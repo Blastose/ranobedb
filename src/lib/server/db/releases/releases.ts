@@ -66,7 +66,7 @@ export class DBReleases {
 							).as('image'),
 						)
 						.where('cte_book.hidden', '=', false)
-						.where('series.hidden', '=', false)
+						.where((eb) => eb.fn.coalesce('series.hidden', eb.lit(false)), '=', false)
 						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
 			])
@@ -138,7 +138,7 @@ export class DBReleases {
 							).as('image'),
 						)
 						.where('cte_book.hidden', '=', false)
-						.where('series.hidden', '=', false)
+						.where((eb) => eb.fn.coalesce('series.hidden', eb.lit(false)), '=', false)
 						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
 			])

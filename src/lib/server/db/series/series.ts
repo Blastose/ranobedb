@@ -94,6 +94,7 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 				'series.web_novel',
 				'series.wikidata_id',
 				'series.olang',
+				'series.c_num_books',
 			])
 			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
 			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
@@ -196,6 +197,7 @@ export class DBSeries {
 				'cte_series.title',
 				'cte_series.title_orig',
 				'cte_series.olang',
+				'cte_series.c_num_books',
 			]);
 	}
 	getSeriesOne(id: number) {

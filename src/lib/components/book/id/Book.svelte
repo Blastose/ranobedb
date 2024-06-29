@@ -43,7 +43,7 @@
 					<img
 						width={book.image.width}
 						height={book.image.height}
-						class="max-w-[200px] h-fit sm:max-w-[200px] rounded-md shadow-sm"
+						class="max-w-[175px] h-fit sm:max-w-[200px] rounded-md shadow-sm"
 						src={imageUrl}
 						alt=""
 						loading="lazy"

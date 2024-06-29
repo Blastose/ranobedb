@@ -10,14 +10,15 @@
 	export let field: FormPathLeaves<T>;
 	export let label: string = '';
 	export let selectedValue: string;
-	export let dropdownOptions: ReadonlyArray<DropdownOption> | Array<DropdownOption>;
+	export let dropdownOptions: ReadonlyArray<DropdownOption>;
 	export let showRequiredSymbolIfRequired: boolean = true;
 	export let resetPadding: boolean = false;
+	export let fit: boolean;
 
 	const { value, errors, constraints } = formFieldProxy(form, field);
 </script>
 
-<div class="flex flex-col gap-1">
+<div class="flex flex-col gap-1 {fit ? 'w-fit' : ''}">
 	<label class="flex flex-col gap-1">
 		<span>
 			<span class="dark:text-white">{label || String(field)}</span>

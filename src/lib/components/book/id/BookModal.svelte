@@ -107,6 +107,7 @@
 									dropdownOptions={readingStatuses}
 									showRequiredSymbolIfRequired={false}
 									selectedValue={$form.readingStatus}
+									fit={false}
 								/>
 								<TextField form={sForm} type="date" field="started" label="Started" />
 								<TextField form={sForm} type="date" field="finished" label="Finished" />

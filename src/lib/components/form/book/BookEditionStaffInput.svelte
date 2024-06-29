@@ -45,6 +45,7 @@
 						label="Language"
 						resetPadding={true}
 						showRequiredSymbolIfRequired={false}
+						fit={true}
 					/>
 					<button
 						on:click={() => {
