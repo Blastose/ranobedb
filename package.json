@@ -20,7 +20,7 @@
 		"db-seed:test": "pg_restore --clean -U postgres -d rndb-testing db-seed.dump"
 	},
 	"devDependencies": {
-		"@playwright/test": "^1.44.0",
+		"@playwright/test": "^1.45.0",
 		"@sveltejs/adapter-auto": "^3.2.2",
 		"@sveltejs/adapter-node": "^5.1.1",
 		"@sveltejs/kit": "^2.5.16",

@@ -1,6 +1,7 @@
 import type { Theme } from '$lib/stores/themeStore';
 import type { Handle } from '@sveltejs/kit';
 import { lucia } from '$lib/server/lucia';
+import { getMode } from '$lib/mode/mode';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const sessionId = event.cookies.get(lucia.sessionCookieName);
@@ -42,7 +43,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	// Delete link header since it can be too large for Nginx
 	// See https://github.com/sveltejs/kit/issues/11084
-	response.headers.delete('link');
+	if (getMode() === 'production') {
+		response.headers.delete('link');
+	}
 
 	return response;
 };

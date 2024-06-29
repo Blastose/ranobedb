@@ -13,11 +13,11 @@ test.describe('edit release mod', () => {
 	});
 
 	test('Mod can edit locked release', async ({ page }) => {
-		await page.goto('/release/1/edit');
+		await page.goto('/release/2/edit');
 		await page.getByLabel('Edit summary').fill('Add change');
 		await page.locator('main form button[type="submit"]').click();
 
-		await expect(page).toHaveURL('/release/1');
+		await expect(page).toHaveURL('/release/2');
 		await expect(page.locator('.toast-container')).toHaveText('Successfully edited release!');
 	});
 });
