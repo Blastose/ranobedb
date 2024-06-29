@@ -28,7 +28,6 @@
 
 	const sForm = superForm(staffForm, {
 		dataType: 'json',
-		resetForm: false,
 		onUpdated({ form: f }) {
 			if (!f.valid) {
 				addToast({ data: { title: 'Error in form!', type: 'error' } });

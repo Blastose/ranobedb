@@ -9,10 +9,7 @@
 	import MultiSelectField from '../MultiSelectField.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof historyFiltersSchema>>;
-	const sForm = superForm(filtersForm, {
-		dataType: 'json',
-		resetForm: false,
-	});
+	const sForm = superForm(filtersForm);
 	const { form, enhance, delayed, submitting } = sForm;
 </script>
 

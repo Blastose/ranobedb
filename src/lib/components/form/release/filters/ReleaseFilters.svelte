@@ -1,19 +1,17 @@
 <script lang="ts">
-	import type { bookFiltersSchema } from '$lib/server/zod/schema';
+	import type { releaseFiltersSchema } from '$lib/server/zod/schema';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import {
-		booksSortArray,
 		languageNames,
 		languagesArray,
-		logicalOps,
 		releaseFormatArray,
+		releaseSortArray,
 	} from '$lib/db/dbConsts';
 	import Keyed from '../../Keyed.svelte';
 	import SelectField from '../../SelectField.svelte';
 	import MultiSelectField from '../../MultiSelectField.svelte';
-	import { getAllOrAny } from '../../filters/utils';
 
-	export let filtersForm: SuperValidated<Infer<typeof bookFiltersSchema>>;
+	export let filtersForm: SuperValidated<Infer<typeof releaseFiltersSchema>>;
 	const sForm = superForm(filtersForm);
 	const { form, enhance, delayed, submitting } = sForm;
 </script>
@@ -27,28 +25,17 @@
 				<MultiSelectField
 					form={sForm}
 					field="rl"
-					allSelectedText={getAllOrAny($form.rll)}
+					allSelectedText={'any'}
 					labelText="Release language"
 					dropdownOptions={languagesArray.map((v) => ({ display: languageNames[v], value: v }))}
 				/>
 			</Keyed>
 
-			<SelectField
-				form={sForm}
-				field="rll"
-				dropdownOptions={logicalOps.map((v) => ({ display: v, value: v }))}
-				selectedValue={filtersForm.data.rll}
-				label="Release langauge filter logic"
-				resetPadding={true}
-				showRequiredSymbolIfRequired={false}
-				fit={true}
-			/>
-
 			<Keyed>
 				<MultiSelectField
 					form={sForm}
 					field="rf"
-					allSelectedText={getAllOrAny($form.rfl)}
+					allSelectedText={'any'}
 					labelText="Release format"
 					dropdownOptions={releaseFormatArray.map((v) => ({ display: v, value: v }))}
 				/>
@@ -56,19 +43,8 @@
 
 			<SelectField
 				form={sForm}
-				field="rfl"
-				dropdownOptions={logicalOps.map((v) => ({ display: v, value: v }))}
-				selectedValue={filtersForm.data.rfl}
-				label="Release format filter logic"
-				resetPadding={true}
-				showRequiredSymbolIfRequired={false}
-				fit={true}
-			/>
-
-			<SelectField
-				form={sForm}
 				field="sort"
-				dropdownOptions={booksSortArray.map((v) => ({ display: v, value: v }))}
+				dropdownOptions={releaseSortArray.map((v) => ({ display: v, value: v }))}
 				selectedValue={filtersForm.data.sort}
 				label="Sort by"
 				resetPadding={true}

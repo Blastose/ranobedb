@@ -243,3 +243,12 @@ export const seriesSortArray = [
 	'Num. books asc',
 	'Num. books desc',
 ] as const;
+
+export const releaseSortArray = [
+	'Title asc',
+	'Title desc',
+	'Release date asc',
+	'Release date desc',
+	'Pages asc',
+	'Pages desc',
+] as const;

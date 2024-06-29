@@ -14,9 +14,7 @@
 	import { getAllOrAny } from '../../filters/utils';
 
 	export let filtersForm: SuperValidated<Infer<typeof seriesFiltersSchema>>;
-	const sForm = superForm(filtersForm, {
-		resetForm: false,
-	});
+	const sForm = superForm(filtersForm);
 	const { form, enhance, delayed, submitting } = sForm;
 </script>
 

@@ -40,8 +40,6 @@ export const load = async ({ url, locals }) => {
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 
-	// console.log(form.data);
-
 	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb('cte_book.id', 'in', (eb) =>

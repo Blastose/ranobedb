@@ -80,7 +80,7 @@ export const load = async ({ url, locals }) => {
 							.$if(form.data.rll === 'and', (qb2) =>
 								qb2
 									.where('release.lang', 'in', form.data.rl)
-									.groupBy('series_book.series_id')
+									.groupBy('series.id')
 									.having((eb) => eb.fn.count('release.lang').distinct(), '=', form.data.rl.length),
 							),
 					)
@@ -105,7 +105,7 @@ export const load = async ({ url, locals }) => {
 							.$if(form.data.rfl === 'and', (qb2) =>
 								qb2
 									.where('release.format', 'in', form.data.rf)
-									.groupBy('series_book.series_id')
+									.groupBy('series.id')
 									.having(
 										(eb) => eb.fn.count('release.format').distinct(),
 										'=',

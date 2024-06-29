@@ -25,8 +25,7 @@
 	export let actionUrl: string | undefined = undefined;
 
 	const sForm = superForm(releaseForm, {
-		dataType: 'json',
-		resetForm: false,
+		dataType: 'json', 
 		onUpdated({ form: f }) {
 			if (!f.valid) {
 				addToast({ data: { title: 'Error in form!', type: 'error' } });
