@@ -41,8 +41,9 @@ export const load = async ({ url, locals }) => {
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
+	const useStaffFilters = form.data.staff.length > 0;
 
-	if (useQuery || useReleaseFormatFilters || useReleaseLangFilters) {
+	if (useQuery || useReleaseFormatFilters || useReleaseLangFilters || useStaffFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb('cte_series.id', 'in', (eb) =>
 				eb
@@ -112,6 +113,21 @@ export const load = async ({ url, locals }) => {
 										form.data.rf.length,
 									),
 							),
+					)
+					.$if(useStaffFilters, (qb) =>
+						qb
+							.innerJoin('series_book', 'series_book.series_id', 'series.id')
+							.innerJoin('release_book', (join) =>
+								join.onRef('release_book.book_id', '=', 'series_book.book_id'),
+							)
+							.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'release_book.book_id')
+							.where((eb2) => {
+								const filters: Expression<SqlBool>[] = [];
+								for (const staff of form.data.staff) {
+									filters.push(eb2('book_staff_alias.staff_alias_id', '=', staff));
+								}
+								return eb2.or(filters);
+							}),
 					)
 					.select('series.id'),
 			),

@@ -12,6 +12,7 @@
 	import SelectField from '../../SelectField.svelte';
 	import MultiSelectField from '../../MultiSelectField.svelte';
 	import { getAllOrAny } from '../../filters/utils';
+	import MultiComboboxInput from '../../MultiComboboxInput.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof seriesFiltersSchema>>;
 	const sForm = superForm(filtersForm);

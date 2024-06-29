@@ -533,6 +533,7 @@ export const seriesFiltersSchema = z.object({
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(seriesSortArray).catch('Title asc'),
+	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 });
 
 export const releaseFiltersSchema = z.object({
