@@ -4,9 +4,8 @@ RanobeDB is a [light novel](https://en.wikipedia.org/wiki/Light_novel) database 
 
 ## Features
 
-- Add/edit books, releases, authors, etc. to the database
-- Keep track of books you read, want to read, finished, etc.
-- Light and dark theme
+- Add/edit books, series, releases, staff, and publishers to the database
+- Keep track of books you have read, want to read, finished, etc.
 
 ## Contributing
 
@@ -17,3 +16,15 @@ Install dependencies with `pnpm install` and start a development server with:
 ```bash
 pnpm run dev
 ```
+
+## Acknowledgements
+
+Thanks to:
+
+- [vndb](https://vndb.org/) for inspiring this project
+- [LNRelease](https://github.com/LNRelease/lnrelease.github.io) for compiling a list of English light novels
+- [Ranobe Mori](https://ranobe-mori.net/) for compiling a list of Japanese light novels
+
+## License
+
+[AGPL-3.0](LICENSE.txt)
