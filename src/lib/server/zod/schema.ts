@@ -10,6 +10,7 @@ import {
 	releaseTypeArray,
 	seriesBookTypeArray,
 	seriesRelTypeArray,
+	seriesSortArray,
 	seriesStatusArray,
 	settingsTabs,
 	staffRolesArray,
@@ -523,6 +524,14 @@ export const bookFiltersSchema = z.object({
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(booksSortArray).catch('Title asc'),
+});
+
+export const seriesFiltersSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rll: z.enum(logicalOps).catch('or'),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	rfl: z.enum(logicalOps).catch('or'),
+	sort: z.enum(seriesSortArray).catch('Title asc'),
 });
 
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });

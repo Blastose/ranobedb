@@ -30,6 +30,10 @@ export const load = async ({ url, locals }) => {
 		query = query.orderBy('cte_book.release_date desc');
 	}
 
+	if (sort !== 'Title asc' && sort !== 'Title desc') {
+		query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'asc');
+	}
+
 	query = query.where('cte_book.hidden', '=', false);
 
 	const useQuery = Boolean(q);

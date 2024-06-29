@@ -282,6 +282,7 @@ export interface Series {
 	aliases: string;
 	anidb_id: number | null;
 	bookwalker_id: number | null;
+	c_num_books: number;
 	description: string;
 	end_date: number;
 	hidden: boolean;
