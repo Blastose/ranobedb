@@ -20,7 +20,8 @@
 		| 'signup'
 		| 'settings'
 		| 'history'
-		| 'email';
+		| 'email'
+		| 'about';
 </script>
 
 <li>
@@ -55,6 +56,8 @@
 			<Icon name="history" />
 		{:else if icon === 'email'}
 			<Icon name="email" />
+		{:else if icon === 'about'}
+			<Icon name="information" />
 		{/if}
 	</SidebarItem>
 </li>

@@ -160,9 +160,24 @@
 				text="Add to database"
 				icon="add"
 			/>
+			<SidebarListItem
+				active={$page.url.pathname === '/about'}
+				href="/about"
+				text="About"
+				icon="about"
+			/>
 		</SidebarSection>
 
 		<Hr />
+
+		<div class="flex flex-wrap justify-center px-2">
+			<a href="https://github.com/Blastose/ranobedb" target="_blank" class="btn rounded-full p-2"
+				><Icon name="github" /></a
+			>
+			<a href="https://discord.gg/ZeAnhGncFx" target="_blank" class="btn rounded-full p-2"
+				><Icon name="discord" /></a
+			>
+		</div>
 	</nav>
 </aside>
 

@@ -42,7 +42,7 @@
 	}
 
 	.book-image-container.more-columns {
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 	}
 
 	@container book-image-container (min-width: 640px) {

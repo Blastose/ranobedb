@@ -9,19 +9,13 @@ RanobeDB is a [light novel](https://en.wikipedia.org/wiki/Light_novel) database 
 
 ## Contributing
 
-This project requires the use of [pnpm](https://pnpm.io/).
-
-Install dependencies with `pnpm install` and start a development server with:
-
-```bash
-pnpm run dev
-```
+_WIP_
 
 ## Acknowledgements
 
 Thanks to:
 
-- [vndb](https://vndb.org/) for inspiring this project
+- [vndb](https://vndb.org/) for inspiring and influencing this project
 - [LNRelease](https://github.com/LNRelease/lnrelease.github.io) for compiling a list of English light novels
 - [Ranobe Mori](https://ranobe-mori.net/) for compiling a list of Japanese light novels
 

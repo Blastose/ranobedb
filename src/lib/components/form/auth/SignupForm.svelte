@@ -4,6 +4,7 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import type { signupSchema } from '$lib/server/zod/schema';
+	import CheckboxField from '../CheckboxField.svelte';
 
 	export let signupForm: SuperValidated<Infer<typeof signupSchema>>;
 
@@ -38,6 +39,12 @@
 			placeholder="Password"
 			label="Password (12+ characters)"
 		/>
+
+		<CheckboxField {form} field="privacy_policy_cla" label="I have read and agree with the ">
+			<a href="/privacy-policy" class="link" target="_blank"
+				>privacy policy and contributor license agreement.</a
+			>
+		</CheckboxField>
 	</svelte:fragment>
 
 	<svelte:fragment slot="bottom">
