@@ -112,6 +112,9 @@ export class DBStaff {
 					eb
 						.selectFrom('staff_alias as all_aliases')
 						.leftJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'all_aliases.id')
+						.leftJoin('book', (join) =>
+							join.onRef('book.id', '=', 'book_staff_alias.book_id').on('book.hidden', '=', false),
+						)
 						.whereRef('all_aliases.staff_id', '=', 'staff.id')
 						.distinctOn('all_aliases.id')
 						.select([
@@ -120,8 +123,9 @@ export class DBStaff {
 							'all_aliases.main_alias',
 							'all_aliases.name',
 							'all_aliases.romaji',
-							'book_staff_alias.book_id as ref_book_id',
-						]),
+							'book.id as ref_book_id',
+						])
+						.orderBy(['all_aliases.id', 'book.hidden']),
 				).as('aliases'),
 			)
 			.where('staff.id', '=', id);
@@ -152,6 +156,9 @@ export class DBStaff {
 					eb
 						.selectFrom('staff_alias_hist as all_aliases')
 						.leftJoin('book_staff_alias', 'book_staff_alias.staff_alias_id', 'all_aliases.aid')
+						.leftJoin('book', (join) =>
+							join.onRef('book.id', '=', 'book_staff_alias.book_id').on('book.hidden', '=', false),
+						)
 						.whereRef('all_aliases.change_id', '=', 'staff_hist.change_id')
 						.distinctOn('all_aliases.aid')
 						.select([
@@ -160,8 +167,9 @@ export class DBStaff {
 							'all_aliases.main_alias',
 							'all_aliases.name',
 							'all_aliases.romaji',
-							'book_staff_alias.book_id as ref_book_id',
-						]),
+							'book.id as ref_book_id',
+						])
+						.orderBy(['all_aliases.aid', 'book.hidden']),
 				).as('aliases'),
 			)
 			.where('change.item_id', '=', params.id)

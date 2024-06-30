@@ -1,3 +1,4 @@
+import { ORIGIN } from '$env/static/private';
 import { getNameDisplay, getTitleDisplay, type TitleDisplay } from '$lib/display/prefs';
 import type {
 	Language,
@@ -12,7 +13,7 @@ import { diffChars, diffLines, diffWords, type Change } from 'diff';
 import xss from 'xss';
 
 export function generateLink(href: string, content: string) {
-	return `<a class="link" target="_blank" href="${href}">${xss(content, { whiteList: {} })}</a>`;
+	return `<a class="link" target="_blank" href="${ORIGIN}${href}">${xss(content, { whiteList: {} })}</a>`;
 }
 
 function generateSeriesBookChangeString(
@@ -244,7 +245,7 @@ export function getDiffLines(params: {
 			},
 			onTagAttr(tag, name, value) {
 				if (tag === 'a' && name === 'href') {
-					if (!value.startsWith('/') || value.startsWith('//')) {
+					if (!value.startsWith(ORIGIN)) {
 						return '';
 					}
 				}
