@@ -82,12 +82,12 @@ export const actions = {
 			await dbStaffActions.editStaff({ staff: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
+			console.log(e);
 			if (e instanceof DatabaseError) {
 				return fail(400, { form });
 			} else if (e instanceof ChangePermissionError) {
 				return fail(403, { form });
 			}
-			console.log(e);
 		}
 
 		if (success) {

@@ -22,7 +22,7 @@
 </script>
 
 <div class="flex flex-col gap-1">
-	<label class="flex gap-1"
+	<label class="flex gap-2"
 		><input
 			name={field}
 			type="checkbox"
@@ -31,7 +31,7 @@
 			{...$constraints}
 			{...$$restProps}
 		/><span
-			>{label}{#if $constraints?.required && showRequiredSymbolIfRequired}
+			>{label}<slot />{#if $constraints?.required && showRequiredSymbolIfRequired}
 				<span class="error-text-color">*</span>
 			{/if}</span
 		>

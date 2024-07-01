@@ -16,14 +16,14 @@
 		$values = $values;
 	}
 
-	function handleAddStaff(staff: ApiStaff[number]) {
+	function handleAddStaff(staff_alias: ApiStaff[number]) {
 		$values.push({
-			name: staff.name,
-			romaji: staff.romaji,
+			name: staff_alias.name,
+			romaji: staff_alias.romaji,
 			note: '',
 			role_type: 'author',
-			staff_alias_id: staff.aid,
-			staff_id: staff.id,
+			staff_alias_id: staff_alias.id,
+			staff_id: staff_alias.staff_id,
 		});
 		$values = $values;
 	}

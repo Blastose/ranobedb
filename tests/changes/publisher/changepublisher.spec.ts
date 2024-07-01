@@ -23,7 +23,7 @@ test.describe('edit publisher mod', () => {
 		await expect(page.locator('.toast-container').first()).toHaveText(
 			'Successfully edited publisher!',
 		);
-		await page.getByRole('link', { name: 'Edit' }).click();
+		await page.getByRole('link', { name: 'Edit', exact: true }).click();
 		await page
 			.getByLabel('Relation type: imprintparent brandparent companysubsidiary')
 			.first()

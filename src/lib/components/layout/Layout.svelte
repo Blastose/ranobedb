@@ -50,8 +50,8 @@
 	}
 
 	.sidebar-wrapper {
-		width: 16rem;
-		margin-left: -16rem;
+		width: 240px;
+		margin-left: -240px;
 		visibility: hidden;
 	}
 

@@ -19,18 +19,26 @@ export const load = async ({ url, locals }) => {
 		.where('staff.hidden', '=', false)
 		.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'));
 	if (q) {
-		query = query.where((eb) => {
-			const ors: Expression<SqlBool>[] = [];
-			ors.push(eb('staff_alias.name', 'ilike', `%${q}%`));
-			ors.push(eb('staff_alias.romaji', 'ilike', `%${q}%`));
-			if (q.includes(' ')) {
-				const reversed = q.split(' ').reverse().join('% ');
-				ors.push(eb('staff_alias.name', 'ilike', `%${reversed}%`));
-				ors.push(eb('staff_alias.romaji', 'ilike', `%${reversed}%`));
-			}
+		query = query.where((eb) =>
+			eb('staff.id', 'in', (eb2) =>
+				eb2
+					.selectFrom('staff_alias as sa2')
+					.distinctOn('sa2.staff_id')
+					.select('sa2.staff_id')
+					.where((eb3) => {
+						const ors: Expression<SqlBool>[] = [];
+						ors.push(eb3('sa2.name', 'ilike', `%${q}%`));
+						ors.push(eb3('sa2.romaji', 'ilike', `%${q}%`));
+						if (q.includes(' ')) {
+							const reversed = q.split(' ').reverse().join('% ');
+							ors.push(eb3('sa2.name', 'ilike', `%${reversed}%`));
+							ors.push(eb3('sa2.romaji', 'ilike', `%${reversed}%`));
+						}
 
-			return eb.or(ors);
-		});
+						return eb3.or(ors);
+					}),
+			),
+		);
 	}
 
 	const {

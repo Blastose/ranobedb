@@ -91,9 +91,14 @@ export const signupSchema = z.object({
 	email: z
 		.string({ required_error: 'Email is required' })
 		.email({ message: 'Invalid email address' })
-		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
+		.max(255, { message: 'Email must be less or equal to 255 characters' }),
 	username: zUsername,
 	password: zPasswordNew,
+	privacy_policy_cla: z
+		.literal(true, {
+			errorMap: () => ({ message: 'You must agree in order to create an account' }),
+		})
+		.default(false as true),
 });
 
 export const verifyEmailSchema = z.object({
@@ -169,7 +174,7 @@ const zTitles = z
 	.array(
 		z.object({
 			lang: z.enum(languagesArray),
-			official: z.boolean(),
+			official: z.literal(true),
 			title: z
 				.string()
 				.trim()

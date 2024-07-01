@@ -5,6 +5,7 @@ import pkg from 'pg';
 const { Pool } = pkg;
 import type { DB } from '$lib/server/db/dbTypes';
 import { DBUsers } from '$lib/server/db/user/user';
+import { generateId } from 'lucia';
 
 dotenv.config({ path: '.env.testing' });
 
@@ -21,7 +22,7 @@ test.describe('settings', () => {
 		const dbUsers = new DBUsers(db);
 		await dbUsers.createUser({
 			email: 'mynotreal@email.com',
-			id: 'hdrsrdsgsfsrrgsfwde',
+			id: generateId(15),
 			password: 'password',
 			username: 'UsernameHere',
 		});

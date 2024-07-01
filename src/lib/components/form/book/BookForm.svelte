@@ -65,9 +65,9 @@
 		form={sForm}
 		type="textarea"
 		field="description_ja"
-		label="Description (japanese)"
+		label="Description (Japanese)"
 		textareaRows={4}
-		placeholder="Description (japanese)"
+		placeholder="Description (Japanese)"
 		labelId="descriptionjp-md"
 	/>
 
