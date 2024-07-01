@@ -2,6 +2,8 @@
 
 RanobeDB is a [light novel](https://en.wikipedia.org/wiki/Light_novel) database website.
 
+Visit us at https://ranobedb.org
+
 ## Features
 
 - Add/edit books, series, releases, staff, and publishers to the database
