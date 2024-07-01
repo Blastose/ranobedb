@@ -1,23 +1,50 @@
-/// <reference types="lucia-auth" />
-declare namespace Lucia {
-	type Auth = import('$lib/server/lucia.js').Auth;
-	type DatabaseUserAttributes = {
-		username: string;
-		role: 'admin' | 'moderator' | 'user';
-		reader_id: number;
-	};
-}
+// See https://kit.svelte.dev/docs/types#app
 
-/// <reference types="@sveltejs/kit" />
-declare namespace App {
-	interface Locals {
-		auth: import('lucia').AuthRequest;
+import type { Theme } from '$lib/stores/themeStore';
+import type { ToastData } from '$lib/components/toast/toast';
+
+// for information about these interfaces
+declare global {
+	namespace App {
+		interface Error {
+			message?: string | null;
+			dbItemDeleted?: {
+				title: string | null;
+				reason: string | null;
+			};
+		}
+		interface Locals {
+			user: import('lucia').User | null;
+			session: import('lucia').Session | null;
+			theme: Theme;
+		}
+		interface PageData {
+			flash?: { type: ToastData['type']; message: string };
+		}
+		// interface Platform {}
+		namespace Superforms {
+			type Message = {
+				type: ToastData['type'];
+				text: string;
+			};
+		}
+	}
+
+	interface Document {
+		startViewTransition(updateCallback: () => Promise<void>): ViewTransition;
+	}
+
+	interface Window {
+		turnstile: {
+			ready(callback: () => void): void;
+			render(container: string | HTMLElement, params?: RenderParameters): string | null | undefined;
+			execute(container: string | HTMLElement, params?: RenderParameters): void;
+			reset(container?: string | HTMLElement): void;
+			remove(container?: string | HTMLElement): void;
+			getResponse(container?: string | HTMLElement): string | undefined;
+			isExpired(container?: string | HTMLElement): boolean;
+		};
 	}
 }
 
-declare namespace svelteHTML {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	interface HTMLAttributes<T> {
-		'on:outclick'?: () => void;
-	}
-}
+export {};

@@ -1,32 +1,43 @@
 <script lang="ts">
-	import BoxLarge from '$lib/components/box/BoxLarge.svelte';
-	import Pagination from '$lib/components/pagination/Pagination.svelte';
-	import type { PageData } from './$types';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
+	import { DateNumber } from '$lib/components/form/release/releaseDate';
+	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import DbShell from '$lib/components/layout/db/DBShell.svelte';
+	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
-	export let data: PageData;
+	export let data;
 </script>
 
-<svelte:head>
-	<title>Releases - RanobeDB</title>
-</svelte:head>
+<PageTitle title="Releases" />
 
-<main class="main-container">
-	<div class="flex flex-col gap-4">
-		<p class="font-bold text-2xl">Releases</p>
+<DbShell
+	name="releases"
+	currentPage={data.currentPage}
+	totalPages={data.totalPages}
+	results={data.count}
+	inputPlaceholder="Search by release title"
+>
+	<svelte:fragment slot="filters">
+		<ReleaseFilters filtersForm={data.filtersForm} />
+	</svelte:fragment>
 
-		<div class="box-container">
-			{#each data.releases as release}
-				<BoxLarge name={release.name} href={`/release/${release.id}`} />
+	<svelte:fragment slot="display">
+		<div class="flex flex-col gap-4">
+			{#each data.releases as release (release.id)}
+				<LinkBox href="/release/{release.id}" wrap={true}>
+					<div class="flex flex-col gap-2">
+						<NameDisplay obj={release} />
+						<div class="flex justify-between">
+							<p>{new DateNumber(release.release_date).getDateFormatted()}</p>
+							<p>
+								{release.format}{#if release.pages}
+									- {release.pages} pages{/if}
+							</p>
+						</div>
+					</div>
+				</LinkBox>
 			{/each}
 		</div>
-		<Pagination totalPages={data.totalPages} />
-	</div>
-</main>
-
-<style>
-	.box-container {
-		display: grid;
-		grid-template-columns: repeat(1, minmax(0, 1fr));
-		gap: 1rem;
-	}
-</style>
+	</svelte:fragment>
+</DbShell>

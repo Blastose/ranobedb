@@ -1,72 +1,96 @@
 <script lang="ts">
 	import '../app.css';
-	import '$lib/components/sidebar/sidebar.css';
-	import { onMount } from 'svelte';
-	import { theme } from '$lib/stores/theme';
 	import Layout from '$lib/components/layout/Layout.svelte';
-	import largeScreen from '$lib/stores/largeScreen';
-	import drawer from '$lib/stores/drawer';
-	import type { PageData } from './$types';
+	import { createThemeStore } from '$lib/stores/themeStore';
+	import { onNavigate } from '$app/navigation';
+	import { addToast } from '$lib/components/toast/Toaster.svelte';
+	import { getFlash } from 'sveltekit-flash-message';
+	import { page } from '$app/stores';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import { getDisplayPrefsUser } from '$lib/display/prefs';
+	import Progress from '$lib/components/layout/Progress.svelte';
 
-	const monitorScreenSize = (node: Window) => {
-		const windowQuery = node.matchMedia('(min-width: 1024px)');
-		const match = (e: MediaQueryListEvent) => {
-			if (e.matches) {
-				largeScreen.set(true);
-				drawer.set(false);
-			} else {
-				largeScreen.set(false);
-			}
-		};
-
-		if (!windowQuery.matches) {
-			largeScreen.set(false);
-		}
-
-		windowQuery.addEventListener('change', match);
-
-		return {
-			destroy() {
-				windowQuery.removeEventListener('change', match);
-			}
-		};
-	};
-
-	onMount(() => {
-		if (!('theme' in localStorage)) {
-			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				theme.set('dark');
-			} else {
-				theme.set('light');
-			}
-		} else {
-			if (localStorage.getItem('theme') === 'dark') {
-				theme.set('dark');
-			} else if (localStorage.getItem('theme') === 'light') {
-				theme.set('light');
-			}
-		}
+	onNavigate((navigation) => {
+		// if (!document.startViewTransition) return;
+		// return new Promise((resolve) => {
+		// 	document.startViewTransition(async () => {
+		// 		resolve();
+		// 		await navigation.complete;
+		// 	});
+		// });
 	});
 
-	export let data: PageData;
+	// TODO remove later
+	function handleKeyDown(e: KeyboardEvent) {
+		if (e.key !== '`') return;
+
+		theme.toggle();
+	}
+
+	export let data;
+
+	const flash = getFlash(page);
+	$: if ($flash) {
+		addToast({ data: { title: $flash.message, type: $flash.type } });
+		$flash = undefined;
+	}
+
+	const displayPrefs = writable();
+	$: displayPrefs.set(getDisplayPrefsUser(data.user));
+	setContext('displayPrefs', displayPrefs);
+
+	const sidebarOpen = writable<'open' | 'closed'>();
+	$: sidebarOpen.set('open');
+	setContext('sidebar', sidebarOpen);
+
+	const theme = createThemeStore();
+	$: theme.set(data.theme);
+	setContext('theme', theme);
 </script>
 
-<svelte:head>
-	<script>
-		if (!('theme' in localStorage)) {
-			if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-				document.documentElement.classList.add('dark');
-			}
-		} else {
-			if (localStorage.getItem('theme') === 'dark') {
-				document.documentElement.classList.add('dark');
-			}
-		}
-	</script>
-</svelte:head>
+<svelte:document on:keydown={handleKeyDown} />
 
-<svelte:window use:monitorScreenSize />
+<Progress />
 
-<Layout pathname={data.pathname} user={data.user}>
+<Layout user={data.user} url={data.url}>
 	<slot />
 </Layout>
+
+<style>
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+	}
+
+	@keyframes fade-out {
+		to {
+			opacity: 0;
+		}
+	}
+
+	@keyframes slide-from-right {
+		from {
+			transform: translateX(30px);
+		}
+	}
+
+	@keyframes slide-to-left {
+		to {
+			transform: translateX(-30px);
+		}
+	}
+
+	:root::view-transition-old(root) {
+		animation:
+			90ms cubic-bezier(0.4, 0, 1, 1) both fade-out,
+			300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
+	}
+
+	:root::view-transition-new(root) {
+		animation:
+			210ms cubic-bezier(0, 0, 0.2, 1) 90ms both fade-in,
+			300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
+	}
+</style>

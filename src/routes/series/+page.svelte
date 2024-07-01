@@ -1,32 +1,57 @@
 <script lang="ts">
-	import BoxLarge from '$lib/components/box/BoxLarge.svelte';
-	import Pagination from '$lib/components/pagination/Pagination.svelte';
-	import type { PageData } from './$types';
+	import BookImage from '$lib/components/book/BookImage.svelte';
+	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
+	import SeriesFilters from '$lib/components/form/series/filters/SeriesFilters.svelte';
+	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
+	import DbShell from '$lib/components/layout/db/DBShell.svelte';
+	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
-	export let data: PageData;
+	export let data;
 </script>
 
-<svelte:head>
-	<title>Series - RanobeDB</title>
-</svelte:head>
+<PageTitle title="Series" />
 
-<main class="main-container">
-	<div class="flex flex-col gap-4">
-		<p class="font-bold text-2xl">Series</p>
+<DbShell
+	name="series"
+	currentPage={data.currentPage}
+	totalPages={data.totalPages}
+	results={data.count}
+	inputPlaceholder="Search by series title"
+>
+	<svelte:fragment slot="filters">
+		<SeriesFilters filtersForm={data.filtersForm} />
+	</svelte:fragment>
 
-		<div class="box-container">
-			{#each data.series as s}
-				<BoxLarge name={s.title} href={`/series/${s.id}`} />
-			{/each}
+	<svelte:fragment slot="display">
+		<div>
+			<BookImageContainer moreColumns={true}>
+				{#each data.series as series (series.id)}
+					{#if series.book}
+						<BookImage
+							book={{
+								title: series.title,
+								romaji: series.romaji,
+								id: series.id,
+								image: series.book.image,
+								lang: series.lang,
+								romaji_orig: series.romaji_orig,
+								title_orig: series.title_orig,
+							}}
+							urlPrefix="/series/"
+						>
+							{#if series.volumes}
+								<BookImageBadge
+									badges={[`${series.volumes.count} vols.`]}
+									location="bottom-right"
+								/>
+							{/if}
+						</BookImage>
+					{:else}
+						<LinkBox display={series.title ?? ''} href="/series/{series.id}" />
+					{/if}
+				{/each}
+			</BookImageContainer>
 		</div>
-		<Pagination totalPages={data.totalPages} />
-	</div>
-</main>
-
-<style>
-	.box-container {
-		display: grid;
-		grid-template-columns: repeat(1, minmax(0, 1fr));
-		gap: 1rem;
-	}
-</style>
+	</svelte:fragment>
+</DbShell>

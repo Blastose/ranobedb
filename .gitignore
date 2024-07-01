@@ -3,9 +3,11 @@ node_modules
 /build
 /.svelte-kit
 /package
-/sql/codegen
+/static/covers_temp
+/test-results
 .env
 .env.*
 !.env.example
+db-seed.dump
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*

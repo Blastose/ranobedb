@@ -1,6 +1,0 @@
-{
-	"migrationsFolder": "./sql/migrations",
-	"afterReset": [
-		"initial_schema.sql"
-	]
-}

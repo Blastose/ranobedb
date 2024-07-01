@@ -1,62 +1,75 @@
-import { auth } from '$lib/server/lucia';
-import { fail, redirect, type Actions } from '@sveltejs/kit';
-import { loginSchema } from '$lib/zod/schemas';
-import type { PageServerLoad } from './$types';
-import { LuciaError } from 'lucia';
+import { loginSchema, redirectSchema } from '$lib/server/zod/schema';
+import { fail, redirect } from '@sveltejs/kit';
+import { lucia } from '$lib/server/lucia';
+import { superValidate, message } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { Argon2id } from 'oslo/password';
+import { buildUrlFromRedirect } from '$lib/utils/url.js';
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
+import { db } from '$lib/server/db/db.js';
+import { DBUsers } from '$lib/server/db/user/user.js';
+import { validateTurnstile } from '$lib/server/cf.js';
 
-export const load = (async ({ locals }) => {
-	const session = await locals.auth.validate();
-	if (session) {
-		throw redirect(303, '/');
+export const load = async ({ locals }) => {
+	if (locals.user) {
+		redirect(302, '/');
 	}
-	return {};
-}) satisfies PageServerLoad;
+
+	const form = await superValidate(zod(loginSchema));
+
+	return { form };
+};
 
 export const actions = {
-	default: async ({ request, locals, url }) => {
-		const form = await request.formData();
+	default: async ({ request, cookies, url }) => {
+		const formData = await request.formData();
 
-		const parsedForm = loginSchema.safeParse(form);
-		if (!parsedForm.success) {
-			return fail(400, {
-				email: form.get('email')?.toString(),
-				password: form.get('password')?.toString(),
-				error: true
-			});
+		const form = await superValidate(formData, zod(loginSchema));
+
+		const turnstileSuccess = await validateTurnstile({ request, body: formData });
+		if (!turnstileSuccess) {
+			return message(
+				form,
+				{ type: 'error', text: 'Cloudflare validation failed' },
+				{ status: 400 },
+			);
 		}
 
-		const email = parsedForm.data.email;
-		const password = parsedForm.data.password;
-
-		try {
-			const key = await auth.useKey('email', email, password);
-			const session = await auth.createSession({ userId: key.userId, attributes: {} });
-
-			locals.auth.setSession(session);
-		} catch (error) {
-			if (
-				error instanceof LuciaError &&
-				(error.message === 'AUTH_INVALID_KEY_ID' || error.message === 'AUTH_INVALID_PASSWORD')
-			) {
-				return fail(400, {
-					email,
-					password,
-					message: 'Invalid login credentials',
-					error: true
-				});
-			}
-			return fail(500, {
-				email,
-				password,
-				message: 'An unknown error has occurred',
-				error: true
-			});
+		if (!form.valid) {
+			return fail(400, { form });
 		}
 
-		const redirectUrl = url.searchParams.get('redirect');
-		if (redirectUrl) {
-			throw redirect(303, redirectUrl);
+		const usernameemail = form.data.usernameemail;
+		const password = form.data.password;
+		const dbUsers = new DBUsers(db);
+
+		const user = await dbUsers.getUserFull(usernameemail);
+		if (!user) {
+			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
 		}
-		throw redirect(303, '/');
-	}
-} satisfies Actions;
+
+		const validPassword = await new Argon2id().verify(user.hashed_password, password);
+		if (!validPassword) {
+			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
+		}
+
+		const session = await lucia.createSession(user.id, {});
+		const sessionCookie = lucia.createSessionCookie(session.id);
+		cookies.set(sessionCookie.name, sessionCookie.value, {
+			path: '.',
+			...sessionCookie.attributes,
+		});
+
+		const redirect = await superValidate(url, zod(redirectSchema));
+		let redirectUrl = '/';
+		if (redirect.valid && redirect.data.redirect) {
+			redirectUrl = buildUrlFromRedirect(url, redirect.data.redirect);
+		}
+		flashRedirect(
+			303,
+			redirectUrl,
+			{ type: 'success', message: 'Successfully logged in!' },
+			cookies,
+		);
+	},
+};

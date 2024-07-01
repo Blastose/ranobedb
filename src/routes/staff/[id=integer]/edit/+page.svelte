@@ -1,0 +1,17 @@
+<script lang="ts">
+	import StaffForm from '$lib/components/form/staff/StaffForm.svelte';
+	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
+
+	export let data;
+
+	$: staff = data.staff;
+
+	const diplayPrefs = getDisplayPrefsContext();
+</script>
+
+<PageTitle title="Editing {getNameDisplay({ obj: staff, prefs: $diplayPrefs.names })}" />
+
+<main class="container-rndb">
+	<StaffForm {staff} staffForm={data.form} type="edit" user={data.user} />
+</main>

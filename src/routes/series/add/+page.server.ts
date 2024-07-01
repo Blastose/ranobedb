@@ -1,91 +1,110 @@
-import type { PageServerLoad, Actions } from './$types';
-import { fail, redirect } from '@sveltejs/kit';
-import { createRedirectUrl } from '$lib/util/createRedirectUrl';
-import { db } from '$lib/server/db';
-import { editSeriesSchema, joinErrors } from '$lib/zod/schemas';
+import { seriesSchema } from '$lib/server/zod/schema.js';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { setError, superValidate } from 'sveltekit-superforms';
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
+import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
+import { hasAddPerms } from '$lib/db/permissions';
+import { DBSeriesActions } from '$lib/server/db/series/actions.js';
+import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
+import { db } from '$lib/server/db/db.js';
+import { buildRedirectUrl } from '$lib/utils/url.js';
 const { DatabaseError } = pkg;
 
-export const load = (async ({ locals, url }) => {
-	const session = await locals.auth.validate();
-	if (!session) {
-		throw redirect(303, createRedirectUrl('login', url));
+export const load = async ({ locals, url }) => {
+	if (!locals.user) {
+		redirect(302, buildRedirectUrl(url, '/login'));
 	}
 
-	return {};
-}) satisfies PageServerLoad;
+	if (!hasAddPerms(locals.user)) {
+		error(403);
+	}
 
-type AddSeriesErrorType = {
-	titleError?: { message: string };
-	titleRomajiError?: { message: string };
-	duplicateBooksError?: { message: string };
-	error?: { message: string };
+	const form = await superValidate(
+		{
+			titles: [
+				{
+					lang: 'ja',
+					official: true,
+					title: '',
+					romaji: '',
+				},
+			],
+			olang: 'ja',
+		},
+		zod(seriesSchema),
+		{
+			errors: false,
+		},
+	);
+
+	return { form };
 };
 
 export const actions = {
-	default: async ({ request, locals }) => {
-		const session = await locals.auth.validate();
-		if (!session) {
-			return fail(400, {
-				error: { message: 'Insufficient permission. Unable to add.' }
-			} as AddSeriesErrorType);
-		}
-		const user = session.user;
-		if (user.role !== 'admin') {
-			return fail(400, {
-				error: { message: 'Insufficient permission. Unable to add.' }
-			} as AddSeriesErrorType);
+	default: async ({ request, locals, cookies }) => {
+		if (!locals.user) return fail(401);
+
+		const form = await superValidate(request, zod(seriesSchema));
+		if (!hasAddPerms(locals.user)) {
+			return fail(403, { form });
 		}
 
-		const form = await request.formData();
-
-		const parsedForm = editSeriesSchema.safeParse(form);
-		if (!parsedForm.success) {
-			const flattenedErrors = parsedForm.error.flatten();
-			return fail(400, {
-				titleError: { message: joinErrors(flattenedErrors.fieldErrors.title) },
-				titleRomajiError: { message: joinErrors(flattenedErrors.fieldErrors.titleRomaji) },
-				error: { message: 'Invalid form entries. Unable to add!' }
-			} as AddSeriesErrorType);
+		if (!form.valid) {
+			return fail(400, { form });
 		}
 
-		let addedSeriesId = -1;
+		let newSeriesId: number | undefined = undefined;
+		const dbSeriesActions = DBSeriesActions.fromDB(db);
 		try {
-			await db.transaction().execute(async (trx) => {
-				const returnedSeries = await trx
-					.insertInto('series')
-					.values({
-						title: parsedForm.data.title,
-						title_romaji: parsedForm.data.titleRomaji || null
-					})
-					.returning('series.id')
-					.executeTakeFirstOrThrow();
-
-				addedSeriesId = returnedSeries.id;
-				const bookRelInsert = parsedForm.data.booksInSeries.map((item) => {
-					return { series_id: addedSeriesId, book_id: item.id };
-				});
-				if (bookRelInsert.length > 0) {
-					await trx.insertInto('book_series').values(bookRelInsert).execute();
-				}
-			});
+			newSeriesId = await dbSeriesActions.addSeries({ series: form.data }, locals.user);
 		} catch (e) {
+			console.log(e);
 			if (e instanceof DatabaseError) {
-				if (e.code === '23505' && e.table === 'book_series') {
-					return fail(400, {
-						error: { message: 'Invalid form entries. Unable to add!' },
-						duplicateBooksError: {
-							message: 'Duplicate books in form. Remove duplicates and try again.'
-						}
-					} as AddSeriesErrorType);
+				if (
+					e.code === '23505' &&
+					e.table === 'series_book' &&
+					e.constraint === 'series_book_pkey'
+				) {
+					return setError(
+						form,
+						'books._errors',
+						'Duplicate books in form. Remove duplicates and try again',
+					);
+				} else if (
+					e.code === '23505' &&
+					e.table === 'series_title' &&
+					e.constraint === 'series_title_pkey'
+				) {
+					return setError(
+						form,
+						'titles._errors',
+						'Duplicate titles in form. Remove duplicates and try again',
+					);
+				} else if (
+					e.code === '23505' &&
+					e.table === 'series_relation' &&
+					e.constraint === 'series_relation_pkey'
+				) {
+					return setError(
+						form,
+						'child_series._errors',
+						'Duplicate series relations in form. Remove duplicates and try again',
+					);
 				}
+			} else if (e instanceof ChangePermissionError) {
+				return fail(403, { form });
 			}
-
-			return fail(400, {
-				error: { message: 'Invalid form entries. Unable to add!' }
-			} as AddSeriesErrorType);
 		}
 
-		return { success: true, addedSeriesId };
-	}
-} satisfies Actions;
+		if (newSeriesId) {
+			flashRedirect(
+				303,
+				`/series/${newSeriesId}`,
+				{ type: 'success', message: 'Successfully added series!' },
+				cookies,
+			);
+		}
+		return fail(400, { form });
+	},
+};

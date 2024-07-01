@@ -1,86 +1,87 @@
-import { fail, redirect } from '@sveltejs/kit';
-import { auth } from '$lib/server/lucia';
-import type { PageServerLoad, Actions } from './$types';
-import { signupSchema, joinErrors } from '$lib/zod/schemas';
+import { lucia } from '$lib/server/lucia.js';
+import { DBUsers } from '$lib/server/db/user/user';
+import { signupSchema } from '$lib/server/zod/schema';
+import { redirect } from '@sveltejs/kit';
+import { generateId } from 'lucia';
 import pkg from 'pg';
-import { LuciaError } from 'lucia';
 const { DatabaseError } = pkg;
+import { message, setError, superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { db } from '$lib/server/db/db';
+import { validateTurnstile } from '$lib/server/cf.js';
 
-export const load = (async ({ locals }) => {
-	const session = await locals.auth.validate();
-	if (session) {
-		throw redirect(303, '/');
-	}
-	return {};
-}) satisfies PageServerLoad;
+export const load = async ({ locals }) => {
+	if (locals.user) redirect(302, '/');
+
+	const form = await superValidate(zod(signupSchema));
+
+	return { form };
+};
 
 export const actions = {
-	default: async ({ request }) => {
-		const form = await request.formData();
+	default: async ({ request, cookies }) => {
+		const formData = await request.formData();
 
-		const parsedForm = signupSchema.safeParse(form);
-		if (!parsedForm.success) {
-			const flattenedErrors = parsedForm.error.flatten();
-			return fail(400, {
-				email: form.get('email')?.toString(),
-				username: form.get('username')?.toString(),
-				password: form.get('password')?.toString(),
-				emailError: { message: joinErrors(flattenedErrors.fieldErrors.email) },
-				usernameError: { message: joinErrors(flattenedErrors.fieldErrors.username) },
-				passwordError: { message: joinErrors(flattenedErrors.fieldErrors.password) }
-			});
+		const form = await superValidate(formData, zod(signupSchema));
+
+		const turnstileSuccess = await validateTurnstile({ request, body: formData });
+		if (!turnstileSuccess) {
+			return message(
+				form,
+				{ type: 'error', text: 'Cloudflare validation failed' },
+				{ status: 400 },
+			);
 		}
 
-		const email = parsedForm.data.email;
-		const username = parsedForm.data.username;
-		const password = parsedForm.data.password;
+		if (!form.valid) {
+			return message(form, { text: 'Invalid form', type: 'error' });
+		}
+
+		const email = form.data.email;
+		const username = form.data.username;
+		const password = form.data.password;
+		const userId = generateId(15);
+
+		const dbUsers = new DBUsers(db);
 
 		try {
-			await auth.createUser({
-				userId: crypto.randomUUID(),
-				key: {
-					providerId: 'email',
-					providerUserId: email,
-					password: password
-				},
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				// Lucia cannot handle default database columns, but we need them for
-				// the attribute `reader_id`.
-				// Thus, we can @ts-ignore it as long as we don't use the return value of
-				// `auth.createUser`, which will try to return the newly created user with
-				// the attributes given below (which will be missing `reader_id` in our case).
-				attributes: {
-					username: username,
-					role: 'user'
-				}
+			await dbUsers.createUser({
+				email,
+				password,
+				id: userId,
+				username,
+			});
+
+			const session = await lucia.createSession(userId, {});
+			const sessionCookie = lucia.createSessionCookie(session.id);
+
+			cookies.set(sessionCookie.name, sessionCookie.value, {
+				path: '.',
+				...sessionCookie.attributes,
 			});
 		} catch (error) {
-			if (error instanceof LuciaError && error.message === 'AUTH_DUPLICATE_KEY_ID') {
-				return fail(400, {
-					email,
-					username,
-					password,
-					emailError: {
-						message: 'Email is already in use. Please use a different email'
-					}
-				});
-			}
 			if (error instanceof DatabaseError) {
-				if (error.code === '23505' && error.detail?.includes('Key (username)')) {
-					return fail(400, {
-						email,
-						username,
-						password,
-						usernameError: {
-							message: 'Username is already in use. Please use a different username'
-						}
-					});
+				if (error.code === '23505' && error.detail?.includes('Key (email)')) {
+					setError(form, 'email', 'Email is already in use. Please use a different email');
+					return message(form, { type: 'error', text: 'Invalid form entries' }, { status: 400 });
+				}
+				if (
+					error.code === '23505' &&
+					(error.detail?.includes('Key (username)') ||
+						error.detail?.includes('Key (username_lowercase)'))
+				) {
+					setError(form, 'username', 'Username is already in use. Please use a different username');
+					return message(form, { type: 'error', text: 'Invalid form entries' }, { status: 400 });
 				}
 			}
 			console.error(error);
-			return fail(500, { error: true });
+			return message(
+				form,
+				{ type: 'error', text: 'An unknown error has occurred' },
+				{ status: 500 },
+			);
 		}
-		return { success: true };
-	}
-} satisfies Actions;
+
+		return message(form, { text: 'Valid form', type: 'success' });
+	},
+};

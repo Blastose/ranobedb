@@ -1,22 +1,30 @@
 <script lang="ts">
-	import type { PageData } from './$types';
-	import BookView from '$lib/components/book/BookView.svelte';
-	import Pagination from '$lib/components/pagination/Pagination.svelte';
+	import BookCard from '$lib/components/book/BookCard.svelte';
+	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import DBShell from '$lib/components/layout/db/DBShell.svelte';
+	import BookFilters from '$lib/components/form/book/filters/BookFilters.svelte';
 
-	export let data: PageData;
+	export let data;
 </script>
 
-<svelte:head>
-	<title>Books - RanobeDB</title>
-</svelte:head>
+<PageTitle title="Books" />
 
-<main class="main-container">
-	<div class="flex flex-col gap-2">
-		<p class="font-bold text-2xl">Books</p>
+<DBShell
+	name="books"
+	currentPage={data.currentPage}
+	totalPages={data.totalPages}
+	results={data.count}
+	inputPlaceholder="Search by book title"
+>
+	<svelte:fragment slot="filters">
+		<BookFilters filtersForm={data.filtersForm} />
+	</svelte:fragment>
 
-		<div class="flex flex-col gap-4">
-			<BookView books={data.books} extended={false} numberOfBooks={data.count} />
-			<Pagination totalPages={data.totalPages} />
+	<svelte:fragment slot="display">
+		<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+			{#each data.books as book (book.id)}
+				<BookCard {book} />
+			{/each}
 		</div>
-	</div>
-</main>
+	</svelte:fragment>
+</DBShell>

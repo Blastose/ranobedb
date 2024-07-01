@@ -1,97 +1,69 @@
 <script lang="ts">
-	import Header from '$lib/components/header/Header.svelte';
-	import Sidebar from '$lib/components/sidebar/Sidebar.svelte';
-	import Drawer from '$lib/components/drawer/Drawer.svelte';
-	import Toast from '$lib/components/toast/Toast.svelte';
-	import Modal from '$lib/components/modal/Modal.svelte';
-	import sidebar from '$lib/stores/sidebar';
-	import drawer from '$lib/stores/drawer';
-	import largeScreen from '$lib/stores/largeScreen';
-	import modalBook from '$lib/stores/modalBook';
-	import Fly from '$lib/components/layout/Fly.svelte';
+	import Header from './Header.svelte';
+	import Sidebar from '$lib/components/layout/sidebar/Sidebar.svelte';
 	import type { User } from 'lucia';
+	import Fly from './Fly.svelte';
+	import Toaster from '$lib/components/toast/Toaster.svelte';
+	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
-	export let pathname: string;
-	export let user: User | undefined;
+	export let user: User | null;
+	export let url: string;
+
+	const sidebarStore = getSidebarStoreContext();
 </script>
 
-<Toast />
-{#if $modalBook}
-	<Modal />
-{/if}
-<Drawer />
+<Toaster />
 
-<div class="main">
-	<div
-		class="sidebar
-		{$sidebar ? '' : 'hide-sidebar'}
-		{$drawer ? 'show-drawer' : ''}"
-	>
-		<Sidebar {user} tabindex={($sidebar && $largeScreen) || $drawer} />
+<div class="layout-container">
+	<div class="sidebar-wrapper sidebar-animation" class:sidebar-open={$sidebarStore === 'open'}>
+		<Sidebar {user} />
 	</div>
-	<div class="filler" />
-	<div class="header">
+
+	<div class="layout-items-wrapper">
 		<Header {user} />
-	</div>
-	<div class="content">
-		<Fly key={pathname}>
-			<slot />
-		</Fly>
+
+		<div class="main-wrapper">
+			<Fly key={url}>
+				<slot />
+			</Fly>
+		</div>
 	</div>
 </div>
 
 <style>
-	.main {
+	.layout-container {
 		display: grid;
-		height: 100%;
-		grid-template-areas:
-			'filler sidebar header'
-			'filler sidebar content';
-		grid-template-rows: min-content 1fr;
-		grid-template-columns: 0px min-content 1fr;
+		grid-template-columns: min-content 1fr;
+		min-height: 100%;
 	}
 
-	.filler {
-		grid-area: filler;
-		height: 100vh;
+	.layout-items-wrapper {
+		display: flex;
+		flex-direction: column;
+		min-height: 100%;
 	}
 
-	.sidebar {
-		grid-area: sidebar;
-		margin-left: -16rem;
-		transition-duration: 450ms;
+	.main-wrapper {
+		flex-grow: 1;
+		overflow-x: clip;
+		container: main / inline-size;
+	}
+
+	.sidebar-wrapper {
+		width: 240px;
+		margin-left: -240px;
+		visibility: hidden;
+	}
+
+	.sidebar-animation {
+		transition-duration: 0.45s;
 		transition-timing-function: cubic-bezier(0.17, 0.67, 0.23, 1.02);
 	}
 
-	.header {
-		grid-area: header;
-		position: sticky;
-		top: 0;
-		z-index: 1;
-	}
-
-	.content {
-		grid-area: content;
-		padding-bottom: 20px;
-		background-color: var(--primary-50);
-		overflow: hidden;
-	}
-
-	:global(.dark) .content {
-		background-color: var(--dark-700);
-	}
-
 	@media (min-width: 1024px) {
-		.sidebar {
-			margin-left: 0;
+		.sidebar-wrapper.sidebar-open {
+			margin-left: 0px;
+			visibility: visible;
 		}
-	}
-
-	.hide-sidebar {
-		margin-left: -16rem;
-	}
-
-	.show-drawer {
-		margin-left: 0;
 	}
 </style>
