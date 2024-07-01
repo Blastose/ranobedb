@@ -53,7 +53,7 @@
 			use:melt={$content}
 			class="modal-drawer"
 			transition:fly={{
-				x: -256,
+				x: -240,
 				duration: 450,
 				opacity: 1,
 				easing: quintOut,

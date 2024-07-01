@@ -174,7 +174,7 @@ const zTitles = z
 	.array(
 		z.object({
 			lang: z.enum(languagesArray),
-			official: z.boolean(),
+			official: z.literal(true),
 			title: z
 				.string()
 				.trim()

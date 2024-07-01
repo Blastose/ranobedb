@@ -13,7 +13,7 @@ export class EmailBuilder {
 	to: string;
 
 	constructor(params: { to: string }) {
-		this.from = 'no-reply@notify.ranobedb.org';
+		this.from = 'RanobeDB <no-reply@notify.ranobedb.org>';
 		this.to = params.to;
 	}
 

@@ -161,22 +161,30 @@
 				icon="add"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/about'}
-				href="/about"
-				text="About"
+				active={$page.url.pathname === '/editing-guidelines'}
+				href="/editing-guidelines"
+				text="Editing guidelines"
 				icon="about"
 			/>
 		</SidebarSection>
 
 		<Hr />
 
-		<div class="flex flex-wrap justify-center px-2">
-			<a href="https://github.com/Blastose/ranobedb" target="_blank" class="btn rounded-full p-2"
-				><Icon name="github" /></a
-			>
-			<a href="https://discord.gg/ZeAnhGncFx" target="_blank" class="btn rounded-full p-2"
-				><Icon name="discord" /></a
-			>
+		<div class="flex flex-col gap-2 items-center text-sm">
+			<div class="flex flex-wrap justify-center px-2">
+				<a href="https://github.com/Blastose/ranobedb" target="_blank" class="btn rounded-full p-2"
+					><Icon name="github" /></a
+				>
+				<a href="https://discord.gg/ZeAnhGncFx" target="_blank" class="btn rounded-full p-2"
+					><Icon name="discord" /></a
+				>
+			</div>
+			<div class="flex flex-wrap gap-4">
+				<a href="/about">About</a>
+				<a href="/about/privacy-policy">Privacy policy</a>
+			</div>
+
+			<a href="/about/terms-of-use">Terms of Use</a>
 		</div>
 	</nav>
 </aside>

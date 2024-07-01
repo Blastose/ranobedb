@@ -54,9 +54,7 @@ test.describe('auth', () => {
 		await page.getByLabel('username').fill(generateId(15));
 		await page.getByLabel('password').fill(generateId(15));
 		await page
-			.getByLabel(
-				'I have read and agree with the privacy policy and contributor license agreement.',
-			)
+			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
@@ -89,9 +87,7 @@ test.describe('auth', () => {
 		await page.getByLabel('username').fill(generateId(15));
 		await page.getByLabel('password').fill('1');
 		await page
-			.getByLabel(
-				'I have read and agree with the privacy policy and contributor license agreement.',
-			)
+			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
@@ -104,9 +100,7 @@ test.describe('auth', () => {
 		await page.getByLabel('username').fill(generateId(15));
 		await page.getByLabel('password').fill(generateId(15));
 		await page
-			.getByLabel(
-				'I have read and agree with the privacy policy and contributor license agreement.',
-			)
+			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
@@ -121,9 +115,7 @@ test.describe('auth', () => {
 		await page.getByLabel('username').fill('username');
 		await page.getByLabel('password').fill(generateId(15));
 		await page
-			.getByLabel(
-				'I have read and agree with the privacy policy and contributor license agreement.',
-			)
+			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
@@ -140,9 +132,7 @@ test.describe('auth', () => {
 		await page.getByLabel('username').fill('UsErNaMe');
 		await page.getByLabel('password').fill(generateId(15));
 		await page
-			.getByLabel(
-				'I have read and agree with the privacy policy and contributor license agreement.',
-			)
+			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 

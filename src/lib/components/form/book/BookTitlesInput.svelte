@@ -58,11 +58,13 @@
 			{/if}
 
 			<div class="flex flex-wrap gap-1 items-center justify-between">
-				<label class="flex gap-1"
+				<!-- Removed official titles checkbox; We are only accepting official titles now (maybe change later) -->
+				<div></div>
+				<!-- <label class="flex gap-1"
 					><input type="checkbox" bind:checked={$values[i].official} /><span
 						>Official title (from the book publisher; not a fan TL)</span
 					></label
-				>
+				> -->
 
 				<button
 					type="button"

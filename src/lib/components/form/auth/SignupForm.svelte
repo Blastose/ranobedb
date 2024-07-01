@@ -41,9 +41,8 @@
 		/>
 
 		<CheckboxField {form} field="privacy_policy_cla" label="I have read and agree with the ">
-			<a href="/privacy-policy" class="link" target="_blank"
-				>privacy policy and contributor license agreement.</a
-			>
+			<a href="/about/privacy-policy" class="link" target="_blank">privacy policy </a> and
+			<a href="/about/terms-of-use" class="link" target="_blank">terms of use.</a>
 		</CheckboxField>
 	</svelte:fragment>
 
