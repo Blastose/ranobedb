@@ -77,7 +77,7 @@
 		z-index: 999999;
 		height: 100dvh;
 		width: 100%;
-		max-width: 16rem;
+		max-width: 240px;
 		background-color: var(--bg-light);
 		outline: 2px solid transparent;
 		outline-offset: 2px;

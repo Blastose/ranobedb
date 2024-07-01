@@ -36,15 +36,15 @@ const zUsername = z
 		USERNAME_REGEX,
 		'Username must only contain alphanumeric characters, dash (-), and underscore (_)',
 	)
-	.min(3, { message: 'Username must be between 3 and 36 characters' })
-	.max(36, { message: 'Username must be between 3 and 36 characters' });
+	.min(3, { message: 'Username must be between 3 and 20 characters' })
+	.max(20, { message: 'Username must be between 3 and 20 characters' });
 const zPasswordEntry = z
 	.string({ required_error: 'Password is required' })
 	.max(255, { message: 'Password too long' });
 const zPasswordNew = z
 	.string({ required_error: 'Password is required' })
-	.min(6, { message: 'Password must be between 6 and 255 characters' })
-	.max(255, { message: 'Password must be between 6 and 255 characters' });
+	.min(15, { message: 'Password must be between 15 and 255 characters' })
+	.max(255, { message: 'Password must be between 15 and 255 characters' });
 
 function isValidISO8601Date(dateString: string): boolean {
 	const isoDateRegex = /^\d{4,5}-\d{2}-\d{2}$/;
