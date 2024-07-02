@@ -10,17 +10,19 @@
 	export let user: User | null;
 </script>
 
-<div class="flex flex-col">
-	{#if hasVisibilityPerms(user)}
-		{#if item.locked}
-			<p>
-				This item is currently <span class="error-text-color">locked</span>
-			</p>
+{#if hasVisibilityPerms(user) && (item.locked || item.hidden)}
+	<div class="flex flex-col">
+		{#if hasVisibilityPerms(user)}
+			{#if item.locked}
+				<p>
+					This item is currently <span class="error-text-color">locked</span>
+				</p>
+			{/if}
+			{#if item.hidden}
+				<p>
+					This item is currently <span class="error-text-color">hidden</span>
+				</p>
+			{/if}
 		{/if}
-		{#if item.hidden}
-			<p>
-				This item is currently <span class="error-text-color">hidden</span>
-			</p>
-		{/if}
-	{/if}
-</div>
+	</div>
+{/if}

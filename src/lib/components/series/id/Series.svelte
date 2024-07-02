@@ -9,7 +9,6 @@
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import Description from '$lib/components/book/Description.svelte';
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
-	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import {
 		aniDbLink,
@@ -17,6 +16,9 @@
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
+	import TitlesSection from '$lib/components/titles/TitlesSection.svelte';
+	import Collapsible from '$lib/components/display/Collapsible.svelte';
+	import StaffsSectionGroupedLang from '$lib/components/staff/StaffsSectionGroupedLang.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -35,38 +37,50 @@
 	item={series}
 	copyTo={{ to: ['book'], langs: series.titles.map((t) => t.lang) }}
 >
+	<p class="text-sm font-bold">
+		{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
+		total books
+	</p>
+
 	<Description description={series.description} maxHeight={100} />
-	<div class="text-sm">
-		<p class="sub-text">
-			{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
-			total books
-		</p>
 
-		<p class="sub-text">
-			Original run: {new DateNumber(series.start_date).getDateFormatted()} – {new DateNumber(
-				series.end_date,
-			).getDateFormatted()}
-		</p>
+	<dl>
+		<div>
+			<dt>Original run:</dt>
+			<dd>
+				{new DateNumber(series.start_date).getDateFormatted('present')} – {new DateNumber(
+					series.end_date,
+				).getDateFormatted('present')}
+			</dd>
+		</div>
 
-		<dl class="flex gap-2 sub-text">
+		{#if series.end_date === 99999999 && series.books.at(-1)?.release_date !== undefined}
+			<div>
+				<dt>Lastest release:</dt>
+				<dd>
+					{new DateNumber(series.books.at(-1)?.release_date || 99999999).getDateFormatted()}
+				</dd>
+			</div>
+		{/if}
+
+		<div>
 			<dt>Publication status:</dt>
 			<dd>{series.publication_status}</dd>
-		</dl> 
-	</div>
-
-	<section>
-		<h2 class="font-bold text-lg">Titles</h2>
-		<div>
-			{#each series.titles as title}
-				<p>{title.lang} - {title.title}</p>
-			{/each}
 		</div>
-	</section>
+	</dl>
+
+	<TitlesSection titles={series.titles} />
 
 	{#if series.aliases}
 		<section>
-			<h2 class="font-bold text-lg">Aliases</h2>
-			<p>{series.aliases.split('\n').join(', ')}</p>
+			<Collapsible open={false}>
+				<svelte:fragment slot="summary">
+					<h2 class="font-bold text-lg">Aliases</h2>
+				</svelte:fragment>
+				<svelte:fragment slot="details">
+					<p>{series.aliases.split('\n').join(', ')}</p>
+				</svelte:fragment>
+			</Collapsible>
 		</section>
 	{/if}
 
@@ -106,12 +120,9 @@
 		</section>
 	{/if}
 
-	<section class="flex flex-col gap-2">
-		<h2 class="font-bold text-lg">Staff</h2>
-		<StaffsSectionSnippet staffs={series.staff} />
-	</section>
+	<StaffsSectionGroupedLang olang={series.olang} staffs={series.staff} />
 
-	<PublishersSection publishers={series.publishers} olang={series.olang} />
+	<PublishersSection publishers={series.publishers} olang={series.olang} onlyOpenOlang={true} />
 
 	<section class="flex flex-col gap-2">
 		<h2 class="text-lg font-bold">Books in series</h2>
@@ -127,3 +138,14 @@
 		{/if}
 	</section>
 </DBItemShell>
+
+<style>
+	dl > div {
+		display: grid;
+		grid-template-columns: 164px 1fr;
+	}
+
+	dt {
+		font-weight: 700;
+	}
+</style>

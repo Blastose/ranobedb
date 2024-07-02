@@ -60,7 +60,6 @@
 
 			<div class="flex flex-wrap gap-1 items-center justify-between">
 				<!-- See BookTitlesInput.svelte -->
-				<div></div>
 				<!-- <label class="flex gap-1"
 					><input type="checkbox" bind:checked={$values[i].official} /><span
 						>Official title (from the book publisher; not a fan TL)</span
