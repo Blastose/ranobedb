@@ -9,6 +9,7 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { db } from '$lib/server/db/db.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { validateTurnstile } from '$lib/server/cf.js';
+import { isLimited, loginLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) {
@@ -21,7 +22,8 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-	default: async ({ request, cookies, url }) => {
+	default: async (event) => {
+		const { request, cookies, url } = event;
 		const formData = await request.formData();
 
 		const form = await superValidate(formData, zod(loginSchema));
@@ -37,6 +39,14 @@ export const actions = {
 
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		if (await isLimited(loginLimiter, event)) {
+			return message(
+				form,
+				{ type: 'error', text: 'Too many login attempts; Try again later' },
+				{ status: 429 },
+			);
 		}
 
 		const usernameemail = form.data.usernameemail;

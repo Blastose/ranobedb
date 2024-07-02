@@ -25,10 +25,10 @@
 	export let actionUrl: string | undefined = undefined;
 
 	const sForm = superForm(releaseForm, {
-		dataType: 'json', 
+		dataType: 'json',
 		onUpdated({ form: f }) {
 			if (!f.valid) {
-				addToast({ data: { title: 'Error in form!', type: 'error' } });
+				addToast({ data: { title: f.message?.text || 'Error in form!', type: 'error' } });
 			}
 		},
 	});

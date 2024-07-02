@@ -3,7 +3,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
-import { setError, superValidate } from 'sveltekit-superforms';
+import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
@@ -13,6 +13,7 @@ import { DBPublisherActions } from '$lib/server/db/publishers/actions.js';
 import { revertedRevisionMarkdown } from '$lib/db/revision.js';
 import { db } from '$lib/server/db/db.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
+import { dbItemActionsLimiter, isLimited } from '$lib/server/rate-limiter/rate-limiter.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) {
@@ -67,7 +68,8 @@ export const load = async ({ params, locals, url }) => {
 };
 
 export const actions = {
-	default: async ({ request, locals, params, cookies }) => {
+	default: async (event) => {
+		const { request, locals, params, cookies } = event;
 		const id = Number(params.id);
 		if (!locals.user) return fail(401);
 
@@ -78,6 +80,14 @@ export const actions = {
 
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		if (await isLimited(dbItemActionsLimiter, event)) {
+			return message(
+				form,
+				{ type: 'error', text: 'Too many attempts; Please wait 10 seconds' },
+				{ status: 429 },
+			);
 		}
 
 		let success = false;

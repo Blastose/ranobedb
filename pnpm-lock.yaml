@@ -59,9 +59,6 @@ importers:
       sveltekit-flash-message:
         specifier: ^2.4.4
         version: 2.4.4(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)
-      sveltekit-rate-limiter:
-        specifier: ^0.5.1
-        version: 0.5.1(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))
       sveltekit-superforms:
         specifier: ^2.15.1
         version: 2.15.1(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)
@@ -123,6 +120,9 @@ importers:
       svelte-check:
         specifier: ^3.8.1
         version: 3.8.1(postcss-load-config@5.1.0(jiti@1.21.0)(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.18)
+      sveltekit-rate-limiter:
+        specifier: ^0.5.1
+        version: 0.5.1(@sveltejs/kit@2.5.16(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))(svelte@4.2.18)(vite@5.3.1(@types/node@20.12.12)))
       tslib:
         specifier: ^2.6.3
         version: 2.6.3

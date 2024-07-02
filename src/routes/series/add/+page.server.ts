@@ -1,6 +1,6 @@
 import { seriesSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
-import { setError, superValidate } from 'sveltekit-superforms';
+import { message, setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
@@ -9,6 +9,7 @@ import { DBSeriesActions } from '$lib/server/db/series/actions.js';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { db } from '$lib/server/db/db.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
+import { dbItemActionsLimiter, isLimited } from '$lib/server/rate-limiter/rate-limiter.js';
 const { DatabaseError } = pkg;
 
 export const load = async ({ locals, url }) => {
@@ -42,7 +43,8 @@ export const load = async ({ locals, url }) => {
 };
 
 export const actions = {
-	default: async ({ request, locals, cookies }) => {
+	default: async (event) => {
+		const { request, locals, cookies } = event;
 		if (!locals.user) return fail(401);
 
 		const form = await superValidate(request, zod(seriesSchema));
@@ -52,6 +54,14 @@ export const actions = {
 
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		if (await isLimited(dbItemActionsLimiter, event)) {
+			return message(
+				form,
+				{ type: 'error', text: 'Too many attempts; Please wait 10 seconds' },
+				{ status: 429 },
+			);
 		}
 
 		let newSeriesId: number | undefined = undefined;

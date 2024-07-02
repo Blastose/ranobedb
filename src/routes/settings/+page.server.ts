@@ -24,8 +24,14 @@ import { DBUsers } from '$lib/server/db/user/user.js';
 import { validateTurnstile } from '$lib/server/cf.js';
 import { EmailVerification } from '$lib/server/email/email.js';
 import { ORIGIN } from '$env/static/private';
-import { getMode } from '$lib/mode/mode.js';
 import type { SettingsTab } from '$lib/db/dbConsts.js';
+import {
+	changeEmailLimiter,
+	isLimited,
+	sendVerificationCodelimiter,
+	verifyCodeLimiter,
+} from '$lib/server/rate-limiter/rate-limiter.js';
+import { getMode } from '$lib/mode/mode.js';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -200,7 +206,8 @@ export const actions = {
 		return message(displayPrefsForm, { text: 'Updated display preferences!', type: 'success' });
 	},
 
-	sendemailverificationcode: async ({ request, locals }) => {
+	sendemailverificationcode: async (event) => {
+		const { request, locals } = event;
 		if (!locals.user) return fail(401);
 
 		const formData = await request.formData();
@@ -209,9 +216,18 @@ export const actions = {
 		if (!form.valid) {
 			return fail(400, { form });
 		}
+
 		const turnstileSuccess = await validateTurnstile({ request, body: formData });
 		if (!turnstileSuccess) {
 			return fail(400);
+		}
+
+		if (await isLimited(sendVerificationCodelimiter, event)) {
+			return message(
+				form,
+				{ type: 'error', text: 'Too many email code attempts; Try again later' },
+				{ status: 429 },
+			);
 		}
 
 		const dbUsers = new DBUsers(db);
@@ -244,7 +260,8 @@ export const actions = {
 		});
 	},
 
-	verifyemail: async ({ request, locals }) => {
+	verifyemail: async (event) => {
+		const { request, locals } = event;
 		if (!locals.user) {
 			return fail(401);
 		}
@@ -252,6 +269,14 @@ export const actions = {
 		const verifyEmailForm = await superValidate(request, zod(verifyEmailSchema));
 		if (!verifyEmailForm.valid) {
 			return fail(400, { verifyEmailForm });
+		}
+
+		if (await isLimited(verifyCodeLimiter, event)) {
+			return message(
+				verifyEmailForm,
+				{ type: 'error', text: 'Too many verify code attempts; Try again later' },
+				{ status: 429 },
+			);
 		}
 
 		const emailVerification = new EmailVerification(db);
@@ -269,7 +294,8 @@ export const actions = {
 		return message(verifyEmailForm, { text: 'Verified email!', type: 'success' });
 	},
 
-	changeemail: async ({ locals, request }) => {
+	changeemail: async (event) => {
+		const { locals, request } = event;
 		if (!locals.user) {
 			return fail(401);
 		}
@@ -320,6 +346,14 @@ export const actions = {
 				changeEmailForm,
 				{ type: 'error', text: 'Invalid credentials!' },
 				{ status: 400 },
+			);
+		}
+
+		if (await isLimited(changeEmailLimiter, event)) {
+			return message(
+				changeEmailForm,
+				{ type: 'error', text: 'Too many change email attempts; Try again later' },
+				{ status: 429 },
 			);
 		}
 
