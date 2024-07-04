@@ -2,11 +2,13 @@
 	import SettingsForm from '$lib/components/form/settings/SettingsForm.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import ThemeSelect from '$lib/components/form/settings/ThemeSelect.svelte';
+	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 
 	export let data;
 </script>
 
 <PageTitle title="Settings" />
+<NoIndex />
 
 <main class="container-rndb flex flex-col gap-4">
 	<h1 class="font-bold text-4xl">Settings</h1>

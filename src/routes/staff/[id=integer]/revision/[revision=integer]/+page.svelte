@@ -4,6 +4,8 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import Staff from '$lib/components/staff/id/Staff.svelte';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
+	import MetaTags from '$lib/components/layout/MetaTags.svelte';
+	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 
 	export let data;
 
@@ -17,6 +19,8 @@
 </script>
 
 <PageTitle title="Viewing revision {data.revision.revision} of {title}" />
+<MetaTags {title} description={staff.description} site_name={'RanobeDB'} />
+<NoIndex />
 
 <div class="container-rndb flex flex-col gap-6">
 	<RevisionContainer>

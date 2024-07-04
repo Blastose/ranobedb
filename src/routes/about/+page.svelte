@@ -1,8 +1,15 @@
 <script lang="ts">
+	import MetaTags from '$lib/components/layout/MetaTags.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 </script>
 
 <PageTitle title="About us" />
+
+<MetaTags
+	title="RanobeDB"
+	description="RanobeDB is a light novel database. Our mission is to provide a comprehensive database of Japanese light novels and any official translations. This website is an open, editable database and you can contribute new information or corrections to the database."
+	site_name="RanobeDB"
+/>
 
 <main class="container-rndb flex flex-col gap-2">
 	<h1 class="text-4xl font-bold">About us</h1>

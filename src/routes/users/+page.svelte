@@ -1,4 +1,5 @@
 <script lang="ts">
+	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
 	import DisplayBoxContainer from '$lib/components/layout/db/DisplayBoxContainer.svelte';
@@ -8,6 +9,7 @@
 </script>
 
 <PageTitle title="Users" />
+<NoIndex />
 
 <DbShell
 	name="users"

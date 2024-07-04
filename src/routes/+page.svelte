@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MetaTags from '$lib/components/layout/MetaTags.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import ReleaseBookImageCarousel from '$lib/components/release/ReleaseBookImageCarousel.svelte';
 	import { buildRevisionLink, dbItemMap, getHistoryEntryTitle } from '$lib/db/revision.js';
@@ -10,6 +11,13 @@
 </script>
 
 <PageTitle title="Home" />
+
+<MetaTags
+	title="RanobeDB"
+	description="Welcome to RanobeDB! We are a light novel database and our mission is to provide a comprehensive database of Japanese light novels and any official translations. This website is an open, editable database and you can contribute new information or corrections to the database."
+	site_name="RanobeDB"
+	type="website"
+/>
 
 <main class="container-rndb flex flex-col gap-4">
 	<h1 class="font-bold text-4xl">Home</h1>

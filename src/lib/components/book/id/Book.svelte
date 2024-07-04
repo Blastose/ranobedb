@@ -8,7 +8,6 @@
 	import Description from '$lib/components/book/Description.svelte';
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplayPerm from '$lib/components/layout/db/VisibilityDisplayPerm.svelte';
-	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import BookImage from '../BookImage.svelte';
 	import BookCarousel from '../BookCarousel.svelte';
 	import { buildRedirectUrl } from '$lib/utils/url';
@@ -20,6 +19,7 @@
 	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
 	import { sortByLang } from '$lib/db/array';
 	import TitlesSection from '$lib/components/titles/TitlesSection.svelte';
+	import { buildImageUrl } from '../book';
 
 	export let book: BookR;
 	export let revision: number | undefined;
@@ -27,7 +27,7 @@
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
 
 	const theme = getThemeContext();
-	$: imageUrl = book.image?.filename ? `${PUBLIC_IMAGE_URL}${book.image?.filename}` : null;
+	$: imageUrl = buildImageUrl(book.image?.filename);
 	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
 	const displayPrefs = getDisplayPrefsContext();
 </script>
@@ -120,7 +120,7 @@
 			</div>
 		</section>
 
-		<PublishersSection publishers={book.publishers} olang={book.olang} onlyOpenOlang={false}/>
+		<PublishersSection publishers={book.publishers} olang={book.olang} onlyOpenOlang={false} />
 
 		<BookReleases releases={book.releases} olang={book.olang} />
 

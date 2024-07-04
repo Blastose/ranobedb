@@ -1,4 +1,5 @@
 <script lang="ts">
+	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbItemShellUser from '$lib/components/layout/db/DBItemShellUser.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
@@ -11,6 +12,7 @@
 </script>
 
 <PageTitle title={data.routeUser.username} />
+<NoIndex />
 
 <DbRouteShell theme={$theme} bgImageStyle={null}>
 	<DbItemShellUser user={data.routeUser}>
