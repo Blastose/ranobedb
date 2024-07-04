@@ -80,17 +80,25 @@
 			</section>
 		</div>
 	{:else if view === 'email'}
-		<h2 class="font-bold text-2xl">Email settings</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
-			<section>
-				<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />
-			</section>
+		<!-- TODO Unlock email settings -->
+		{#if true}
+			<p>
+				You cannot verify or change your email at this time. This feature will be added in the
+				future.
+			</p>
+		{:else}
+			<h2 class="font-bold text-2xl">Email settings</h2>
+			<div class="flex flex-col gap-4 max-w-lg">
+				<section>
+					<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />
+				</section>
 
-			<Hr />
+				<Hr />
 
-			<section>
-				<ChangeEmailForm {changeEmailForm} {email_verified} />
-			</section>
-		</div>
+				<section>
+					<ChangeEmailForm {changeEmailForm} {email_verified} />
+				</section>
+			</div>
+		{/if}
 	{/if}
 </div>
