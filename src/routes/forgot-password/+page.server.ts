@@ -45,7 +45,7 @@ export const actions = {
 
 		const user = await dbUsers.getUserFull(email);
 
-		if (user) {
+		if (user && user.role !== 'admin') {
 			if (user.email_verified) {
 				const verificationToken = await createPasswordResetToken(user.user_id);
 				const verificationLink = ORIGIN + '/reset-password?token=' + verificationToken;

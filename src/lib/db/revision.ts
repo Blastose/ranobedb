@@ -4,7 +4,7 @@ import type { DisplayPrefs } from '$lib/server/zod/schema';
 import type { DbItem } from '../server/db/dbTypes';
 
 type DbItemPrefix = 'b' | 's' | 'st' | 'p' | 'r';
-const dbItemMap: Record<DbItem, DbItemPrefix> = {
+export const dbItemMap: Record<DbItem, DbItemPrefix> = {
 	book: 'b',
 	publisher: 'p',
 	release: 'r',
