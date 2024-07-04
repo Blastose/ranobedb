@@ -120,7 +120,7 @@
 		</section>
 	{/if}
 
-	<StaffsSectionGroupedLang olang={series.olang} staffs={series.staff} />
+	<StaffsSectionGroupedLang olang={series.olang} staffs={series.staff} onlyOlang={true} />
 
 	<PublishersSection publishers={series.publishers} olang={series.olang} onlyOpenOlang={true} />
 

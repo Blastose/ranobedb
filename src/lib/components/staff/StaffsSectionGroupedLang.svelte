@@ -7,7 +7,7 @@
 
 	export let staffs: Series['staff'];
 	export let olang: Language;
-	export let onlyOlang: boolean = false;
+	export let onlyOlang: boolean;
 
 	$: groupedStaffsByLang = groupBy(staffs, (item) => item.lang || olang);
 </script>
@@ -19,7 +19,7 @@
 		{#each sortByLangObjEntries(Object.entries(groupedStaffsByLang), olang) as [key, staffs]}
 			<section>
 				<!-- TODO Let users select what should auto-collapse -->
-				<Collapsible open={onlyOlang ? key === 'olang' : key === 'ja' || key === 'en'}>
+				<Collapsible open={onlyOlang ? key === olang : key === 'ja' || key === 'en'}>
 					<svelte:fragment slot="summary">
 						<h3>{getLanguageFromString(key)}</h3>
 					</svelte:fragment>
