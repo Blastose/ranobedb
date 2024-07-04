@@ -172,11 +172,17 @@
 
 		<div class="flex flex-col gap-2 items-center text-sm">
 			<div class="flex flex-wrap justify-center px-2">
-				<a href="https://github.com/Blastose/ranobedb" target="_blank" class="btn rounded-full p-2"
-					><Icon name="github" /></a
+				<a
+					href="https://github.com/Blastose/ranobedb"
+					target="_blank"
+					class="btn rounded-full p-2"
+					aria-label="Github link"><Icon name="github" /></a
 				>
-				<a href="https://discord.gg/ZeAnhGncFx" target="_blank" class="btn rounded-full p-2"
-					><Icon name="discord" /></a
+				<a
+					href="https://discord.gg/ZeAnhGncFx"
+					target="_blank"
+					class="btn rounded-full p-2"
+					aria-label="Discord link"><Icon name="discord" /></a
 				>
 			</div>
 			<div class="flex flex-wrap gap-4">
