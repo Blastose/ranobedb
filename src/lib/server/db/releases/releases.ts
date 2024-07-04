@@ -21,6 +21,23 @@ export class DBReleases {
 		return this.ranobeDB.db.selectFrom('release').selectAll('release');
 	}
 
+	getReleasesWithImage() {
+		return this.ranobeDB.db
+			.selectFrom('release')
+			.selectAll('release')
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.innerJoin('release_book', 'release.id', 'release_book.release_id')
+						.innerJoin('book', 'book.id', 'release_book.book_id')
+						.whereRef('image.id', '=', 'book.image_id')
+						.limit(1),
+				).as('image'),
+			]);
+	}
+
 	getRelease(id: number) {
 		return this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
@@ -278,4 +295,5 @@ export class DBReleases {
 }
 
 export type Release = InferResult<ReturnType<DBReleases['getRelease']>>[number];
+export type ReleaseWithImage = InferResult<ReturnType<DBReleases['getReleasesWithImage']>>[number];
 export type ReleaseEdit = InferResult<ReturnType<DBReleases['getReleaseEdit']>>[number];

@@ -20,27 +20,29 @@
 	});
 </script>
 
-<nav class="flex gap-4">
-	{#each tabs as tab (tab)}
-		{@const active = tab === currentTab}
-		<div class="flex flex-col gap-2">
-			<a
-				class="{active
-					? 'link no-underline'
-					: 'tab-hover'} capitalize duration-[250ms] px-2 font-semibold flex items-center gap-2"
-				href="{currentPage.pathname}?{tabParam}={tab}"
-				>{#if tabsIcons}<Icon name={tabsIcons[tab]} />{/if}{tab}</a
-			>
-			{#if active}
-				<div
-					class="h-[3px] w-full tab-underline bg-link"
-					in:send={{ key: 'trigger' }}
-					out:receive={{ key: 'trigger' }}
-				></div>
-			{/if}
-		</div>
-	{/each}
-</nav>
+<div class="grid overflow-x-auto whitespace-nowrap">
+	<nav class="flex gap-4">
+		{#each tabs as tab (tab)}
+			{@const active = tab === currentTab}
+			<div class="flex flex-col gap-2">
+				<a
+					class="{active
+						? 'link no-underline'
+						: 'tab-hover'} capitalize duration-[250ms] px-2 font-semibold flex items-center gap-2"
+					href="{currentPage.pathname}?{tabParam}={tab}"
+					>{#if tabsIcons}<Icon name={tabsIcons[tab]} />{/if}{tab}</a
+				>
+				{#if active}
+					<div
+						class="h-[3px] w-full tab-underline bg-link"
+						in:send={{ key: 'trigger' }}
+						out:receive={{ key: 'trigger' }}
+					></div>
+				{/if}
+			</div>
+		{/each}
+	</nav>
+</div>
 
 <style>
 	.tab-hover:hover {

@@ -9,6 +9,7 @@ import { message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { db } from '$lib/server/db/db';
 import { validateTurnstile } from '$lib/server/cf.js';
+import { isLimited, signUpLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
@@ -19,7 +20,9 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-	default: async ({ request, cookies }) => {
+	default: async (event) => {
+		const { request, cookies } = event;
+
 		const formData = await request.formData();
 
 		const form = await superValidate(formData, zod(signupSchema));
@@ -35,6 +38,14 @@ export const actions = {
 
 		if (!form.valid) {
 			return message(form, { text: 'Invalid form', type: 'error' });
+		}
+
+		if (await isLimited(signUpLimiter, event)) {
+			return message(
+				form,
+				{ type: 'error', text: 'Too many sign up attempts per day; Try again tomorrow' },
+				{ status: 429 },
+			);
 		}
 
 		const email = form.data.email;

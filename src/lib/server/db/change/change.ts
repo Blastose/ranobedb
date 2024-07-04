@@ -56,7 +56,7 @@ export class DBChanges {
 					jsonObjectFrom(
 						eb
 							.selectFrom('release_hist')
-							.select(['release_hist.title'])
+							.select(['release_hist.title', 'release_hist.romaji'])
 							.whereRef('release_hist.change_id', '=', 'change.id')
 							.limit(1),
 					).as('release'),

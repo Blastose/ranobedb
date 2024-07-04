@@ -59,10 +59,14 @@ export class DateNumber {
 		return this.date;
 	}
 
-	getDateFormatted() {
+	getDateFormatted(tbaType: 'tba' | 'present' = 'tba') {
 		const { year, month, day } = this.extractYearMonthDay();
 		if (year === 9999) {
-			return 'TBA';
+			if (tbaType === 'tba') {
+				return 'TBA';
+			} else {
+				return 'present';
+			}
 		}
 		if (month === 99) {
 			return `${year}`;

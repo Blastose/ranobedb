@@ -1,5 +1,5 @@
 import { resetPasswordSchema, tokenSchema } from '$lib/server/zod/schema';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
 import { db } from '$lib/server/db/db.js';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -9,12 +9,9 @@ import { sha256 } from 'oslo/crypto';
 import { isWithinExpirationDate } from 'oslo';
 import { lucia } from '$lib/server/lucia.js';
 import { Argon2id } from 'oslo/password';
+import { isLimited, resetPasswordLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
 
-export const load = async ({ locals, setHeaders, url }) => {
-	if (locals.user) {
-		redirect(302, '/');
-	}
-
+export const load = async ({ setHeaders, url }) => {
 	const verificationToken = await superValidate(url, zod(tokenSchema));
 	if (!verificationToken.valid || !verificationToken.data.token) {
 		error(400);
@@ -30,7 +27,9 @@ export const load = async ({ locals, setHeaders, url }) => {
 };
 
 export const actions = {
-	default: async ({ request, cookies, setHeaders, url }) => {
+	default: async (event) => {
+		const { request, cookies, setHeaders, url } = event;
+
 		setHeaders({
 			'Referrer-Policy': 'no-referrer',
 		});
@@ -47,6 +46,18 @@ export const actions = {
 		if (!verificationToken.valid || !verificationToken.data.token) {
 			return fail(400, { form });
 		}
+
+		if (await isLimited(resetPasswordLimiter, event)) {
+			return message(
+				form,
+				{
+					type: 'error',
+					text: 'Too many attempts; try again later',
+				},
+				{ status: 429 },
+			);
+		}
+
 		const tokenHash = encodeHex(
 			await sha256(new TextEncoder().encode(verificationToken.data.token)),
 		);

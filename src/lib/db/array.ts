@@ -1,5 +1,5 @@
 import type { Language } from '$lib/server/db/dbTypes';
-import { languageSortPrio } from './dbConsts';
+import { languageNames, languageSortPrio } from './dbConsts';
 
 export function arrayDiff<T extends { id: number }>(a: T[], b: T[]) {
 	return a.filter((item1) => !b.some((item2) => item2.id === item1.id));
@@ -21,6 +21,11 @@ export function groupBy<T, K extends string | number | symbol>(
 		key in obj ? obj[key].push(value) : (obj[key] = [value]);
 	}
 	return obj;
+}
+
+// For TS, since Svelte 4 cannot have TS in markup
+export function getLanguageFromString(langCode: string) {
+	return languageNames[langCode as Language];
 }
 
 export function sortByLang<T extends { lang: Language | null }>(objs: T[], olang?: Language) {

@@ -57,6 +57,7 @@ export const load = async ({ url, locals }) => {
 								eb2.or([
 									eb2('series_title.title', 'ilike', `%${q}%`),
 									eb2('series_title.romaji', 'ilike', `%${q}%`),
+									eb2('series.aliases', 'ilike', `%${q}%`),
 								]),
 							),
 					)

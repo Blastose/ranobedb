@@ -19,6 +19,7 @@
 	import BookReleases from './BookReleases.svelte';
 	import StaffsSectionSnippet from '$lib/components/staff/StaffsSectionSnippet.svelte';
 	import { sortByLang } from '$lib/db/array';
+	import TitlesSection from '$lib/components/titles/TitlesSection.svelte';
 
 	export let book: BookR;
 	export let revision: number | undefined;
@@ -37,7 +38,9 @@
 	</div>
 
 	<div class="-mt-32 z-10 flex flex-col gap-4">
-		<div class="grid grid-cols-1 sm:grid-cols-[200px_1fr] md:grid-cols-[256px_1fr] gap-6 sm:gap-8">
+		<div
+			class="grid grid-cols-1 sm:grid-cols-[200px_1fr] md:grid-cols-[256px_1fr] gap-6 sm:gap-8 pb-4"
+		>
 			<div class="flex flex-col items-center gap-4">
 				{#if book.image}
 					<img
@@ -100,14 +103,7 @@
 			</div>
 		</div>
 
-		<section class="mt-4">
-			<h2 class="font-bold text-lg">Titles</h2>
-			<div>
-				{#each book.titles as title}
-					<p>{title.lang} - {title.title}</p>
-				{/each}
-			</div>
-		</section>
+		<TitlesSection titles={book.titles} />
 
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
@@ -124,7 +120,7 @@
 			</div>
 		</section>
 
-		<PublishersSection publishers={book.publishers} olang={book.olang} />
+		<PublishersSection publishers={book.publishers} olang={book.olang} onlyOpenOlang={false}/>
 
 		<BookReleases releases={book.releases} olang={book.olang} />
 

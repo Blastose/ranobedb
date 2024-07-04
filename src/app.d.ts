@@ -3,6 +3,30 @@
 import type { Theme } from '$lib/stores/themeStore';
 import type { ToastData } from '$lib/components/toast/toast';
 
+interface RenderParameters {
+	sitekey: string;
+	action?: string | undefined;
+	cData?: string | undefined;
+	callback?: (token: string) => void;
+	'expired-callback'?: (token: string) => void;
+	'error-callback'?: VoidFunction | undefined;
+	'timeout-callback'?: VoidFunction | undefined;
+	'before-interactive-callback'?: VoidFunction | undefined;
+	'after-interactive-callback'?: VoidFunction | undefined;
+	'unsupported-callback'?: VoidFunction | undefined;
+	theme?: Theme | undefined;
+	tabindex?: number | undefined;
+	size?: WidgetSize | undefined;
+	retry?: FailureRetryMode | undefined;
+	'retry-interval'?: number | undefined;
+	language?: string | undefined;
+	appearance?: AppearanceMode | undefined;
+	'response-field'?: boolean | undefined;
+	'response-field-name'?: string | undefined;
+	'refresh-expired'?: RefreshExpiredMode | undefined;
+	'refresh-timeout'?: RefreshTimeoutMode | undefined;
+}
+
 // for information about these interfaces
 declare global {
 	namespace App {

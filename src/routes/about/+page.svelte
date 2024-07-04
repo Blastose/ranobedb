@@ -11,6 +11,21 @@
 			RanobeDB is a light novel database. Our mission is to provide a comprehensive database of
 			Japanese light novels and any official translations.
 		</p>
+
+		<p>
+			This website is an open, editable database and you can contribute new information or
+			corrections to the database.
+		</p>
+
+		<p>We are currently in alpha, so expect bugs and missing features.</p>
+
+		<p>
+			If you are interested in helping out, please join our <a
+				href="https://discord.gg/ZeAnhGncFx"
+				class="link"
+				target="_blank">Discord server</a
+			>
+		</p>
 	</div>
 
 	<div class="markdown">

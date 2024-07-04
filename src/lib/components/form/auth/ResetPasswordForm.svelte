@@ -33,7 +33,7 @@
 			field={'password'}
 			type="password"
 			placeholder=""
-			label="Password (12+ characters)"
+			label="Password (15+ characters)"
 			showRequiredSymbolIfRequired={true}
 		/>
 

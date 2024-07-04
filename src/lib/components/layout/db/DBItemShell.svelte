@@ -34,9 +34,7 @@
 		</div>
 	</section>
 
-	<section>
-		<VisibilityDisplayPerm {item} {user} />
-	</section>
+	<VisibilityDisplayPerm {item} {user} />
 
 	<slot />
 </section>

@@ -37,7 +37,7 @@
 			field={'password'}
 			type="password"
 			placeholder="Password"
-			label="Password (12+ characters)"
+			label="Password (15+ characters)"
 		/>
 
 		<CheckboxField {form} field="privacy_policy_cla" label="I have read and agree with the ">

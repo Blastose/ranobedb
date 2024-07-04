@@ -72,6 +72,43 @@ export const rules = {
 	}),
 	url: Object.assign({}, SimpleMarkdown.defaultRules.url, {
 		order: order++,
+		match: function (source, state, prevCapture) {
+			return SimpleMarkdown.inlineRegex(/^((?:https?):\/\/|www\.)(?:[a-zA-Z0-9-]+\.?)+[^\s<]*/)(
+				source,
+				state,
+				prevCapture,
+			);
+		} satisfies SimpleMarkdown.MatchFunction,
+		parse: function (capture) {
+			// Add backpedal logic from markedjs https://github.com/markedjs/marked/blob/7c1e114f9f7949ba4033366582d2a4ddf09e85af/lib/marked.cjs#L1058
+			// See https://github.github.com/gfm/#extended-autolink-path-validation
+			const backpedal =
+				/(?:[^?!.,:;*_'"~()&[\]]+|\([^)]*\)|\[[^\]]*\]|&(?![a-zA-Z0-9]+;$)|[?!.,:;*_'"~)\]]+(?!$))+/;
+
+			const initial = capture[0];
+			let backpedalCapture = initial;
+			let prevBackpedalCapture = backpedalCapture;
+			do {
+				const backpedalRegexResponse = backpedal.exec(backpedalCapture);
+				if (!backpedalRegexResponse) {
+					break;
+				}
+				prevBackpedalCapture = backpedalCapture;
+				backpedalCapture = backpedalRegexResponse[0];
+			} while (prevBackpedalCapture !== backpedalCapture);
+
+			return {
+				type: 'link',
+				content: [
+					{
+						type: 'text',
+						content: backpedalCapture,
+					},
+				],
+				target: backpedalCapture,
+				title: undefined,
+			};
+		} satisfies SimpleMarkdown.ParseFunction,
 	}),
 	link: Object.assign({}, SimpleMarkdown.defaultRules.link, {
 		order: order++,

@@ -151,6 +151,7 @@ export const seriesRelTypeArray = [
 	'side story',
 	'main story',
 	'spin-off',
+	'alternate version',
 ] as const;
 
 export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
@@ -160,6 +161,7 @@ export const seriesRelTypeReverseMap: Record<SeriesRelType, SeriesRelType> = {
 	'main story': 'side story',
 	'spin-off': 'parent story',
 	'parent story': 'spin-off',
+	'alternate version': 'alternate version',
 };
 
 export const staffRolesArray = [
@@ -175,6 +177,7 @@ export const seriesStatusArray = [
 	'ongoing',
 	'completed',
 	'hiatus',
+	'stalled',
 	'cancelled',
 	'unknown',
 ] as const;

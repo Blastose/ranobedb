@@ -238,6 +238,7 @@ export class DBSeries {
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
 							'cte_book.lang',
+							'cte_book.release_date',
 							'series_book.sort_order',
 							'series_book.book_type',
 						])
@@ -322,10 +323,10 @@ export class DBSeries {
 							'staff_alias.staff_id',
 							'staff_alias.id as staff_alias_id',
 							'book_staff_alias.note',
+							'book_edition.lang',
 						])
 						.where('book.hidden', '=', false)
 						.where('staff.hidden', '=', false)
-						.where('book_edition.lang', 'is', null)
 						.where('series_book.series_id', '=', id)
 						.orderBy('book_staff_alias.role_type'),
 				).as('staff'),
@@ -376,6 +377,7 @@ export class DBSeries {
 							'cte_book.romaji_orig',
 							'cte_book.image_id',
 							'cte_book.lang',
+							'cte_book.release_date',
 							'series_book_hist.book_type',
 							'series_book_hist.sort_order',
 						])
@@ -464,10 +466,10 @@ export class DBSeries {
 							'staff_alias.staff_id',
 							'staff_alias.id as staff_alias_id',
 							'book_staff_alias.note',
+							'book_edition.lang',
 						])
 						.where('book.hidden', '=', false)
 						.where('staff.hidden', '=', false)
-						.where('book_edition.lang', 'is', null)
 						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
 						.orderBy('book_staff_alias.role_type'),
 				).as('staff'),
