@@ -1,11 +1,13 @@
 <script lang="ts">
 	import SeriesForm from '$lib/components/form/series/SeriesForm.svelte';
+	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
 	export let data;
 </script>
 
 <PageTitle title="Add series" />
+<NoIndex />
 
 <main class="container-rndb">
 	<SeriesForm

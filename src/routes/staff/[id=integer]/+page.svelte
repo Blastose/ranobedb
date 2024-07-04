@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MetaTags from '$lib/components/layout/MetaTags.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
 	import Staff from '$lib/components/staff/id/Staff.svelte';
@@ -8,12 +9,14 @@
 	export let data;
 
 	$: staff = data.staff;
+	$: title = getNameDisplay({ obj: staff, prefs: $displayPrefs.names });
 
 	const displayPrefs = getDisplayPrefsContext();
 	const theme = getThemeContext();
 </script>
 
-<PageTitle title={getNameDisplay({ obj: staff, prefs: $displayPrefs.names })} />
+<PageTitle {title} />
+<MetaTags {title} description={staff.description} site_name={'RanobeDB'} />
 
 <DbRouteShell theme={$theme} bgImageStyle={null}>
 	<Staff

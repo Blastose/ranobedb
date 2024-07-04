@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/stores';
 	import { buildImageUrl } from '$lib/components/book/book.js';
 	import Book from '$lib/components/book/id/Book.svelte';
 	import MetaTags from '$lib/components/layout/MetaTags.svelte';
@@ -14,11 +13,9 @@
 </script>
 
 <PageTitle {title} />
-
 <MetaTags
 	{title}
 	image={buildImageUrl(book.image?.filename)}
-	url={$page.url.toString()}
 	description={book.description}
 	site_name={'RanobeDB'}
 />

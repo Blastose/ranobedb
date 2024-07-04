@@ -28,7 +28,7 @@ export const load = async ({ locals }) => {
 		.execute();
 	const upcomingReleasesPromise = dbReleases
 		.getReleasesWithImage()
-		.where('release.release_date', '>=', now)
+		.where('release.release_date', '>', now)
 		.orderBy(['release.release_date asc', 'release.id'])
 		.limit(10)
 		.execute();

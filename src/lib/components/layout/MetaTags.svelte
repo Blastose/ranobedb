@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { Nullish } from '$lib/server/zod/schema';
+	import { page } from '$app/stores';
 
 	export let title: string;
 	export let type: string = 'object';
-	export let image: Nullish<string>;
-	export let url: string;
+	export let image: Nullish<string> = undefined;
+	export let url: string | undefined = undefined;
 	export let description: string;
 	export let site_name: string;
 </script>
@@ -15,7 +16,7 @@
 	{#if image}
 		<meta property="og:image" content={image} />
 	{/if}
-	<meta property="og:url" content={url} />
+	<meta property="og:url" content={url || $page.url.toString()} />
 	<meta property="og:description" content={description} />
 	<meta name="description" content={description} />
 	<meta property="og:site_name" content={site_name} />

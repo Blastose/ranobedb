@@ -6,9 +6,6 @@
 
 	$: error = $page.error;
 	$: status = $page.status;
-
-	$: console.log(error);
-	$: console.log(status);
 </script>
 
 {#if error}

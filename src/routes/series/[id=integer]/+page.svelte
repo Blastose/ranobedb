@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { buildImageUrl } from '$lib/components/book/book.js';
+	import MetaTags from '$lib/components/layout/MetaTags.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
 	import Series from '$lib/components/series/id/Series.svelte';
@@ -20,6 +21,7 @@
 </script>
 
 <PageTitle {title} />
+<MetaTags {title} image={imageUrl} description={series.description} site_name={'RanobeDB'} />
 
 <DbRouteShell theme={$theme} {bgImageStyle}>
 	<Series revision={undefined} {series} user={data.user} />

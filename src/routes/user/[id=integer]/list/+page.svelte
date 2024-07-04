@@ -1,6 +1,6 @@
 <script lang="ts">
-	import BookCard from '$lib/components/book/BookCard.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
+	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DBShell from '$lib/components/layout/db/DBShell.svelte';
@@ -12,6 +12,7 @@
 </script>
 
 <PageTitle title={pageTitle} />
+<NoIndex />
 
 <DBShell
 	name={pageTitle}

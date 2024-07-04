@@ -1,8 +1,10 @@
 <script lang="ts">
+	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 </script>
 
 <PageTitle title="Email verification" />
+<NoIndex />
 
 <main class="container-rndb flex flex-col gap-2">
 	<h1 class="text-3xl font-bold">Email verification</h1>

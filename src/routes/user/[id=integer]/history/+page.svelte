@@ -1,6 +1,7 @@
 <script lang="ts">
 	import HistoryFilters from '$lib/components/form/history/HistoryFilters.svelte';
 	import HistoryPaged from '$lib/components/history/HistoryPaged.svelte';
+	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
 	export let data;
@@ -10,6 +11,7 @@
 </script>
 
 <PageTitle {title} />
+<NoIndex />
 
 <main class="container-rndb">
 	<HistoryPaged
