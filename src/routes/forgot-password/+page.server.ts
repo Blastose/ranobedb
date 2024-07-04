@@ -10,6 +10,7 @@ import { createPasswordResetToken } from '$lib/server/password/password.js';
 import { ORIGIN } from '$env/static/private';
 import { EmailBuilder, EmailSender } from '$lib/server/email/sender.js';
 import { getMode } from '$lib/mode/mode.js';
+import { forgotPasswordLimiter, isLimited } from '$lib/server/rate-limiter/rate-limiter.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) {
@@ -22,7 +23,8 @@ export const load = async ({ locals }) => {
 };
 
 export const actions = {
-	default: async ({ request, cookies }) => {
+	default: async (event) => {
+		const { request, cookies } = event;
 		const formData = await request.formData();
 
 		const form = await superValidate(formData, zod(forgotPasswordSchema));
@@ -38,6 +40,14 @@ export const actions = {
 
 		if (!form.valid) {
 			return fail(400, { form });
+		}
+
+		if (await isLimited(forgotPasswordLimiter, event)) {
+			return message(
+				form,
+				{ type: 'error', text: 'Too many forgot password attempts; Try again later' },
+				{ status: 429 },
+			);
 		}
 
 		const email = form.data.email;

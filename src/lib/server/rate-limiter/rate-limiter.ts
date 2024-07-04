@@ -26,6 +26,10 @@ export const changeEmailLimiter = new RateLimiter({
 	IP: [1, 'd'],
 });
 
+export const forgotPasswordLimiter = new RateLimiter({
+	IP: [2, 'd'],
+});
+
 export async function isLimited(rateLimiter: RateLimiter, event: RequestEvent): Promise<boolean> {
 	if (getMode() === 'testing') {
 		return false;
