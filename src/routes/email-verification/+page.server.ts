@@ -1,12 +1,14 @@
 import { db } from '$lib/server/db/db.js';
 import { EmailVerification } from '$lib/server/email/email.js';
+import { isLimited, verifyEmailLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
 import { tokenSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { isWithinExpirationDate } from 'oslo';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
-export const load = async ({ setHeaders, url }) => {
+export const load = async (event) => {
+	const { setHeaders, url } = event;
 	const urlToken = await superValidate(url, zod(tokenSchema));
 
 	if (!urlToken.valid || !urlToken.data.token) {
@@ -18,6 +20,12 @@ export const load = async ({ setHeaders, url }) => {
 	setHeaders({
 		'Referrer-Policy': 'no-referrer',
 	});
+
+	if (await isLimited(verifyEmailLimiter, event)) {
+		return error(429, {
+			message: 'Too many attempts; try again later',
+		});
+	}
 
 	const token = await db.transaction().execute(async (trx) => {
 		const token = await trx

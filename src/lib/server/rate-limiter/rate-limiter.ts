@@ -30,6 +30,14 @@ export const forgotPasswordLimiter = new RateLimiter({
 	IP: [2, 'd'],
 });
 
+export const verifyEmailLimiter = new RateLimiter({
+	IP: [2, 'd'],
+});
+
+export const resetPasswordLimiter = new RateLimiter({
+	IP: [2, 'd'],
+});
+
 export async function isLimited(rateLimiter: RateLimiter, event: RequestEvent): Promise<boolean> {
 	if (getMode() === 'testing') {
 		return false;
