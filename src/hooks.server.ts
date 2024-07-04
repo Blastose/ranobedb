@@ -41,10 +41,24 @@ export const handle: Handle = async ({ event, resolve }) => {
 		},
 	});
 
-	// Delete link header since it can be too large for Nginx
+	// Limit link header since it can be too large for Nginx
 	// See https://github.com/sveltejs/kit/issues/11084
 	if (getMode() === 'production') {
-		response.headers.delete('link');
+		const linkHeader = response.headers.get('link');
+		let newLinkHeader = '';
+		if (linkHeader) {
+			const splits = linkHeader.split(',');
+			for (const split of splits) {
+				if (newLinkHeader.length + split.length < 3500) {
+					newLinkHeader += split;
+				}
+			}
+		}
+		if (newLinkHeader) {
+			response.headers.set('link', newLinkHeader);
+		} else {
+			response.headers.delete('link');
+		}
 	}
 
 	return response;
