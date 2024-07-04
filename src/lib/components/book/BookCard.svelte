@@ -12,14 +12,16 @@
 <div class="bg-[var(--bg-light1)] dark:bg-[var(--bg-dark1)] p-2 rounded-lg shadow-sm">
 	<div class="title-container">
 		{#if book.image}
-			<img
-				width={book.image.width}
-				height={book.image.height}
-				class="img rounded-md shadow-sm"
-				src="{PUBLIC_IMAGE_URL}{book.image.filename}"
-				alt=""
-				loading="lazy"
-			/>
+			<a href="/book/{book.id}">
+				<img
+					width={book.image.width}
+					height={book.image.height}
+					class="img rounded-md shadow-sm"
+					src="{PUBLIC_IMAGE_URL}{book.image.filename}"
+					alt=""
+					loading="lazy"
+				/>
+			</a>
 		{:else}
 			<div />
 		{/if}
@@ -42,7 +44,13 @@
 <style>
 	.title-container {
 		display: grid;
-		grid-template-columns: 100px 1fr;
+		grid-template-columns: 72px 1fr;
 		gap: 0.75rem;
+	}
+
+	@media (min-width: 640px) {
+		.title-container {
+			grid-template-columns: 96px 1fr;
+		}
 	}
 </style>

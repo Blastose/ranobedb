@@ -1,8 +1,9 @@
 <script lang="ts">
-	import BookCard from '$lib/components/book/BookCard.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DBShell from '$lib/components/layout/db/DBShell.svelte';
 	import BookFilters from '$lib/components/form/book/filters/BookFilters.svelte';
+	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
+	import BookImage from '$lib/components/book/BookImage.svelte';
 
 	export let data;
 </script>
@@ -21,10 +22,21 @@
 	</svelte:fragment>
 
 	<svelte:fragment slot="display">
-		<div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+		<BookImageContainer moreColumns={true}>
 			{#each data.books as book (book.id)}
-				<BookCard {book} />
+				<BookImage
+					book={{
+						title: book.title,
+						romaji: book.romaji,
+						id: book.id,
+						image: book.image,
+						lang: book.lang,
+						romaji_orig: book.romaji_orig,
+						title_orig: book.title_orig,
+					}}
+					urlPrefix="/book/"
+				></BookImage>
 			{/each}
-		</div>
+		</BookImageContainer>
 	</svelte:fragment>
 </DBShell>
