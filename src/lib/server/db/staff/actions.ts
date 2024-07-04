@@ -163,10 +163,6 @@ export class DBStaffActions {
 			const aliases_to_add = staff_aliases.filter((item) => !item.aid);
 			// console.log('aliases_to_add');
 			// console.log(aliases_to_add);
-			// TODO check if only one main alias?
-			// if (aliases_to_add.filter((item) => item.main_alias).length + 1 > 1) {
-			// 	throw new Error('Too many main aliases');
-			// }
 			let aliases_to_add_with_aid;
 			const batched_aliases_to_add = aliases_to_add.map((item) => {
 				return {
