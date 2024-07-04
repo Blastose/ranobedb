@@ -30,9 +30,9 @@ export type ReleaseType = "complete" | "omnibus" | "partial";
 
 export type SeriesBookType = "main" | "sub";
 
-export type SeriesRelType = "main story" | "parent story" | "prequel" | "sequel" | "side story" | "spin-off";
+export type SeriesRelType = "alternate version" | "main story" | "parent story" | "prequel" | "sequel" | "side story" | "spin-off";
 
-export type SeriesStatus = "cancelled" | "completed" | "hiatus" | "ongoing" | "unknown";
+export type SeriesStatus = "cancelled" | "completed" | "hiatus" | "ongoing" | "stalled" | "unknown";
 
 export type StaffRole = "artist" | "author" | "editor" | "narrator" | "staff" | "translator";
 
