@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import { buildImageUrl } from '$lib/components/book/book.js';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
 	import Series from '$lib/components/series/id/Series.svelte';
@@ -15,9 +15,7 @@
 	$: title = getTitleDisplay({ obj: series, prefs: $displayPrefs.title_prefs });
 
 	$: firstBookInSeries = series.books.at(0);
-	$: imageUrl = firstBookInSeries?.image?.filename
-		? `${PUBLIC_IMAGE_URL}${firstBookInSeries?.image?.filename}`
-		: null;
+	$: imageUrl = buildImageUrl(firstBookInSeries?.image?.filename);
 	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
 </script>
 

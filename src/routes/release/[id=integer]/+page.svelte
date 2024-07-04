@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import { buildImageUrl } from '$lib/components/book/book.js';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
 	import Release from '$lib/components/release/id/Release.svelte';
@@ -14,9 +14,7 @@
 	const diplayPrefs = getDisplayPrefsContext();
 
 	$: firstBookInReleases = release.books.at(0);
-	$: imageUrl = firstBookInReleases?.image?.filename
-		? `${PUBLIC_IMAGE_URL}${firstBookInReleases?.image?.filename}`
-		: null;
+	$: imageUrl = buildImageUrl(firstBookInReleases?.image?.filename);
 	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
 </script>
 
