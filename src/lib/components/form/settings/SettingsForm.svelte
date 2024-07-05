@@ -80,8 +80,7 @@
 			</section>
 		</div>
 	{:else if view === 'email'}
-		<!-- TODO Unlock email settings -->
-		{#if true}
+		{#if false}
 			<p>
 				You cannot verify or change your email at this time. This feature will be added in the
 				future.
