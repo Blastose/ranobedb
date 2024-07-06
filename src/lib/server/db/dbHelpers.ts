@@ -48,18 +48,25 @@ export async function paginationBuilderExecuteWithCount<O>(
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	query: SelectQueryBuilder<any, any, O>,
 	pageOptions: { limit: number; page: number },
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	countQuery?: SelectQueryBuilder<any, any, any>,
 ): Promise<PageResult<O>> {
 	const [res, total] = await Promise.all([
 		query
 			.limit(pageOptions.limit)
 			.offset(pageOptions.limit * (pageOptions.page - 1))
 			.execute(),
-		query
-			.clearSelect()
-			.clearOrderBy()
-			.select((eb) => [eb.fn.countAll<number>().over().as('count')])
-			.limit(1)
-			.executeTakeFirst(),
+		countQuery !== undefined
+			? countQuery
+					.select((eb) => [eb.fn.countAll<number>().over().as('count')])
+					.limit(1)
+					.executeTakeFirst()
+			: query
+					.clearSelect()
+					.clearOrderBy()
+					.select((eb) => [eb.fn.countAll<number>().over().as('count')])
+					.limit(1)
+					.executeTakeFirst(),
 	]);
 
 	const count = total?.count || 0;

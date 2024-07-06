@@ -30,11 +30,11 @@ importers:
         specifier: ^16.4.5
         version: 16.4.5
       kysely:
-        specifier: ^0.27.3
-        version: 0.27.3
+        specifier: ^0.27.4
+        version: 0.27.4
       kysely-codegen:
         specifier: ^0.15.0
-        version: 0.15.0(kysely@0.27.3)(pg@8.12.0)
+        version: 0.15.0(kysely@0.27.4)(pg@8.12.0)
       lucia:
         specifier: ^3.2.0
         version: 3.2.0
@@ -110,7 +110,7 @@ importers:
         version: 2.40.0(eslint@8.57.0)(svelte@4.2.18)
       kysely-ctl:
         specifier: ^0.8.9
-        version: 0.8.9(kysely@0.27.3)
+        version: 0.8.9(kysely@0.27.4)
       prettier:
         specifier: ^3.3.2
         version: 3.3.2
@@ -1667,8 +1667,8 @@ packages:
       kysely-postgres-js:
         optional: true
 
-  kysely@0.27.3:
-    resolution: {integrity: sha512-lG03Ru+XyOJFsjH3OMY6R/9U38IjDPfnOfDgO3ynhbDr+Dz8fak+X6L62vqu3iybQnj+lG84OttBuU9KY3L9kA==}
+  kysely@0.27.4:
+    resolution: {integrity: sha512-dyNKv2KRvYOQPLCAOCjjQuCk4YFd33BvGdf/o5bC7FiW+BB6snA81Zt+2wT9QDFzKqxKa5rrOmvlK/anehCcgA==}
     engines: {node: '>=14.0.0'}
 
   levn@0.4.1:
@@ -4147,24 +4147,24 @@ snapshots:
 
   known-css-properties@0.32.0: {}
 
-  kysely-codegen@0.15.0(kysely@0.27.3)(pg@8.12.0):
+  kysely-codegen@0.15.0(kysely@0.27.4)(pg@8.12.0):
     dependencies:
       chalk: 4.1.2
       dotenv: 16.4.5
       dotenv-expand: 11.0.6
       git-diff: 2.0.6
-      kysely: 0.27.3
+      kysely: 0.27.4
       micromatch: 4.0.7
       minimist: 1.2.8
     optionalDependencies:
       pg: 8.12.0
 
-  kysely-ctl@0.8.9(kysely@0.27.3):
+  kysely-ctl@0.8.9(kysely@0.27.4):
     dependencies:
       c12: 1.11.1
       citty: 0.1.6
       consola: 3.2.3
-      kysely: 0.27.3
+      kysely: 0.27.4
       nypm: 0.3.9
       ofetch: 1.3.4
       pathe: 1.1.2
@@ -4174,7 +4174,7 @@ snapshots:
     transitivePeerDependencies:
       - magicast
 
-  kysely@0.27.3: {}
+  kysely@0.27.4: {}
 
   levn@0.4.1:
     dependencies:

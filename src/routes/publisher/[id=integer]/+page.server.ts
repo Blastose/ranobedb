@@ -16,7 +16,14 @@ export const load = async ({ params, locals, url }) => {
 	const id = Number(params.id);
 
 	const dbPublishers = DBPublishers.fromDB(db, locals.user);
-	const publisher = await dbPublishers.getPublisher(id).executeTakeFirst();
+
+	const publisherPromise = dbPublishers.getPublisher(id).executeTakeFirst();
+	const worksPromise = dbPublishers.getWorksPaged({ id, currentPage, tab });
+
+	const [publisher, { count, totalPages, works }] = await Promise.all([
+		publisherPromise,
+		worksPromise,
+	]);
 
 	if (!publisher) {
 		error(404);
@@ -30,6 +37,5 @@ export const load = async ({ params, locals, url }) => {
 		user: locals.user,
 	});
 
-	const { count, totalPages, works } = await dbPublishers.getWorksPaged({ id, currentPage, tab });
 	return { publisher, works, count, currentPage, totalPages };
 };
