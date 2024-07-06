@@ -261,6 +261,18 @@ export class DBPublishers {
 			.clearOrderBy();
 	}
 
+	getBooksBelongingToPublisherCount(publisherId: number) {
+		return this.ranobeDB.db
+			.selectFrom('book')
+			.innerJoin('release_book', 'release_book.book_id', 'book.id')
+			.innerJoin('release_publisher', 'release_book.release_id', 'release_publisher.release_id')
+			.innerJoin('release', 'release.id', 'release_book.release_id')
+			.where('book.hidden', '=', false)
+			.where('release.hidden', '=', false)
+			.where('release_publisher.publisher_id', '=', publisherId)
+			.groupBy('book.id');
+	}
+
 	getSeriesBelongingToPublisher(publisherId: number) {
 		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
 			.getSeries()
@@ -339,6 +351,19 @@ export class DBPublishers {
 			]);
 	}
 
+	getSeriesBelongingToPublisherCount(publisherId: number) {
+		return this.ranobeDB.db
+			.selectFrom('series')
+			.innerJoin('series_book', 'series_book.series_id', 'series.id')
+			.innerJoin('release_book', 'release_book.book_id', 'series_book.book_id')
+			.innerJoin('release_publisher', 'release_publisher.release_id', 'release_book.release_id')
+			.innerJoin('release', 'release.id', 'release_book.release_id')
+			.where('release_publisher.publisher_id', '=', publisherId)
+			.where('series.hidden', '=', false)
+			.where('release.hidden', '=', false)
+			.groupBy(['series.id']);
+	}
+
 	getReleasesBelongingToPublisher(publisherId: number) {
 		return this.ranobeDB.db
 			.selectFrom('publisher')
@@ -365,10 +390,14 @@ export class DBPublishers {
 				result: books,
 				count: countBooks,
 				totalPages: totalPagesBooks,
-			} = await paginationBuilderExecuteWithCount(booksQuery, {
-				limit: 24,
-				page: currentPage,
-			});
+			} = await paginationBuilderExecuteWithCount(
+				booksQuery,
+				{
+					limit: 24,
+					page: currentPage,
+				},
+				this.getBooksBelongingToPublisherCount(id),
+			);
 			count = countBooks;
 			totalPages = totalPagesBooks;
 			works = {
@@ -381,10 +410,14 @@ export class DBPublishers {
 				result: series,
 				count: countSeries,
 				totalPages: totalPagesSeries,
-			} = await paginationBuilderExecuteWithCount(seriesQuery, {
-				limit: 24,
-				page: currentPage,
-			});
+			} = await paginationBuilderExecuteWithCount(
+				seriesQuery,
+				{
+					limit: 24,
+					page: currentPage,
+				},
+				this.getSeriesBelongingToPublisherCount(id),
+			);
 			count = countSeries;
 			totalPages = totalPagesSeries;
 			works = {
