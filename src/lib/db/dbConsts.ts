@@ -122,6 +122,37 @@ export const languageNames: Record<Language, string> = {
 	'zh-Hant': 'Chinese (Traditional)',
 };
 
+export const langsWithoutRomaji = [
+	'en',
+	'fr',
+	'es',
+	'ca',
+	'cs',
+	'da',
+	'de',
+	'eo',
+	'eu',
+	'fi',
+	'ga',
+	'gd',
+	'hr',
+	'hu',
+	'id',
+	'it',
+	'ms',
+	'nl',
+	'no',
+	'pl',
+	'pt-pt',
+	'pt-br',
+	'ro',
+	'sk',
+	'sl',
+	'sv',
+	'tr',
+	'vi',
+]; // no const since TS errors when passing something that is wider with .includes()
+
 export const publisherRelTypeArray = [
 	'imprint',
 	'parent brand',

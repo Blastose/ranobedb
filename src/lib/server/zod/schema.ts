@@ -506,7 +506,10 @@ const zLanguagePrio = z.object({
 export type LanguagePriority = z.infer<typeof zLanguagePrio>;
 
 export const displayPrefsSchema = z.object({
-	title_prefs: z.array(zLanguagePrio).min(1).max(4),
+	title_prefs: z
+		.array(zLanguagePrio)
+		.min(1, { message: 'You can need to have min 1 lanauge ' })
+		.max(4, { message: 'You can only have max 4 langauges' }),
 	names: z.enum(['romaji', 'native'] as const),
 	descriptions: z.enum(['en', 'ja'] as const),
 });

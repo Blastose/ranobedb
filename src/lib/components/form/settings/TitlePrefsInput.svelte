@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import type { Language } from '$lib/server/db/dbTypes';
-	import { languageNames } from '$lib/db/dbConsts';
+	import { langsWithoutRomaji, languageNames } from '$lib/db/dbConsts';
 	import type { displayPrefsSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 
@@ -36,14 +36,20 @@
 
 <section>
 	<h3 class="text-lg font-bold">Titles</h3>
+	<p class="text-sm">
+		The title will fallback to the book's title in its original language if it doesn't have any of
+		the titles listed
+	</p>
 	<div>
 		{#each $values as title, index}
 			<div class="grid grid-cols-2 gap-2">
 				<div>
 					<p>#{index + 1} {languageNames[title.lang]}</p>
-					<label class="flex gap-1 text-sm"
-						><input type="checkbox" bind:checked={title.romaji} /><span>Romaji</span></label
-					>
+					{#if !langsWithoutRomaji.includes(title.lang)}
+						<label class="flex gap-1 text-sm"
+							><input type="checkbox" bind:checked={title.romaji} /><span>Romaji</span></label
+						>
+					{/if}
 				</div>
 				<div>
 					<button
@@ -77,7 +83,9 @@
 		{/each}
 	</div>
 	{#if $errors}
-		<span class="error-text-color">{$errors}</span>
+		<p>
+			<span class="error-text-color">{$errors}</span>
+		</p>
 	{/if}
 	<select
 		aria-label="add title"
