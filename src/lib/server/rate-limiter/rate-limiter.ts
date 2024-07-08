@@ -11,7 +11,7 @@ export const loginLimiter = new RateLimiter({
 });
 
 export const signUpLimiter = new RateLimiter({
-	IP: [2, '12h'],
+	IP: [10, '12h'],
 });
 
 export const verifyCodeLimiter = new RateLimiter({
@@ -19,11 +19,11 @@ export const verifyCodeLimiter = new RateLimiter({
 });
 
 export const sendVerificationCodelimiter = new RateLimiter({
-	IP: [2, 'd'],
+	IP: [10, 'd'],
 });
 
 export const changeEmailLimiter = new RateLimiter({
-	IP: [2, 'd'],
+	IP: [10, 'd'],
 });
 
 export const changePasswordLimiter = new RateLimiter({
@@ -31,15 +31,15 @@ export const changePasswordLimiter = new RateLimiter({
 });
 
 export const forgotPasswordLimiter = new RateLimiter({
-	IP: [2, 'd'],
+	IP: [10, 'd'],
 });
 
 export const verifyEmailLimiter = new RateLimiter({
-	IP: [2, 'd'],
+	IP: [10, 'd'],
 });
 
 export const resetPasswordLimiter = new RateLimiter({
-	IP: [2, 'd'],
+	IP: [10, 'd'],
 });
 
 export async function isLimited(rateLimiter: RateLimiter, event: RequestEvent): Promise<boolean> {
