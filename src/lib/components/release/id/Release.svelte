@@ -66,20 +66,24 @@
 
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
-		<div class="flex flex-wrap gap-x-4">
-			{#if release.website}
-				<a href={release.website} target="_blank" class="link">Website</a>
-			{/if}
-			{#if release.amazon}
-				<a href={release.amazon} target="_blank" class="link">Amazon</a>
-			{/if}
-			{#if release.bookwalker}
-				<a href={release.bookwalker} target="_blank" class="link">Bookwalker</a>
-			{/if}
-			{#if release.rakuten}
-				<a href={release.rakuten} target="_blank" class="link">Rakuten</a>
-			{/if}
-		</div>
+		{#if release.website || release.amazon || release.bookwalker || release.rakuten}
+			<div class="flex flex-wrap gap-x-4">
+				{#if release.website}
+					<a href={release.website} target="_blank" class="link">Website</a>
+				{/if}
+				{#if release.amazon}
+					<a href={release.amazon} target="_blank" class="link">Amazon</a>
+				{/if}
+				{#if release.bookwalker}
+					<a href={release.bookwalker} target="_blank" class="link">Bookwalker</a>
+				{/if}
+				{#if release.rakuten}
+					<a href={release.rakuten} target="_blank" class="link">Rakuten</a>
+				{/if}
+			</div>
+		{:else}
+			<p class="italic">No links added</p>
+		{/if}
 	</section>
 
 	{#if release.publishers.length > 0}
