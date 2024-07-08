@@ -38,7 +38,7 @@ export type StaffRole = "artist" | "author" | "editor" | "narrator" | "staff" | 
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type UserRole = "admin" | "banned" | "editor" | "moderator" | "user";
+export type UserRole = "adder" | "admin" | "banned" | "editor" | "moderator" | "user";
 
 export interface AuthSession {
   expires_at: Timestamp;
