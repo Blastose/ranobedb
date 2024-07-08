@@ -68,7 +68,11 @@ export const load = async ({ locals, url }) => {
 		zod(usernameSchema),
 	);
 	const passwordForm = await superValidate(zod(passwordSchema));
-	const changeEmailForm = await superValidate(zod(changeEmailSchema));
+	const changeEmailForm = await superValidate(
+		{ current_email: user.email },
+		zod(changeEmailSchema),
+		{ errors: false },
+	);
 	const verifyEmailForm = await superValidate(zod(verifyEmailSchema));
 	const sendEmailVerificationForm = await superValidate(zod(sendEmailVerificationSchema));
 	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod(displayPrefsSchema));

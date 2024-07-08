@@ -17,7 +17,18 @@
 
 		<section>
 			<h2>Contributing</h2>
-			<p><em>WIP</em></p>
+			<p>
+				Thank you for your interest in contributing to RanobeDB! You can follow the <a
+					href="https://github.com/Blastose/ranobedb/blob/main/README.md"
+					target="_blank">README</a
+				>
+				on Github to get setup.<br />
+				For small bug fixes or correcting typos, you can open a pull request on
+				<a href="https://github.com/Blastose/ranobedb" target="_blank">Github</a>. For larger
+				features, please discuss it on our
+				<a href="https://discord.gg/ZeAnhGncFx" target="_blank">Discord server</a> or open an issue on
+				the Github repo.
+			</p>
 		</section>
 	</div>
 </main>
