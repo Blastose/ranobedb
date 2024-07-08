@@ -30,7 +30,12 @@
 			placeholder="Password"
 			label="Current password"
 		/>
-		<PasswordField form={sForm} field={'newPassword'} placeholder="Password" label="New password" />
+		<PasswordField
+			form={sForm}
+			field={'newPassword'}
+			placeholder="Password"
+			label="New password (15+ characters)"
+		/>
 	</div>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Update password'} />
