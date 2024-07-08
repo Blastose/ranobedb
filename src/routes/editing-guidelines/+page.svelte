@@ -41,6 +41,26 @@
 			</section>
 
 			<section>
+				<h3>Descriptions from external sources</h3>
+				<p>
+					You can use descriptions from external sources as long as you credit them properly. You
+					can link to the source using Markdown like so:
+					<code>[From [<em>source</em>](<em>url</em>)]</code>
+					<br />
+					Do not include the url if it links to websites that provide illegal downloads or unofficial
+					translations.
+				</p>
+			</section>
+
+			<section>
+				<h3>Do not include or link to any unofficial translations</h3>
+				<p>
+					Do not add any unofficial translations to the database or link to any unofficial
+					translations.
+				</p>
+			</section>
+
+			<section>
 				<h3>Do not use machine translation</h3>
 				<p>Do not use machine translation for any of the fields.</p>
 			</section>
