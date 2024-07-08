@@ -5,6 +5,7 @@
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import type { signupSchema } from '$lib/server/zod/schema';
 	import CheckboxField from '../CheckboxField.svelte';
+	import PasswordField from '../PasswordField.svelte';
 
 	export let signupForm: SuperValidated<Infer<typeof signupSchema>>;
 
@@ -32,12 +33,17 @@
 	<svelte:fragment slot="form">
 		<TextField {form} field={'email'} placeholder="Email" label="Email" />
 		<TextField {form} field={'username'} placeholder="Username" label="Username" />
-		<TextField
+		<PasswordField
 			{form}
 			field={'password'}
-			type="password"
 			placeholder="Password"
 			label="Password (15+ characters)"
+		/>
+		<PasswordField
+			{form}
+			field={'confirm_password'}
+			placeholder="Confirm password"
+			label="Confirm password"
 		/>
 
 		<CheckboxField {form} field="privacy_policy_cla" label="I have read and agree with the ">

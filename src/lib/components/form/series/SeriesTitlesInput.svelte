@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { languageNames } from '$lib/db/dbConsts';
+	import { langsWithoutRomaji, languageNames, languagesArray } from '$lib/db/dbConsts';
 	import type { Language } from '$lib/server/db/dbTypes';
 	import type { seriesSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
@@ -46,14 +46,16 @@
 			{#if $valueErrors[i]?.title}
 				<span class="error-text-color">{$valueErrors[i]?.title}</span>
 			{/if}
-			<input
-				placeholder="Romanization (leave empty if the title is already in romaji)"
-				class="input w-full"
-				class:error={$valueErrors[i]?.romaji}
-				aria-invalid={$valueErrors[i]?.romaji ? 'true' : undefined}
-				type="text"
-				bind:value={$values[i].romaji}
-			/>
+			{#if !langsWithoutRomaji.includes(title.lang)}
+				<input
+					placeholder="Romanization (leave empty if the title is already in romaji)"
+					class="input w-full"
+					class:error={$valueErrors[i]?.romaji}
+					aria-invalid={$valueErrors[i]?.romaji ? 'true' : undefined}
+					type="text"
+					bind:value={$values[i].romaji}
+				/>
+			{/if}
 			{#if $valueErrors[i]?.romaji}
 				<span class="error-text-color">{$valueErrors[i]?.romaji}</span>
 			{/if}
@@ -84,8 +86,8 @@
 		id="add-titles"
 	>
 		<option value="none">--Add title--</option>
-		{#each Object.entries(languageNames).filter((l) => !$values.some((t) => t.lang === l[0])) as [code, lang]}
-			<option value={code}>{lang}</option>
+		{#each languagesArray.filter((l) => !$values.some((t) => t.lang === l)) as code}
+			<option value={code}>{languageNames[code]}</option>
 		{/each}
 	</select>
 

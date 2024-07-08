@@ -31,7 +31,7 @@
 	}
 </script>
 
-<div class="flex flex-wrap sm:flex-nowrap gap-2">
+<div class="flex gap-2">
 	{#if item.locked && !hasVisibilityPerms(user)}
 		<p class="sub-btn loading w-fit flex items-center gap-2">
 			<Icon name="lock" height="16" width="16" />Locked

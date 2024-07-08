@@ -47,20 +47,24 @@
 
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
-		<div class="flex flex-wrap gap-x-4">
-			{#if publisher.website}
-				<a href={publisher.website} target="_blank" class="link">Website</a>
-			{/if}
-			{#if publisher.bookwalker}
-				<a href={publisher.bookwalker} target="_blank" class="link">Bookwalker</a>
-			{/if}
-			{#if publisher.twitter_id}
-				<DbExtLinkShort fullLink={{ ...twitterLink, value: publisher.twitter_id }} />
-			{/if}
-			{#if publisher.wikidata_id}
-				<DbExtLinkShort fullLink={{ ...wikidataLink, value: publisher.wikidata_id }} />
-			{/if}
-		</div>
+		{#if publisher.website || publisher.bookwalker || publisher.twitter_id || publisher.wikidata_id}
+			<div class="flex flex-wrap gap-x-4">
+				{#if publisher.website}
+					<a href={publisher.website} target="_blank" class="link">Website</a>
+				{/if}
+				{#if publisher.bookwalker}
+					<a href={publisher.bookwalker} target="_blank" class="link">Bookwalker</a>
+				{/if}
+				{#if publisher.twitter_id}
+					<DbExtLinkShort fullLink={{ ...twitterLink, value: publisher.twitter_id }} />
+				{/if}
+				{#if publisher.wikidata_id}
+					<DbExtLinkShort fullLink={{ ...wikidataLink, value: publisher.wikidata_id }} />
+				{/if}
+			</div>
+		{:else}
+			<p class="italic">No links added</p>
+		{/if}
 	</section>
 
 	{#if Object.entries(child_publishers).length > 0}

@@ -372,7 +372,8 @@ export class DBPublishers {
 			.selectAll('release')
 			.select('release_publisher.publisher_type')
 			.where('release.hidden', '=', false)
-			.where('publisher.id', '=', publisherId);
+			.where('publisher.id', '=', publisherId)
+			.orderBy('release.release_date desc');
 	}
 
 	async getWorksPaged(params: {

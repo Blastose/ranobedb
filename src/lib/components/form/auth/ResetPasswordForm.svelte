@@ -4,6 +4,7 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import type { resetPasswordSchema } from '$lib/server/zod/schema';
+	import PasswordField from '../PasswordField.svelte';
 
 	export let resetPasswordForm: SuperValidated<Infer<typeof resetPasswordSchema>>;
 
@@ -28,19 +29,17 @@
 >
 	<svelte:fragment slot="form">
 		<p class="text-sm">Resetting your password will log you out of all sessions</p>
-		<TextField
+		<PasswordField
 			{form}
 			field={'password'}
-			type="password"
 			placeholder=""
 			label="Password (15+ characters)"
 			showRequiredSymbolIfRequired={true}
 		/>
 
-		<TextField
+		<PasswordField
 			{form}
 			field={'confirm_password'}
-			type="password"
 			placeholder=""
 			label="Confirm password"
 			showRequiredSymbolIfRequired={true}

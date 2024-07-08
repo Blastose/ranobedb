@@ -27,6 +27,7 @@ import { ORIGIN } from '$env/static/private';
 import type { SettingsTab } from '$lib/db/dbConsts.js';
 import {
 	changeEmailLimiter,
+	changePasswordLimiter,
 	isLimited,
 	sendVerificationCodelimiter,
 	verifyCodeLimiter,
@@ -150,7 +151,8 @@ export const actions = {
 		return message(usernameForm, { text: 'Updated username!', type: 'success' });
 	},
 
-	password: async ({ request, locals, cookies }) => {
+	password: async (event) => {
+		const { request, locals, cookies } = event;
 		if (!locals.user) {
 			return fail(401);
 		}
@@ -173,6 +175,14 @@ export const actions = {
 		const validPassword = await new Argon2id().verify(user.hashed_password, currentPassword);
 		if (!validPassword) {
 			return message(passwordForm, { type: 'error', text: 'Invalid password' }, { status: 400 });
+		}
+
+		if (await isLimited(changePasswordLimiter, event)) {
+			return message(
+				passwordForm,
+				{ type: 'error', text: 'Too many password change attempts; Try again in 1 minute' },
+				{ status: 429 },
+			);
 		}
 
 		await dbUsers.changePassword({ userId: user.id, newPassword });
@@ -222,14 +232,6 @@ export const actions = {
 			return fail(400);
 		}
 
-		if (await isLimited(sendVerificationCodelimiter, event)) {
-			return message(
-				form,
-				{ type: 'error', text: 'Too many email code attempts; Try again later' },
-				{ status: 429 },
-			);
-		}
-
 		const dbUsers = new DBUsers(db);
 		const user = await dbUsers.getUserFull(locals.user.username);
 
@@ -244,6 +246,14 @@ export const actions = {
 		const validPassword = await new Argon2id().verify(user.hashed_password, form.data.password);
 		if (!validPassword) {
 			return message(form, { type: 'error', text: 'Invalid password' }, { status: 400 });
+		}
+
+		if (await isLimited(sendVerificationCodelimiter, event)) {
+			return message(
+				form,
+				{ type: 'error', text: 'Too many email code attempts; Try again later' },
+				{ status: 429 },
+			);
 		}
 
 		const emailVerification = new EmailVerification(db);

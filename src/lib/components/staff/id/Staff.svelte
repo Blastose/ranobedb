@@ -57,23 +57,27 @@
 
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
-		<div class="flex flex-wrap gap-x-4">
-			{#if staff.website}
-				<a href={staff.website} target="_blank" class="link">Website</a>
-			{/if}
-			{#if staff.bookwalker_id}
-				<DbExtLinkShort fullLink={{ ...bookwalkerAuthorLink, value: staff.bookwalker_id }} />
-			{/if}
-			{#if staff.twitter_id}
-				<DbExtLinkShort fullLink={{ ...twitterLink, value: staff.twitter_id }} />
-			{/if}
-			{#if staff.pixiv_id}
-				<DbExtLinkShort fullLink={{ ...pixivLink, value: staff.pixiv_id }} />
-			{/if}
-			{#if staff.wikidata_id}
-				<DbExtLinkShort fullLink={{ ...wikidataLink, value: staff.wikidata_id }} />
-			{/if}
-		</div>
+		{#if staff.website || staff.bookwalker_id || staff.twitter_id || staff.pixiv_id || staff.wikidata_id}
+			<div class="flex flex-wrap gap-x-4">
+				{#if staff.website}
+					<a href={staff.website} target="_blank" class="link">Website</a>
+				{/if}
+				{#if staff.bookwalker_id}
+					<DbExtLinkShort fullLink={{ ...bookwalkerAuthorLink, value: staff.bookwalker_id }} />
+				{/if}
+				{#if staff.twitter_id}
+					<DbExtLinkShort fullLink={{ ...twitterLink, value: staff.twitter_id }} />
+				{/if}
+				{#if staff.pixiv_id}
+					<DbExtLinkShort fullLink={{ ...pixivLink, value: staff.pixiv_id }} />
+				{/if}
+				{#if staff.wikidata_id}
+					<DbExtLinkShort fullLink={{ ...wikidataLink, value: staff.wikidata_id }} />
+				{/if}
+			</div>
+		{:else}
+			<p class="italic">No links added</p>
+		{/if}
 	</section>
 
 	<Hr />

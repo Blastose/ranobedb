@@ -39,6 +39,10 @@
 	</div>
 	<div>
 		<h3 class="text-lg font-bold">Book descriptions</h3>
+		<p class="text-sm">
+			If a book does not have an English description, it will display the Japanese description if it
+			has one.
+		</p>
 
 		<SelectField
 			form={sForm}

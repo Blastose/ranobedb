@@ -86,20 +86,24 @@
 
 	<section>
 		<h2 class="font-bold text-lg">Links</h2>
-		<div class="flex flex-wrap gap-x-4">
-			{#if series.web_novel}
-				<a href={series.web_novel} target="_blank" class="link">Web novel</a>
-			{/if}
-			{#if series.bookwalker_id}
-				<DbExtLinkShort fullLink={{ ...bookwalkerSeriesLink, value: series.bookwalker_id }} />
-			{/if}
-			{#if series.anidb_id}
-				<DbExtLinkShort fullLink={{ ...aniDbLink, value: series.anidb_id }} />
-			{/if}
-			{#if series.wikidata_id}
-				<DbExtLinkShort fullLink={{ ...wikidataLink, value: series.wikidata_id }} />
-			{/if}
-		</div>
+		{#if series.web_novel || series.bookwalker_id || series.anidb_id || series.wikidata_id}
+			<div class="flex flex-wrap gap-x-4">
+				{#if series.web_novel}
+					<a href={series.web_novel} target="_blank" class="link">Web novel</a>
+				{/if}
+				{#if series.bookwalker_id}
+					<DbExtLinkShort fullLink={{ ...bookwalkerSeriesLink, value: series.bookwalker_id }} />
+				{/if}
+				{#if series.anidb_id}
+					<DbExtLinkShort fullLink={{ ...aniDbLink, value: series.anidb_id }} />
+				{/if}
+				{#if series.wikidata_id}
+					<DbExtLinkShort fullLink={{ ...wikidataLink, value: series.wikidata_id }} />
+				{/if}
+			</div>
+		{:else}
+			<p class="italic">No links added</p>
+		{/if}
 	</section>
 
 	<Hr />

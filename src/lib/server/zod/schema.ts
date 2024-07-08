@@ -87,19 +87,25 @@ export const resetPasswordSchema = z
 		path: ['confirm_password'],
 	});
 
-export const signupSchema = z.object({
-	email: z
-		.string({ required_error: 'Email is required' })
-		.email({ message: 'Invalid email address' })
-		.max(255, { message: 'Email must be less or equal to 255 characters' }),
-	username: zUsername,
-	password: zPasswordNew,
-	privacy_policy_cla: z
-		.literal(true, {
-			errorMap: () => ({ message: 'You must agree in order to create an account' }),
-		})
-		.default(false as true),
-});
+export const signupSchema = z
+	.object({
+		email: z
+			.string({ required_error: 'Email is required' })
+			.email({ message: 'Invalid email address' })
+			.max(255, { message: 'Email must be less or equal to 255 characters' }),
+		username: zUsername,
+		password: zPasswordNew,
+		confirm_password: zPasswordNew,
+		privacy_policy_cla: z
+			.literal(true, {
+				errorMap: () => ({ message: 'You must agree in order to create an account' }),
+			})
+			.default(false as true),
+	})
+	.refine((data) => data.password === data.confirm_password, {
+		message: 'Passwords do not match',
+		path: ['confirm_password'],
+	});
 
 export const verifyEmailSchema = z.object({
 	code: z.string().min(8).max(8),
@@ -506,7 +512,10 @@ const zLanguagePrio = z.object({
 export type LanguagePriority = z.infer<typeof zLanguagePrio>;
 
 export const displayPrefsSchema = z.object({
-	title_prefs: z.array(zLanguagePrio).min(1).max(4),
+	title_prefs: z
+		.array(zLanguagePrio)
+		.min(1, { message: 'You can need to have min 1 lanauge ' })
+		.max(4, { message: 'You can only have max 4 langauges' }),
 	names: z.enum(['romaji', 'native'] as const),
 	descriptions: z.enum(['en', 'ja'] as const),
 });

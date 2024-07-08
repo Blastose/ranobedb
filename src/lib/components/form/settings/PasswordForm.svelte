@@ -2,8 +2,8 @@
 	import type { passwordSchema } from '$lib/server/zod/schema';
 	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
-	import TextField from '../TextField.svelte';
 	import SubmitButton from '../SubmitButton.svelte';
+	import PasswordField from '../PasswordField.svelte';
 
 	export let passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
 
@@ -24,19 +24,17 @@
 	</div>
 
 	<div class="flex flex-col gap-1">
-		<TextField
+		<PasswordField
 			form={sForm}
 			field={'currentPassword'}
-			type="password"
 			placeholder="Password"
 			label="Current password"
 		/>
-		<TextField
+		<PasswordField
 			form={sForm}
 			field={'newPassword'}
-			type="password"
 			placeholder="Password"
-			label="New password"
+			label="New password (15+ characters)"
 		/>
 	</div>
 

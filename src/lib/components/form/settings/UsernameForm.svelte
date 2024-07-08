@@ -4,6 +4,7 @@
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '../SubmitButton.svelte';
+	import PasswordField from '../PasswordField.svelte';
 
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
 
@@ -22,10 +23,9 @@
 
 	<div class="flex flex-col gap-1">
 		<TextField form={sForm} field={'username'} placeholder="Username" label="New username" />
-		<TextField
+		<PasswordField
 			form={sForm}
 			field={'password'}
-			type="password"
 			placeholder="Password"
 			label="Current password"
 		/>
