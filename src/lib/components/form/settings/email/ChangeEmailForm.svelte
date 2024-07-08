@@ -5,6 +5,7 @@
 	import TextField from '$lib/components/form/TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Turnstile from '../../cf/Turnstile.svelte';
+	import PasswordField from '../../PasswordField.svelte';
 
 	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	export let email_verified: boolean;
@@ -40,10 +41,9 @@
 	<div class="flex flex-col gap-1">
 		<TextField form={sForm} field={'current_email'} placeholder="Email" label="Current email" />
 		<TextField form={sForm} field={'new_email'} placeholder="Email" label="New email" />
-		<TextField
+		<PasswordField
 			form={sForm}
 			field={'password'}
-			type="password"
 			placeholder="Password"
 			label="Current password"
 		/>

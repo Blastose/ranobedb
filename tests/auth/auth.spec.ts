@@ -31,7 +31,7 @@ test.describe('auth', () => {
 	test('user can login and logout', async ({ page }) => {
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill('fake@email.com');
-		await page.getByLabel('password').fill('password');
+		await page.getByLabel('Password', { exact: true }).fill('password');
 		await page.getByRole('button', { name: 'Log In' }).click();
 
 		await expect(page).toHaveURL('/');
@@ -43,7 +43,7 @@ test.describe('auth', () => {
 	test('user can login with username', async ({ page }) => {
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill('username');
-		await page.getByLabel('password').fill('password');
+		await page.getByLabel('Password', { exact: true }).fill('password');
 		await page.getByRole('button', { name: 'Log In' }).click();
 		await expect(page).toHaveURL('/');
 	});
@@ -52,19 +52,21 @@ test.describe('auth', () => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill(`${generateId(15)}@a.com`);
 		await page.getByLabel('username').fill(generateId(15));
-		await page.getByLabel('password').fill(generateId(15));
+		const password = generateId(15);
+		await page.getByLabel('Password (15+ characters)').fill(password);
+		await page.getByLabel('Confirm password').fill(password);
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
-		await expect(page).toHaveURL('/');
+		await expect(page).toHaveURL('/welcome');
 	});
 
 	test('user cannot login with invalid credentials', async ({ page }) => {
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill(generateId(15));
-		await page.getByLabel('password').fill(generateId(15));
+		await page.getByLabel('Password', { exact: true }).fill(generateId(15));
 		await page.getByRole('button', { name: 'Log In' }).click();
 
 		await expect(page).toHaveURL('/login');
@@ -75,7 +77,23 @@ test.describe('auth', () => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill(`${generateId(15)}@a.com`);
 		await page.getByLabel('username').fill(generateId(15));
-		await page.getByLabel('password').fill('1');
+		const password = generateId(15);
+		await page.getByLabel('Password (15+ characters)').fill(password);
+		await page.getByLabel('Confirm password').fill(password);
+		await page.getByRole('button', { name: 'Sign Up' }).click();
+
+		await expect(page).toHaveURL('/signup');
+	});
+
+	test('user cannot create an account without confirming their password', async ({ page }) => {
+		await page.goto('/signup');
+		await page.getByLabel('email').fill(`${generateId(15)}@a.com`);
+		await page.getByLabel('username').fill(generateId(15));
+		await page.getByLabel('Password (15+ characters)').fill(generateId(15));
+		await page.getByLabel('Confirm password').fill(generateId(15));
+		await page
+			.getByLabel('I have read and agree with the privacy policy and terms of use.')
+			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(page).toHaveURL('/signup');
@@ -85,7 +103,8 @@ test.describe('auth', () => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill(`${generateId(15)}@a.com`);
 		await page.getByLabel('username').fill(generateId(15));
-		await page.getByLabel('password').fill('1');
+		await page.getByLabel('Password (15+ characters)').fill('1');
+		await page.getByLabel('Confirm password').fill('1');
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
@@ -98,7 +117,9 @@ test.describe('auth', () => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill('fake@email.com');
 		await page.getByLabel('username').fill(generateId(15));
-		await page.getByLabel('password').fill(generateId(15));
+		const password = generateId(15);
+		await page.getByLabel('Password (15+ characters)').fill(password);
+		await page.getByLabel('Confirm password').fill(password);
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
@@ -113,7 +134,9 @@ test.describe('auth', () => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill(`${generateId(15)}@email.com`);
 		await page.getByLabel('username').fill('username');
-		await page.getByLabel('password').fill(generateId(15));
+		const password = generateId(15);
+		await page.getByLabel('Password (15+ characters)').fill(password);
+		await page.getByLabel('Confirm password').fill(password);
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
@@ -130,7 +153,9 @@ test.describe('auth', () => {
 		await page.goto('/signup');
 		await page.getByLabel('email').fill(`${generateId(15)}@email.com`);
 		await page.getByLabel('username').fill('UsErNaMe');
-		await page.getByLabel('password').fill(generateId(15));
+		const password = generateId(15);
+		await page.getByLabel('Password (15+ characters)').fill(password);
+		await page.getByLabel('Confirm password').fill(password);
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();

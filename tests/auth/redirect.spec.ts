@@ -16,7 +16,7 @@ test.describe('user is redirected after logging in', () => {
 	}) => {
 		await page.goto('/login?redirect=/book/1');
 		await page.getByLabel('Username or email').fill('a@a.ca');
-		await page.getByLabel('Password').fill('aaaaaa');
+		await page.getByLabel('Password', { exact: true }).fill('aaaaaa');
 		await page.getByRole('button', { name: 'Log in' }).click();
 
 		await expect(page).toHaveURL('/book/1');

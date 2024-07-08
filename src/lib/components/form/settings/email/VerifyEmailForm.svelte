@@ -5,6 +5,7 @@
 	import TextField from '$lib/components/form/TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Turnstile from '../../cf/Turnstile.svelte';
+	import PasswordField from '../../PasswordField.svelte';
 
 	export let sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	export let verifyEmailForm: SuperValidated<Infer<typeof verifyEmailSchema>>;
@@ -60,10 +61,9 @@
 			class="flex flex-col gap-2 max-w-lg"
 			use:enhanceE
 		>
-			<TextField
+			<PasswordField
 				form={sFormEmailVerify}
 				field={'password'}
-				type="password"
 				placeholder="Password"
 				label="Current password"
 			/>

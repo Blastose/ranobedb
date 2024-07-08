@@ -4,6 +4,7 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import type { loginSchema } from '$lib/server/zod/schema';
+	import PasswordField from '../PasswordField.svelte';
 
 	export let loginForm: SuperValidated<Infer<typeof loginSchema>>;
 
@@ -36,10 +37,9 @@
 			label="Username or email"
 			showRequiredSymbolIfRequired={false}
 		/>
-		<TextField
+		<PasswordField
 			{form}
 			field={'password'}
-			type="password"
 			placeholder=""
 			label="Password"
 			showRequiredSymbolIfRequired={false}

@@ -28,7 +28,7 @@ test.describe('auth', () => {
 
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill(createdUser1.username);
-		await page.getByLabel('password').fill('passwordpassword');
+		await page.getByLabel('Password', { exact: true }).fill('passwordpassword');
 		await page.getByRole('button', { name: 'Log In' }).click();
 		await expect(page).toHaveURL('/');
 
@@ -61,7 +61,7 @@ test.describe('auth', () => {
 
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill(createdUser3.username);
-		await page.getByLabel('password').fill('passwordpassword');
+		await page.getByLabel('Password', { exact: true }).fill('passwordpassword');
 		await page.getByRole('button', { name: 'Log In' }).click();
 		await expect(page).toHaveURL('/');
 
@@ -84,13 +84,13 @@ test.describe('auth', () => {
 
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill('aaaa+31234@aaaa.ca');
-		await page.getByLabel('password').fill('passwordpassword');
+		await page.getByLabel('Password', { exact: true }).fill('passwordpassword');
 		await page.getByRole('button', { name: 'Log In' }).click();
 		await expect(page).toHaveURL('/login');
 
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill('new_aaaa+31234@aaaa.ca');
-		await page.getByLabel('password').fill('passwordpassword');
+		await page.getByLabel('Password', { exact: true }).fill('passwordpassword');
 		await page.getByRole('button', { name: 'Log In' }).click();
 		await expect(page).toHaveURL('/');
 
@@ -126,14 +126,14 @@ test.describe('auth', () => {
 		await page.goto('/reset-password?token=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
 		await expect(page.getByText('Reset your password')).toBeVisible();
 
-		await page.getByLabel('password').first().fill('passwordpassword');
+		await page.getByLabel('Password (15+ characters)').fill('passwordpassword');
 		await page.getByLabel('Confirm password').fill('mycoolnewpassword');
 
 		await page.getByRole('button', { name: 'Reset password' }).click();
 
 		await expect(page.locator('.toast-container').last()).toHaveText('Error in form!');
 
-		await page.getByLabel('password').first().fill('mycoolnewpassword');
+		await page.getByLabel('Password (15+ characters)').fill('mycoolnewpassword');
 		await page.getByLabel('Confirm password').fill('mycoolnewpassword');
 
 		await page.getByRole('button', { name: 'Reset password' }).click();
@@ -142,13 +142,13 @@ test.describe('auth', () => {
 
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill('aaaa+12432@aaaa.ca');
-		await page.getByLabel('password').fill('passwordpassword');
+		await page.getByLabel('Password', { exact: true }).fill('passwordpassword');
 		await page.getByRole('button', { name: 'Log In' }).click();
 		await expect(page).toHaveURL('/login');
 
 		await page.goto('/login');
 		await page.getByLabel('username or email').fill('aaaa+12432@aaaa.ca');
-		await page.getByLabel('password').fill('mycoolnewpassword');
+		await page.getByLabel('Password', { exact: true }).fill('mycoolnewpassword');
 		await page.getByRole('button', { name: 'Log In' }).click();
 		await expect(page).toHaveURL('/');
 	});

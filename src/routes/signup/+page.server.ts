@@ -10,6 +10,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { db } from '$lib/server/db/db';
 import { validateTurnstile } from '$lib/server/cf.js';
 import { isLimited, signUpLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
+import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
@@ -93,6 +94,11 @@ export const actions = {
 			);
 		}
 
-		return message(form, { text: 'Valid form', type: 'success' });
+		flashRedirect(
+			303,
+			`/welcome`,
+			{ type: 'success', message: 'Successfully created account!' },
+			cookies,
+		);
 	},
 };
