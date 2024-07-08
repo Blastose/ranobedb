@@ -6,7 +6,7 @@
 
 <main class="container-rndb flex flex-col gap-2 markdown">
 	<h1 class="text-4xl font-bold">Terms of Use</h1>
-	Last updated: 2024-06-29
+	Last updated: 2024-07-08
 
 	<section>
 		<h2>Introduction</h2>
@@ -54,6 +54,14 @@
 				perpetual, irrevocable, and fully sublicensable right to use, reproduce, modify, adapt,
 				publish, translate, create derivative works from, distribute, and display such content
 				throughout the world in any media.
+			</p>
+		</section>
+		<section>
+			<h3>Prohibited Activities</h3>
+			<p>
+				You must not link to, distribute, or facilitate the distribution of pirated or unauthorized
+				copies of copyrighted material, including but not limited to book, software, movies, music,
+				or any other content. This includes any unofficial tranlations of books.
 			</p>
 		</section>
 	</section>

@@ -64,53 +64,6 @@
 			<SidebarListItem active={$page.url.pathname === '/'} href="/" text="Home" icon="home" />
 		</SidebarSection>
 
-		{#if user}
-			<SidebarSection sectionHeading={user.username}>
-				<SidebarListItem
-					active={$page.url.pathname.startsWith(`/user/${user.id_numeric}/list`)}
-					href="/user/{user.id_numeric}/list"
-					text="My List"
-					icon="mylist"
-				/>
-				<SidebarListItem
-					active={$page.url.pathname === `/user/${user.id_numeric}`}
-					href="/user/{user.id_numeric}"
-					text="Profile"
-					icon="profile"
-				/>
-				<SidebarListItem
-					active={$page.url.pathname === '/settings'}
-					href="/settings"
-					text="Settings"
-					icon="settings"
-				/>
-				<SidebarFormButton text="Sign out" textLoading="Signing out..." action="/logout">
-					<Icon name="logout" />
-				</SidebarFormButton>
-			</SidebarSection>
-		{:else}
-			<SidebarSection sectionHeading="User">
-				<SidebarListItem
-					active={$page.url.pathname === '/login'}
-					href="/login"
-					text="Log in"
-					icon="login"
-				/>
-				<SidebarListItem
-					active={$page.url.pathname === '/signup'}
-					href="/signup"
-					text="Sign up"
-					icon="signup"
-				/>
-				<SidebarListItem
-					active={$page.url.pathname === '/settings'}
-					href="/settings"
-					text="Settings"
-					icon="settings"
-				/>
-			</SidebarSection>
-		{/if}
-
 		<SidebarSection sectionHeading="Database">
 			<SidebarListItem
 				active={$page.url.pathname === '/books'}
@@ -167,6 +120,53 @@
 				icon="about"
 			/>
 		</SidebarSection>
+
+		{#if user}
+			<SidebarSection sectionHeading={user.username}>
+				<SidebarListItem
+					active={$page.url.pathname.startsWith(`/user/${user.id_numeric}/list`)}
+					href="/user/{user.id_numeric}/list"
+					text="My List"
+					icon="mylist"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === `/user/${user.id_numeric}`}
+					href="/user/{user.id_numeric}"
+					text="Profile"
+					icon="profile"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/settings'}
+					href="/settings"
+					text="Settings"
+					icon="settings"
+				/>
+				<SidebarFormButton text="Sign out" textLoading="Signing out..." action="/logout">
+					<Icon name="logout" />
+				</SidebarFormButton>
+			</SidebarSection>
+		{:else}
+			<SidebarSection sectionHeading="User">
+				<SidebarListItem
+					active={$page.url.pathname === '/login'}
+					href="/login"
+					text="Log in"
+					icon="login"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/signup'}
+					href="/signup"
+					text="Sign up"
+					icon="signup"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === '/settings'}
+					href="/settings"
+					text="Settings"
+					icon="settings"
+				/>
+			</SidebarSection>
+		{/if}
 
 		<Hr />
 

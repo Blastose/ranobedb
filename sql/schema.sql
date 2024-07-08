@@ -82,6 +82,7 @@ CREATE TYPE public.staff_role AS ENUM (
 CREATE TYPE public.user_role AS ENUM (
     'admin',
     'moderator',
+    'adder',
     'editor',
     'user',
     'banned'

@@ -47,7 +47,7 @@ export type StaffRole = (typeof staffRolesArray)[number];
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type UserRole = 'admin' | 'banned' | 'editor' | 'moderator' | 'user';
+export type UserRole = 'admin' | 'banned' | 'editor' | 'adder' | 'moderator' | 'user';
 
 export type ReadingStatus = (typeof defaultUserListLabelsArray)[number];
 

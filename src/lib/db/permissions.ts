@@ -5,6 +5,7 @@ type Perm = 'edit' | 'add' | 'visibility';
 export const permissions: Record<UserRole, Perm[]> = {
 	admin: ['edit', 'add', 'visibility'],
 	moderator: ['edit', 'add', 'visibility'],
+	adder: ['edit', 'add'],
 	editor: ['edit'],
 	user: [],
 	banned: [],
