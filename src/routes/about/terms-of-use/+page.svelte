@@ -61,7 +61,7 @@
 			<p>
 				You must not link to, distribute, or facilitate the distribution of pirated or unauthorized
 				copies of copyrighted material, including but not limited to book, software, movies, music,
-				or any other content. This includes any unofficial tranlations of books.
+				or any other content. This includes any unofficial translations of books.
 			</p>
 		</section>
 	</section>
