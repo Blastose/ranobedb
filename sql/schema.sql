@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+
 CREATE TYPE public.release_format AS ENUM ('digital', 'print', 'audio');
 
 CREATE TYPE public.language AS ENUM (
