@@ -13,6 +13,9 @@
 			<p>
 				Only Japanese books or books that are considered light novels and have a Japanese release
 				can be added to the database.
+				<br />
+				Exceptions: Japanese web novels that are translated to English and published as a book can be
+				included.
 			</p>
 		</section>
 
