@@ -1,4 +1,3 @@
-import { addCharacterBetweenString } from '$lib/db/match.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
@@ -15,19 +14,30 @@ export const load = async ({ url, locals }) => {
 
 	const dbPublishers = DBPublishers.fromDB(db, locals.user);
 
-	let query = dbPublishers
-		.getPublishers()
-		.where('publisher.hidden', '=', false)
-		.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
+	let query = dbPublishers.getPublishers().where('publisher.hidden', '=', false);
 
 	if (q) {
-		query = query.where((eb) =>
-			eb.or([
-				eb('publisher.romaji', 'ilike', addCharacterBetweenString(q, '%')),
-				eb('publisher.name', 'ilike', addCharacterBetweenString(q, '%')),
-			]),
-		);
+		query = query
+			.where(
+				(eb) =>
+					eb.fn('greatest', [
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.name')]),
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
+					]),
+				'>',
+				0.15,
+			)
+			.orderBy(
+				(eb) =>
+					eb.fn('greatest', [
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.name')]),
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
+					]),
+				'desc',
+			);
 	}
+
+	query = query.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
 
 	const {
 		result: publishers,

@@ -1,9 +1,7 @@
-import { addCharacterBetweenString } from '$lib/db/match.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
 import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
-import type { Expression, SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -15,32 +13,36 @@ export const load = async ({ url, locals }) => {
 
 	const dbStaff = DBStaff.fromDB(db, locals.user);
 
-	let query = dbStaff
-		.getStaff()
-		.where('staff.hidden', '=', false)
-		.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'));
+	let query = dbStaff.getStaff().where('staff.hidden', '=', false);
 	if (q) {
-		query = query.where((eb) =>
-			eb('staff.id', 'in', (eb2) =>
-				eb2
-					.selectFrom('staff_alias as sa2')
-					.distinctOn('sa2.staff_id')
-					.select('sa2.staff_id')
-					.where((eb3) => {
-						const ors: Expression<SqlBool>[] = [];
-						ors.push(eb3('sa2.name', 'ilike', addCharacterBetweenString(q, '%')));
-						ors.push(eb3('sa2.romaji', 'ilike', addCharacterBetweenString(q, '%')));
-						if (q.includes(' ')) {
-							const reversed = q.split(' ').reverse().join('% ');
-							ors.push(eb3('sa2.name', 'ilike', addCharacterBetweenString(reversed, '%')));
-							ors.push(eb3('sa2.romaji', 'ilike', addCharacterBetweenString(reversed, '%')));
-						}
-
-						return eb3.or(ors);
-					}),
-			),
-		);
+		query = query
+			.innerJoin('staff_alias as sa2', 'sa2.staff_id', 'staff.id')
+			.select((eb) =>
+				eb.fn
+					.max(
+						eb.fn('greatest', [
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('sa2.name')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('sa2.romaji')]),
+						]),
+					)
+					.as('sim_score'),
+			)
+			.having(
+				(eb) =>
+					eb.fn.max(
+						eb.fn('greatest', [
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('sa2.name')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('sa2.romaji')]),
+						]),
+					),
+				'>',
+				0.15,
+			)
+			.groupBy(['staff.id', 'staff_alias.name', 'staff_alias.romaji'])
+			.orderBy(`sim_score desc`);
 	}
+
+	query = query.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'));
 
 	const {
 		result: staff,

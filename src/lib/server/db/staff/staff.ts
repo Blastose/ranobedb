@@ -26,7 +26,7 @@ export class DBStaff {
 			.innerJoin('staff_alias', (join) =>
 				join.onRef('staff_alias.staff_id', '=', 'staff.id').on('staff_alias.main_alias', '=', true),
 			)
-			.selectAll('staff')
+			.select(['staff.id'])
 			.select(['staff_alias.name', 'staff_alias.romaji']);
 	}
 
