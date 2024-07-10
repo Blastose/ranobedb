@@ -593,8 +593,6 @@ export class DBBooks {
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.select([
-				'cte_book.description',
-				'cte_book.description_ja',
 				'cte_book.id',
 				'cte_book.image_id',
 				'cte_book.lang',

@@ -42,7 +42,9 @@
 		total books
 	</p>
 
-	<Description description={series.description} maxHeight={100} />
+	{#if series.description.length > 0}
+		<Description description={series.description} maxHeight={100} />
+	{/if}
 
 	<dl>
 		<div>

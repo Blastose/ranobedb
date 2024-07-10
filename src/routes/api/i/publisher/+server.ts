@@ -4,10 +4,7 @@ import type { Expression, SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { searchNameSchema } from '$lib/server/zod/schema';
 import { zod } from 'sveltekit-superforms/adapters';
-
-function addCharacterBetweenString(str: string, char: string) {
-	return `${char}${str.split('').join(`${char}`)}${char}`;
-}
+import { addCharacterBetweenString } from '$lib/db/match.js';
 
 async function getPublisherByName(name: string, nameAsNumber: number) {
 	return await db

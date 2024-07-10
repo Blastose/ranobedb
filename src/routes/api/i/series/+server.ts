@@ -6,10 +6,7 @@ import { searchNameSchema } from '$lib/server/zod/schema';
 import { zod } from 'sveltekit-superforms/adapters';
 import { withSeriesTitleCte } from '$lib/server/db/series/series';
 import type { User } from 'lucia';
-
-function addCharacterBetweenString(str: string, char: string) {
-	return `${char}${str.split('').join(`${char}`)}${char}`;
-}
+import { addCharacterBetweenString } from '$lib/db/match.js';
 
 async function getSeriesByTitle(title: string, titleAsNumber: number, user: User | null) {
 	return await db

@@ -261,6 +261,8 @@ export const logicalOps = ['and', 'or'] as const;
 export type LogicalOp = (typeof logicalOps)[number];
 
 export const booksSortArray = [
+	'Relevance desc',
+	'Relevance asc',
 	'Title asc',
 	'Title desc',
 	'Release date asc',
@@ -268,6 +270,8 @@ export const booksSortArray = [
 ] as const;
 
 export const seriesSortArray = [
+	'Relevance desc',
+	'Relevance asc',
 	'Title asc',
 	'Title desc',
 	'Start date asc',
@@ -279,6 +283,8 @@ export const seriesSortArray = [
 ] as const;
 
 export const releaseSortArray = [
+	'Relevance desc',
+	'Relevance asc',
 	'Title asc',
 	'Title desc',
 	'Release date asc',

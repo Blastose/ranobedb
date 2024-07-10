@@ -82,7 +82,7 @@ export class DBChanges {
 				]),
 			)
 			.select(['auth_user.username', 'auth_user.id_numeric'])
-			.orderBy('change.added desc');
+			.orderBy('change.id desc');
 
 		if (filters.items.length > 0) {
 			query = query.where(({ eb }) => {

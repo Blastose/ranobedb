@@ -1,7 +1,7 @@
 import { revisionSchema, staffSchema } from '$lib/server/zod/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { zod } from 'sveltekit-superforms/adapters';
-import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
+import { hasAddPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
 import { db } from '$lib/server/db/db.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
@@ -41,7 +41,7 @@ export const load = async ({ params, locals, url }) => {
 			error(403);
 		}
 	}
-	if (!hasEditPerms(locals.user)) {
+	if (!hasAddPerms(locals.user)) {
 		error(403);
 	}
 

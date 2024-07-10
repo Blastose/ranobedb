@@ -17,7 +17,11 @@ export const load = async ({ url, locals }) => {
 
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
-	let query = dbBooks.getBooks();
+	let query = dbBooks.getBooks().where('cte_book.hidden', '=', false);
+
+	const useQuery = Boolean(q);
+	const useReleaseLangFilters = form.data.rl.length > 0;
+	const useReleaseFormatFilters = form.data.rf.length > 0;
 
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
@@ -28,17 +32,52 @@ export const load = async ({ url, locals }) => {
 		query = query.orderBy('cte_book.release_date asc');
 	} else if (sort === 'Release date desc') {
 		query = query.orderBy('cte_book.release_date desc');
+	} else if (sort.startsWith('Relevance') && useQuery) {
+		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
+		query = query
+			.innerJoin('book_title', 'book_title.book_id', 'cte_book.id')
+			.select((eb) =>
+				eb.fn
+					.max(
+						eb.fn('greatest', [
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.title')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
+						]),
+					)
+					.as('sim_score'),
+			)
+			.having(
+				(eb) =>
+					eb.fn.max(
+						eb.fn('greatest', [
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.title')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
+						]),
+					),
+				'>',
+				0.15,
+			)
+			.orderBy(`sim_score ${orderByDirection}`)
+			.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'asc');
+		query = query.groupBy([
+			'cte_book.id',
+			'cte_book.image_id',
+			'cte_book.lang',
+			'cte_book.romaji',
+			'cte_book.romaji_orig',
+			'cte_book.title',
+			'cte_book.title_orig',
+			'cte_book.release_date',
+			'cte_book.olang',
+		]);
 	}
 
-	if (sort !== 'Title asc' && sort !== 'Title desc') {
+	if (
+		(sort !== 'Title asc' && sort !== 'Title desc') ||
+		(sort.startsWith('Relevance') && !useQuery)
+	) {
 		query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'asc');
 	}
-
-	query = query.where('cte_book.hidden', '=', false);
-
-	const useQuery = Boolean(q);
-	const useReleaseLangFilters = form.data.rl.length > 0;
-	const useReleaseFormatFilters = form.data.rf.length > 0;
 
 	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
@@ -47,15 +86,21 @@ export const load = async ({ url, locals }) => {
 					.selectFrom('book')
 					.distinctOn('book.id')
 					.select('book.id')
-					.$if(useQuery, (qb) =>
+					.$if(useQuery && !sort.startsWith('Relevance'), (qb) =>
 						qb
 							.innerJoin('book_title', (join) => join.onRef('book_title.book_id', '=', 'book.id'))
-							.where((eb2) =>
-								eb2.or([
-									eb2('book_title.title', 'ilike', `%${q}%`),
-									eb2('book_title.romaji', 'ilike', `%${q}%`),
-								]),
-							),
+							.having(
+								(eb) =>
+									eb.fn.max(
+										eb.fn('greatest', [
+											eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.title')]),
+											eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
+										]),
+									),
+								'>',
+								0.15,
+							)
+							.groupBy('book.id'),
 					)
 					.$if(useReleaseLangFilters, (qb) =>
 						qb
@@ -89,7 +134,7 @@ export const load = async ({ url, locals }) => {
 							.innerJoin('release', (join) =>
 								join.onRef('release.id', '=', 'release_book.release_id'),
 							)
-							.$if(form.data.rll === 'or', (qb2) =>
+							.$if(form.data.rfl === 'or', (qb2) =>
 								qb2.where((eb2) => {
 									const filters: Expression<SqlBool>[] = [];
 									for (const format of form.data.rf) {

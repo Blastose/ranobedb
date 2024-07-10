@@ -68,15 +68,17 @@
 					{/each}
 				</BookImageContainer>
 			{:else}
-				{#each works.releases as release (release.id)}
-					<p>
-						<a class="link" href="/release/{release.id}"
-							>{new DateNumber(release.release_date).getDateFormatted()} - <NameDisplay
-								obj={release}
-							/> - {release.publisher_type}</a
-						>
-					</p>
-				{/each}
+				<div>
+					{#each works.releases as release (release.id)}
+						<p>
+							<a class="link" href="/release/{release.id}"
+								>{new DateNumber(release.release_date).getDateFormatted()} - <NameDisplay
+									obj={release}
+								/> - {release.publisher_type}</a
+							>
+						</p>
+					{/each}
+				</div>
 			{/if}
 		{:else}
 			<p class="italic">None</p>

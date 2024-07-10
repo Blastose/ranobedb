@@ -21,7 +21,7 @@
 		</h2>
 
 		<p>
-			By <a class="link" href="/user/{change.user_id}">{change.username}</a> on {new Date(
+			By <a class="link" href="/user/{change.id_numeric}">{change.username}</a> on {new Date(
 				change.added ?? 0,
 			).toLocaleString()}
 		</p>

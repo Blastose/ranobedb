@@ -14,16 +14,30 @@ export const load = async ({ url, locals }) => {
 
 	const dbPublishers = DBPublishers.fromDB(db, locals.user);
 
-	let query = dbPublishers
-		.getPublishers()
-		.where('publisher.hidden', '=', false)
-		.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
+	let query = dbPublishers.getPublishers().where('publisher.hidden', '=', false);
 
 	if (q) {
-		query = query.where((eb) =>
-			eb.or([eb('publisher.romaji', 'ilike', `%${q}%`), eb('publisher.name', 'ilike', `%${q}%`)]),
-		);
+		query = query
+			.where(
+				(eb) =>
+					eb.fn('greatest', [
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.name')]),
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
+					]),
+				'>',
+				0.15,
+			)
+			.orderBy(
+				(eb) =>
+					eb.fn('greatest', [
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.name')]),
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
+					]),
+				'desc',
+			);
 	}
+
+	query = query.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
 
 	const {
 		result: publishers,
