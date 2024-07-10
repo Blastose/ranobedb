@@ -2,7 +2,7 @@ import { bookSchema, revisionSchema } from '$lib/server/zod/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
+import { hasAddPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { DBSeries } from '$lib/server/db/series/series.js';
 import { db } from '$lib/server/db/db.js';
@@ -41,7 +41,7 @@ export const load = async ({ params, locals, url }) => {
 			error(403);
 		}
 	}
-	if (!hasEditPerms(locals.user)) {
+	if (!hasAddPerms(locals.user)) {
 		error(403);
 	}
 
