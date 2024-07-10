@@ -19,6 +19,7 @@
 	import TitlesSection from '$lib/components/titles/TitlesSection.svelte';
 	import Collapsible from '$lib/components/display/Collapsible.svelte';
 	import StaffsSectionGroupedLang from '$lib/components/staff/StaffsSectionGroupedLang.svelte';
+	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -118,7 +119,9 @@
 					<div class="flex flex-col">
 						<h3 class="font-semibold capitalize">{key}:</h3>
 						{#each series as serie (serie.id)}
-							<a class="link" href="/series/{serie.id}">{serie.title}</a>
+							<a class="link" href="/series/{serie.id}"
+								>{getTitleDisplay({ obj: serie, prefs: $displayPrefs.title_prefs })}</a
+							>
 						{/each}
 					</div>
 				{/each}

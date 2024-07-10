@@ -275,6 +275,7 @@ export class DBSeries {
 							'child_series.id',
 							'child_series.title',
 							'child_series.romaji',
+							'child_series.lang',
 							'series_relation.relation_type',
 						])
 						.whereRef('series_relation.id_parent', '=', 'cte_series.id')
@@ -418,6 +419,7 @@ export class DBSeries {
 							'child_series.id',
 							'child_series.title',
 							'child_series.romaji',
+							'child_series.lang',
 							'series_relation_hist.relation_type',
 						])
 						.whereRef('series_relation_hist.change_id', '=', 'change.id')
