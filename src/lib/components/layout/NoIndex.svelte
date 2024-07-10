@@ -1,5 +1,4 @@
-<script lang="ts"></script>
+<script lang="ts">
+</script>
 
-<svete:head>
-	<meta name="robots" content="noindex" />
-</svete:head>
+<svelte:head><meta name="robots" content="noindex" /></svelte:head>
