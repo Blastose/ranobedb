@@ -538,7 +538,7 @@ export const bookFiltersSchema = z.object({
 	rll: z.enum(logicalOps).catch('or'),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
-	sort: z.enum(booksSortArray).catch('Title asc'),
+	sort: z.enum(booksSortArray).catch('Relevance desc'),
 });
 
 export const seriesFiltersSchema = z.object({
@@ -546,14 +546,14 @@ export const seriesFiltersSchema = z.object({
 	rll: z.enum(logicalOps).catch('or'),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
-	sort: z.enum(seriesSortArray).catch('Title asc'),
+	sort: z.enum(seriesSortArray).catch('Relevance desc'),
 	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 });
 
 export const releaseFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
-	sort: z.enum(releaseSortArray).catch('Title asc'),
+	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 });
 
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });

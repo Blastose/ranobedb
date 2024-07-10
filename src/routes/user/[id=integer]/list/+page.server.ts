@@ -1,3 +1,4 @@
+import { addCharacterBetweenString } from '$lib/db/match.js';
 import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
 import { getBooksRL, getUserLabelCounts } from '$lib/server/db/user/list';
@@ -29,7 +30,7 @@ export const load = async ({ url, params, locals }) => {
 
 	let query = getBooksRL(listUser.id, user).where('cte_book.hidden', '=', false);
 	if (q) {
-		query = query.where('cte_book.title', 'ilike', `%${q}%`);
+		query = query.where('cte_book.title', 'ilike', addCharacterBetweenString(q, '%'));
 	}
 
 	if (labels.length > 0) {

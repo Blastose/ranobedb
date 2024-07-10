@@ -1,3 +1,4 @@
+import { addCharacterBetweenString } from '$lib/db/match.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
@@ -27,12 +28,12 @@ export const load = async ({ url, locals }) => {
 					.select('sa2.staff_id')
 					.where((eb3) => {
 						const ors: Expression<SqlBool>[] = [];
-						ors.push(eb3('sa2.name', 'ilike', `%${q}%`));
-						ors.push(eb3('sa2.romaji', 'ilike', `%${q}%`));
+						ors.push(eb3('sa2.name', 'ilike', addCharacterBetweenString(q, '%')));
+						ors.push(eb3('sa2.romaji', 'ilike', addCharacterBetweenString(q, '%')));
 						if (q.includes(' ')) {
 							const reversed = q.split(' ').reverse().join('% ');
-							ors.push(eb3('sa2.name', 'ilike', `%${reversed}%`));
-							ors.push(eb3('sa2.romaji', 'ilike', `%${reversed}%`));
+							ors.push(eb3('sa2.name', 'ilike', addCharacterBetweenString(reversed, '%')));
+							ors.push(eb3('sa2.romaji', 'ilike', addCharacterBetweenString(reversed, '%')));
 						}
 
 						return eb3.or(ors);

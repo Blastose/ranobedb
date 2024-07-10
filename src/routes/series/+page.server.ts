@@ -19,6 +19,11 @@ export const load = async ({ url, locals }) => {
 
 	let query = dbSeries.getSeries().where('cte_series.hidden', '=', false);
 
+	const useQuery = Boolean(q);
+	const useReleaseLangFilters = form.data.rl.length > 0;
+	const useReleaseFormatFilters = form.data.rf.length > 0;
+	const useStaffFilters = form.data.staff.length > 0;
+
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
 		query = query.orderBy((eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'), 'asc');
@@ -32,34 +37,80 @@ export const load = async ({ url, locals }) => {
 		query = query.orderBy('cte_series.c_num_books asc');
 	} else if (sort === 'Num. books desc') {
 		query = query.orderBy('cte_series.c_num_books desc');
+	} else if (sort.startsWith('Relevance') && useQuery) {
+		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
+		query = query
+			.innerJoin('series_title', 'series_title.series_id', 'cte_series.id')
+			.select((eb) =>
+				eb.fn
+					.max(
+						eb.fn('greatest', [
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('series_title.title')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('cte_series.aliases')]),
+						]),
+					)
+					.as('sim_score'),
+			)
+			.having(
+				(eb) =>
+					eb.fn.max(
+						eb.fn('greatest', [
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('series_title.title')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('cte_series.aliases')]),
+						]),
+					),
+				'>',
+				0.15,
+			)
+			.orderBy(`sim_score ${orderByDirection}`)
+			.orderBy((eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'), 'asc');
+		query = query.groupBy([
+			'cte_series.id',
+			'cte_series.hidden',
+			'cte_series.locked',
+			'cte_series.lang',
+			'cte_series.romaji',
+			'cte_series.romaji_orig',
+			'cte_series.title',
+			'cte_series.title_orig',
+			'cte_series.olang',
+			'cte_series.c_num_books',
+		]);
 	}
 
-	if (sort !== 'Title asc' && sort !== 'Title desc') {
+	if (
+		(sort !== 'Title asc' && sort !== 'Title desc') ||
+		(sort.startsWith('Relevance') && !useQuery)
+	) {
 		query = query.orderBy((eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'), 'asc');
 	}
-
-	const useQuery = Boolean(q);
-	const useReleaseLangFilters = form.data.rl.length > 0;
-	const useReleaseFormatFilters = form.data.rf.length > 0;
-	const useStaffFilters = form.data.staff.length > 0;
 
 	if (useQuery || useReleaseFormatFilters || useReleaseLangFilters || useStaffFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb('cte_series.id', 'in', (eb) =>
 				eb
 					.selectFrom('series')
-					.$if(useQuery, (qb) =>
+					.distinctOn('series.id')
+					.select('series.id')
+					.$if(useQuery && !sort.startsWith('Relevance'), (qb) =>
 						qb
 							.innerJoin('series_title', (join) =>
 								join.onRef('series_title.series_id', '=', 'series.id'),
 							)
-							.where((eb2) =>
-								eb2.or([
-									eb2('series_title.title', 'ilike', `%${q}%`),
-									eb2('series_title.romaji', 'ilike', `%${q}%`),
-									eb2('series.aliases', 'ilike', `%${q}%`),
-								]),
-							),
+							.having(
+								(eb) =>
+									eb.fn.max(
+										eb.fn('greatest', [
+											eb.fn('strict_word_similarity', [eb.val(q), eb.ref('series_title.title')]),
+											eb.fn('strict_word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
+										]),
+									),
+								'>',
+								0.15,
+							)
+							.groupBy('series.id'),
 					)
 					.$if(useReleaseLangFilters, (qb) =>
 						qb
@@ -95,7 +146,7 @@ export const load = async ({ url, locals }) => {
 							.innerJoin('release', (join) =>
 								join.onRef('release.id', '=', 'release_book.release_id'),
 							)
-							.$if(form.data.rll === 'or', (qb2) =>
+							.$if(form.data.rfl === 'or', (qb2) =>
 								qb2.where((eb2) => {
 									const filters: Expression<SqlBool>[] = [];
 									for (const format of form.data.rf) {
@@ -129,8 +180,7 @@ export const load = async ({ url, locals }) => {
 								}
 								return eb2.or(filters);
 							}),
-					)
-					.select('series.id'),
+					),
 			),
 		);
 	}

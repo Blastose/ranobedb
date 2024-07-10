@@ -1,3 +1,4 @@
+import { addCharacterBetweenString } from '$lib/db/match.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
@@ -21,7 +22,10 @@ export const load = async ({ url, locals }) => {
 
 	if (q) {
 		query = query.where((eb) =>
-			eb.or([eb('publisher.romaji', 'ilike', `%${q}%`), eb('publisher.name', 'ilike', `%${q}%`)]),
+			eb.or([
+				eb('publisher.romaji', 'ilike', addCharacterBetweenString(q, '%')),
+				eb('publisher.name', 'ilike', addCharacterBetweenString(q, '%')),
+			]),
 		);
 	}
 

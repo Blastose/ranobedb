@@ -19,6 +19,10 @@ export const load = async ({ url, locals }) => {
 
 	let query = dbReleases.getReleases().where('release.hidden', '=', false);
 
+	const useQuery = Boolean(q);
+	const useReleaseLangFilters = form.data.rl.length > 0;
+	const useReleaseFormatFilters = form.data.rf.length > 0;
+
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
 		query = query.orderBy((eb) => eb.fn.coalesce('release.romaji', 'release.title'), 'asc');
@@ -32,21 +36,49 @@ export const load = async ({ url, locals }) => {
 		query = query.orderBy('release.pages', 'asc');
 	} else if (sort === 'Pages desc') {
 		query = query.orderBy('release.pages', orderNullsLast('desc'));
+	} else if (sort.startsWith('Relevance') && useQuery) {
+		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
+		query = query
+			.select((eb) =>
+				eb
+					.fn('greatest', [
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.title')]),
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+					])
+					.as('sim_score'),
+			)
+			.where(
+				(eb) =>
+					eb.fn('greatest', [
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.title')]),
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+					]),
+
+				'>',
+				0.15,
+			)
+			.orderBy(`sim_score ${orderByDirection}`)
+			.orderBy((eb) => eb.fn.coalesce('release.romaji', 'release.title'), 'asc');
 	}
 
-	if (sort !== 'Title asc' && sort !== 'Title desc') {
+	if (
+		(sort !== 'Title asc' && sort !== 'Title desc') ||
+		(sort.startsWith('Relevance') && !useQuery)
+	) {
 		query = query.orderBy((eb) => eb.fn.coalesce('release.romaji', 'release.title'), 'asc');
 	}
 
-	const useQuery = Boolean(q);
-	const useReleaseLangFilters = form.data.rl.length > 0;
-	const useReleaseFormatFilters = form.data.rf.length > 0;
-
 	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin());
-		if (useQuery) {
-			query = query.where((eb) =>
-				eb.or([eb('release.romaji', 'ilike', `%${q}%`), eb('release.title', 'ilike', `%${q}%`)]),
+		if (useQuery && !sort.startsWith('Relevance')) {
+			query = query.where(
+				(eb) =>
+					eb.fn('greatest', [
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.title')]),
+						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+					]),
+				'>',
+				0.15,
 			);
 		}
 		if (useReleaseLangFilters) {

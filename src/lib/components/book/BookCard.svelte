@@ -30,13 +30,13 @@
 				><TitleDisplay obj={book} /></a
 			>
 
-			<p class="line-clamp-4 whitespace-pre-wrap">
+			<!-- <p class="line-clamp-4 whitespace-pre-wrap">
 				{#if $displayPrefs.descriptions === 'en'}
 					{book.description || book.description_ja}
 				{:else}
 					{book.description_ja || book.description}
 				{/if}
-			</p>
+			</p> -->
 		</h4>
 	</div>
 </div>
