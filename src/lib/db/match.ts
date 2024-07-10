@@ -24,6 +24,5 @@ export function addCharacterBetweenString(str: Nullish<string>, char: string) {
 		}
 	}
 
-	console.log(`${char}${newStrArr.join(char)}${char}`);
 	return `${char}${newStrArr.join(char)}${char}`;
 }
