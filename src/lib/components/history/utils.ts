@@ -205,11 +205,7 @@ export type BookStaff = {
 	edition_name: string;
 };
 function generateBookStaffChangeString(staff: BookStaff, prefs: DisplayPrefs['names']): string {
-	return `${
-		staff.edition_name !== 'Original edition' ? `[${staff.edition_name}]` : ''
-	} ${generateLink(`/staff/${staff.staff_id}`, getNameDisplay({ obj: staff, prefs }))} ${` [${
-		staff.role_type
-	}] ${staff.note ? `[${staff.note}]` : ''}`}`;
+	return `${staff.edition_name !== 'Original edition' ? `[${staff.edition_name}] ` : ''}${generateLink(`/staff/${staff.staff_id}`, getNameDisplay({ obj: staff, prefs }))}${` [${staff.role_type}]${staff.note ? ` [${staff.note}]` : ''}`}`;
 }
 export function generateBookStaffChangeStringFromStaffs(
 	staffs: BookStaff[],

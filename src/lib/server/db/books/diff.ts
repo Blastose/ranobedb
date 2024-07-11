@@ -91,7 +91,7 @@ export function getBookDiffs(params: {
 		getDiffLines({
 			lines1: generateBookStaffChangeStringFromStaffs(prevHistStaff, displayPrefs.names),
 			lines2: generateBookStaffChangeStringFromStaffs(currentHistStaff, displayPrefs.names),
-			name: 'Editions',
+			name: 'Staff',
 		}),
 	);
 	pushIfNotUndefined(
