@@ -18,7 +18,7 @@
 		if (e.currentTarget.value === 'none') return;
 
 		$values.push({
-			romaji: true,
+			romaji: false,
 			lang: e.currentTarget.value as Language,
 		});
 		$values = $values;
