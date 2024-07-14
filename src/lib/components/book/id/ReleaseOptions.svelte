@@ -12,6 +12,21 @@
 
 	export let release: BookR['releases'][number];
 	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>>;
+	export let placement:
+		| 'top'
+		| 'top-start'
+		| 'top-end'
+		| 'right'
+		| 'right-start'
+		| 'right-end'
+		| 'bottom'
+		| 'bottom-start'
+		| 'bottom-end'
+		| 'left'
+		| 'left-start'
+		| 'left-end'
+		| undefined = 'bottom-end';
+	export let showStatus: boolean = false;
 
 	const sForm = superForm(userListReleaseForm, {
 		dataType: 'json',
@@ -35,7 +50,7 @@
 	} = createDropdownMenu({
 		forceVisible: true,
 		preventScroll: false,
-		positioning: { placement: 'bottom-end' },
+		positioning: { placement },
 	});
 </script>
 
@@ -43,7 +58,7 @@
 	use:melt={$trigger}
 	type="button"
 	disabled={$submitting}
-	class="flex items-center flex-col"
+	class="flex items-center gap-2"
 	aria-label="Open release options"
 >
 	{#if $delayed}
@@ -52,6 +67,10 @@
 		<Icon name="packageCheck" />
 	{:else}
 		<Icon name="package" />
+	{/if}
+	{#if showStatus && !$delayed}
+		<span class="capitalize">{release.user_list_release?.release_status ?? 'Not on your list'}</span
+		>
 	{/if}
 </button>
 

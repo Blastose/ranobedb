@@ -36,5 +36,7 @@
 
 	<VisibilityDisplayPerm {item} {user} />
 
-	<slot />
+	<div class="mt-2 flex flex-col gap-2">
+		<slot />
+	</div>
 </section>

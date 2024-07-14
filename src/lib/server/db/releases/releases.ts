@@ -86,6 +86,13 @@ export class DBReleases {
 						.where((eb) => eb.fn.coalesce('series.hidden', eb.lit(false)), '=', false)
 						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_release')
+						.select(['user_list_release.release_status'])
+						.whereRef('user_list_release.release_id', '=', 'release.id')
+						.where('user_list_release.user_id', '=', this.ranobeDB.user?.id || ''),
+				).as('user_list_release'),
 			])
 			.where('release.id', '=', id);
 	}
@@ -158,6 +165,13 @@ export class DBReleases {
 						.where((eb) => eb.fn.coalesce('series.hidden', eb.lit(false)), '=', false)
 						.orderBy(['series_book.sort_order asc']),
 				).as('books'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_release')
+						.select(['user_list_release.release_status'])
+						.where('user_list_release.release_id', '=', params.id)
+						.where('user_list_release.user_id', '=', this.ranobeDB.user?.id || ''),
+				).as('user_list_release'),
 			])
 			.where('change.item_id', '=', params.id)
 			.where('change.item_name', '=', 'release');
