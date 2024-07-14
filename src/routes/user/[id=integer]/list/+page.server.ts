@@ -57,11 +57,21 @@ export const load = async ({ url, params, locals }) => {
 		});
 	}
 
+	// Also a hack?
+	// Postgres generates a slow query as it loops over cte_book as many times are there are books in the list
+	// This nests the query into a with, so Postgres will choose a different query plan
+	// The last order by is also needed to make Postgres choose a different query plan
+	const withedQuery = db
+		.with('query', () => query)
+		.selectFrom('query')
+		.selectAll()
+		.orderBy((eb) => eb.fn.coalesce('query.romaji', 'query.title'));
+
 	const {
 		result: books,
 		count,
 		totalPages,
-	} = await paginationBuilderExecuteWithCount(query, {
+	} = await paginationBuilderExecuteWithCount(withedQuery, {
 		limit: 24,
 		page: currentPage,
 	});

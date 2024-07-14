@@ -20,6 +20,8 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "en" | "eo" | "es" | "eu" | "fa" | "fi" | "fr" | "ga" | "gd" | "he" | "hi" | "hr" | "hu" | "id" | "it" | "iu" | "ja" | "ko" | "la" | "lt" | "lv" | "mk" | "ms" | "nl" | "no" | "pl" | "pt-br" | "pt-pt" | "ro" | "ru" | "sk" | "sl" | "sr" | "sv" | "ta" | "th" | "tr" | "uk" | "ur" | "vi" | "zh-Hans" | "zh-Hant";
 
+export type ListReleaseStatus = "deleted" | "on loan" | "owned" | "pending" | "unknown";
+
 export type PublisherRelType = "imprint" | "parent brand" | "parent company" | "subsidiary";
 
 export type ReleaseFormat = "audio" | "digital" | "print";
@@ -401,6 +403,13 @@ export interface UserListLabel {
   user_id: string;
 }
 
+export interface UserListRelease {
+  added: Generated<Timestamp>;
+  release_id: number;
+  release_status: ListReleaseStatus;
+  user_id: string;
+}
+
 export interface DB {
   auth_session: AuthSession;
   auth_user: AuthUser;
@@ -443,4 +452,5 @@ export interface DB {
   user_list_book: UserListBook;
   user_list_book_label: UserListBookLabel;
   user_list_label: UserListLabel;
+  user_list_release: UserListRelease;
 }

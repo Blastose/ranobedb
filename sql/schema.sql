@@ -1,6 +1,6 @@
 CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
 
-CREATE TYPE public.release_format AS ENUM ('digital', 'print', 'audio');
+CREATE TYPE public.release_format AS ENUM ('print', 'digital', 'audio');
 
 CREATE TYPE public.language AS ENUM (
     'ja',
@@ -111,6 +111,14 @@ CREATE TYPE public.db_item AS ENUM (
     'release',
     'staff',
     'publisher'
+);
+
+CREATE TYPE public.list_release_status AS ENUM (
+    'owned',
+    'pending',
+    'on loan',
+    'deleted',
+    'unknown'
 );
 
 CREATE TABLE public.auth_user (
@@ -553,6 +561,16 @@ CREATE TABLE public.user_list_book_label (
     FOREIGN KEY (user_id, label_id) REFERENCES public.user_list_label(user_id, id),
     FOREIGN KEY (user_id, book_id) REFERENCES public.user_list_book(user_id, book_id),
     PRIMARY KEY (label_id, user_id, book_id)
+);
+
+CREATE TABLE public.user_list_release (
+    added timestamptz NOT NULL DEFAULT NOW(),
+    release_id integer NOT NULL,
+    release_status public.list_release_status NOT NULL,
+    user_id text NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
+    FOREIGN KEY (release_id) REFERENCES public.release(id),
+    PRIMARY KEY (user_id, release_id)
 );
 
 CREATE INDEX book_staff_alias_book_id_idx ON public.book_staff_alias USING btree (book_id);

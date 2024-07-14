@@ -23,7 +23,7 @@
 
 	const sForm = superForm(userListForm, {
 		dataType: 'json',
-		onUpdate: async ({ form }) => {
+		onUpdated: async ({ form }) => {
 			if (!form.valid) return;
 
 			openNested.set(false);
