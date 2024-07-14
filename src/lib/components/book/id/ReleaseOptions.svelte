@@ -69,7 +69,8 @@
 		<Icon name="package" />
 	{/if}
 	{#if showStatus && !$delayed}
-		<span class="capitalize">{release.user_list_release?.release_status ?? 'Not on your list'}</span
+		<span class="first-letter:capitalize"
+			>{release.user_list_release?.release_status ?? 'Not in your collection'}</span
 		>
 	{/if}
 </button>

@@ -21,9 +21,7 @@
 	<time datetime={releaseDate}>{releaseDate}</time>
 
 	<div class="flex justify-between items-start">
-		<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
-
-		<div class="flex gap-2 whitespace-nowrap">
+		<div class="flex gap-2">
 			<div title={release.format}>
 				{#if release.format === 'print'}
 					<Icon name="bookW" height={size} width={size} />
@@ -33,7 +31,10 @@
 					<Icon name="headphones" height={size} width={size} />
 				{/if}
 			</div>
+			<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
+		</div>
 
+		<div class="flex gap-2 whitespace-nowrap">
 			{#if userListReleaseForm}
 				<ReleaseOptions {release} {userListReleaseForm} />
 			{/if}
