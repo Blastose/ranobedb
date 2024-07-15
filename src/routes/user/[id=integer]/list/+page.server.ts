@@ -5,7 +5,7 @@ import { getBooksRL, getUserLabelCounts } from '$lib/server/db/user/list';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { listLabelsSchema, pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
-import type { Expression, SqlBool } from 'kysely';
+import { sql, type Expression, type SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -65,7 +65,7 @@ export const load = async ({ url, params, locals }) => {
 		.with('query', () => query)
 		.selectFrom('query')
 		.selectAll()
-		.orderBy((eb) => eb.fn.coalesce('query.romaji', 'query.title'));
+		.orderBy((eb) => sql`${eb.fn.coalesce('query.romaji', 'query.title')} COLLATE numeric`);
 
 	const {
 		result: books,

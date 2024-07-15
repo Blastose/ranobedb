@@ -4,6 +4,7 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DBShell from '$lib/components/layout/db/DBShell.svelte';
+	import ListTabs from '$lib/components/layout/list/ListTabs.svelte';
 	import LabelContainer from '$lib/components/readinglist/LabelContainer.svelte';
 
 	export let data;
@@ -22,6 +23,10 @@
 	results={data.count}
 	inputPlaceholder="Search by book title"
 >
+	<svelte:fragment slot="under-heading"
+		><ListTabs userIdNum={data.listUser.id_numeric} /></svelte:fragment
+	>
+
 	<svelte:fragment slot="info">
 		<LabelContainer userLabels={data.userLabelCounts} activeLabels={data.labels} />
 	</svelte:fragment>

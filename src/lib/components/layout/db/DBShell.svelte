@@ -17,6 +17,8 @@
 	<div class="db-filters">
 		<h1 class="font-bold text-4xl">{heading}</h1>
 
+		<slot name="under-heading" />
+
 		<form method="get">
 			<div class="flex flex-col gap-2">
 				<SearchInput {inputPlaceholder} ariaLabel={inputPlaceholder} />

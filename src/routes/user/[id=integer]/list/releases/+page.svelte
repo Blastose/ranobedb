@@ -3,12 +3,13 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import ListTabs from '$lib/components/layout/list/ListTabs.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
 	export let data;
 
-	$: pageTitle = data.isMyList ? 'My list' : `${data.listUser.username}'s list`;
+	$: pageTitle = data.isMyList ? 'My collection' : `${data.listUser.username}'s collection`;
 
 	const size = '24';
 </script>
@@ -16,8 +17,10 @@
 <PageTitle title={pageTitle} />
 <NoIndex />
 
-<main class="container-rndb">
-	<h1 class="text-3xl font-bold">Releases collection</h1>
+<main class="container-rndb flex flex-col gap-4">
+	<h1 class="text-4xl font-bold">{pageTitle}</h1>
+
+	<ListTabs userIdNum={data.listUser.id_numeric} />
 
 	<div class="flex flex-col gap-2">
 		{#each data.bookWithReleasesInList as book}
@@ -43,7 +46,7 @@
 							</p>
 							{#each book.releases as release}
 								<div class="flex justify-between">
-									<div class="grid grid-cols-[18px_24px_60px_1fr] gap-x-2">
+									<div class="grid grid-cols-[18px_24px_68px_1fr] gap-x-2">
 										<p>{release.lang}</p>
 										<div title={release.format}>
 											{#if release.format === 'print'}
