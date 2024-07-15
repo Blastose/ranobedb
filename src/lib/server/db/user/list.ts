@@ -50,7 +50,7 @@ export function getBooksRL(userId: string, user?: User | null) {
 					.limit(1),
 			).as('image'),
 		)
-		.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
+		.orderBy((eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric`);
 }
 
 export function getUserLabelCounts(userId: string) {

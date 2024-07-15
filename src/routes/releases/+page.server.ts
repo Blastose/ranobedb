@@ -2,7 +2,7 @@ import { db } from '$lib/server/db/db.js';
 import { orderNullsLast, paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBReleases } from '$lib/server/db/releases/releases.js';
 import { pageSchema, qSchema, releaseFiltersSchema } from '$lib/server/zod/schema.js';
-import { DeduplicateJoinsPlugin, type Expression, type SqlBool } from 'kysely';
+import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -25,9 +25,13 @@ export const load = async ({ url, locals }) => {
 
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
-		query = query.orderBy((eb) => eb.fn.coalesce('release.romaji', 'release.title'), 'asc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
+		);
 	} else if (sort === 'Title desc') {
-		query = query.orderBy((eb) => eb.fn.coalesce('release.romaji', 'release.title'), 'desc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric desc`,
+		);
 	} else if (sort === 'Release date asc') {
 		query = query.orderBy('release.release_date asc');
 	} else if (sort === 'Release date desc') {
@@ -58,14 +62,18 @@ export const load = async ({ url, locals }) => {
 				0.15,
 			)
 			.orderBy(`sim_score ${orderByDirection}`)
-			.orderBy((eb) => eb.fn.coalesce('release.romaji', 'release.title'), 'asc');
+			.orderBy(
+				(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
+			);
 	}
 
 	if (
 		(sort !== 'Title asc' && sort !== 'Title desc') ||
 		(sort.startsWith('Relevance') && !useQuery)
 	) {
-		query = query.orderBy((eb) => eb.fn.coalesce('release.romaji', 'release.title'), 'asc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
+		);
 	}
 
 	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {

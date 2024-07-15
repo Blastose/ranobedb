@@ -1,5 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
 
+CREATE COLLATION IF NOT EXISTS numeric (provider = icu, locale = 'en-u-kn-true');
+
 CREATE TYPE public.release_format AS ENUM ('print', 'digital', 'audio');
 
 CREATE TYPE public.language AS ENUM (
