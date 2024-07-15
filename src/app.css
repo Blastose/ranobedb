@@ -266,6 +266,9 @@ input[type='number'].input.reset-padding {
 	z-index: 99999;
 	background-color: rgb(0 0 0 / 0.5);
 }
+.modal-bg.no-bg-color {
+	background-color: none;
+}
 
 .modal-content {
 	position: fixed;

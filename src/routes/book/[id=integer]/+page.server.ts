@@ -4,7 +4,11 @@ import {
 	getUserListBookWithLabels,
 	type UserListBookWithLabels,
 } from '$lib/server/db/user/list.js';
-import { userListBookSchema, type UserListFormType } from '$lib/server/zod/schema.js';
+import {
+	userListBookSchema,
+	userListReleaseSchema,
+	type UserListFormType,
+} from '$lib/server/zod/schema.js';
 import { type ReadingStatus } from '$lib/server/db/dbTypes';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
@@ -54,8 +58,11 @@ export const load = async ({ params, locals }) => {
 		{ errors: false },
 	);
 
+	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
+
 	return {
 		book,
 		userListForm,
+		userListReleaseForm: locals.user ? userListReleaseForm : undefined,
 	};
 };

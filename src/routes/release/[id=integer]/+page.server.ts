@@ -2,7 +2,10 @@ import { getDisplayPrefsUser, getNameDisplay } from '$lib/display/prefs.js';
 import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { DBReleases } from '$lib/server/db/releases/releases.js';
+import { userListReleaseSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals }) => {
 	const id = Number(params.id);
@@ -24,5 +27,7 @@ export const load = async ({ params, locals }) => {
 		user: locals.user,
 	});
 
-	return { release };
+	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
+
+	return { release, userListReleaseForm: locals.user ? userListReleaseForm : undefined };
 };

@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db/db';
 import type { Nullish } from '$lib/server/zod/schema';
 import { defaultUserListLabels } from '$lib/db/dbConsts';
-import { Kysely, sql, type InferResult } from 'kysely';
+import { Kysely, sql, type Transaction, type InferResult } from 'kysely';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
@@ -29,8 +29,6 @@ export function getBooksRL(userId: string, user?: User | null) {
 				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
 		)
 		.select([
-			'cte_book.description',
-			'cte_book.description_ja',
 			'cte_book.id',
 			'cte_book.image_id',
 			'cte_book.lang',
@@ -52,7 +50,7 @@ export function getBooksRL(userId: string, user?: User | null) {
 					.limit(1),
 			).as('image'),
 		)
-		.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'));
+		.orderBy((eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric`);
 }
 
 export function getUserLabelCounts(userId: string) {
@@ -136,8 +134,9 @@ export class DBListActions {
 		started: Nullish<string>;
 		finished: Nullish<string>;
 		notes: Nullish<string>;
+		trx?: Transaction<DB>;
 	}) {
-		await this.db.transaction().execute(async (trx) => {
+		async function query(trx: Transaction<DB>) {
 			await trx
 				.insertInto('user_list_book')
 				.values({
@@ -161,7 +160,14 @@ export class DBListActions {
 			if (userListBookLabels.length > 0) {
 				await trx.insertInto('user_list_book_label').values(userListBookLabels).execute();
 			}
-		});
+		}
+
+		if (params.trx) {
+			const trx = params.trx;
+			await query(trx);
+		} else {
+			await this.db.transaction().execute(query);
+		}
 	}
 
 	async editBookInList(params: {
@@ -239,6 +245,21 @@ export class DBListActions {
 				.deleteFrom('user_list_book')
 				.where('book_id', '=', params.bookId)
 				.where('user_id', '=', params.userId)
+				.execute();
+			await trx
+				.deleteFrom('user_list_release')
+				.where('user_id', '=', params.userId)
+				.where((eb) =>
+					eb(
+						'user_list_release.release_id',
+						'in',
+						eb
+							.selectFrom('release')
+							.innerJoin('release_book', 'release_book.release_id', 'user_list_release.release_id')
+							.select('release.id')
+							.where('release_book.book_id', '=', params.bookId),
+					),
+				)
 				.execute();
 		});
 	}

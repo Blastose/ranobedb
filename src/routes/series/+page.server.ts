@@ -2,7 +2,7 @@ import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
 import { pageSchema, qSchema, seriesFiltersSchema } from '$lib/server/zod/schema.js';
-import { DeduplicateJoinsPlugin, type Expression, type SqlBool } from 'kysely';
+import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -26,9 +26,13 @@ export const load = async ({ url, locals }) => {
 
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
-		query = query.orderBy((eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'), 'asc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+		);
 	} else if (sort === 'Title desc') {
-		query = query.orderBy((eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'), 'desc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric desc`,
+		);
 	} else if (sort === 'Start date asc') {
 		query = query.orderBy('cte_series.start_date asc');
 	} else if (sort === 'Start date desc') {
@@ -65,7 +69,9 @@ export const load = async ({ url, locals }) => {
 				0.15,
 			)
 			.orderBy(`sim_score ${orderByDirection}`)
-			.orderBy((eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'), 'asc');
+			.orderBy(
+				(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+			);
 		query = query.groupBy([
 			'cte_series.id',
 			'cte_series.hidden',
@@ -84,7 +90,9 @@ export const load = async ({ url, locals }) => {
 		(sort !== 'Title asc' && sort !== 'Title desc') ||
 		(sort.startsWith('Relevance') && !useQuery)
 	) {
-		query = query.orderBy((eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'), 'asc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+		);
 	}
 
 	if (useQuery || useReleaseFormatFilters || useReleaseLangFilters || useStaffFilters) {

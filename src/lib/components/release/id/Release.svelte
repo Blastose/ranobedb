@@ -9,10 +9,15 @@
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
+	import ReleaseOptions from '$lib/components/book/id/ReleaseOptions.svelte';
+	import type { Infer, SuperValidated } from 'sveltekit-superforms';
+	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 
 	export let release: Release;
 	export let revision: number | undefined;
 	export let user: User | null;
+	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined =
+		undefined;
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>
@@ -26,11 +31,20 @@
 	item={release}
 	copyTo={{ to: ['book'] }}
 >
-	{#if release.description}
-		<section>
-			<h2 class="text-lg font-bold">Note</h2>
-			<MarkdownToHtml markdown={release.description} type="full" />
-		</section>
+	{#if userListReleaseForm !== undefined}
+		<dl>
+			<div>
+				<dt>List status</dt>
+				<dd>
+					<ReleaseOptions
+						{release}
+						{userListReleaseForm}
+						showStatus={true}
+						placement={'bottom-start'}
+					/>
+				</dd>
+			</div>
+		</dl>
 	{/if}
 
 	<dl>
@@ -63,6 +77,13 @@
 			</div>
 		{/if}
 	</dl>
+
+	{#if release.description}
+		<section>
+			<h2 class="font-bold">Note</h2>
+			<MarkdownToHtml markdown={release.description} type="full" />
+		</section>
+	{/if}
 
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>

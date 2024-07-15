@@ -20,4 +20,10 @@
 	site_name={'RanobeDB'}
 />
 
-<Book {book} userListForm={data.userListForm} user={data.user} revision={undefined} />
+<Book
+	{book}
+	userListForm={data.userListForm}
+	userListReleaseForm={data.userListReleaseForm}
+	user={data.user}
+	revision={undefined}
+/>

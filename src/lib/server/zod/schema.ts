@@ -16,6 +16,7 @@ import {
 	settingsTabs,
 	staffRolesArray,
 	staffTabs,
+	userListReleaseStatus,
 } from '$lib/db/dbConsts';
 import { releaseFormatArray } from '$lib/db/dbConsts';
 import { publisherRelTypeArray } from '$lib/db/dbConsts';
@@ -153,6 +154,12 @@ export const userListBookSchema = z.object({
 		.trim()
 		.max(2000, { message: 'Note must between less than 2000 characters' })
 		.nullish(),
+	type: z.enum(userListFormTypes),
+});
+
+export const userListReleaseSchema = z.object({
+	release_id: z.number(),
+	release_status: z.enum(userListReleaseStatus),
 	type: z.enum(userListFormTypes),
 });
 

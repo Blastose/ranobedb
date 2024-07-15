@@ -229,6 +229,8 @@ export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) =
 	return { id: index + 1, label: v };
 });
 
+export const userListReleaseStatus = ['owned', 'deleted', 'on loan', 'pending', 'unknown'] as const;
+
 export const defaultLangPrio: LanguagePriority[] = [
 	{ lang: 'en', romaji: false },
 	{ lang: 'ja', romaji: true },

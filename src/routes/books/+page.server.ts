@@ -2,7 +2,7 @@ import { DBBooks } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
 import { bookFiltersSchema, pageSchema, qSchema } from '$lib/server/zod/schema.js';
-import { DeduplicateJoinsPlugin, type Expression, type SqlBool } from 'kysely';
+import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -25,9 +25,13 @@ export const load = async ({ url, locals }) => {
 
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
-		query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'asc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
+		);
 	} else if (sort === 'Title desc') {
-		query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'desc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric desc`,
+		);
 	} else if (sort === 'Release date asc') {
 		query = query.orderBy('cte_book.release_date asc');
 	} else if (sort === 'Release date desc') {
@@ -57,8 +61,10 @@ export const load = async ({ url, locals }) => {
 				'>',
 				0.15,
 			)
-			.orderBy(`sim_score ${orderByDirection}`)
-			.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'asc');
+			.orderBy(`sim_score ${orderByDirection}`);
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
+		);
 		query = query.groupBy([
 			'cte_book.id',
 			'cte_book.image_id',
@@ -76,7 +82,9 @@ export const load = async ({ url, locals }) => {
 		(sort !== 'Title asc' && sort !== 'Title desc') ||
 		(sort.startsWith('Relevance') && !useQuery)
 	) {
-		query = query.orderBy((eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'), 'asc');
+		query = query.orderBy(
+			(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
+		);
 	}
 
 	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {

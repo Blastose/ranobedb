@@ -23,7 +23,7 @@
 		return url;
 	}
 
-	function getHref() {
+	function getHref(type: DbItem, item: { id: number }) {
 		// We only need the relative part of the url so we use localhost as a dummy base
 		let url = new URL(`/${type}/${item.id}/edit`, 'http://localhost:5173');
 		url = addRevisionParams(url);
@@ -37,7 +37,7 @@
 			<Icon name="lock" height="16" width="16" />Locked
 		</p>
 	{:else}
-		<a class="sub-btn w-fit flex items-center gap-2" href={getHref()}
+		<a class="sub-btn w-fit flex items-center gap-2" href={getHref(type, item)}
 			><Icon name="pencil" height="16" width="16" />Edit</a
 		>
 	{/if}

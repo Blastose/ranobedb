@@ -3,7 +3,7 @@
 	import { getBgImageStyle, getThemeContext } from '$lib/stores/themeStore';
 	import type { User } from 'lucia';
 	import BookModal from './BookModal.svelte';
-	import type { userListBookSchema } from '$lib/server/zod/schema';
+	import type { userListBookSchema, userListReleaseSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import Description from '$lib/components/book/Description.svelte';
 	import VisibilityDisplay from '$lib/components/layout/db/VisibilityDisplay.svelte';
@@ -25,6 +25,8 @@
 	export let revision: number | undefined;
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
+	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined =
+		undefined;
 
 	const theme = getThemeContext();
 	$: imageUrl = buildImageUrl(book.image?.filename);
@@ -122,7 +124,7 @@
 
 		<PublishersSection publishers={book.publishers} olang={book.olang} onlyOpenOlang={false} />
 
-		<BookReleases releases={book.releases} olang={book.olang} />
+		<BookReleases releases={book.releases} olang={book.olang} {userListReleaseForm} />
 
 		<section>
 			<h2 class="font-bold text-lg">Series</h2>

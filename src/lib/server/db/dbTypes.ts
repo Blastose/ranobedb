@@ -2,6 +2,7 @@ import {
 	defaultUserListLabelsArray,
 	publisherRelTypeArray,
 	seriesBookTypeArray,
+	userListReleaseStatus,
 } from '$lib/db/dbConsts';
 import { releaseFormatArray } from '$lib/db/dbConsts';
 import { dbItemArray } from '$lib/db/dbConsts';
@@ -28,6 +29,8 @@ export type Json<T> = ColumnType<T, string, string>;
 export type DateString = ColumnType<string, string, string>;
 
 export type Language = (typeof languagesArray)[number];
+
+export type UserListReleaseStatus = (typeof userListReleaseStatus)[number];
 
 export type PublisherRelType = (typeof publisherRelTypeArray)[number];
 
@@ -411,6 +414,13 @@ export interface UserListLabel {
 	user_id: string;
 }
 
+export interface UserListRelease {
+	added: Generated<Timestamp>;
+	release_id: number;
+	release_status: UserListReleaseStatus;
+	user_id: string;
+}
+
 export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
@@ -453,4 +463,5 @@ export interface DB {
 	user_list_book: UserListBook;
 	user_list_book_label: UserListBookLabel;
 	user_list_label: UserListLabel;
+	user_list_release: UserListRelease;
 }

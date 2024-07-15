@@ -1,13 +1,17 @@
 <script lang="ts">
 	import Collapsible from '$lib/components/display/Collapsible.svelte';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
-	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import { getLanguageFromString, groupBy, sortByLangObjEntries } from '$lib/db/array';
- 	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookR } from '$lib/server/db/books/books';
 	import type { Language } from '$lib/server/db/dbTypes';
+	import BookRelease from './BookRelease.svelte';
+	import Hr from '$lib/components/layout/Hr.svelte';
+	import type { SuperValidated } from 'sveltekit-superforms';
+	import type { Infer } from 'sveltekit-superforms/server';
+	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 
 	export let releases: BookR['releases'];
 	export let olang: Language;
+	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
 
 	$: groupedReleasesByLang = groupBy(releases, (item) => item.lang);
 </script>
@@ -22,14 +26,14 @@
 						><h3 class="font-semibold">{getLanguageFromString(key)}</h3></svelte:fragment
 					>
 					<svelte:fragment slot="details">
-						{#each releases as release (release.id)}
-							<p>
-								<a class="link" href="/release/{release.id}"
-									><NameDisplay obj={release} /> - {release.format}
-									- {new DateNumber(release.release_date).getDateFormatted()}</a
-								>
-							</p>
-						{/each}
+						<div class="flex flex-col">
+							{#each releases as release, index (release.id)}
+								<BookRelease {release} {userListReleaseForm} />
+								{#if index !== releases.length - 1}
+									<Hr />
+								{/if}
+							{/each}
+						</div>
 					</svelte:fragment>
 				</Collapsible>
 			</section>

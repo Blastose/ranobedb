@@ -23,7 +23,7 @@
 
 	const sForm = superForm(userListForm, {
 		dataType: 'json',
-		onUpdate: async ({ form }) => {
+		onUpdated: async ({ form }) => {
 			if (!form.valid) return;
 
 			openNested.set(false);
@@ -168,6 +168,10 @@
 								<h2 use:melt={$titleNested} class="text-lg font-medium">Warning</h2>
 								<p use:melt={$descriptionNested}>
 									Are you sure you want to remove this book from your list?
+									<span class="text-sm"
+										>Removing this book will also remove any associated releases you have added to
+										your list.</span
+									>
 								</p>
 
 								<form
