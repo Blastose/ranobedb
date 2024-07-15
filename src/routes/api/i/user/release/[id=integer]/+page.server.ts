@@ -28,26 +28,26 @@ export const actions = {
 					release_id: releaseId,
 					release_status: form.data.release_status,
 				});
-				messageText = 'Added release to list';
+				messageText = 'Added release to list!';
 			} else if (form.data.type === 'update') {
 				await dbReleaseListActions.updateReleaseFromList({
 					user_id: user.id,
 					release_id: releaseId,
 					release_status: form.data.release_status,
 				});
-				messageText = 'Updated release successfully';
+				messageText = 'Updated release successfully!';
 			} else if (form.data.type === 'delete') {
 				await dbReleaseListActions.removeReleaseFromList({
 					release_id: releaseId,
 					user_id: user.id,
 				});
-				messageText = 'Removed release from list';
+				messageText = 'Removed release from list!';
 			}
 		} catch (e) {
 			console.log(e);
 			return message(
 				form,
-				{ type: 'error', text: 'An unknown error has occurred' },
+				{ type: 'error', text: 'An unknown error has occurred!' },
 				{ status: 400 },
 			);
 		}

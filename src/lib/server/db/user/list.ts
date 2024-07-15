@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db/db';
 import type { Nullish } from '$lib/server/zod/schema';
 import { defaultUserListLabels } from '$lib/db/dbConsts';
-import { Kysely, sql, Transaction, type InferResult } from 'kysely';
+import { Kysely, sql, type Transaction, type InferResult } from 'kysely';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
