@@ -22,17 +22,25 @@ export const load = async ({ params, locals }) => {
 		.getChanges('series', seriesId, [previousRevision, revision, revision + 1])
 		.execute();
 
-	const [series, changes] = await Promise.all([seriesPromise, changesPromise]);
+	const [series, changes, currentSeriesVisibility] = await Promise.all([
+		seriesPromise,
+		changesPromise,
+		db
+			.selectFrom('series')
+			.where('series.id', '=', seriesId)
+			.select(['hidden', 'locked'])
+			.executeTakeFirst(),
+	]);
 
 	const prevChange = changes.find((i) => i.revision === previousRevision);
 	const change = changes.find((i) => i.revision === revision)!;
 	const nextChange = changes.find((i) => i.revision === revision + 1);
 
-	if (!series) {
+	if (!series || !currentSeriesVisibility) {
 		error(404);
 	}
 
-	const visibilityStatus = getCurrentVisibilityStatus(series);
+	const visibilityStatus = getCurrentVisibilityStatus(currentSeriesVisibility);
 
 	if (visibilityStatus.hidden) {
 		if (!locals.user || (locals.user && !hasVisibilityPerms(locals.user))) {
@@ -66,5 +74,6 @@ export const load = async ({ params, locals }) => {
 		diffs,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
+		currentItemVisibility: currentSeriesVisibility,
 	};
 };

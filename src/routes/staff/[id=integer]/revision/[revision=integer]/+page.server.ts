@@ -28,17 +28,25 @@ export const load = async ({ params, locals, url }) => {
 		.getChanges('staff', staffId, [previousRevision, revision, revision + 1])
 		.execute();
 
-	const [staff, changes] = await Promise.all([staffPromise, changesPromise]);
+	const [staff, changes, currentStaffVisibility] = await Promise.all([
+		staffPromise,
+		changesPromise,
+		db
+			.selectFrom('staff')
+			.where('staff.id', '=', staffId)
+			.select(['hidden', 'locked'])
+			.executeTakeFirst(),
+	]);
 
 	const prevChange = changes.find((i) => i.revision === previousRevision);
 	const change = changes.find((i) => i.revision === revision)!;
 	const nextChange = changes.find((i) => i.revision === revision + 1);
 
-	if (!staff) {
+	if (!staff || !currentStaffVisibility) {
 		error(404);
 	}
 
-	const visibilityStatus = getCurrentVisibilityStatus(staff);
+	const visibilityStatus = getCurrentVisibilityStatus(currentStaffVisibility);
 
 	if (visibilityStatus.hidden) {
 		if (!locals.user || (locals.user && !hasVisibilityPerms(locals.user))) {
@@ -78,5 +86,6 @@ export const load = async ({ params, locals, url }) => {
 		totalPages,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
+		currentItemVisibility: currentStaffVisibility,
 	};
 };
