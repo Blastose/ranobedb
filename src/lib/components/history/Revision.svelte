@@ -5,6 +5,7 @@
 	import Hr from '../layout/Hr.svelte';
 	import DiffDisplay from './diff-display/DiffDisplay.svelte';
 
+	export let currentItemVisibility: { hidden: boolean; locked: boolean };
 	export let changes: { prevChange?: Change; change: Change; nextChange?: Change };
 	export let title: string;
 	export let buildBaseLink: () => string;
@@ -21,12 +22,12 @@
 		</div>
 	</div>
 
-	{#if (changes.change.ihid || changes.change.ilock) && !changes.nextChange}
+	{#if currentItemVisibility.hidden || currentItemVisibility.locked}
 		<div>
-			{#if changes.change.ihid}
+			{#if currentItemVisibility.hidden}
 				<p class="error-text-color">This item is currently hidden from view.</p>
 			{/if}
-			{#if changes.change.ilock}
+			{#if currentItemVisibility.locked}
 				<p class="error-text-color">This item is currently locked for editing.</p>
 			{/if}
 		</div>

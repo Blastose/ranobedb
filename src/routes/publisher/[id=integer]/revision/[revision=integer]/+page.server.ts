@@ -32,17 +32,25 @@ export const load = async ({ params, locals, url }) => {
 		.getChanges('publisher', publisherId, [previousRevision, revision, revision + 1])
 		.execute();
 
-	const [publisher, changes] = await Promise.all([publisherPromise, changesPromise]);
+	const [publisher, changes, currentPublisherVisibility] = await Promise.all([
+		publisherPromise,
+		changesPromise,
+		db
+			.selectFrom('publisher')
+			.where('publisher.id', '=', publisherId)
+			.select(['hidden', 'locked'])
+			.executeTakeFirst(),
+	]);
 
 	const prevChange = changes.find((i) => i.revision === previousRevision);
 	const change = changes.find((i) => i.revision === revision)!;
 	const nextChange = changes.find((i) => i.revision === revision + 1);
 
-	if (!publisher) {
+	if (!publisher || !currentPublisherVisibility) {
 		error(404);
 	}
 
-	const visibilityStatus = getCurrentVisibilityStatus(publisher);
+	const visibilityStatus = getCurrentVisibilityStatus(currentPublisherVisibility);
 
 	if (visibilityStatus.hidden) {
 		if (!locals.user || (locals.user && !hasVisibilityPerms(locals.user))) {
@@ -84,5 +92,6 @@ export const load = async ({ params, locals, url }) => {
 		diffs,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },
+		currentItemVisibility: currentPublisherVisibility,
 	};
 };

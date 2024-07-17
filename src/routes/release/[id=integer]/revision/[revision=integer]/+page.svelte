@@ -28,7 +28,13 @@
 <div class="container-rndb flex flex-col gap-6">
 	<RevisionContainer>
 		<svelte:fragment slot="revision">
-			<Revision changes={data.changes} {title} {buildBaseLink} diffs={data.diffs} />
+			<Revision
+				changes={data.changes}
+				{title}
+				{buildBaseLink}
+				diffs={data.diffs}
+				currentItemVisibility={data.currentItemVisibility}
+			/>
 		</svelte:fragment>
 
 		<svelte:fragment slot="content">
