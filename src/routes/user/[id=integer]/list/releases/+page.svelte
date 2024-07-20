@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import ReleaseOptions from '$lib/components/book/id/ReleaseOptions.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
@@ -46,7 +47,7 @@
 							</p>
 							{#each book.releases as release}
 								<div class="flex justify-between">
-									<div class="grid grid-cols-[18px_24px_68px_1fr] gap-x-2">
+									<div class="grid grid-cols-[18px_24px_102px_1fr] gap-x-2">
 										<p>{release.lang}</p>
 										<div title={release.format}>
 											{#if release.format === 'print'}
@@ -57,7 +58,15 @@
 												<Icon name="headphones" height={size} width={size} />
 											{/if}
 										</div>
-										<p>{release.user_list_release?.release_status}</p>
+										{#if data.userListReleaseForm}
+											<ReleaseOptions
+												{release}
+												showStatus={true}
+												userListReleaseForm={data.userListReleaseForm}
+											/>
+										{:else}
+											<p>{release.user_list_release?.release_status}</p>
+										{/if}
 										<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
 									</div>
 								</div>

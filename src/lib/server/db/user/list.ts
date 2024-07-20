@@ -6,6 +6,7 @@ import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
 import type { DB } from '../dbTypes';
+import { DBSeriesListActions } from './series-list';
 
 // TODO Refactor with getBooks
 export function getBooksRL(userId: string, user?: User | null) {
@@ -112,7 +113,7 @@ export type UserListBookWithLabels = InferResult<
 	ReturnType<typeof getUserListBookWithLabels>
 >[number];
 
-function getToAddAndToRemoveFromArrays(arr1: number[], arr2: number[]) {
+export function getToAddAndToRemoveFromArrays(arr1: number[], arr2: number[]) {
 	const toAdd = arr1.filter((x) => !arr2.includes(x));
 	const toRemove = arr2.filter((x) => !arr1.includes(x));
 	return { toAdd, toRemove };
@@ -136,7 +137,39 @@ export class DBListActions {
 		notes: Nullish<string>;
 		trx?: Transaction<DB>;
 	}) {
-		async function query(trx: Transaction<DB>) {
+		const query = async (trx: Transaction<DB>) => {
+			const seriesInList = await trx
+				.selectFrom('series_book')
+				.innerJoin('book', 'series_book.book_id', 'book.id')
+				.innerJoin('series', 'series.id', 'series_book.series_id')
+				.leftJoin('user_list_series', 'user_list_series.series_id', 'series_book.series_id')
+				.where('book.hidden', '=', false)
+				.where('series.hidden', '=', false)
+				.where('series_book.book_id', '=', params.bookId)
+				.where((eb) =>
+					eb.or([
+						eb('user_list_series.user_id', '=', params.userId),
+						eb('user_list_series.user_id', 'is', null),
+					]),
+				)
+				.select(['series_book.series_id', 'user_list_series.user_id'])
+				.limit(1)
+				.executeTakeFirst();
+
+			if (seriesInList && !seriesInList.user_id) {
+				const dbSeriesListActions = new DBSeriesListActions(this.db);
+				// TODO user default series settings
+				await dbSeriesListActions.addSeriesToList({
+					trx,
+					series_id: seriesInList.series_id,
+					user_id: params.userId,
+					labelIds: [],
+					readingStatusId: 1,
+					formats: [],
+					langs: [],
+				});
+			}
+
 			await trx
 				.insertInto('user_list_book')
 				.values({
@@ -160,7 +193,7 @@ export class DBListActions {
 			if (userListBookLabels.length > 0) {
 				await trx.insertInto('user_list_book_label').values(userListBookLabels).execute();
 			}
-		}
+		};
 
 		if (params.trx) {
 			const trx = params.trx;
@@ -186,6 +219,7 @@ export class DBListActions {
 					.selectFrom('user_list_book_label')
 					.select('label_id')
 					.where('user_id', '=', params.userId)
+					.where('book_id', '=', params.bookId)
 					.execute()
 			).map((v) => v.label_id);
 
@@ -205,7 +239,7 @@ export class DBListActions {
 				.where('user_id', '=', params.userId)
 				.execute();
 
-			// Remove all default reaind status list ids
+			// Remove all default status list ids
 			toRemove.push(...defaultUserListLabels.map((v) => v.id));
 			if (toRemove.length > 0) {
 				await trx

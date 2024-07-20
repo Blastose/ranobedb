@@ -1,4 +1,4 @@
-<script lang="ts" generics="T extends string">
+<script lang="ts">
 	import { cubicInOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { page } from '$app/stores';
@@ -21,7 +21,7 @@
 	];
 
 	$: currentPage = new URL($page.url);
-	$: currentTab = currentPage.pathname.split('/').at(-1);
+	$: currentTab = currentPage.pathname.split('/').at(-1) || '';
 
 	const [send, receive] = crossfade({
 		duration: 250,

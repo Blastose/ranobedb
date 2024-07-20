@@ -157,6 +157,20 @@ export const userListBookSchema = z.object({
 	type: z.enum(userListFormTypes),
 });
 
+export const userListSeriesSchema = z.object({
+	labels: z.array(
+		z.object({
+			id: z.number().max(2000000),
+			label: z.string().max(2000),
+		}),
+	),
+	volumes_read: z.number().max(maxNumberValue).nullish(),
+	langs: z.array(z.enum(languagesArray)),
+	formats: z.array(z.enum(releaseFormatArray)),
+	readingStatus: z.enum(defaultUserListLabelsArray),
+	type: z.enum(userListFormTypes),
+});
+
 export const userListReleaseSchema = z.object({
 	release_id: z.number(),
 	release_status: z.enum(userListReleaseStatus),

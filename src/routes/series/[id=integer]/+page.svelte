@@ -24,5 +24,10 @@
 <MetaTags {title} image={imageUrl} description={series.description} site_name={'RanobeDB'} />
 
 <DbRouteShell theme={$theme} {bgImageStyle}>
-	<Series revision={undefined} {series} user={data.user} />
+	<Series
+		revision={undefined}
+		{series}
+		user={data.user}
+		userListSeriesForm={data.userListSeriesForm}
+	/>
 </DbRouteShell>

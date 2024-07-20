@@ -80,9 +80,10 @@
 		</div>
 	</div>
 
-	<div class="grid overflow-x-hidden" bind:clientWidth={width}>
+	<div class="grid overflow-x-hidden overflow-y-hidden" bind:clientWidth={width}>
 		<div class="carousel-container overflow-x-hidden" bind:this={carouselContainer}>
 			<slot name="items" />
 		</div>
 	</div>
 </div>
+ 
