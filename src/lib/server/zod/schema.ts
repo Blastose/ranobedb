@@ -176,7 +176,7 @@ export const userListSeriesSchema = z.object({
 	notify_book: z.boolean().default(false),
 	show_upcoming: z.boolean().default(true),
 	volumes_read: z.number().max(maxNumberValue).nullish(),
-	remove_all: z.boolean().default(false),
+	// remove_all: z.boolean().default(false),
 	langs: z.array(z.enum(languagesArray)),
 	formats: z.array(z.enum(releaseFormatArray)),
 	readingStatus: z.enum(defaultUserListLabelsArray),

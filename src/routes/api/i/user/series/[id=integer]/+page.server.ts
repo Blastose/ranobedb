@@ -55,7 +55,7 @@ export const actions = {
 				await dbSeriesListActions.removeSeriesFromList({
 					series_id: seriesId,
 					user_id: user.id,
-					remove_all: form.data.remove_all,
+					remove_all: true,
 				});
 				messageText = 'Removed series from list!';
 			}

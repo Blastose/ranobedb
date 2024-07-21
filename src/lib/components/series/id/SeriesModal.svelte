@@ -205,13 +205,11 @@
 								<h2 use:melt={$titleNested} class="text-lg font-medium">Warning</h2>
 								<p use:melt={$descriptionNested}>
 									Are you sure you want to remove this series from your list?
+									<span class="text-sm"
+										>Removing this series will also remove any associated books and releases you
+										have added to your list.</span
+									>
 								</p>
-
-								<CheckboxField
-									form={sForm}
-									field="remove_all"
-									label="Also remove any associated books and releases from list."
-								/>
 
 								<form
 									action="/api/i/user/series/{series.id}"
