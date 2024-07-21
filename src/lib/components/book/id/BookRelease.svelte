@@ -11,6 +11,7 @@
 
 	export let release: BookR['releases'][number];
 	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
+	export let showLang: boolean = false;
 
 	$: releaseDate = new DateNumber(release.release_date).getDateFormatted();
 
@@ -31,6 +32,9 @@
 					<Icon name="headphones" height={size} width={size} />
 				{/if}
 			</div>
+			{#if showLang}
+				<p class="whitespace-nowrap">{release.lang}</p>
+			{/if}
 			<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
 		</div>
 

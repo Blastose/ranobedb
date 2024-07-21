@@ -157,6 +157,15 @@ export const userListBookSchema = z.object({
 	type: z.enum(userListFormTypes),
 });
 
+export const userListSeriesSettingsSchema = z.object({
+	notify_book: z.boolean().default(false),
+	show_upcoming: z.boolean().default(true),
+	langs: z.array(z.enum(languagesArray)),
+	formats: z.array(z.enum(releaseFormatArray)),
+	readingStatus: z.enum(defaultUserListLabelsArray),
+});
+export type UserListSeriesSettings = z.infer<typeof userListSeriesSettingsSchema>;
+
 export const userListSeriesSchema = z.object({
 	labels: z.array(
 		z.object({
@@ -164,7 +173,10 @@ export const userListSeriesSchema = z.object({
 			label: z.string().max(2000),
 		}),
 	),
+	notify_book: z.boolean().default(false),
+	show_upcoming: z.boolean().default(true),
 	volumes_read: z.number().max(maxNumberValue).nullish(),
+	remove_all: z.boolean().default(false),
 	langs: z.array(z.enum(languagesArray)),
 	formats: z.array(z.enum(releaseFormatArray)),
 	readingStatus: z.enum(defaultUserListLabelsArray),

@@ -1,12 +1,13 @@
 import { db } from '$lib/server/db/db';
 import type { Nullish } from '$lib/server/zod/schema';
-import { defaultUserListLabels } from '$lib/db/dbConsts';
+import { defaultUserListLabels, defaultUserListLabelsArray } from '$lib/db/dbConsts';
 import { Kysely, sql, type Transaction, type InferResult } from 'kysely';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
 import type { DB } from '../dbTypes';
 import { DBSeriesListActions } from './series-list';
+import { DBUsers } from './user';
 
 // TODO Refactor with getBooks
 export function getBooksRL(userId: string, user?: User | null) {
@@ -70,7 +71,7 @@ export function getUserLabelCounts(userId: string) {
 		)
 		.leftJoin('book', 'book.id', 'user_list_book.book_id')
 		.select((eb) => eb.fn.coalesce('user_list_label.label', sql<string>`'No label'`).as('label'))
-		.select((eb) => eb.fn.count('user_list_book.book_id').as('book_count'))
+		.select((eb) => eb.fn.count('user_list_book.book_id').as('count'))
 		.select((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`9999`).as('label_id'))
 		.where((eb) =>
 			eb.or([eb('user_list_book.user_id', '=', userId), eb('user_list_book.user_id', 'is', null)]),
@@ -158,15 +159,20 @@ export class DBListActions {
 
 			if (seriesInList && !seriesInList.user_id) {
 				const dbSeriesListActions = new DBSeriesListActions(this.db);
-				// TODO user default series settings
+				const dbUsers = new DBUsers(db);
+				const default_series_settings = (await dbUsers.getListPrefs(params.userId, trx))
+					.default_series_settings;
 				await dbSeriesListActions.addSeriesToList({
 					trx,
 					series_id: seriesInList.series_id,
 					user_id: params.userId,
 					labelIds: [],
-					readingStatusId: 1,
-					formats: [],
-					langs: [],
+					readingStatusId:
+						defaultUserListLabelsArray.indexOf(default_series_settings.readingStatus) + 1,
+					formats: default_series_settings.formats,
+					langs: default_series_settings.langs,
+					show_upcoming: default_series_settings.show_upcoming,
+					volumes_read: null,
 				});
 			}
 

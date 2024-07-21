@@ -14,7 +14,7 @@ import {
 	staffRolesArray,
 } from '$lib/db/dbConsts';
 import { languagesArray } from '$lib/db/dbConsts';
-import type { DisplayPrefs } from '$lib/server/zod/schema';
+import type { DisplayPrefs, UserListSeriesSettings } from '$lib/server/zod/schema';
 import type { ColumnType } from 'kysely';
 
 export type DbItem = (typeof dbItemArray)[number];
@@ -458,6 +458,13 @@ export interface UserListSeriesLang {
 	user_id: string;
 }
 
+export interface UserListSettings {
+	default_book_settings: Generated<Json<Record<string, never>>>;
+	default_release_settings: Generated<Json<Record<string, never>>>;
+	default_series_settings: Generated<Json<UserListSeriesSettings>>;
+	user_id: string;
+}
+
 export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
@@ -505,4 +512,5 @@ export interface DB {
 	user_list_series_format: UserListSeriesFormat;
 	user_list_series_label: UserListSeriesLabel;
 	user_list_series_lang: UserListSeriesLang;
+	user_list_settings: UserListSettings;
 }

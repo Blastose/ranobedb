@@ -52,6 +52,8 @@ export class DBUsers {
 
 			await insertDefaultUserListLabels(trx, user.id);
 
+			await trx.insertInto('user_list_settings').values({ user_id: user.id }).execute();
+
 			return createdUser;
 		});
 	}
@@ -147,6 +149,22 @@ export class DBUsers {
 			})
 			.where('auth_user.id', '=', params.userId)
 			.execute();
+	}
+
+	async getListPrefs(userId: string, trx?: Transaction<DB>) {
+		if (trx) {
+			return await trx
+				.selectFrom('user_list_settings')
+				.select(['default_series_settings', 'default_book_settings', 'default_release_settings'])
+				.where('user_id', '=', userId)
+				.executeTakeFirstOrThrow();
+		}
+
+		return await this.db
+			.selectFrom('user_list_settings')
+			.select(['default_series_settings', 'default_book_settings', 'default_release_settings'])
+			.where('user_id', '=', userId)
+			.executeTakeFirstOrThrow();
 	}
 
 	async deleteUser(params: { userId: string }) {

@@ -32,6 +32,7 @@ export const load = async ({ params, locals }) => {
 		.where('series.hidden', '=', false)
 		.where('user_list_series.user_id', '=', listUser.id)
 		.where('release.release_date', '>=', getTodayAsDateNumber())
+		.where('user_list_series.show_upcoming', '=', true)
 		.where((eb) =>
 			eb.and([
 				eb.or([

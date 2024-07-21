@@ -11,12 +11,12 @@
 			url: '',
 		},
 		{
-			type: 'Releases',
-			url: 'releases',
-		},
-		{
 			type: 'Series',
 			url: 'series',
+		},
+		{
+			type: 'Releases',
+			url: 'releases',
 		},
 	];
 

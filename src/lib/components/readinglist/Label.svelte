@@ -8,7 +8,7 @@
 
 <div class="flex flex-col gap-1">
 	<a class="font-bold reading-label" class:active href="?l={userLabel.label_id}"
-		>{userLabel.label} ({userLabel.book_count})</a
+		>{userLabel.label} ({userLabel.count})</a
 	>
 	<div class="box-underline" class:active />
 </div>

@@ -8,6 +8,7 @@ import type {
 } from '../dbTypes';
 import { getToAddAndToRemoveFromArrays } from './list';
 import { defaultUserListLabels } from '$lib/db/dbConsts';
+import type { Nullish } from '$lib/server/zod/schema';
 
 export class DBSeriesListActions {
 	db: Kysely<DB>;
@@ -60,16 +61,19 @@ export class DBSeriesListActions {
 		readingStatusId: number;
 		langs: Language[];
 		formats: ReleaseFormat[];
+		show_upcoming: boolean;
+		volumes_read: Nullish<number>;
 		trx?: Transaction<DB>;
 	}) {
 		const query = async (trx: Transaction<DB>) => {
 			await trx
 				.insertInto('user_list_series')
 				.values({
-					notify_book: true,
-					show_upcoming: true,
+					notify_book: false,
+					show_upcoming: params.show_upcoming,
 					series_id: params.series_id,
 					user_id: params.user_id,
+					volumes_read: params.volumes_read,
 				})
 				.execute();
 
@@ -102,6 +106,8 @@ export class DBSeriesListActions {
 		labelIds: number[];
 		readingStatusId: number;
 		langs: Language[];
+		show_upcoming: boolean;
+		volumes_read: Nullish<number>;
 		formats: ReleaseFormat[];
 	}) {
 		await this.db.transaction().execute(async (trx) => {
@@ -118,7 +124,7 @@ export class DBSeriesListActions {
 
 			await trx
 				.updateTable('user_list_series')
-				.set({ notify_book: true })
+				.set({ show_upcoming: params.show_upcoming, volumes_read: params.volumes_read })
 				.where('user_list_series.series_id', '=', params.series_id)
 				.where('user_list_series.user_id', '=', params.user_id)
 				.execute();
@@ -151,11 +157,7 @@ export class DBSeriesListActions {
 		});
 	}
 
-	async removeSeriesFromList(params: {
-		series_id: number;
-		user_id: string;
-		remove_books?: boolean;
-	}) {
+	async removeSeriesFromList(params: { series_id: number; user_id: string; remove_all: boolean }) {
 		await this.db.transaction().execute(async (trx) => {
 			await trx
 				.deleteFrom('user_list_series_lang')
@@ -178,7 +180,7 @@ export class DBSeriesListActions {
 				.where('user_list_series.user_id', '=', params.user_id)
 				.execute();
 
-			if (params.remove_books) {
+			if (params.remove_all) {
 				await trx
 					.deleteFrom('user_list_book_label')
 					.where((eb) =>

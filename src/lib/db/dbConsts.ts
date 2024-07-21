@@ -5,7 +5,7 @@ import type {
 	PublisherRelType,
 	SeriesRelType,
 } from '$lib/server/db/dbTypes';
-import type { DisplayPrefs } from '$lib/server/zod/schema';
+import type { DisplayPrefs, UserListSeriesSettings } from '$lib/server/zod/schema';
 import type { LanguagePriority } from '$lib/server/zod/schema';
 
 export const languagesArray = [
@@ -229,6 +229,14 @@ export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) =
 	return { id: index + 1, label: v };
 });
 
+export const defaultUserListSeriesSettings = {
+	formats: [],
+	langs: ['en'],
+	notify_book: false,
+	readingStatus: 'Reading',
+	show_upcoming: true,
+} satisfies UserListSeriesSettings;
+
 export const userListReleaseStatus = ['owned', 'deleted', 'on loan', 'pending', 'unknown'] as const;
 
 export const defaultLangPrio: LanguagePriority[] = [
@@ -253,7 +261,7 @@ export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconT
 	series: 'bookshelf',
 	releases: 'file',
 };
-export const settingsTabs = ['account', 'display', 'email'] as const;
+export const settingsTabs = ['account', 'display', 'list', 'email'] as const;
 export type SettingsTab = (typeof settingsTabs)[number];
 
 export const historyFilterChangeType = ['all', 'edit', 'add'] as const;

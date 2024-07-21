@@ -7,6 +7,7 @@
 		displayPrefsSchema,
 		passwordSchema,
 		sendEmailVerificationSchema,
+		userListSeriesSettingsSchema,
 		usernameSchema,
 		verifyEmailSchema,
 	} from '$lib/server/zod/schema';
@@ -18,6 +19,7 @@
 	import ChangeEmailForm from './email/ChangeEmailForm.svelte';
 	import VerifyEmailForm from './email/VerifyEmailForm.svelte';
 	import type { SettingsTab } from '$lib/db/dbConsts';
+	import SeriesListSettingsForm from './list/SeriesListSettingsForm.svelte';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
@@ -26,6 +28,7 @@
 	export let sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	export let displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
+	export let userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
 	export let view: SettingsTab;
 </script>
 
@@ -43,6 +46,12 @@
 				href="{$page.url.pathname}?view=display"
 				text="Display"
 				icon="books"
+			/>
+			<SidebarListItem
+				active={view === 'list'}
+				href="{$page.url.pathname}?view=list"
+				text="List"
+				icon="series"
 			/>
 			<SidebarListItem
 				active={view === 'email'}
@@ -77,6 +86,13 @@
 
 			<section>
 				<DisplayPrefsForm {displayPrefsForm} />
+			</section>
+		</div>
+	{:else if view === 'list'}
+		<h2 class="font-bold text-2xl">List settings</h2>
+		<div class="flex flex-col gap-4 max-w-lg">
+			<section>
+				<SeriesListSettingsForm {userListSeriesSettingsForm} />
 			</section>
 		</div>
 	{:else if view === 'email'}

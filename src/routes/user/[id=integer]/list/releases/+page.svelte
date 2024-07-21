@@ -28,7 +28,7 @@
 			<!-- TODO might be better to filter out the books without releases in list in SQL -->
 			{#if book.releases.length > 0}
 				<div>
-					<div class="grid grid-cols-[56px_1fr] sm:grid-cols-[72px_1fr] gap-2 sm:gap-4">
+					<div class="grid grid-cols-[48px_1fr] sm:grid-cols-[72px_1fr] gap-2 sm:gap-4">
 						{#if book.image}
 							<a class="mt-1" href="/book/{book.id}">
 								<img
@@ -46,7 +46,7 @@
 								<a class="link" href="/book/{book.id}"><TitleDisplay obj={book} /></a>
 							</p>
 							{#each book.releases as release}
-								<div class="flex justify-between">
+								<div class="flex justify-between text-sm sm:text-base">
 									<div class="grid grid-cols-[18px_24px_102px_1fr] gap-x-2">
 										<p>{release.lang}</p>
 										<div title={release.format}>
@@ -67,7 +67,9 @@
 										{:else}
 											<p>{release.user_list_release?.release_status}</p>
 										{/if}
-										<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
+										<a class="link line-clamp-2" href="/release/{release.id}"
+											><NameDisplay obj={release} /></a
+										>
 									</div>
 								</div>
 							{/each}

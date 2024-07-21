@@ -447,6 +447,13 @@ export interface UserListSeriesLang {
   user_id: string;
 }
 
+export interface UserListSettings {
+  default_book_settings: Generated<Json>;
+  default_release_settings: Generated<Json>;
+  default_series_settings: Generated<Json>;
+  user_id: string;
+}
+
 export interface DB {
   auth_session: AuthSession;
   auth_user: AuthUser;
@@ -495,4 +502,5 @@ export interface DB {
   user_list_series_format: UserListSeriesFormat;
   user_list_series_label: UserListSeriesLabel;
   user_list_series_lang: UserListSeriesLang;
+  user_list_settings: UserListSettings;
 }

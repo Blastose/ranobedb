@@ -35,6 +35,8 @@ export const actions = {
 					readingStatusId,
 					langs: form.data.langs,
 					formats: form.data.formats,
+					show_upcoming: form.data.show_upcoming,
+					volumes_read: form.data.volumes_read,
 				});
 				messageText = 'Added series to list!';
 			} else if (form.data.type === 'update') {
@@ -45,10 +47,16 @@ export const actions = {
 					readingStatusId,
 					langs: form.data.langs,
 					formats: form.data.formats,
+					show_upcoming: form.data.show_upcoming,
+					volumes_read: form.data.volumes_read,
 				});
 				messageText = 'Updated series successfully!';
 			} else if (form.data.type === 'delete') {
-				await dbSeriesListActions.removeSeriesFromList({ series_id: seriesId, user_id: user.id });
+				await dbSeriesListActions.removeSeriesFromList({
+					series_id: seriesId,
+					user_id: user.id,
+					remove_all: form.data.remove_all,
+				});
 				messageText = 'Removed series from list!';
 			}
 		} catch (e) {

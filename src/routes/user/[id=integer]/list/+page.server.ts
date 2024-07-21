@@ -30,7 +30,12 @@ export const load = async ({ url, params, locals }) => {
 
 	let query = getBooksRL(listUser.id, user).where('cte_book.hidden', '=', false);
 	if (q) {
-		query = query.where('cte_book.title', 'ilike', addCharacterBetweenString(q, '%'));
+		query = query.where((eb) =>
+			eb.or([
+				eb('cte_book.title', 'ilike', addCharacterBetweenString(q, '%')),
+				eb('cte_book.romaji', 'ilike', addCharacterBetweenString(q, '%')),
+			]),
+		);
 	}
 
 	if (labels.length > 0) {

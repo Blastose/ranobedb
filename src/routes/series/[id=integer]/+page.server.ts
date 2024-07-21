@@ -3,6 +3,7 @@ import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import type { ReadingStatus } from '$lib/server/db/dbTypes.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
+import { DBUsers } from '$lib/server/db/user/user.js';
 import { userListSeriesSchema, type UserListFormType } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
@@ -58,7 +59,11 @@ export const load = async ({ params, locals }) => {
 		])
 		.where('user_list_series.user_id', '=', locals.user?.id || '')
 		.where('user_list_series.series_id', '=', id)
-		.select(['user_list_series.series_id'])
+		.select([
+			'user_list_series.series_id',
+			'user_list_series.show_upcoming',
+			'user_list_series.volumes_read',
+		])
 		.executeTakeFirst();
 
 	let formType: UserListFormType;
@@ -73,19 +78,38 @@ export const load = async ({ params, locals }) => {
 		// ids 1 to 10 are reserved for reading status
 		readingStatus = userSeriesLabels.labels.filter((v) => v.id <= 10).at(0)?.label as ReadingStatus;
 	}
-	const userListSeriesForm = await superValidate(
-		{
-			labels: userSeriesLabels?.labels,
-			type: formType,
-			readingStatus,
-			formats: userSeriesLabels?.formats.map((v) => v.format),
-			langs: userSeriesLabels?.langs.map((v) => v.lang),
-		},
-		zod(userListSeriesSchema),
-		{
+
+	async function getUserListSeriesForm() {
+		if (userSeriesLabels) {
+			return await superValidate(
+				{
+					labels: userSeriesLabels?.labels,
+					type: formType,
+					readingStatus,
+					formats: userSeriesLabels?.formats.map((v) => v.format),
+					langs: userSeriesLabels?.langs.map((v) => v.lang),
+					show_upcoming: userSeriesLabels?.show_upcoming,
+					volumes_read: userSeriesLabels?.volumes_read,
+				},
+				zod(userListSeriesSchema),
+				{
+					errors: false,
+				},
+			);
+		}
+		if (locals?.user?.id) {
+			const series_settings = (await new DBUsers(db).getListPrefs(locals.user.id))
+				.default_series_settings;
+			return await superValidate(series_settings, zod(userListSeriesSchema), {
+				errors: false,
+			});
+		}
+		return await superValidate(zod(userListSeriesSchema), {
 			errors: false,
-		},
-	);
+		});
+	}
+
+	const userListSeriesForm = await getUserListSeriesForm();
 
 	return {
 		series,

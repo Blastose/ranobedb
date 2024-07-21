@@ -124,10 +124,16 @@
 		{#if user}
 			<SidebarSection sectionHeading={user.username}>
 				<SidebarListItem
-					active={$page.url.pathname.startsWith(`/user/${user.id_numeric}/list`)}
+					active={$page.url.pathname === `/user/${user.id_numeric}/list`}
 					href="/user/{user.id_numeric}/list"
 					text="My List"
 					icon="mylist"
+				/>
+				<SidebarListItem
+					active={$page.url.pathname === `/user/${user.id_numeric}/list/upcoming`}
+					href="/user/{user.id_numeric}/list/upcoming"
+					text="Upcoming"
+					icon="calendar"
 				/>
 				<SidebarListItem
 					active={$page.url.pathname === `/user/${user.id_numeric}`}

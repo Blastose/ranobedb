@@ -21,6 +21,7 @@
 	import Keyed from '$lib/components/form/Keyed.svelte';
 	import SelectField from '$lib/components/form/SelectField.svelte';
 	import TextField from '$lib/components/form/TextField.svelte';
+	import CheckboxField from '$lib/components/form/CheckboxField.svelte';
 
 	export let series: Series;
 	export let userListSeriesForm: SuperValidated<Infer<typeof userListSeriesSchema>>;
@@ -129,37 +130,41 @@
 						</div>
 
 						<div>
-							<p>Show upcoming releases when:</p>
-							<div class="flex flex-wrap gap-x-2">
-								<div class="max-w-fit">
-									<Keyed>
-										<MultiSelectField
-											form={sForm}
-											field="langs"
-											allSelectedText={getAllOrAny('or')}
-											labelText="Release language"
-											dropdownOptions={languagesArray.map((v) => ({
-												display: languageNames[v],
-												value: v,
-											}))}
-										/>
-									</Keyed>
+							<CheckboxField form={sForm} field="show_upcoming" label="Show upcoming releases" />
+
+							{#if $form.show_upcoming}
+								<p>Show upcoming releases when:</p>
+								<div class="flex flex-wrap gap-x-2">
+									<div class="max-w-fit">
+										<Keyed>
+											<MultiSelectField
+												form={sForm}
+												field="langs"
+												allSelectedText={getAllOrAny('or')}
+												labelText="Release language is one of"
+												dropdownOptions={languagesArray.map((v) => ({
+													display: languageNames[v],
+													value: v,
+												}))}
+											/>
+										</Keyed>
+									</div>
+									<div class="max-w-fit">
+										<Keyed>
+											<MultiSelectField
+												form={sForm}
+												field="formats"
+												allSelectedText={getAllOrAny('or')}
+												labelText="Release format is one of"
+												dropdownOptions={releaseFormatArray.map((v) => ({
+													display: v,
+													value: v,
+												}))}
+											/>
+										</Keyed>
+									</div>
 								</div>
-								<div class="max-w-fit">
-									<Keyed>
-										<MultiSelectField
-											form={sForm}
-											field="formats"
-											allSelectedText={getAllOrAny('or')}
-											labelText="Release format"
-											dropdownOptions={releaseFormatArray.map((v) => ({
-												display: v,
-												value: v,
-											}))}
-										/>
-									</Keyed>
-								</div>
-							</div>
+							{/if}
 						</div>
 
 						<div class="flex flex-col sm:flex-row justify-end gap-2">
@@ -200,14 +205,13 @@
 								<h2 use:melt={$titleNested} class="text-lg font-medium">Warning</h2>
 								<p use:melt={$descriptionNested}>
 									Are you sure you want to remove this series from your list?
-									<!-- TODO checkbox to remove all associated books + releases -->
 								</p>
-								<label class="flex items-center gap-2">
-									<input type="checkbox" />
-									<span class="text-sm"
-										>Also remove any associated books and releases from list.</span
-									>
-								</label>
+
+								<CheckboxField
+									form={sForm}
+									field="remove_all"
+									label="Also remove any associated books and releases from list."
+								/>
 
 								<form
 									action="/api/i/user/series/{series.id}"

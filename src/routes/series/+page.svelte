@@ -24,34 +24,29 @@
 	</svelte:fragment>
 
 	<svelte:fragment slot="display">
-		<div>
-			<BookImageContainer moreColumns={true}>
-				{#each data.series as series (series.id)}
-					{#if series.book}
-						<BookImage
-							book={{
-								title: series.title,
-								romaji: series.romaji,
-								id: series.id,
-								image: series.book.image,
-								lang: series.lang,
-								romaji_orig: series.romaji_orig,
-								title_orig: series.title_orig,
-							}}
-							urlPrefix="/series/"
-						>
-							{#if series.volumes}
-								<BookImageBadge
-									badges={[`${series.volumes.count} vols.`]}
-									location="bottom-right"
-								/>
-							{/if}
-						</BookImage>
-					{:else}
-						<LinkBox display={series.title ?? ''} href="/series/{series.id}" />
-					{/if}
-				{/each}
-			</BookImageContainer>
-		</div>
+		<BookImageContainer moreColumns={true}>
+			{#each data.series as series (series.id)}
+				{#if series.book}
+					<BookImage
+						book={{
+							title: series.title,
+							romaji: series.romaji,
+							id: series.id,
+							image: series.book.image,
+							lang: series.lang,
+							romaji_orig: series.romaji_orig,
+							title_orig: series.title_orig,
+						}}
+						urlPrefix="/series/"
+					>
+						{#if series.volumes}
+							<BookImageBadge badges={[`${series.volumes.count} vols.`]} location="bottom-right" />
+						{/if}
+					</BookImage>
+				{:else}
+					<LinkBox display={series.title ?? ''} href="/series/{series.id}" />
+				{/if}
+			{/each}
+		</BookImageContainer>
 	</svelte:fragment>
 </DbShell>
