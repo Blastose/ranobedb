@@ -11,7 +11,7 @@ export async function up(trx: Kysely<any>): Promise<void> {
 SELECT sb.series_id,
        ulb.user_id,
        uls.series_id AS series_id_in_list,
-       array_agg(DISTINCT r.lang) AS langs
+       array_agg(DISTINCT r.lang)::text[] AS langs
 FROM user_list_book ulb
 INNER JOIN series_book sb ON sb.book_id = ulb.book_id
 INNER JOIN release_book rb ON rb.book_id = sb.book_id
