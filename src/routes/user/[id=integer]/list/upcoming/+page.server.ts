@@ -104,7 +104,6 @@ export const load = async ({ params, locals }) => {
 	return {
 		isMyList,
 		listUser,
-		releases,
 		groupedReleases,
 		userListReleaseForm: isMyList ? userListReleaseForm : undefined,
 	};
