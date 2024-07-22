@@ -53,7 +53,6 @@ export class DBSeriesListActions {
 		}
 	}
 
-	// TODO add more params from form
 	async addSeriesToList(params: {
 		series_id: number;
 		user_id: string;
