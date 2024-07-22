@@ -60,7 +60,7 @@ export class DBReleaseListActions {
 		});
 	}
 
-	async updateReleaseFromList(params: {
+	async editReleaseInList(params: {
 		release_id: number;
 		user_id: string;
 		release_status: UserListReleaseStatus;

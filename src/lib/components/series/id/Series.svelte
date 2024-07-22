@@ -19,11 +19,17 @@
 	import TitlesSection from '$lib/components/titles/TitlesSection.svelte';
 	import Collapsible from '$lib/components/display/Collapsible.svelte';
 	import StaffsSectionGroupedLang from '$lib/components/staff/StaffsSectionGroupedLang.svelte';
-	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
+	import SeriesModal from './SeriesModal.svelte';
+	import type { Infer, SuperValidated } from 'sveltekit-superforms';
+	import type { userListSeriesSchema } from '$lib/server/zod/schema';
+	import { buildRedirectUrl } from '$lib/utils/url';
+	import { page } from '$app/stores';
 
 	export let series: Series;
 	export let user: User | null;
 	export let revision: number | undefined;
+	export let userListSeriesForm: SuperValidated<Infer<typeof userListSeriesSchema>> | undefined =
+		undefined;
 
 	$: child_series = groupBy(series.child_series, (item) => item.relation_type);
 	const displayPrefs = getDisplayPrefsContext();
@@ -38,10 +44,20 @@
 	item={series}
 	copyTo={{ to: ['book'], langs: series.titles.map((t) => t.lang) }}
 >
-	<p class="text-sm font-bold">
+	<p class="text-sm font-bold -mt-2">
 		{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
 		total books
 	</p>
+
+	{#if userListSeriesForm}
+		{#if user}
+ 				<SeriesModal {series} {userListSeriesForm} />
+ 		{:else}
+			<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}
+				>Add to reading list</a
+			>
+		{/if}
+	{/if}
 
 	{#if series.description.length > 0}
 		<Description description={series.description} maxHeight={100} />

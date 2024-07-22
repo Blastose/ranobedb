@@ -89,7 +89,7 @@
 	</button>
 	{#if $open}
 		<div
-			class="ring-1 ring-[#c2c1ca] dark:ring-[#686775] z-10 overflow-y-auto overflow-x-hidden flex gap-1 max-h-[300px] flex-col whitespace-nowrap rounded-lg p-1 input"
+			class="ring-1 ring-[#c2c1ca] dark:ring-[#686775] z-[99999] overflow-y-auto overflow-x-hidden flex gap-1 max-h-[300px] flex-col whitespace-nowrap rounded-lg p-1 input"
 			use:melt={$menu}
 			transition:fly={{ duration: 150, y: -5 }}
 		>

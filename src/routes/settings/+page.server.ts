@@ -5,6 +5,7 @@ import {
 	passwordSchema,
 	sendEmailVerificationSchema,
 	settingsTabsSchema,
+	userListSeriesSettingsSchema,
 	usernameSchema,
 	verifyEmailSchema,
 } from '$lib/server/zod/schema.js';
@@ -24,7 +25,7 @@ import { DBUsers } from '$lib/server/db/user/user.js';
 import { validateTurnstile } from '$lib/server/cf.js';
 import { EmailVerification } from '$lib/server/email/email.js';
 import { ORIGIN } from '$env/static/private';
-import type { SettingsTab } from '$lib/db/dbConsts.js';
+import { defaultUserListSeriesSettings, type SettingsTab } from '$lib/db/dbConsts.js';
 import {
 	changeEmailLimiter,
 	changePasswordLimiter,
@@ -47,6 +48,7 @@ type SettingsWithUser = {
 	sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
+	userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
 	view: SettingsTab;
 };
 type SettingsLoad = SettingsWithoutUser | SettingsWithUser;
@@ -76,8 +78,15 @@ export const load = async ({ locals, url }) => {
 	const verifyEmailForm = await superValidate(zod(verifyEmailSchema));
 	const sendEmailVerificationForm = await superValidate(zod(sendEmailVerificationSchema));
 	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod(displayPrefsSchema));
-
 	const settingsTabs = await superValidate(url, zod(settingsTabsSchema));
+	const userListSeriesSettingsForm =
+		settingsTabs.data.view === 'list'
+			? await superValidate(
+					(await dbUsers.getListPrefs(locals.user.id)).default_series_settings,
+					zod(userListSeriesSettingsSchema),
+				)
+			: await superValidate(defaultUserListSeriesSettings, zod(userListSeriesSettingsSchema));
+
 	return {
 		type: 'user',
 		email_verified: user.email_verified,
@@ -87,6 +96,7 @@ export const load = async ({ locals, url }) => {
 		verifyEmailForm,
 		sendEmailVerificationForm,
 		displayPrefsForm,
+		userListSeriesSettingsForm,
 		view: settingsTabs.data.view,
 	} satisfies SettingsLoad;
 };
@@ -218,6 +228,30 @@ export const actions = {
 		});
 
 		return message(displayPrefsForm, { text: 'Updated display preferences!', type: 'success' });
+	},
+
+	serieslistsettings: async ({ request, locals }) => {
+		if (!locals.user) return fail(401);
+		const userListSeriesSettingsForm = await superValidate(
+			request,
+			zod(userListSeriesSettingsSchema),
+		);
+		if (!userListSeriesSettingsForm.valid) {
+			return fail(400, { userListSeriesSettingsForm });
+		}
+
+		await db
+			.updateTable('user_list_settings')
+			.set({
+				default_series_settings: JSON.stringify(userListSeriesSettingsForm.data),
+			})
+			.where('user_id', '=', locals.user.id)
+			.execute();
+
+		return message(userListSeriesSettingsForm, {
+			text: 'Updated series list preferences!',
+			type: 'success',
+		});
 	},
 
 	sendemailverificationcode: async (event) => {

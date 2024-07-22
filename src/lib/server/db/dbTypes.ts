@@ -14,7 +14,7 @@ import {
 	staffRolesArray,
 } from '$lib/db/dbConsts';
 import { languagesArray } from '$lib/db/dbConsts';
-import type { DisplayPrefs } from '$lib/server/zod/schema';
+import type { DisplayPrefs, UserListSeriesSettings } from '$lib/server/zod/schema';
 import type { ColumnType } from 'kysely';
 
 export type DbItem = (typeof dbItemArray)[number];
@@ -178,6 +178,16 @@ export interface Image {
 	nsfw: boolean;
 	spoiler: boolean;
 	width: number;
+}
+
+export interface Notification {
+	hidden: boolean;
+	id: Generated<number>;
+	is_read: boolean;
+	message: string;
+	notification_type: string;
+	sent: Generated<Timestamp>;
+	user_id: string;
 }
 
 export interface PasswordResetToken {
@@ -421,6 +431,40 @@ export interface UserListRelease {
 	user_id: string;
 }
 
+export interface UserListSeries {
+	added: Generated<Timestamp>;
+	notify_book: boolean;
+	series_id: number;
+	show_upcoming: boolean;
+	user_id: string;
+	volumes_read: number | null;
+}
+
+export interface UserListSeriesFormat {
+	format: ReleaseFormat;
+	series_id: number;
+	user_id: string;
+}
+
+export interface UserListSeriesLabel {
+	label_id: number;
+	series_id: number;
+	user_id: string;
+}
+
+export interface UserListSeriesLang {
+	lang: Language;
+	series_id: number;
+	user_id: string;
+}
+
+export interface UserListSettings {
+	default_book_settings: Generated<Json<Record<string, never>>>;
+	default_release_settings: Generated<Json<Record<string, never>>>;
+	default_series_settings: Generated<Json<UserListSeriesSettings>>;
+	user_id: string;
+}
+
 export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
@@ -464,4 +508,9 @@ export interface DB {
 	user_list_book_label: UserListBookLabel;
 	user_list_label: UserListLabel;
 	user_list_release: UserListRelease;
+	user_list_series: UserListSeries;
+	user_list_series_format: UserListSeriesFormat;
+	user_list_series_label: UserListSeriesLabel;
+	user_list_series_lang: UserListSeriesLang;
+	user_list_settings: UserListSettings;
 }

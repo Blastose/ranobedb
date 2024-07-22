@@ -30,7 +30,7 @@ export const actions = {
 				});
 				messageText = 'Added release to list!';
 			} else if (form.data.type === 'update') {
-				await dbReleaseListActions.updateReleaseFromList({
+				await dbReleaseListActions.editReleaseInList({
 					user_id: user.id,
 					release_id: releaseId,
 					release_status: form.data.release_status,

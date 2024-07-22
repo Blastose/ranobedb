@@ -48,7 +48,13 @@
 	$: links = collectLinks(release);
 </script>
 
-<button use:melt={$trigger} type="button" aria-label="Open release options" class="relative">
+<button
+	disabled={links.length === 0}
+	use:melt={$trigger}
+	type="button"
+	aria-label="Open release options"
+	class="relative"
+>
 	<Icon name="link" />
 	<div
 		class="rounded-full bg-[var(--primary-500)] text-xs w-4 h-4 text-white absolute -top-1 -right-2"

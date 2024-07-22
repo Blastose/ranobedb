@@ -1,3 +1,8 @@
+export function getTodayAsDateNumber(): number {
+	const today = new Date();
+	return today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
+}
+
 export class DateNumber {
 	date: number;
 

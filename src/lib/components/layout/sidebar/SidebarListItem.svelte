@@ -21,7 +21,8 @@
 		| 'settings'
 		| 'history'
 		| 'email'
-		| 'about';
+		| 'about'
+		| 'calendar';
 </script>
 
 <li>
@@ -58,6 +59,8 @@
 			<Icon name="email" />
 		{:else if icon === 'about'}
 			<Icon name="information" />
+		{:else if icon === 'calendar'}
+			<Icon name="calendar" />
 		{/if}
 	</SidebarItem>
 </li>
