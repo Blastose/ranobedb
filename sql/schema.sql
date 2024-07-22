@@ -625,6 +625,15 @@ CREATE TABLE public.user_list_series_format (
     PRIMARY KEY (user_id, series_id, format)
 );
 
+CREATE TABLE public.user_list_settings (
+    user_id text NOT NULL,
+    default_series_settings JSONB NOT NULL DEFAULT '{"formats": [], "langs": ["en"], "notify_book": false, "readingStatus": "Reading", "show_upcoming": true}'::jsonb,
+    default_book_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
+    default_release_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
+    FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
+    PRIMARY KEY (user_id)
+);
+
 CREATE INDEX book_staff_alias_book_id_idx ON public.book_staff_alias USING btree (book_id);
 
 CREATE INDEX release_book_book_id_idx ON public.release_book USING btree (book_id);
