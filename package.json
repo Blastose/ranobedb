@@ -17,7 +17,7 @@
 		"test:unit": "vitest --config ./vite.config.ts",
 		"db-gen": "kysely-codegen --dialect postgres --schema public --include-pattern public.* --out-file ./sql/codegen/db.d.ts",
 		"db-seed": "pg_restore --clean --create -U postgres -d rndb-test-0.14 db-seed.dump",
-		"db-seed:test": "dropdb --force --if-exists -U postgres rndb-testing-02 && createdb -U postgres rndb-testing-02 && pg_restore --schema=public -U postgres -d rndb-testing-02 db-seed.dump"
+		"db-seed:test": "dropdb --force --if-exists -U postgres rndb-testing-02 && createdb -U postgres rndb-testing-02 && pg_restore -U postgres -d rndb-testing-02 db-seed.dump"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.45.0",
