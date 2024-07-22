@@ -56,6 +56,12 @@ export const load = async ({ url, locals }) => {
 					)
 					.as('sim_score'),
 			)
+			.where((eb) =>
+				eb.or([
+					eb(eb.val(q), sql.raw('<<%'), eb.ref('series_title.title')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<<%'), eb.ref('series_title.romaji')).$castTo<boolean>(),
+				]),
+			)
 			.having(
 				(eb) =>
 					eb.fn.max(
@@ -66,7 +72,7 @@ export const load = async ({ url, locals }) => {
 						]),
 					),
 				'>',
-				0.15,
+				0.3,
 			)
 			.orderBy(`sim_score ${orderByDirection}`)
 			.orderBy(
@@ -107,6 +113,12 @@ export const load = async ({ url, locals }) => {
 							.innerJoin('series_title', (join) =>
 								join.onRef('series_title.series_id', '=', 'series.id'),
 							)
+							.where((eb) =>
+								eb.or([
+									eb(eb.val(q), sql.raw('<<%'), eb.ref('series_title.title')).$castTo<boolean>(),
+									eb(eb.val(q), sql.raw('<<%'), eb.ref('series_title.romaji')).$castTo<boolean>(),
+								]),
+							)
 							.having(
 								(eb) =>
 									eb.fn.max(
@@ -116,7 +128,7 @@ export const load = async ({ url, locals }) => {
 										]),
 									),
 								'>',
-								0.15,
+								0.3,
 							)
 							.groupBy('series.id'),
 					)

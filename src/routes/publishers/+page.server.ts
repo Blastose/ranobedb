@@ -2,6 +2,7 @@ import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
 import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
+import { sql } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -25,7 +26,13 @@ export const load = async ({ url, locals }) => {
 						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
 					]),
 				'>',
-				0.15,
+				0.3,
+			)
+			.where((eb) =>
+				eb.or([
+					eb(eb.val(q), sql.raw('<<%'), eb.ref('publisher.name')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<<%'), eb.ref('publisher.romaji')).$castTo<boolean>(),
+				]),
 			)
 			.orderBy(
 				(eb) =>

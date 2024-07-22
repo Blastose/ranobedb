@@ -51,6 +51,12 @@ export const load = async ({ url, locals }) => {
 					])
 					.as('sim_score'),
 			)
+			.where((eb) =>
+				eb.or([
+					eb(eb.val(q), sql.raw('<<%'), eb.ref('release.title')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<<%'), eb.ref('release.romaji')).$castTo<boolean>(),
+				]),
+			)
 			.where(
 				(eb) =>
 					eb.fn('greatest', [
@@ -59,7 +65,7 @@ export const load = async ({ url, locals }) => {
 					]),
 
 				'>',
-				0.15,
+				0.3,
 			)
 			.orderBy(`sim_score ${orderByDirection}`)
 			.orderBy(
@@ -79,15 +85,22 @@ export const load = async ({ url, locals }) => {
 	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin());
 		if (useQuery && !sort.startsWith('Relevance')) {
-			query = query.where(
-				(eb) =>
-					eb.fn('greatest', [
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.title')]),
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+			query = query
+				.where((eb) =>
+					eb.or([
+						eb(eb.val(q), sql.raw('<<%'), eb.ref('release.title')).$castTo<boolean>(),
+						eb(eb.val(q), sql.raw('<<%'), eb.ref('release.romaji')).$castTo<boolean>(),
 					]),
-				'>',
-				0.15,
-			);
+				)
+				.where(
+					(eb) =>
+						eb.fn('greatest', [
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.title')]),
+							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+						]),
+					'>',
+					0.3,
+				);
 		}
 		if (useReleaseLangFilters) {
 			query = query.where((eb) => {
