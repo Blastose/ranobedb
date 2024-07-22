@@ -50,6 +50,12 @@ export const load = async ({ url, locals }) => {
 					)
 					.as('sim_score'),
 			)
+			.where((eb) =>
+				eb.or([
+					eb(eb.val(q), sql.raw('<<%'), eb.ref('book_title.title')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<<%'), eb.ref('book_title.romaji')).$castTo<boolean>(),
+				]),
+			)
 			.having(
 				(eb) =>
 					eb.fn.max(
@@ -59,7 +65,7 @@ export const load = async ({ url, locals }) => {
 						]),
 					),
 				'>',
-				0.15,
+				0.3,
 			)
 			.orderBy(`sim_score ${orderByDirection}`);
 		query = query.orderBy(
@@ -97,6 +103,12 @@ export const load = async ({ url, locals }) => {
 					.$if(useQuery && !sort.startsWith('Relevance'), (qb) =>
 						qb
 							.innerJoin('book_title', (join) => join.onRef('book_title.book_id', '=', 'book.id'))
+							.where((eb) =>
+								eb.or([
+									eb(eb.val(q), sql.raw('<<%'), eb.ref('book_title.title')).$castTo<boolean>(),
+									eb(eb.val(q), sql.raw('<<%'), eb.ref('book_title.romaji')).$castTo<boolean>(),
+								]),
+							)
 							.having(
 								(eb) =>
 									eb.fn.max(
@@ -106,7 +118,7 @@ export const load = async ({ url, locals }) => {
 										]),
 									),
 								'>',
-								0.15,
+								0.3,
 							)
 							.groupBy('book.id'),
 					)
