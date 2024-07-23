@@ -83,6 +83,29 @@ export function getUserLabelCounts(userId: string) {
 }
 export type UserLabel = InferResult<ReturnType<typeof getUserLabelCounts>>[number];
 
+export async function getUserListCounts(params: { userId: string }) {
+	return await db
+		.selectNoFrom((eb) => [
+			eb
+				.selectFrom('user_list_book')
+				.where('user_list_book.user_id', '=', params.userId)
+				.select((eb) => eb.fn.count('user_list_book.book_id').as('book_count'))
+				.as('book'),
+			eb
+				.selectFrom('user_list_series')
+				.where('user_list_series.user_id', '=', params.userId)
+				.select((eb) => eb.fn.count('user_list_series.series_id').as('series_count'))
+				.as('series'),
+			eb
+				.selectFrom('user_list_release')
+				.where('user_list_release.user_id', '=', params.userId)
+				.select((eb) => eb.fn.count('user_list_release.release_id').as('release_count'))
+				.as('release'),
+		])
+		.executeTakeFirstOrThrow();
+}
+export type ListCounts = Awaited<ReturnType<typeof getUserListCounts>>;
+
 export function getUserListBookWithLabels(userId: string, bookId: number) {
 	return db
 		.selectFrom('user_list_book')

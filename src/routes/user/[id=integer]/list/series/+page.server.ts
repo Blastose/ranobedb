@@ -2,6 +2,7 @@ import { addCharacterBetweenString } from '$lib/db/match.js';
 import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
+import { getUserListCounts } from '$lib/server/db/user/list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { listLabelsSchema, pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
@@ -105,6 +106,7 @@ export const load = async ({ params, locals, url }) => {
 	});
 
 	const isMyList = user?.id_numeric === userIdNumeric;
+	const listCounts = await getUserListCounts({ userId: listUser.id });
 
 	return {
 		isMyList,
@@ -115,5 +117,6 @@ export const load = async ({ params, locals, url }) => {
 		currentPage,
 		labels,
 		userLabelCounts,
+		listCounts,
 	};
 };

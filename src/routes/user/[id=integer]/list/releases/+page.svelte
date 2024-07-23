@@ -21,7 +21,7 @@
 <main class="container-rndb flex flex-col gap-4">
 	<h1 class="text-4xl font-bold">{pageTitle}</h1>
 
-	<ListTabs userIdNum={data.listUser.id_numeric} />
+	<ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
 
 	<div class="flex flex-col gap-2">
 		{#each data.bookWithReleasesInList as book}

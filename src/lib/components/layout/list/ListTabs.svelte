@@ -2,23 +2,28 @@
 	import { cubicInOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
 	import { page } from '$app/stores';
+	import type { ListCounts } from '$lib/server/db/user/list';
 
 	export let userIdNum: number;
+	export let listCounts: ListCounts;
 
 	const tabs = [
 		{
 			type: 'Books',
+			key: 'book',
 			url: '',
 		},
 		{
 			type: 'Series',
+			key: 'series',
 			url: 'series',
 		},
 		{
 			type: 'Releases',
+			key: 'release',
 			url: 'releases',
 		},
-	];
+	] as const;
 
 	$: currentPage = new URL($page.url);
 	$: currentTab = currentPage.pathname.split('/').at(-1) || '';
@@ -38,7 +43,7 @@
 					class="{active
 						? 'link no-underline'
 						: 'tab-hover'} capitalize duration-[250ms] px-2 font-semibold flex items-center gap-2"
-					href="/user/{userIdNum}/list/{tab.url}">{tab.type}</a
+					href="/user/{userIdNum}/list/{tab.url}">{tab.type} ({listCounts[tab.key]})</a
 				>
 				{#if active}
 					<div

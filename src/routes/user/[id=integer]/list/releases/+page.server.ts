@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db/db';
-import { getBooksRL } from '$lib/server/db/user/list.js';
+import { getBooksRL, getUserListCounts } from '$lib/server/db/user/list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { userListReleaseSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
@@ -53,11 +53,13 @@ export const load = async ({ params, locals }) => {
 	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
 
 	const isMyList = user?.id_numeric === userIdNumeric;
+	const listCounts = await getUserListCounts({ userId: listUser.id });
 
 	return {
 		isMyList,
 		listUser,
 		bookWithReleasesInList,
 		userListReleaseForm: isMyList ? userListReleaseForm : undefined,
+		listCounts,
 	};
 };

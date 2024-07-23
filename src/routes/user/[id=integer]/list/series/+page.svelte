@@ -26,7 +26,7 @@
 	inputPlaceholder="Search by book title"
 >
 	<svelte:fragment slot="under-heading"
-		><ListTabs userIdNum={data.listUser.id_numeric} />
+		><ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
 	</svelte:fragment>
 
 	<svelte:fragment slot="info">
