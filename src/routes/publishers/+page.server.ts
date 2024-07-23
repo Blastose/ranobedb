@@ -22,23 +22,23 @@ export const load = async ({ url, locals }) => {
 			.where(
 				(eb) =>
 					eb.fn('greatest', [
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.name')]),
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
+						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.name')]),
+						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
 					]),
 				'>',
 				0.3,
 			)
 			.where((eb) =>
 				eb.or([
-					eb(eb.val(q), sql.raw('<<%'), eb.ref('publisher.name')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<<%'), eb.ref('publisher.romaji')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<%'), eb.ref('publisher.name')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<%'), eb.ref('publisher.romaji')).$castTo<boolean>(),
 				]),
 			)
 			.orderBy(
 				(eb) =>
 					eb.fn('greatest', [
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.name')]),
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
+						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.name')]),
+						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
 					]),
 				'desc',
 			);

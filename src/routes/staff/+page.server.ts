@@ -22,24 +22,24 @@ export const load = async ({ url, locals }) => {
 				eb.fn
 					.max(
 						eb.fn('greatest', [
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('sa2.name')]),
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('sa2.romaji')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('sa2.name')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('sa2.romaji')]),
 						]),
 					)
 					.as('sim_score'),
 			)
 			.where((eb) =>
 				eb.or([
-					eb(eb.val(q), sql.raw('<<%'), eb.ref('sa2.name')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<<%'), eb.ref('sa2.romaji')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<%'), eb.ref('sa2.name')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<%'), eb.ref('sa2.romaji')).$castTo<boolean>(),
 				]),
 			)
 			.having(
 				(eb) =>
 					eb.fn.max(
 						eb.fn('greatest', [
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('sa2.name')]),
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('sa2.romaji')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('sa2.name')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('sa2.romaji')]),
 						]),
 					),
 				'>',
