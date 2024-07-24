@@ -52,6 +52,11 @@
 						</ProfileItem>
 					</li>
 					<li>
+						<ProfileItem href="/user/{user.id_numeric}/list/upcoming" {item} text="Upcoming">
+							<Icon name="calendar" />
+						</ProfileItem>
+					</li>
+					<li>
 						<ProfileItem href="/user/{user.id_numeric}" {item} text="Profile">
 							<Icon name="profile" />
 						</ProfileItem>

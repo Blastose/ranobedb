@@ -18,7 +18,7 @@
 				reason={error.dbItemDeleted.reason ?? ''}
 			/>
 		{:else if status === 403}
-			<AccessDenied />
+			<AccessDenied missingPerm={error.missingPerm} />
 		{:else}
 			<h1 class="font-bold text-lg">{status} {error.message}</h1>
 		{/if}

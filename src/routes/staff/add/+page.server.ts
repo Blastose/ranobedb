@@ -18,7 +18,7 @@ export const load = async ({ locals, url }) => {
 	}
 
 	if (!hasAddPerms(locals.user)) {
-		error(403);
+		error(403, { missingPerm: 'add' });
 	}
 
 	const form = await superValidate(

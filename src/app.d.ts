@@ -2,6 +2,7 @@
 
 import type { Theme } from '$lib/stores/themeStore';
 import type { ToastData } from '$lib/components/toast/toast';
+import type { Perm } from '$lib/db/permissions';
 
 interface RenderParameters {
 	sitekey: string;
@@ -36,6 +37,7 @@ declare global {
 				title: string | null;
 				reason: string | null;
 			};
+			missingPerm?: Perm;
 		}
 		interface Locals {
 			user: import('lucia').User | null;

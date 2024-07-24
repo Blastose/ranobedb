@@ -21,7 +21,7 @@
 <main class="container-rndb flex flex-col gap-4">
 	<h1 class="text-4xl font-bold">{pageTitle}</h1>
 
-	<ListTabs userIdNum={data.listUser.id_numeric} />
+	<ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
 
 	<div class="flex flex-col gap-2">
 		{#each data.bookWithReleasesInList as book}
@@ -47,7 +47,11 @@
 							</p>
 							{#each book.releases as release}
 								<div class="flex justify-between text-sm sm:text-base">
-									<div class="grid grid-cols-[18px_24px_102px_1fr] gap-x-2">
+									<div
+										class="grid gap-x-2 {data.userListReleaseForm
+											? 'grid-cols-[18px_24px_102px_1fr]'
+											: 'grid-cols-[18px_24px_72px_1fr]'}"
+									>
 										<p>{release.lang}</p>
 										<div title={release.format}>
 											{#if release.format === 'print'}

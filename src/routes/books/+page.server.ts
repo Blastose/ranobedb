@@ -44,24 +44,24 @@ export const load = async ({ url, locals }) => {
 				eb.fn
 					.max(
 						eb.fn('greatest', [
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.title')]),
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
 						]),
 					)
 					.as('sim_score'),
 			)
 			.where((eb) =>
 				eb.or([
-					eb(eb.val(q), sql.raw('<<%'), eb.ref('book_title.title')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<<%'), eb.ref('book_title.romaji')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<%'), eb.ref('book_title.title')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<%'), eb.ref('book_title.romaji')).$castTo<boolean>(),
 				]),
 			)
 			.having(
 				(eb) =>
 					eb.fn.max(
 						eb.fn('greatest', [
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.title')]),
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
 						]),
 					),
 				'>',
@@ -105,16 +105,16 @@ export const load = async ({ url, locals }) => {
 							.innerJoin('book_title', (join) => join.onRef('book_title.book_id', '=', 'book.id'))
 							.where((eb) =>
 								eb.or([
-									eb(eb.val(q), sql.raw('<<%'), eb.ref('book_title.title')).$castTo<boolean>(),
-									eb(eb.val(q), sql.raw('<<%'), eb.ref('book_title.romaji')).$castTo<boolean>(),
+									eb(eb.val(q), sql.raw('<%'), eb.ref('book_title.title')).$castTo<boolean>(),
+									eb(eb.val(q), sql.raw('<%'), eb.ref('book_title.romaji')).$castTo<boolean>(),
 								]),
 							)
 							.having(
 								(eb) =>
 									eb.fn.max(
 										eb.fn('greatest', [
-											eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.title')]),
-											eb.fn('strict_word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
+											eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
+											eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
 										]),
 									),
 								'>',

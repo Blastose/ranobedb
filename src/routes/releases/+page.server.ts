@@ -46,22 +46,22 @@ export const load = async ({ url, locals }) => {
 			.select((eb) =>
 				eb
 					.fn('greatest', [
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.title')]),
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+						eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
+						eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
 					])
 					.as('sim_score'),
 			)
 			.where((eb) =>
 				eb.or([
-					eb(eb.val(q), sql.raw('<<%'), eb.ref('release.title')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<<%'), eb.ref('release.romaji')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
+					eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
 				]),
 			)
 			.where(
 				(eb) =>
 					eb.fn('greatest', [
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.title')]),
-						eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+						eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
+						eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
 					]),
 
 				'>',
@@ -88,15 +88,15 @@ export const load = async ({ url, locals }) => {
 			query = query
 				.where((eb) =>
 					eb.or([
-						eb(eb.val(q), sql.raw('<<%'), eb.ref('release.title')).$castTo<boolean>(),
-						eb(eb.val(q), sql.raw('<<%'), eb.ref('release.romaji')).$castTo<boolean>(),
+						eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
+						eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
 					]),
 				)
 				.where(
 					(eb) =>
 						eb.fn('greatest', [
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.title')]),
-							eb.fn('strict_word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
 						]),
 					'>',
 					0.3,

@@ -1,7 +1,7 @@
 import { addCharacterBetweenString } from '$lib/db/match.js';
 import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
-import { getBooksRL, getUserLabelCounts } from '$lib/server/db/user/list';
+import { getBooksRL, getUserLabelCounts, getUserListCounts } from '$lib/server/db/user/list';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { listLabelsSchema, pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
@@ -81,6 +81,8 @@ export const load = async ({ url, params, locals }) => {
 		page: currentPage,
 	});
 
+	const listCounts = await getUserListCounts({ userId: listUser.id });
+
 	return {
 		books,
 		count,
@@ -90,5 +92,6 @@ export const load = async ({ url, params, locals }) => {
 		isMyList: user?.id_numeric === userIdNumeric,
 		listUser,
 		labels,
+		listCounts,
 	};
 };
