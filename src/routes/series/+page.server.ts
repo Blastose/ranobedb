@@ -51,7 +51,6 @@ export const load = async ({ url, locals }) => {
 						eb.fn('greatest', [
 							eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
 							eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
-							eb.fn('word_similarity', [eb.val(q), eb.ref('cte_series.aliases')]),
 						]),
 					)
 					.as('sim_score'),
@@ -60,7 +59,7 @@ export const load = async ({ url, locals }) => {
 				eb.or([
 					eb(eb.val(q), sql.raw('<%'), eb.ref('series_title.title')).$castTo<boolean>(),
 					eb(eb.val(q), sql.raw('<%'), eb.ref('series_title.romaji')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<%'), eb.ref('cte_series.aliases')).$castTo<boolean>(),
+					eb('cte_series.aliases', 'ilike', eb.val(q)),
 				]),
 			)
 			.having(
@@ -69,7 +68,6 @@ export const load = async ({ url, locals }) => {
 						eb.fn('greatest', [
 							eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
 							eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
-							eb.fn('word_similarity', [eb.val(q), eb.ref('cte_series.aliases')]),
 						]),
 					),
 				'>',
@@ -118,7 +116,7 @@ export const load = async ({ url, locals }) => {
 								eb.or([
 									eb(eb.val(q), sql.raw('<%'), eb.ref('series_title.title')).$castTo<boolean>(),
 									eb(eb.val(q), sql.raw('<%'), eb.ref('series_title.romaji')).$castTo<boolean>(),
-									eb(eb.val(q), sql.raw('<%'), eb.ref('cte_series.aliases')).$castTo<boolean>(),
+									eb('cte_series.aliases', 'ilike', eb.val(q)),
 								]),
 							)
 							.having(
@@ -127,7 +125,6 @@ export const load = async ({ url, locals }) => {
 										eb.fn('greatest', [
 											eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
 											eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
-											eb.fn('word_similarity', [eb.val(q), eb.ref('cte_series.aliases')]),
 										]),
 									),
 								'>',
