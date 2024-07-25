@@ -88,16 +88,22 @@ export async function getUserListCounts(params: { userId: string }) {
 		.selectNoFrom((eb) => [
 			eb
 				.selectFrom('user_list_book')
+				.innerJoin('book', 'user_list_book.book_id', 'book.id')
+				.where('book.hidden', '=', false)
 				.where('user_list_book.user_id', '=', params.userId)
 				.select((eb) => eb.fn.count('user_list_book.book_id').as('book_count'))
 				.as('book'),
 			eb
 				.selectFrom('user_list_series')
+				.innerJoin('series', 'user_list_series.series_id', 'series.id')
+				.where('series.hidden', '=', false)
 				.where('user_list_series.user_id', '=', params.userId)
 				.select((eb) => eb.fn.count('user_list_series.series_id').as('series_count'))
 				.as('series'),
 			eb
 				.selectFrom('user_list_release')
+				.innerJoin('release', 'user_list_release.release_id', 'release.id')
+				.where('release.hidden', '=', false)
 				.where('user_list_release.user_id', '=', params.userId)
 				.select((eb) => eb.fn.count('user_list_release.release_id').as('release_count'))
 				.as('release'),
@@ -166,7 +172,16 @@ export class DBListActions {
 				.selectFrom('series_book')
 				.innerJoin('book', 'series_book.book_id', 'book.id')
 				.innerJoin('series', 'series.id', 'series_book.series_id')
-				.leftJoin('user_list_series', 'user_list_series.series_id', 'series_book.series_id')
+				.leftJoin('user_list_series', (join) =>
+					join
+						.onRef('user_list_series.series_id', '=', 'series_book.series_id')
+						.on((eb) =>
+							eb.or([
+								eb('user_list_series.user_id', '=', params.userId),
+								eb('user_list_series.user_id', 'is', null),
+							]),
+						),
+				)
 				.where('book.hidden', '=', false)
 				.where('series.hidden', '=', false)
 				.where('series_book.book_id', '=', params.bookId)

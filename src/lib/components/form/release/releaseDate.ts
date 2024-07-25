@@ -10,6 +10,10 @@ export class DateNumber {
 		this.date = date;
 	}
 
+	static fromYearMonth(year: number, month: number) {
+		return new this(year * 10000 + month * 100 + 99);
+	}
+
 	hasLeapYear(year: number) {
 		return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
 	}
