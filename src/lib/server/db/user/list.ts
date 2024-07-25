@@ -172,7 +172,16 @@ export class DBListActions {
 				.selectFrom('series_book')
 				.innerJoin('book', 'series_book.book_id', 'book.id')
 				.innerJoin('series', 'series.id', 'series_book.series_id')
-				.leftJoin('user_list_series', 'user_list_series.series_id', 'series_book.series_id')
+				.leftJoin('user_list_series', (join) =>
+					join
+						.onRef('user_list_series.series_id', '=', 'series_book.series_id')
+						.on((eb) =>
+							eb.or([
+								eb('user_list_series.user_id', '=', params.userId),
+								eb('user_list_series.user_id', 'is', null),
+							]),
+						),
+				)
 				.where('book.hidden', '=', false)
 				.where('series.hidden', '=', false)
 				.where('series_book.book_id', '=', params.bookId)
