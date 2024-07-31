@@ -38,6 +38,8 @@ export type SeriesStatus = "cancelled" | "completed" | "hiatus" | "ongoing" | "s
 
 export type StaffRole = "artist" | "author" | "editor" | "narrator" | "staff" | "translator";
 
+export type TagType = "content" | "demographic" | "genre" | "tag";
+
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
 export type UserRole = "adder" | "admin" | "banned" | "editor" | "moderator" | "user";
@@ -336,6 +338,16 @@ export interface SeriesRelationHist {
   relation_type: SeriesRelType;
 }
 
+export interface SeriesTag {
+  series_id: number;
+  tag_id: number;
+}
+
+export interface SeriesTagHist {
+  change_id: number;
+  tag_id: number;
+}
+
 export interface SeriesTitle {
   lang: Language;
   official: boolean;
@@ -388,6 +400,13 @@ export interface StaffHist {
   twitter_id: string | null;
   website: string | null;
   wikidata_id: number | null;
+}
+
+export interface Tag {
+  description: string;
+  id: Generated<number>;
+  name: string;
+  ttype: TagType;
 }
 
 export interface UserListBook {
@@ -488,12 +507,15 @@ export interface DB {
   series_hist: SeriesHist;
   series_relation: SeriesRelation;
   series_relation_hist: SeriesRelationHist;
+  series_tag: SeriesTag;
+  series_tag_hist: SeriesTagHist;
   series_title: SeriesTitle;
   series_title_hist: SeriesTitleHist;
   staff: Staff;
   staff_alias: StaffAlias;
   staff_alias_hist: StaffAliasHist;
   staff_hist: StaffHist;
+  tag: Tag;
   user_list_book: UserListBook;
   user_list_book_label: UserListBookLabel;
   user_list_label: UserListLabel;

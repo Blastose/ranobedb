@@ -331,6 +331,14 @@ export class DBSeries {
 						.where('series_book.series_id', '=', id)
 						.orderBy('book_staff_alias.role_type'),
 				).as('staff'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('tag')
+						.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
+						.where('series_tag.series_id', '=', id)
+						.select(['tag.name', 'tag.ttype', 'tag.id'])
+						.orderBy(['tag.ttype', 'tag.name']),
+				).as('tags'),
 			])
 			.where('cte_series.id', '=', id);
 	}
@@ -475,6 +483,14 @@ export class DBSeries {
 						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
 						.orderBy('book_staff_alias.role_type'),
 				).as('staff'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('tag')
+						.innerJoin('series_tag_hist', 'series_tag_hist.tag_id', 'tag.id')
+						.whereRef('series_tag_hist.change_id', '=', 'cte_series.id')
+						.select(['tag.name', 'tag.ttype', 'tag.id'])
+						.orderBy(['tag.ttype', 'tag.name']),
+				).as('tags'),
 			])
 			.where('change.item_id', '=', params.id)
 			.where('change.item_name', '=', 'series');
@@ -544,6 +560,14 @@ export class DBSeries {
 						])
 						.orderBy('series_title.lang'),
 				).as('titles'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_tag')
+						.innerJoin('tag', 'tag.id', 'series_tag.tag_id')
+						.whereRef('series_tag.series_id', '=', 'cte_series.id')
+						.select(['series_tag.tag_id', 'tag.name', 'tag.ttype'])
+						.orderBy('tag.ttype'),
+				).as('tags'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('series_relation')
@@ -625,6 +649,14 @@ export class DBSeries {
 						])
 						.orderBy('series_title_hist.lang'),
 				).as('titles'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_tag_hist')
+						.innerJoin('tag', 'tag.id', 'series_tag_hist.tag_id')
+						.whereRef('series_tag_hist.change_id', '=', 'cte_series.id')
+						.select(['series_tag_hist.tag_id', 'tag.name', 'tag.ttype'])
+						.orderBy('tag.ttype'),
+				).as('tags'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('series_relation_hist')

@@ -14,6 +14,8 @@
 	summary > :global(h4),
 	summary > :global(h5),
 	summary > :global(h6) {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
 	}
 </style>

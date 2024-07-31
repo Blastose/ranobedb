@@ -15,6 +15,7 @@ import {
 	type SeriesBook,
 	type SeriesTitle,
 	type SeriesTitleHist,
+	type SeriesTagHist,
 } from '$lib/server/db/dbTypes';
 import { seriesRelTypeReverseMap } from '$lib/db/dbConsts';
 import type { Insertable, Kysely, Transaction } from 'kysely';
@@ -447,6 +448,21 @@ export class DBSeriesActions {
 			}) satisfies Insertable<SeriesTitleHist>[];
 			if (series_title_hist_add.length > 0) {
 				await trx.insertInto('series_title_hist').values(series_title_hist_add).execute();
+			}
+
+			// series_tag
+			// TODO Currently, editing series_tags is not enabled right now, so it just takes it from the current series
+			const series_tags = await trx
+				.selectFrom('series_tag')
+				.where('series_tag.series_id', '=', data.id)
+				.selectAll()
+				.execute();
+			const series_tag_hist_add = series_tags.map((item) => ({
+				change_id: change.change_id,
+				tag_id: item.tag_id,
+			})) satisfies Insertable<SeriesTagHist>[];
+			if (series_tag_hist_add.length > 0) {
+				await trx.insertInto('series_tag_hist').values(series_tag_hist_add).execute();
 			}
 
 			// series_book_hist

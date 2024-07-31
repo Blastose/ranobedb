@@ -16,6 +16,7 @@ import {
 	settingsTabs,
 	staffRolesArray,
 	staffTabs,
+	tagTypeArray,
 	userListReleaseStatus,
 } from '$lib/db/dbConsts';
 import { releaseFormatArray } from '$lib/db/dbConsts';
@@ -581,6 +582,35 @@ export const seriesFiltersSchema = z.object({
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(seriesSortArray).catch('Relevance desc'),
 	staff: z.array(z.number().max(maxNumberValue)).catch([]),
+	genresInclude: z.array(z.number().max(maxNumberValue)).catch([]),
+	genresExclude: z.array(z.number().max(maxNumberValue)).catch([]),
+	tagsInclude: z.array(z.number().max(maxNumberValue)).catch([]),
+	tagsExclude: z.array(z.number().max(maxNumberValue)).catch([]),
+	til: z.enum(logicalOps).catch('and'),
+	tel: z.enum(logicalOps).catch('or'),
+});
+
+const zTags = z
+	.array(
+		z.object({
+			id: z.number().max(maxNumberValue),
+			name: z.string().max(maxTextLength),
+			ttype: z.enum(tagTypeArray),
+			mode: z.enum(['incl', 'excl'] as const),
+		}),
+	)
+	.catch([]);
+
+export const seriesFiltersObjSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rll: z.enum(logicalOps).catch('or'),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	rfl: z.enum(logicalOps).catch('or'),
+	sort: z.enum(seriesSortArray).catch('Relevance desc'),
+	staff: z.array(z.number().max(maxNumberValue)).catch([]),
+	tags: zTags,
+	til: z.enum(logicalOps).catch('and'),
+	tel: z.enum(logicalOps).catch('or'),
 });
 
 export const releaseFiltersSchema = z.object({

@@ -213,6 +213,8 @@ export const seriesStatusArray = [
 	'unknown',
 ] as const;
 
+export const tagTypeArray = ['content', 'demographic', 'genre', 'tag'] as const;
+
 export const dbItemArray = ['book', 'publisher', 'release', 'series', 'staff'] as const;
 
 export const defaultUserListLabelsArray = [

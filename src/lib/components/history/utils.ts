@@ -142,6 +142,22 @@ export function generateSeriesRelationChangeStringFromSeries(
 	return str.trim();
 }
 
+function generateSeriesTagChangeString(tag: { tag_id: number; name: string }) {
+	return `${generateLink(`/series?tagsInclude=${tag.tag_id}`, tag.name)}`;
+}
+export function generateSeriesTagChangeStringFromSeries(
+	tags: {
+		tag_id: number;
+		name: string;
+	}[],
+) {
+	let str = '';
+	for (const tag of tags) {
+		str += generateSeriesTagChangeString(tag) + '\n';
+	}
+	return str.trim();
+}
+
 type StaffAlias = {
 	main_alias: boolean;
 	name: string;

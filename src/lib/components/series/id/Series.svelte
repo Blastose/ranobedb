@@ -24,6 +24,7 @@
 	import type { userListSeriesSchema } from '$lib/server/zod/schema';
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
+	import Tags from '../Tags.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -51,8 +52,8 @@
 
 	{#if userListSeriesForm}
 		{#if user}
- 				<SeriesModal {series} {userListSeriesForm} />
- 		{:else}
+			<SeriesModal {series} {userListSeriesForm} />
+		{:else}
 			<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}
 				>Add to reading list</a
 			>
@@ -89,6 +90,8 @@
 	</dl>
 
 	<TitlesSection titles={series.titles} />
+
+	<Tags tags={series.tags} />
 
 	{#if series.aliases}
 		<section>

@@ -3,6 +3,7 @@ import {
 	generateBookTitleChangeStringFromBooks,
 	generateSeriesBookChangeStringFromBooks,
 	generateSeriesRelationChangeStringFromSeries,
+	generateSeriesTagChangeStringFromSeries,
 	getDiffLines,
 	getDiffWords,
 	pushIfNotUndefined,
@@ -47,6 +48,14 @@ export function getSeriesDiffs(params: {
 				seriesHistEdit['child_series'],
 				titlePrefs,
 			),
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffLines({
+			name: 'Series tags',
+			lines1: generateSeriesTagChangeStringFromSeries(prevSeriesHistEdit['tags']),
+			lines2: generateSeriesTagChangeStringFromSeries(seriesHistEdit['tags']),
 		}),
 	);
 	pushIfNotUndefined(

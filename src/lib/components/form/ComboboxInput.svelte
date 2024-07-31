@@ -15,6 +15,7 @@
 	export let search: (input: string) => Promise<T[]>;
 	export let selectedItems: Pick<T, 'id'>[];
 	export let filterDuplicateIds: boolean;
+	export let capitalize: boolean = false;
 
 	const {
 		elements: { menu, input, option, label },
@@ -103,7 +104,7 @@
 						class="relative cursor-pointer scroll-my-2 rounded-md py-2 px-2
         data-[highlighted]:bg-gray-300 data-[highlighted]:text-gray-900
 				dark:data-[highlighted]:bg-neutral-600 dark:data-[highlighted]:text-white
-          data-[disabled]:opacity-50"
+          data-[disabled]:opacity-50 {capitalize ? 'capitalize' : ''}"
 					>
 						{#if $isSelected(item)}
 							<!-- None -->
