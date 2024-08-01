@@ -169,6 +169,7 @@ export class DBUsers {
 
 	async deleteUser(params: { userId: string }) {
 		await this.db.transaction().execute(async (trx) => {
+			await trx.deleteFrom('user_list_settings').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('user_list_book_label').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('user_list_book').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('user_list_label').where('user_id', '=', params.userId).execute();

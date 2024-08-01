@@ -56,6 +56,14 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 					.whereRef('series_title.series_id', '=', 'series.id')
 					.selectAll('series_title'),
 			).as('titles'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('tag')
+					.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
+					.whereRef('series_tag.series_id', '=', 'series.id')
+					.select(['tag.name', 'tag.ttype', 'tag.id'])
+					.orderBy(['tag.ttype', 'tag.name']),
+			).as('tags'),
 		])
 		.selectAll('series')
 		.where('series.id', 'in', params.series_ids)
@@ -85,6 +93,13 @@ async function addMiscSeriesRelations(params: {
 	})) satisfies Insertable<SeriesTitleHist>[];
 	if (batch_add_titles.length > 0) {
 		await params.trx.insertInto('series_title_hist').values(batch_add_titles).execute();
+	}
+	const batch_add_series_tags = params.series.tags.map((item) => ({
+		change_id: params.change_id,
+		tag_id: item.id,
+	})) satisfies Insertable<SeriesTagHist>[];
+	if (batch_add_series_tags.length > 0) {
+		await params.trx.insertInto('series_tag_hist').values(batch_add_series_tags).execute();
 	}
 }
 
