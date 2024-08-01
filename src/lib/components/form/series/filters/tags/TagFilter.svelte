@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let genre: { id: number; name: string; mode: 'incl' | 'excl' | 'none' };
+	export let genre: { id: number; name?: string | null; mode?: 'incl' | 'excl' | 'none' };
 	export let removable: boolean;
 	export let handleRemove: (() => void) | undefined = undefined;
 

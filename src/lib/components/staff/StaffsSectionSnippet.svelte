@@ -8,10 +8,10 @@
 <div class="flex flex-wrap gap-4">
 	{#each staffs as staff}
 		<div>
-			<a class="flex flex-col link-box px-4 py-2 rounded-md" href="/staff/{staff.staff_id}">
+			<a class="flex flex-col link-box round px-4 py-2" href="/staff/{staff.staff_id}">
 				<span><NameDisplay obj={staff} /></span>
-				<span class="sub-text">{staff.role_type}</span>
-				<span class="sub-text text-sm">{staff.note}</span>
+				<span class="capitalize sub-text text-sm">{staff.role_type}</span>
+				<span class="sub-text text-xs">{staff.note}</span>
 			</a>
 		</div>
 	{/each}

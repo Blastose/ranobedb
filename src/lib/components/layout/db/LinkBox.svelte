@@ -4,7 +4,7 @@
 	export let href: string;
 </script>
 
-<div class="link-box">
+<div class="link-box" class:round={true}>
 	<a class={wrap ? '' : 'single-line'} {href}
 		>{#if display}{display}{:else}<slot />{/if}</a
 	>
@@ -13,7 +13,7 @@
 <style>
 	a {
 		display: block;
-		padding: 0.5rem 0.75rem;
+		padding: 0.5rem 1rem;
 		max-width: 100%;
 	}
 

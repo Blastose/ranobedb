@@ -24,6 +24,7 @@
 		bookwalkerSeriesLink,
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
+	import SeriesTagInput from './SeriesTagInput.svelte';
 
 	export let series: SeriesEdit | undefined;
 	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
@@ -150,6 +151,8 @@
 	/>
 
 	<Hr />
+
+	<SeriesTagInput form={sForm} />
 
 	<SeriesBookInput form={sForm} />
 	<SeriesRelInput form={sForm} seriesId={series?.id} />

@@ -96,6 +96,12 @@
 				icon="publishers"
 			/>
 			<SidebarListItem
+				active={$page.url.pathname === '/tags'}
+				href="/tags"
+				text="Tags"
+				icon="tag"
+			/>
+			<SidebarListItem
 				active={$page.url.pathname === '/users'}
 				href="/users"
 				text="Users"

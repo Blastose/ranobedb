@@ -22,7 +22,8 @@
 		| 'history'
 		| 'email'
 		| 'about'
-		| 'calendar';
+		| 'calendar'
+		| 'tag';
 </script>
 
 <li>
@@ -61,6 +62,8 @@
 			<Icon name="information" />
 		{:else if icon === 'calendar'}
 			<Icon name="calendar" />
+		{:else if icon === 'tag'}
+			<Icon name="tag" />
 		{/if}
 	</SidebarItem>
 </li>

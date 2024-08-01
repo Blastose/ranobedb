@@ -10,7 +10,7 @@
 <div class="flex flex-wrap gap-x-6 gap-y-2">
 	{#each Object.entries(groupedTags) as [key, tagss]}
 		<section>
-			<h2 class="font-bold text-lg capitalize">{key}</h2>
+			<h2 class="font-bold text-lg capitalize">{key}s</h2>
 
 			<div class="flex flex-wrap gap-2 mt-1">
 				{#each tagss as tag}

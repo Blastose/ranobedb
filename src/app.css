@@ -355,6 +355,10 @@ input[type='number'].input.reset-padding {
 	transition: background-color 300ms;
 }
 
+.link-box.round {
+	border-radius: 1rem;
+}
+
 .link-box:hover {
 	background-color: rgb(202, 202, 214);
 }

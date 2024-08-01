@@ -585,7 +585,7 @@ export class DBSeries {
 						.selectFrom('series_tag')
 						.innerJoin('tag', 'tag.id', 'series_tag.tag_id')
 						.whereRef('series_tag.series_id', '=', 'cte_series.id')
-						.select(['series_tag.tag_id', 'tag.name', 'tag.ttype'])
+						.select(['tag.id', 'tag.name', 'tag.ttype'])
 						.orderBy('tag.ttype'),
 				).as('tags'),
 				jsonArrayFrom(
@@ -674,7 +674,7 @@ export class DBSeries {
 						.selectFrom('series_tag_hist')
 						.innerJoin('tag', 'tag.id', 'series_tag_hist.tag_id')
 						.whereRef('series_tag_hist.change_id', '=', 'cte_series.id')
-						.select(['series_tag_hist.tag_id', 'tag.name', 'tag.ttype'])
+						.select(['tag.id', 'tag.name', 'tag.ttype'])
 						.orderBy('tag.ttype'),
 				).as('tags'),
 				jsonArrayFrom(

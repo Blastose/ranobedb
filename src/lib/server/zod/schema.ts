@@ -535,6 +535,14 @@ export const seriesSchema = z.object({
 		)
 		.max(200, { message: 'The total number of related series must be less than or equal to 200' }),
 	titles: zTitles,
+	tags: z
+		.array(
+			z.object({
+				id: z.number().max(maxNumberValue),
+				name: z.string().max(maxTextLength).nullish(),
+			}),
+		)
+		.max(200),
 
 	comment: zComment,
 });
@@ -620,6 +628,10 @@ export const releaseFiltersSchema = z.object({
 });
 
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });
+export const searchTagNameSchema = z.object({
+	name: z.string().max(maxTextLength).trim(),
+	all: z.boolean().nullish(),
+});
 export const tokenSchema = z.object({ token: z.string().max(maxTextLength).nullish() });
 export const redirectSchema = z.object({ redirect: z.string().max(maxTextLength).nullish() });
 export const revisionSchema = z.object({ revision: z.number().max(maxNumberValue).nullish() });

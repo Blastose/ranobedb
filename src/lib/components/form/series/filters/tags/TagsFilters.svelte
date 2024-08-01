@@ -3,7 +3,7 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import type { TagType } from '$lib/server/db/dbTypes';
 	import TagFilter from './TagFilter.svelte';
-	import SeriesTagInput from './SeriesTagInput.svelte';
+	import SeriesTagInput from './SeriesFiltersTagInput.svelte';
 	import HiddenInput from '$lib/components/form/HiddenInput.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof seriesFiltersObjSchema>>;
