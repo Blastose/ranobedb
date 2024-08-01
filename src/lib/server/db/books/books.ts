@@ -388,7 +388,7 @@ export class DBBooks {
 					eb
 						.selectFrom('cte_series')
 						.innerJoin('series_book', 'cte_series.id', 'series_book.series_id')
-						.select((eb) =>
+						.select((eb) => [
 							jsonArrayFrom(
 								eb
 									.selectFrom('cte_book_2')
@@ -414,7 +414,15 @@ export class DBBooks {
 									.where('cte_book_2.hidden', '=', false)
 									.orderBy('series_book.sort_order asc'),
 							).as('books'),
-						)
+							jsonArrayFrom(
+								eb
+									.selectFrom('tag')
+									.innerJoin('series_tag_hist', 'series_tag_hist.tag_id', 'tag.id')
+									.whereRef('series_tag_hist.change_id', '=', 'cte_series.id')
+									.select(['tag.name', 'tag.ttype', 'tag.id'])
+									.orderBy(['tag.ttype', 'tag.name']),
+							).as('tags'),
+						])
 						.select([
 							'cte_series.title',
 							'cte_series.title_orig',
