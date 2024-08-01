@@ -20,6 +20,7 @@
 	import { sortByLang } from '$lib/db/array';
 	import TitlesSection from '$lib/components/titles/TitlesSection.svelte';
 	import { buildImageUrl } from '../book';
+	import Tags from '$lib/components/series/Tags.svelte';
 
 	export let book: BookR;
 	export let revision: number | undefined;
@@ -108,6 +109,10 @@
 		</div>
 
 		<TitlesSection titles={book.titles} />
+
+		{#if book.series.at(0) && book.series.at(0)?.tags}
+			<Tags tags={book.series.at(0)?.tags || []} />
+		{/if}
 
 		<section>
 			<h2 class="font-bold text-lg">Staff</h2>
