@@ -226,6 +226,16 @@ export class DBSeries {
 				'cte_series.olang',
 			])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('cte_book')
+						.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
+						.select(['cte_book.description', 'cte_book.description_ja'])
+						.where('cte_book.hidden', '=', false)
+						.whereRef('series_book.series_id', '=', 'cte_series.id')
+						.orderBy('sort_order asc')
+						.limit(1),
+				).as('book_description'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('cte_book')
@@ -374,6 +384,16 @@ export class DBSeries {
 				'change.ihid as hidden',
 			])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('cte_book')
+						.innerJoin('series_book_hist', 'series_book_hist.book_id', 'cte_book.id')
+						.select(['cte_book.description', 'cte_book.description_ja'])
+						.where('cte_book.hidden', '=', false)
+						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
+						.orderBy('sort_order asc')
+						.limit(1),
+				).as('book_description'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('cte_book')

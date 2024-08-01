@@ -25,6 +25,8 @@
 	.tag {
 		background-color: var(--primary-200);
 		border-radius: 1.5rem;
+		text-transform: capitalize;
+		font-weight: 600;
 	}
 
 	:global(.dark) .tag {
