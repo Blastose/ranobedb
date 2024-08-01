@@ -25,6 +25,7 @@
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
 	import Tags from '../Tags.svelte';
+	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -102,6 +103,13 @@
 			<dd>{series.publication_status}</dd>
 		</div>
 	</dl>
+
+	{#if series.description}
+		<section>
+			<h2 class="font-bold">Note</h2>
+			<MarkdownToHtml markdown={series.description} type="full" />
+		</section>
+	{/if}
 
 	<TitlesSection titles={series.titles} />
 

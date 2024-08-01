@@ -85,7 +85,7 @@ export function getSeriesDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
-			name: 'Description',
+			name: 'Note',
 			words1: prevSeriesHistEdit.description,
 			words2: seriesHistEdit.description,
 		}),
