@@ -15,6 +15,7 @@ import {
 	type SeriesBook,
 	type SeriesTitle,
 	type SeriesTitleHist,
+	type SeriesTagHist,
 } from '$lib/server/db/dbTypes';
 import { seriesRelTypeReverseMap } from '$lib/db/dbConsts';
 import type { Insertable, Kysely, Transaction } from 'kysely';
@@ -55,6 +56,14 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 					.whereRef('series_title.series_id', '=', 'series.id')
 					.selectAll('series_title'),
 			).as('titles'),
+			jsonArrayFrom(
+				eb
+					.selectFrom('tag')
+					.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
+					.whereRef('series_tag.series_id', '=', 'series.id')
+					.select(['tag.name', 'tag.ttype', 'tag.id'])
+					.orderBy(['tag.ttype', 'tag.name']),
+			).as('tags'),
 		])
 		.selectAll('series')
 		.where('series.id', 'in', params.series_ids)
@@ -84,6 +93,13 @@ async function addMiscSeriesRelations(params: {
 	})) satisfies Insertable<SeriesTitleHist>[];
 	if (batch_add_titles.length > 0) {
 		await params.trx.insertInto('series_title_hist').values(batch_add_titles).execute();
+	}
+	const batch_add_series_tags = params.series.tags.map((item) => ({
+		change_id: params.change_id,
+		tag_id: item.id,
+	})) satisfies Insertable<SeriesTagHist>[];
+	if (batch_add_series_tags.length > 0) {
+		await params.trx.insertInto('series_tag_hist').values(batch_add_series_tags).execute();
 	}
 }
 
@@ -447,6 +463,21 @@ export class DBSeriesActions {
 			}) satisfies Insertable<SeriesTitleHist>[];
 			if (series_title_hist_add.length > 0) {
 				await trx.insertInto('series_title_hist').values(series_title_hist_add).execute();
+			}
+
+			// series_tag
+			// TODO Currently, editing series_tags is not enabled right now, so it just takes it from the current series
+			const series_tags = await trx
+				.selectFrom('series_tag')
+				.where('series_tag.series_id', '=', data.id)
+				.selectAll()
+				.execute();
+			const series_tag_hist_add = series_tags.map((item) => ({
+				change_id: change.change_id,
+				tag_id: item.tag_id,
+			})) satisfies Insertable<SeriesTagHist>[];
+			if (series_tag_hist_add.length > 0) {
+				await trx.insertInto('series_tag_hist').values(series_tag_hist_add).execute();
 			}
 
 			// series_book_hist

@@ -38,8 +38,8 @@
 		multiple: true,
 		preventScroll: false,
 		defaultSelected: $values.map((v) => ({
-			value: v,
-			label: languageNames[v as Language],
+			value: String(v),
+			label: v,
 		})),
 		onSelectedChange: handleSelectedChange,
 	});
@@ -51,10 +51,11 @@
 		if (!args.next) {
 			return undefined;
 		}
-		console.log(args.next);
 		values.set(args.next.map((v) => v.value));
 		return args.next;
 	}
+
+	$: selected = dropdownOptions.filter((v) => $isSelected(v.value));
 </script>
 
 {#each $values as sel}
@@ -74,11 +75,11 @@
 			{#if $values.length === 0 || $values.length === dropdownOptions.length}
 				<span class="chip">{allSelectedText}</span>
 			{:else if $values.length <= 2}
-				{#each $values as selectedItem}
-					<span class="chip">{selectedItem}</span>
+				{#each selected as selectedItem}
+					<span class="chip">{selectedItem.display}</span>
 				{/each}
 			{:else}
-				<span class="chip">{$values[0]}</span>
+				<span class="chip">{selected[0].display}</span>
 				{#if $values.length !== 1}
 					<span class="chip">+{$values.length - 1} more</span>
 				{/if}
@@ -132,7 +133,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
-		max-width: 128px;
+		max-width: 96px;
 	}
 
 	.check {

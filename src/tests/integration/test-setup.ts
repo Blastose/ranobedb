@@ -9,7 +9,7 @@ const { Pool } = pkg;
 dotenv.config({ path: '.env.testing' });
 
 export async function clearDatabase(db: Kysely<DB>) {
-	await sql<unknown>`TRUNCATE change, book_hist, book, book_title, book_title_hist, book_edition, book_edition_hist, staff_hist, staff, staff_alias, staff_alias_hist, publisher, book_staff_alias, publisher_relation, book_staff_alias_hist, publisher_hist, publisher_relation_hist, release, release_hist, release_publisher, release_publisher_hist, release_book, release_book_hist, series_hist, series, series_relation, series_relation_hist, series_book, series_book_hist, series_title, series_title_hist, user_list_label, user_list_book, user_list_book_label;`.execute(
+	await sql<unknown>`TRUNCATE change, book_hist, book, book_title, book_title_hist, book_edition, book_edition_hist, staff_hist, staff, staff_alias, staff_alias_hist, publisher, book_staff_alias, publisher_relation, book_staff_alias_hist, publisher_hist, publisher_relation_hist, release, release_hist, release_publisher, release_publisher_hist, release_book, release_book_hist, series_hist, series, series_tag, series_tag_hist, series_relation, series_relation_hist, series_book, series_book_hist, series_title, series_title_hist, user_list_label, user_list_book, user_list_book_label, user_list_release, user_list_series, user_list_series_label, user_list_series_lang, user_list_series_format, tag;`.execute(
 		db,
 	);
 }
@@ -254,6 +254,16 @@ export async function initDatabase(db: Kysely<DB>) {
 			start_date: 20120101,
 			olang: 'ja',
 		})
+		.execute();
+	const tag = await db
+		.insertInto('tag')
+		.values({ description: '', name: 'action', ttype: 'genre' })
+		.returning('id')
+		.executeTakeFirstOrThrow();
+	await db.insertInto('series_tag').values({ series_id: series2.id, tag_id: tag.id }).execute();
+	await db
+		.insertInto('series_tag_hist')
+		.values({ change_id: changeSeries2.id, tag_id: tag.id })
 		.execute();
 	await db
 		.insertInto('series_title')

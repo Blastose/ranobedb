@@ -2,6 +2,7 @@ import {
 	defaultUserListLabelsArray,
 	publisherRelTypeArray,
 	seriesBookTypeArray,
+	tagTypeArray,
 	userListReleaseStatus,
 } from '$lib/db/dbConsts';
 import { releaseFormatArray } from '$lib/db/dbConsts';
@@ -47,6 +48,8 @@ export type SeriesRelType = (typeof seriesRelTypeArray)[number];
 export type SeriesStatus = (typeof seriesStatusArray)[number];
 
 export type StaffRole = (typeof staffRolesArray)[number];
+
+export type TagType = (typeof tagTypeArray)[number];
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
@@ -348,6 +351,16 @@ export interface SeriesRelationHist {
 	relation_type: SeriesRelType;
 }
 
+export interface SeriesTag {
+	series_id: number;
+	tag_id: number;
+}
+
+export interface SeriesTagHist {
+	change_id: number;
+	tag_id: number;
+}
+
 export interface SeriesTitle {
 	lang: Language;
 	official: true;
@@ -399,6 +412,13 @@ export interface StaffAliasHist {
 	main_alias: boolean;
 	name: string;
 	romaji: string | null;
+}
+
+export interface Tag {
+	description: string;
+	id: Generated<number>;
+	name: string;
+	ttype: TagType;
 }
 
 export interface UserListBook {
@@ -498,12 +518,15 @@ export interface DB {
 	series_hist: SeriesHist;
 	series_relation: SeriesRelation;
 	series_relation_hist: SeriesRelationHist;
+	series_tag: SeriesTag;
+	series_tag_hist: SeriesTagHist;
 	series_title: SeriesTitle;
 	series_title_hist: SeriesTitleHist;
 	staff: Staff;
 	staff_alias: StaffAlias;
 	staff_hist: StaffHist;
 	staff_alias_hist: StaffAliasHist;
+	tag: Tag;
 	user_list_book: UserListBook;
 	user_list_book_label: UserListBookLabel;
 	user_list_label: UserListLabel;

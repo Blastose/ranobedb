@@ -20,7 +20,7 @@
 	inputPlaceholder="Search by series title"
 >
 	<svelte:fragment slot="filters">
-		<SeriesFilters filtersForm={data.filtersForm} />
+		<SeriesFilters filtersForm={data.filtersFormObj} genres={data.genres} />
 	</svelte:fragment>
 
 	<svelte:fragment slot="display">

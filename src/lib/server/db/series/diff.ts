@@ -3,6 +3,7 @@ import {
 	generateBookTitleChangeStringFromBooks,
 	generateSeriesBookChangeStringFromBooks,
 	generateSeriesRelationChangeStringFromSeries,
+	generateSeriesTagChangeStringFromSeries,
 	getDiffLines,
 	getDiffWords,
 	pushIfNotUndefined,
@@ -51,6 +52,14 @@ export function getSeriesDiffs(params: {
 	);
 	pushIfNotUndefined(
 		diffs,
+		getDiffLines({
+			name: 'Series tags',
+			lines1: generateSeriesTagChangeStringFromSeries(prevSeriesHistEdit['tags']),
+			lines2: generateSeriesTagChangeStringFromSeries(seriesHistEdit['tags']),
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
 		getDiffWords({
 			name: 'Hidden',
 			words1: prevSeriesHistEdit.hidden.toString(),
@@ -76,7 +85,7 @@ export function getSeriesDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
-			name: 'Description',
+			name: 'Note',
 			words1: prevSeriesHistEdit.description,
 			words2: seriesHistEdit.description,
 		}),

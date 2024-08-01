@@ -24,6 +24,8 @@
 	import type { userListSeriesSchema } from '$lib/server/zod/schema';
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
+	import Tags from '../Tags.svelte';
+	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -51,16 +53,30 @@
 
 	{#if userListSeriesForm}
 		{#if user}
- 				<SeriesModal {series} {userListSeriesForm} />
- 		{:else}
+			<SeriesModal {series} {userListSeriesForm} />
+		{:else}
 			<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}
 				>Add to reading list</a
 			>
 		{/if}
 	{/if}
 
-	{#if series.description.length > 0}
-		<Description description={series.description} maxHeight={100} />
+	{#if series.book_description && (series.book_description?.description?.length > 0 || series.book_description?.description_ja?.length > 0)}
+		{#key series.id}
+			{#if $displayPrefs.descriptions === 'en'}
+				<Description
+					description={series.book_description?.description ||
+						series.book_description?.description_ja}
+					maxHeight={100}
+				/>
+			{:else if $displayPrefs.descriptions === 'ja'}
+				<Description
+					description={series.book_description?.description_ja ||
+						series.book_description?.description}
+					maxHeight={100}
+				/>
+			{/if}
+		{/key}
 	{/if}
 
 	<dl>
@@ -88,7 +104,16 @@
 		</div>
 	</dl>
 
+	{#if series.description}
+		<section>
+			<h2 class="font-bold">Note</h2>
+			<MarkdownToHtml markdown={series.description} type="full" />
+		</section>
+	{/if}
+
 	<TitlesSection titles={series.titles} />
+
+	<Tags tags={series.tags} />
 
 	{#if series.aliases}
 		<section>
