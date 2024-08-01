@@ -16,6 +16,7 @@ import {
 	type SeriesTitle,
 	type SeriesTitleHist,
 	type SeriesTagHist,
+	type SeriesTag,
 } from '$lib/server/db/dbTypes';
 import { seriesRelTypeReverseMap } from '$lib/db/dbConsts';
 import type { Insertable, Kysely, Transaction } from 'kysely';
@@ -466,15 +467,17 @@ export class DBSeriesActions {
 			}
 
 			// series_tag
-			// TODO Currently, editing series_tags is not enabled right now, so it just takes it from the current series
-			const series_tags = await trx
-				.selectFrom('series_tag')
-				.where('series_tag.series_id', '=', data.id)
-				.selectAll()
-				.execute();
-			const series_tag_hist_add = series_tags.map((item) => ({
+			await trx.deleteFrom('series_tag').where('series_tag.series_id', '=', data.id).execute();
+			const series_tag_add = data.series.tags.map((item) => ({
+				series_id: data.id,
+				tag_id: item.id,
+			})) satisfies Insertable<SeriesTag>[];
+			if (series_tag_add.length > 0) {
+				await trx.insertInto('series_tag').values(series_tag_add).execute();
+			}
+			const series_tag_hist_add = data.series.tags.map((item) => ({
 				change_id: change.change_id,
-				tag_id: item.tag_id,
+				tag_id: item.id,
 			})) satisfies Insertable<SeriesTagHist>[];
 			if (series_tag_hist_add.length > 0) {
 				await trx.insertInto('series_tag_hist').values(series_tag_hist_add).execute();
@@ -723,6 +726,22 @@ export class DBSeriesActions {
 			}) satisfies Insertable<SeriesTitleHist>[];
 			if (series_title_hist_add.length > 0) {
 				await trx.insertInto('series_title_hist').values(series_title_hist_add).execute();
+			}
+
+			// series_tag
+			const series_tag_add = data.series.tags.map((item) => ({
+				series_id: insertedSeries.id,
+				tag_id: item.id,
+			})) satisfies Insertable<SeriesTag>[];
+			if (series_tag_add.length > 0) {
+				await trx.insertInto('series_tag').values(series_tag_add).execute();
+			}
+			const series_tag_hist_add = data.series.tags.map((item) => ({
+				change_id: change.change_id,
+				tag_id: item.id,
+			})) satisfies Insertable<SeriesTagHist>[];
+			if (series_tag_hist_add.length > 0) {
+				await trx.insertInto('series_tag_hist').values(series_tag_hist_add).execute();
 			}
 
 			// series_book

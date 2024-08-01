@@ -37,7 +37,13 @@ describe('series actions', () => {
 			.where('series.id', '!=', series.id)
 			.selectAll()
 			.executeTakeFirstOrThrow();
+
 		const book = await db.selectFrom('book').selectAll().executeTakeFirstOrThrow();
+		const tag = await db
+			.insertInto('tag')
+			.values({ description: '', name: 'romance', ttype: 'genre' })
+			.returning('id')
+			.executeTakeFirstOrThrow();
 		await dbSeriesActions.editSeries(
 			{
 				series: {
@@ -53,6 +59,7 @@ describe('series actions', () => {
 					],
 					publication_status: 'ongoing',
 					titles: [{ lang: 'ja', official: true, title: 'Series Title 3' }],
+					tags: [{ id: tag.id, name: null }],
 					aliases: '',
 					end_date: 99999999,
 					start_date: 99999999,
@@ -68,6 +75,7 @@ describe('series actions', () => {
 			cb_series: (s) => {
 				expect(s.books.length).toBe(1);
 				expect(s.books.at(0)?.book_type).toBe('main');
+				expect(s.tags.length).toBe(1);
 				expect(s.child_series.at(0)?.relation_type).toBe('prequel');
 			},
 		});
@@ -101,6 +109,7 @@ describe('series actions', () => {
 							title: 'こんにちは',
 						},
 					],
+					tags: [],
 					aliases: '',
 					end_date: 99999999,
 					start_date: 99999999,
@@ -115,6 +124,7 @@ describe('series actions', () => {
 			id: series.id,
 			cb_series: (s) => {
 				expect(s.books.length).toBe(0);
+				expect(s.tags.length).toBe(0);
 				expect(s.child_series.at(0)?.relation_type).toBe('parent story');
 			},
 		});
@@ -127,6 +137,7 @@ describe('series actions', () => {
 			},
 		});
 
+		const allTags = await db.selectFrom('tag').selectAll().execute();
 		await dbSeriesActions.editSeries(
 			{
 				series: {
@@ -148,6 +159,7 @@ describe('series actions', () => {
 							title: 'Konnichiwa',
 						},
 					],
+					tags: allTags,
 					aliases: 'alias here',
 					end_date: 99999999,
 					start_date: 16660205,
@@ -163,6 +175,7 @@ describe('series actions', () => {
 			id: series.id,
 			cb_series: (s) => {
 				expect(s.books.length).toBe(0);
+				expect(s.tags.length).toBe(2);
 				expect(s.child_series.length).toBe(0);
 			},
 		});
@@ -201,6 +214,7 @@ describe('series actions', () => {
 							title: 'こんにちは',
 						},
 					],
+					tags: [],
 					aliases: '',
 					end_date: 99999999,
 					start_date: 99999999,
@@ -214,6 +228,7 @@ describe('series actions', () => {
 			cb_series: (s) => {
 				expect(s.books.length).toBe(1);
 				expect(s.books.at(0)?.book_type).toBe('main');
+				expect(s.tags.length).toBe(0);
 				expect(s.child_series.length).toBe(1);
 				expect(s.child_series.at(0)?.relation_type).toBe('prequel');
 			},
