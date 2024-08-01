@@ -11,16 +11,15 @@
 	import Keyed from '../../Keyed.svelte';
 	import SelectField from '../../SelectField.svelte';
 	import MultiSelectField from '../../MultiSelectField.svelte';
-	import { getAllOrAny } from '../../filters/utils';
+	import { getAllOrAny } from '$lib/components/form/filters/utils';
+	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof bookFiltersSchema>>;
 	const sForm = superForm(filtersForm);
-	const { form, enhance, delayed, submitting } = sForm;
+	const { form } = sForm;
 </script>
 
-<section>
-	<h2 class="text-lg font-bold">Filters</h2>
-
+<FiltersWrapper>
 	<div class="flex flex-col gap-4">
 		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">
 			<Keyed>
@@ -77,4 +76,4 @@
 			/>
 		</div>
 	</div>
-</section>
+</FiltersWrapper>
