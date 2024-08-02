@@ -110,7 +110,7 @@
 
 		<TitlesSection titles={book.titles} />
 
-		{#if book.series.at(0) && book.series.at(0)?.tags}
+		{#if book.series.at(0) && (book.series.at(0)?.tags?.length || -1) > 0}
 			<Tags tags={book.series.at(0)?.tags || []} />
 		{/if}
 

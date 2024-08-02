@@ -1,4 +1,4 @@
-import { Kysely, type Insertable, type Transaction } from 'kysely';
+import { Kysely, sql, type Insertable, type Transaction } from 'kysely';
 import type {
 	DB,
 	Language,
@@ -9,6 +9,36 @@ import type {
 import { getToAddAndToRemoveFromArrays } from './list';
 import { defaultUserListLabels } from '$lib/db/dbConsts';
 import type { Nullish } from '$lib/server/zod/schema';
+
+export function getUserSeriesListCounts(db: Kysely<DB>, userId: string) {
+	return db
+		.selectFrom('user_list_series')
+		.leftJoin('user_list_series_label', (join) =>
+			join
+				.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id')
+				.onRef('user_list_series_label.series_id', '=', 'user_list_series.series_id')
+				.on('user_list_series.user_id', '=', userId),
+		)
+		.fullJoin('user_list_label', (join) =>
+			join
+				.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
+				.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
+		)
+		.leftJoin('series', 'series.id', 'user_list_series.series_id')
+		.select((eb) => eb.fn.coalesce('user_list_label.label', sql<string>`'No label'`).as('label'))
+		.select((eb) => eb.fn.count('user_list_series.series_id').as('count'))
+		.select((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`9999`).as('label_id'))
+		.where((eb) =>
+			eb.or([
+				eb('user_list_series.user_id', '=', userId),
+				eb('user_list_series.user_id', 'is', null),
+			]),
+		)
+		.where('user_list_label.user_id', '=', userId)
+		.where((eb) => eb.or([eb('series.hidden', '=', false), eb('series.hidden', 'is', null)]))
+		.groupBy(['user_list_label.label', 'user_list_label.id'])
+		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
+}
 
 export class DBSeriesListActions {
 	db: Kysely<DB>;
