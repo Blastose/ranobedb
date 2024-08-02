@@ -3,6 +3,7 @@ import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
 import { getUserListCounts } from '$lib/server/db/user/list.js';
+import { getUserSeriesListCounts } from '$lib/server/db/user/series-list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { listLabelsSchema, pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
@@ -27,34 +28,7 @@ export const load = async ({ params, locals, url }) => {
 		error(404);
 	}
 
-	const userLabelCounts = await db
-		.selectFrom('user_list_series')
-		.leftJoin('user_list_series_label', (join) =>
-			join
-				.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id')
-				.onRef('user_list_series_label.series_id', '=', 'user_list_series.series_id')
-				.on('user_list_series.user_id', '=', listUser.id),
-		)
-		.fullJoin('user_list_label', (join) =>
-			join
-				.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
-				.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
-		)
-		.leftJoin('series', 'series.id', 'user_list_series.series_id')
-		.select((eb) => eb.fn.coalesce('user_list_label.label', sql<string>`'No label'`).as('label'))
-		.select((eb) => eb.fn.count('user_list_series.series_id').as('count'))
-		.select((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`9999`).as('label_id'))
-		.where((eb) =>
-			eb.or([
-				eb('user_list_series.user_id', '=', listUser.id),
-				eb('user_list_series.user_id', 'is', null),
-			]),
-		)
-		.where('user_list_label.user_id', '=', listUser.id)
-		.where((eb) => eb.or([eb('series.hidden', '=', false), eb('series.hidden', 'is', null)]))
-		.groupBy(['user_list_label.label', 'user_list_label.id'])
-		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`))
-		.execute();
+	const userLabelCounts = await getUserSeriesListCounts(db, listUser.id).execute();
 
 	const dbSeries = DBSeries.fromDB(db, user);
 	let query = dbSeries

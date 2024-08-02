@@ -11,6 +11,7 @@ test.describe('add/edit/remove series from reading list', () => {
 		await page.getByRole('option', { name: 'Japanese' }).click();
 		await page.getByLabel('Release format is one of').click();
 		await page.getByRole('option', { name: 'print' }).click();
+		await page.getByLabel('Release format is one of').click();
 		await page
 			.getByLabel('Add series to reading list')
 			.getByRole('button', { name: 'Add to reading list' })
