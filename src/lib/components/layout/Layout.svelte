@@ -34,13 +34,11 @@
 	.layout-container {
 		display: grid;
 		grid-template-columns: min-content 1fr;
-		min-height: 100%;
 	}
 
 	.layout-items-wrapper {
 		display: flex;
 		flex-direction: column;
-		min-height: 100%;
 	}
 
 	.main-wrapper {

@@ -19,6 +19,7 @@
 		display: flex;
 		gap: 1rem;
 		overflow-x: auto;
+		overflow-y: hidden;
 		white-space: nowrap;
 	}
 </style>

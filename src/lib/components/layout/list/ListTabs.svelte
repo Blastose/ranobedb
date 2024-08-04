@@ -34,7 +34,7 @@
 	});
 </script>
 
-<div class="grid overflow-x-auto whitespace-nowrap">
+<div class="grid overflow-x-auto overflow-y-hidden whitespace-nowrap">
 	<nav class="flex gap-4">
 		{#each tabs as tab}
 			{@const active = tab.url === currentTab || (tab.url === '' && currentTab === 'list')}
