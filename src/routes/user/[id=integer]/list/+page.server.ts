@@ -5,7 +5,7 @@ import { getBooksRL, getUserLabelCounts, getUserListCounts } from '$lib/server/d
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { listLabelsSchema, pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
-import { sql, type Expression, type SqlBool } from 'kysely';
+import { sql } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -39,27 +39,13 @@ export const load = async ({ url, params, locals }) => {
 	}
 
 	if (labels.length > 0) {
-		query = query.where((eb) => {
-			const ors: Expression<SqlBool>[] = [];
-			for (const l of labels) {
-				ors.push(eb('user_list_book_label.label_id', '=', l));
-			}
-
-			return eb.or(ors);
-		});
+		query = query.where('user_list_label.id', 'in', labels);
 	} else {
 		// Hack?
 		// Without this, the query planner will loop over the entries of the user's user_list_label rows (normally 5 times for the default labels)
 		// This fixes it so that it will not loop 5 times
 		// Will need to do something else for custom labels
-		query = query.where((eb) => {
-			const ors: Expression<SqlBool>[] = [];
-			for (const l of [1, 2, 3, 4, 5]) {
-				ors.push(eb('user_list_book_label.label_id', '=', l));
-			}
-
-			return eb.or(ors);
-		});
+		query = query.where('user_list_label.id', 'in', [1, 2, 3, 4, 5]);
 	}
 
 	// Also a hack?
