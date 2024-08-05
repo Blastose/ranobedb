@@ -13,11 +13,12 @@
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof releaseFiltersSchema>>;
+	export let showSort: boolean = true;
 	const sForm = superForm(filtersForm);
 </script>
 
 <FiltersWrapper>
-	<div class="flex flex-col gap-4">
+	<div class="flex flex-col gap-2">
 		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">
 			<Keyed>
 				<MultiSelectField
@@ -39,16 +40,20 @@
 				/>
 			</Keyed>
 
-			<SelectField
-				form={sForm}
-				field="sort"
-				dropdownOptions={releaseSortArray.map((v) => ({ display: v, value: v }))}
-				selectedValue={filtersForm.data.sort}
-				label="Sort by"
-				resetPadding={true}
-				showRequiredSymbolIfRequired={false}
-				fit={true}
-			/>
+			{#if showSort}
+				<SelectField
+					form={sForm}
+					field="sort"
+					dropdownOptions={releaseSortArray.map((v) => ({ display: v, value: v }))}
+					selectedValue={filtersForm.data.sort}
+					label="Sort by"
+					resetPadding={true}
+					showRequiredSymbolIfRequired={false}
+					fit={true}
+				/>
+			{/if}
 		</div>
+
+		<slot />
 	</div>
 </FiltersWrapper>

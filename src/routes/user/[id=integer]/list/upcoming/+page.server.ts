@@ -2,15 +2,20 @@ import { DateNumber, getTodayAsDateNumber } from '$lib/components/form/release/r
 import { groupBy } from '$lib/db/array.js';
 import { db } from '$lib/server/db/db';
 import { DBUsers } from '$lib/server/db/user/user.js';
-import { userListReleaseSchema } from '$lib/server/zod/schema.js';
+import { releaseFiltersSchema, userListReleaseSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
+import type { Expression, SqlBool } from 'kysely';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params, locals, url }) => {
 	const user = locals.user;
 	const userIdNumeric = Number(params.id);
+
+	const form = await superValidate(url, zod(releaseFiltersSchema));
+	const useReleaseLangFilters = form.data.rl.length > 0;
+	const useReleaseFormatFilters = form.data.rf.length > 0;
 
 	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
 
@@ -20,7 +25,7 @@ export const load = async ({ params, locals }) => {
 
 	const isMyList = user?.id_numeric === userIdNumeric;
 
-	const releases = await db
+	let query = db
 		.selectFrom('release')
 		.innerJoin('release_book', 'release_book.release_id', 'release.id')
 		.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
@@ -89,8 +94,28 @@ export const load = async ({ params, locals }) => {
 						.select('user_list_release.release_status'),
 				).as('user_list_release'),
 			),
-		)
-		.execute();
+		);
+
+	if (useReleaseLangFilters) {
+		query = query.where((eb) => {
+			const filters: Expression<SqlBool>[] = [];
+			for (const lang of form.data.rl) {
+				filters.push(eb('release.lang', '=', lang));
+			}
+			return eb.or(filters);
+		});
+	}
+	if (useReleaseFormatFilters) {
+		query = query.where((eb) => {
+			const filters: Expression<SqlBool>[] = [];
+			for (const format of form.data.rf) {
+				filters.push(eb('release.format', '=', format));
+			}
+			return eb.or(filters);
+		});
+	}
+
+	const releases = await query.execute();
 
 	const groupedReleases = groupBy(releases, (v) => {
 		const dateNumber = new DateNumber(v.release_date);
@@ -106,5 +131,6 @@ export const load = async ({ params, locals }) => {
 		listUser,
 		groupedReleases,
 		userListReleaseForm: isMyList ? userListReleaseForm : undefined,
+		filtersForm: form,
 	};
 };

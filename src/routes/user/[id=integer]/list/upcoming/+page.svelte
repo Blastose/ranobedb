@@ -1,5 +1,7 @@
 <script lang="ts">
 	import BookRelease from '$lib/components/book/id/BookRelease.svelte';
+	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
+	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
@@ -20,6 +22,13 @@
 	<h1 class="text-4xl font-bold">{pageTitle}</h1>
 
 	<div class="flex flex-col gap-2">
+		<form method="get">
+			<ReleaseFilters filtersForm={data.filtersForm} showSort={false}>
+				<div class="w-fit">
+					<SubmitButton text="Filter" delayed={false} submitting={false} />
+				</div>
+			</ReleaseFilters>
+		</form>
 		<label>
 			<input type="checkbox" bind:checked={onlyInList} />
 			<span>Only show releases in list</span>

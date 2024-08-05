@@ -191,6 +191,10 @@
 			<div class="w-fit flex gap-4">
 				<LinkBox display="Reading list" href="/user/{data.listUser.id_numeric}/list" />
 				<LinkBox display="Edit history" href="/user/{data.listUser.id_numeric}/history" />
+				<LinkBox
+					display="Upcoming releases"
+					href="/user/{data.listUser.id_numeric}/list/upcoming"
+				/>
 			</div>
 
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-x--2 gap-y-4">
