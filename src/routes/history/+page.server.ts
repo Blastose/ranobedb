@@ -26,6 +26,8 @@ export const load = async ({ url, locals }) => {
 			limit: historyItemsPerPage,
 			page: currentPage,
 		},
+		db.selectFrom('change').select((eb) => eb.fn.count<number>('id').as('count')),
+		true,
 	);
 
 	return { form, changes, count, currentPage, totalPages };
