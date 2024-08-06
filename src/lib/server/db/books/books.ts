@@ -84,6 +84,48 @@ export function withBookTitleCte(langPrios?: LanguagePriority[]) {
 	};
 }
 
+export function withBookTitleCteAndUserList(params: {
+	userId: string;
+	labelIds: number[];
+	langPrios?: LanguagePriority[];
+}) {
+	const eb = expressionBuilder<DB, 'book'>();
+	const labels = params.labelIds.length > 0 ? params.labelIds : [1, 2, 3, 4, 5];
+	return () => {
+		return eb
+			.selectFrom('book')
+			.innerJoin('book_title', 'book_title.book_id', 'book.id')
+			.leftJoin('book_title as book_title_orig', (join) =>
+				join
+					.onRef('book_title_orig.book_id', '=', 'book.id')
+					.onRef('book_title_orig.lang', '=', 'book.olang'),
+			)
+			.innerJoin('user_list_book', (join) =>
+				join
+					.onRef('user_list_book.book_id', '=', 'book.id')
+					.on('user_list_book.user_id', '=', params.userId),
+			)
+			.innerJoin('user_list_book_label', (join) =>
+				join
+					.onRef('user_list_book_label.book_id', '=', 'book.id')
+					.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id'),
+			)
+			.innerJoin('user_list_label', (join) =>
+				join
+					.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
+					.on((eb) => eb.between('user_list_label.id', 1, 10))
+					.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
+			)
+			.where('user_list_label.id', 'in', labels)
+			.distinctOn('book.id')
+			.selectAll('book')
+			.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
+			.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
+			.orderBy('book.id')
+			.orderBy((eb) => titleCaseBuilder(eb, params.langPrios ?? defaultLangPrio));
+	};
+}
+
 export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
 	const eb = expressionBuilder<DB, 'book_hist'>();
 	return () => {
@@ -625,6 +667,39 @@ export class DBBooks {
 	getBooks() {
 		return this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.selectFrom('cte_book')
+			.select([
+				'cte_book.id',
+				'cte_book.image_id',
+				'cte_book.lang',
+				'cte_book.romaji',
+				'cte_book.romaji_orig',
+				'cte_book.title',
+				'cte_book.title_orig',
+				'cte_book.release_date',
+				'cte_book.olang',
+			])
+			.select((eb) =>
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'cte_book.image_id')
+						.limit(1),
+				).as('image'),
+			);
+	}
+
+	getBooksUser(userId: string, labelIds: number[]) {
+		return this.ranobeDB.db
+			.with(
+				'cte_book',
+				withBookTitleCteAndUserList({
+					userId,
+					labelIds,
+					langPrios: this.ranobeDB.user?.display_prefs.title_prefs,
+				}),
+			)
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.id',
