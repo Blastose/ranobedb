@@ -7,7 +7,7 @@ import { getUserSeriesListCounts } from '$lib/server/db/user/series-list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { listLabelsSchema, pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
-import { sql, type Expression, type SqlBool } from 'kysely';
+import { sql } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -32,20 +32,8 @@ export const load = async ({ params, locals, url }) => {
 
 	const dbSeries = DBSeries.fromDB(db, user);
 	let query = dbSeries
-		.getSeries()
-		.innerJoin('user_list_series', 'cte_series.id', 'user_list_series.series_id')
-		.innerJoin('user_list_series_label', (join) =>
-			join
-				.onRef('user_list_series_label.series_id', '=', 'user_list_series.series_id')
-				.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id'),
-		)
-		.innerJoin('user_list_label', (join) =>
-			join
-				.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
-				.on((eb) => eb.between('user_list_label.id', 1, 10))
-				.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
-		)
-		.where('user_list_series.user_id', '=', listUser.id)
+		.getSeriesUser(listUser.id, labels)
+		.where('cte_series.hidden', '=', false)
 		.orderBy(
 			(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric`,
 		);
@@ -58,29 +46,15 @@ export const load = async ({ params, locals, url }) => {
 			]),
 		);
 	}
-
-	if (labels.length > 0) {
-		query = query.where((eb) => {
-			const ors: Expression<SqlBool>[] = [];
-			for (const l of labels) {
-				ors.push(eb('user_list_series_label.label_id', '=', l));
-			}
-
-			return eb.or(ors);
-		});
-	}
-
-	const {
-		result: user_list_series,
-		count,
-		totalPages,
-	} = await paginationBuilderExecuteWithCount(query, {
-		limit: 24,
-		page: currentPage,
-	});
-
 	const isMyList = user?.id_numeric === userIdNumeric;
-	const listCounts = await getUserListCounts({ userId: listUser.id });
+
+	const [{ result: user_list_series, count, totalPages }, listCounts] = await Promise.all([
+		paginationBuilderExecuteWithCount(query, {
+			limit: 24,
+			page: currentPage,
+		}),
+		getUserListCounts({ userId: listUser.id }),
+	]);
 
 	return {
 		isMyList,
