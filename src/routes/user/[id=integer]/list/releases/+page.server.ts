@@ -1,13 +1,20 @@
+import { DBBooks } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db';
-import { getBooksRL, getUserListCounts } from '$lib/server/db/user/list.js';
+import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
+import { getUserListCounts } from '$lib/server/db/user/list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
-import { userListReleaseSchema } from '$lib/server/zod/schema.js';
+import { pageSchema, qSchema, userListReleaseSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params, locals, url }) => {
+	const page = await superValidate(url, zod(pageSchema));
+	const qS = await superValidate(url, zod(qSchema));
+
+	const currentPage = page.data.page;
+	const q = qS.data.q;
 	const user = locals.user;
 	const userIdNumeric = Number(params.id);
 
@@ -17,7 +24,10 @@ export const load = async ({ params, locals }) => {
 		error(404);
 	}
 
-	const query = getBooksRL(listUser.id, user)
+	const dbBooks = DBBooks.fromDB(db);
+
+	let query = dbBooks
+		.getBooksUser(listUser.id, [])
 		.select((eb) => [
 			jsonArrayFrom(
 				eb
@@ -46,10 +56,45 @@ export const load = async ({ params, locals }) => {
 		.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
 		.innerJoin('series', 'series.id', 'series_book.series_id')
 		.where('cte_book.hidden', '=', false)
+		.where('series.hidden', '=', false)
 		.clearOrderBy()
 		.orderBy(['series_book.series_id', 'series_book.sort_order']);
 
-	const bookWithReleasesInList = await query.execute();
+	if (q) {
+		query = query.where((eb) =>
+			eb(
+				'cte_book.id',
+				'in',
+				eb
+					.selectFrom('release')
+					.innerJoin('release_book', (join) =>
+						join
+							.onRef('release_book.release_id', '=', 'release.id')
+							.onRef('release_book.book_id', '=', 'cte_book.id'),
+					)
+					.select('release_book.book_id')
+					.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
+					.where('user_list_release.user_id', '=', listUser.id)
+					.where('release.hidden', '=', false)
+					.where((eb) =>
+						eb.or([
+							eb('release.title', 'ilike', `%${q}%`),
+							eb('release.romaji', 'ilike', `%${q}%`),
+						]),
+					),
+			),
+		);
+	}
+
+	const {
+		result: bookWithReleasesInList,
+		count,
+		totalPages,
+	} = await paginationBuilderExecuteWithCount(query, {
+		limit: 24,
+		page: currentPage,
+	});
+
 	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
 
 	const isMyList = user?.id_numeric === userIdNumeric;
@@ -61,5 +106,8 @@ export const load = async ({ params, locals }) => {
 		bookWithReleasesInList,
 		userListReleaseForm: isMyList ? userListReleaseForm : undefined,
 		listCounts,
+		count,
+		totalPages,
+		currentPage,
 	};
 };

@@ -4,6 +4,7 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import DbShell from '$lib/components/layout/db/DBShell.svelte';
 	import ListTabs from '$lib/components/layout/list/ListTabs.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
@@ -18,69 +19,80 @@
 <PageTitle title={pageTitle} />
 <NoIndex />
 
-<main class="container-rndb flex flex-col gap-4">
-	<h1 class="text-4xl font-bold">{pageTitle}</h1>
+<DbShell
+	name={pageTitle}
+	customName={true}
+	currentPage={data.currentPage}
+	totalPages={data.totalPages}
+	results={data.count}
+	inputPlaceholder="Search by release title"
+>
+	<svelte:fragment slot="under-heading"
+		><ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} /></svelte:fragment
+	>
 
-	<ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
-
-	<div class="flex flex-col gap-2">
-		{#each data.bookWithReleasesInList as book}
-			<!-- TODO might be better to filter out the books without releases in list in SQL -->
-			{#if book.releases.length > 0}
-				<div>
-					<div class="grid grid-cols-[48px_1fr] sm:grid-cols-[72px_1fr] gap-2 sm:gap-4">
-						{#if book.image}
-							<a class="mt-1" href="/book/{book.id}">
-								<img
-									width={book.image.width}
-									height={book.image.height}
-									class="img rounded-md shadow-sm"
-									src="{PUBLIC_IMAGE_URL}{book.image.filename}"
-									alt=""
-									loading="lazy"
-								/>
-							</a>
-						{/if}
-						<div>
-							<p class="font-bold">
-								<a class="link" href="/book/{book.id}"><TitleDisplay obj={book} /></a>
-							</p>
-							{#each book.releases as release}
-								<div class="flex justify-between text-sm sm:text-base">
-									<div
-										class="grid gap-x-2 {data.userListReleaseForm
-											? 'grid-cols-[18px_24px_102px_1fr]'
-											: 'grid-cols-[18px_24px_72px_1fr]'}"
-									>
-										<p>{release.lang}</p>
-										<div title={release.format}>
-											{#if release.format === 'print'}
-												<Icon name="bookW" height={size} width={size} />
-											{:else if release.format === 'digital'}
-												<Icon name="laptop" height={size} width={size} />
-											{:else if release.format === 'audio'}
-												<Icon name="headphones" height={size} width={size} />
-											{/if}
-										</div>
-										{#if data.userListReleaseForm}
-											<ReleaseOptions
-												{release}
-												showStatus={true}
-												userListReleaseForm={data.userListReleaseForm}
-											/>
-										{:else}
-											<p>{release.user_list_release?.release_status}</p>
-										{/if}
-										<a class="link line-clamp-2" href="/release/{release.id}"
-											><NameDisplay obj={release} /></a
+	<svelte:fragment slot="display">
+		<div class="flex flex-col gap-2">
+			{#each data.bookWithReleasesInList as book}
+				<!-- TODO might be better to filter out the books without releases in list in SQL -->
+				{#if book.releases.length > 0}
+					<div>
+						<div class="grid grid-cols-[48px_1fr] sm:grid-cols-[72px_1fr] gap-2 sm:gap-4">
+							{#if book.image}
+								<a class="mt-1" href="/book/{book.id}">
+									{#key book.id}
+										<img
+											width={book.image.width}
+											height={book.image.height}
+											class="img rounded-md shadow-sm"
+											src="{PUBLIC_IMAGE_URL}{book.image.filename}"
+											alt=""
+											loading="lazy"
+										/>
+									{/key}
+								</a>
+							{/if}
+							<div>
+								<p class="font-bold">
+									<a class="link" href="/book/{book.id}"><TitleDisplay obj={book} /></a>
+								</p>
+								{#each book.releases as release}
+									<div class="flex justify-between text-sm sm:text-base">
+										<div
+											class="grid gap-x-2 {data.userListReleaseForm
+												? 'grid-cols-[18px_24px_102px_1fr]'
+												: 'grid-cols-[18px_24px_72px_1fr]'}"
 										>
+											<p>{release.lang}</p>
+											<div title={release.format}>
+												{#if release.format === 'print'}
+													<Icon name="bookW" height={size} width={size} />
+												{:else if release.format === 'digital'}
+													<Icon name="laptop" height={size} width={size} />
+												{:else if release.format === 'audio'}
+													<Icon name="headphones" height={size} width={size} />
+												{/if}
+											</div>
+											{#if data.userListReleaseForm}
+												<ReleaseOptions
+													{release}
+													showStatus={true}
+													userListReleaseForm={data.userListReleaseForm}
+												/>
+											{:else}
+												<p>{release.user_list_release?.release_status}</p>
+											{/if}
+											<a class="link line-clamp-2" href="/release/{release.id}"
+												><NameDisplay obj={release} /></a
+											>
+										</div>
 									</div>
-								</div>
-							{/each}
+								{/each}
+							</div>
 						</div>
 					</div>
-				</div>
-			{/if}
-		{/each}
-	</div>
-</main>
+				{/if}
+			{/each}
+		</div>
+	</svelte:fragment>
+</DbShell>

@@ -2,58 +2,10 @@ import { db } from '$lib/server/db/db';
 import type { Nullish } from '$lib/server/zod/schema';
 import { defaultUserListLabels, defaultUserListLabelsArray } from '$lib/db/dbConsts';
 import { Kysely, sql, type Transaction, type InferResult } from 'kysely';
-import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
-import { withBookTitleCte } from '../books/books';
-import type { User } from 'lucia';
+import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import type { DB } from '../dbTypes';
 import { DBSeriesListActions } from './series-list';
 import { DBUsers } from './user';
-
-// TODO Refactor with getBooks
-export function getBooksRL(userId: string, user?: User | null) {
-	return db
-		.with('cte_book', withBookTitleCte(user?.display_prefs.title_prefs))
-		.selectFrom('cte_book')
-		.innerJoin('user_list_book', (join) =>
-			join
-				.onRef('user_list_book.book_id', '=', 'cte_book.id')
-				.on('user_list_book.user_id', '=', userId),
-		)
-		.innerJoin('user_list_book_label', (join) =>
-			join
-				.onRef('user_list_book_label.book_id', '=', 'cte_book.id')
-				.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id'),
-		)
-		.innerJoin('user_list_label', (join) =>
-			join
-				.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
-				.on((eb) => eb.between('user_list_label.id', 1, 10))
-				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
-		)
-		.select([
-			'cte_book.id',
-			'cte_book.image_id',
-			'cte_book.lang',
-			'cte_book.romaji',
-			'cte_book.romaji_orig',
-			'cte_book.title',
-			'cte_book.title_orig',
-			'cte_book.release_date',
-			'cte_book.olang',
-			'user_list_label.id as label_id',
-			'user_list_label.label',
-		])
-		.select((eb) =>
-			jsonObjectFrom(
-				eb
-					.selectFrom('image')
-					.selectAll('image')
-					.whereRef('image.id', '=', 'cte_book.image_id')
-					.limit(1),
-			).as('image'),
-		)
-		.orderBy((eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric`);
-}
 
 export function getUserLabelCounts(userId: string) {
 	return db
