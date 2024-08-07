@@ -103,6 +103,63 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 	};
 }
 
+export function withSeriesTitleCteAndUserList(params: {
+	userId: string;
+	labelIds: number[];
+	langPrios?: LanguagePriority[];
+}) {
+	const eb = expressionBuilder<DB, 'book'>();
+	const labels = params.labelIds.length > 0 ? params.labelIds : [1, 2, 3, 4, 5];
+	return () => {
+		return eb
+			.selectFrom('series')
+			.innerJoin('series_title', 'series_title.series_id', 'series.id')
+			.leftJoin('series_title as series_title_orig', (join) =>
+				join
+					.onRef('series_title_orig.series_id', '=', 'series.id')
+					.onRef('series_title_orig.lang', '=', 'series.olang'),
+			)
+			.innerJoin('user_list_series', (join) =>
+				join
+					.onRef('user_list_series.series_id', '=', 'series.id')
+					.on('user_list_series.user_id', '=', params.userId),
+			)
+			.innerJoin('user_list_series_label', (join) =>
+				join
+					.onRef('user_list_series_label.series_id', '=', 'series.id')
+					.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id'),
+			)
+			.innerJoin('user_list_label', (join) =>
+				join
+					.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
+					.on((eb) => eb.between('user_list_label.id', 1, 10))
+					.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
+			)
+			.where('user_list_label.id', 'in', labels)
+			.distinctOn('series.id')
+			.select([
+				'series.id',
+				'series.hidden',
+				'series.locked',
+				'series.publication_status',
+				'series.bookwalker_id',
+				'series.description',
+				'series.aliases',
+				'series.anidb_id',
+				'series.start_date',
+				'series.end_date',
+				'series.web_novel',
+				'series.wikidata_id',
+				'series.olang',
+				'series.c_num_books',
+			])
+			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
+			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
+			.orderBy('series.id')
+			.orderBy((eb) => titleCaseBuilder(eb, params.langPrios ?? defaultLangPrio));
+	};
+}
+
 export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 	const eb = expressionBuilder<DB, 'series_hist'>();
 
@@ -200,6 +257,63 @@ export class DBSeries {
 				'cte_series.c_num_books',
 			]);
 	}
+
+	getSeriesUser(userId: string, labelIds: number[]) {
+		return this.ranobeDB.db
+			.with(
+				'cte_series',
+				withSeriesTitleCteAndUserList({
+					userId,
+					labelIds,
+					langPrios: this.ranobeDB.user?.display_prefs.title_prefs,
+				}),
+			)
+			.selectFrom('cte_series')
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('book')
+						.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
+						.select('book.id')
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.whereRef('image.id', '=', 'book.image_id')
+									.selectAll('image')
+									.limit(1),
+							).as('image'),
+						)
+						.whereRef('series_book.book_id', '=', 'book.id')
+						.where('book.hidden', '=', false)
+						.orderBy('series_book.sort_order asc')
+						.limit(1),
+				).as('book'),
+			])
+			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('series_book as sb3')
+						.innerJoin('book', 'book.id', 'sb3.book_id')
+						.where('book.hidden', '=', false)
+						.whereRef('sb3.series_id', '=', 'cte_series.id')
+						.select(({ fn }) => [fn.countAll().as('count')]),
+				).as('volumes'),
+			])
+			.select([
+				'cte_series.id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+				'cte_series.olang',
+				'cte_series.c_num_books',
+			]);
+	}
+
 	getSeriesOne(id: number) {
 		return this.ranobeDB.db
 			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))

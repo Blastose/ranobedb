@@ -23,7 +23,7 @@
 	currentPage={data.currentPage}
 	totalPages={data.totalPages}
 	results={data.count}
-	inputPlaceholder="Search by book title"
+	inputPlaceholder="Search by series title"
 >
 	<svelte:fragment slot="under-heading"
 		><ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />

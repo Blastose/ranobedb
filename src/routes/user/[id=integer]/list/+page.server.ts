@@ -1,7 +1,8 @@
 import { addCharacterBetweenString } from '$lib/db/match.js';
+import { DBBooks } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
-import { getBooksRL, getUserLabelCounts, getUserListCounts } from '$lib/server/db/user/list';
+import { getUserLabelCounts, getUserListCounts } from '$lib/server/db/user/list';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { listLabelsSchema, pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
@@ -28,7 +29,12 @@ export const load = async ({ url, params, locals }) => {
 
 	const userLabelCounts = await getUserLabelCounts(listUser.id).execute();
 
-	let query = getBooksRL(listUser.id, user).where('cte_book.hidden', '=', false);
+	const dbBooks = DBBooks.fromDB(db);
+
+	let query = dbBooks.getBooksUser(listUser.id, labels);
+	query = query
+		.where('cte_book.hidden', '=', false)
+		.orderBy((eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric`);
 	if (q) {
 		query = query.where((eb) =>
 			eb.or([
@@ -38,36 +44,13 @@ export const load = async ({ url, params, locals }) => {
 		);
 	}
 
-	if (labels.length > 0) {
-		query = query.where('user_list_label.id', 'in', labels);
-	} else {
-		// Hack?
-		// Without this, the query planner will loop over the entries of the user's user_list_label rows (normally 5 times for the default labels)
-		// This fixes it so that it will not loop 5 times
-		// Will need to do something else for custom labels
-		query = query.where('user_list_label.id', 'in', [1, 2, 3, 4, 5]);
-	}
-
-	// Also a hack?
-	// Postgres generates a slow query as it loops over cte_book as many times are there are books in the list
-	// This nests the query into a with, so Postgres will choose a different query plan
-	// The last order by is also needed to make Postgres choose a different query plan
-	const withedQuery = db
-		.with('query', () => query)
-		.selectFrom('query')
-		.selectAll()
-		.orderBy((eb) => sql`${eb.fn.coalesce('query.romaji', 'query.title')} COLLATE numeric`);
-
-	const {
-		result: books,
-		count,
-		totalPages,
-	} = await paginationBuilderExecuteWithCount(withedQuery, {
-		limit: 24,
-		page: currentPage,
-	});
-
-	const listCounts = await getUserListCounts({ userId: listUser.id });
+	const [{ result: books, count, totalPages }, listCounts] = await Promise.all([
+		paginationBuilderExecuteWithCount(query, {
+			limit: 24,
+			page: currentPage,
+		}),
+		getUserListCounts({ userId: listUser.id }),
+	]);
 
 	return {
 		books,

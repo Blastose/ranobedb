@@ -188,7 +188,7 @@
 				</div>
 			</dl>
 
-			<div class="w-fit flex gap-4">
+			<div class="w-fit flex flex-wrap gap-4">
 				<LinkBox display="Reading list" href="/user/{data.listUser.id_numeric}/list" />
 				<LinkBox display="Edit history" href="/user/{data.listUser.id_numeric}/history" />
 				<LinkBox
