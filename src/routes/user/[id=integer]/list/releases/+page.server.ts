@@ -16,7 +16,9 @@ export const load = async ({ params, locals, url }) => {
 	const currentPage = page.data.page;
 	const q = qS.data.q;
 	const user = locals.user;
+	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
 	const userIdNumeric = Number(params.id);
+	const isMyList = user?.id_numeric === userIdNumeric;
 
 	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
 
@@ -86,27 +88,21 @@ export const load = async ({ params, locals, url }) => {
 		);
 	}
 
-	const { result: bookWithReleasesInList, totalPages } = await paginationBuilderExecuteWithCount(
-		query,
-		{
-			limit: 24,
-			page: currentPage,
-		},
-	);
-
-	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
-
-	const isMyList = user?.id_numeric === userIdNumeric;
-	const listCounts = await getUserListCounts({ userId: listUser.id });
-	const releaseCounts = (
-		await db
-			.selectFrom('release')
-			.select((eb) => eb.fn.count('release.id').as('count'))
-			.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
-			.where('user_list_release.user_id', '=', listUser.id)
-			.where('release.hidden', '=', false)
-			.executeTakeFirstOrThrow()
-	).count;
+	const [{ result: bookWithReleasesInList, totalPages }, listCounts, releaseCounts] =
+		await Promise.all([
+			paginationBuilderExecuteWithCount(query, {
+				limit: 24,
+				page: currentPage,
+			}),
+			getUserListCounts({ userId: listUser.id }),
+			await db
+				.selectFrom('release')
+				.select((eb) => eb.fn.count('release.id').as('count'))
+				.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
+				.where('user_list_release.user_id', '=', listUser.id)
+				.where('release.hidden', '=', false)
+				.executeTakeFirstOrThrow(),
+		]);
 
 	return {
 		isMyList,
@@ -114,7 +110,7 @@ export const load = async ({ params, locals, url }) => {
 		bookWithReleasesInList,
 		userListReleaseForm: isMyList ? userListReleaseForm : undefined,
 		listCounts,
-		count: releaseCounts,
+		count: releaseCounts.count,
 		totalPages,
 		currentPage,
 	};
