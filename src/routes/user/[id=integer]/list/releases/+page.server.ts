@@ -28,7 +28,7 @@ export const load = async ({ params, locals, url }) => {
 
 	const dbBooks = DBBooks.fromDB(db);
 
-	let query = dbBooks
+	const query = dbBooks
 		.getBooksUser(listUser.id, [])
 		.select((eb) => [
 			jsonArrayFrom(
@@ -59,11 +59,7 @@ export const load = async ({ params, locals, url }) => {
 		.innerJoin('series', 'series.id', 'series_book.series_id')
 		.where('cte_book.hidden', '=', false)
 		.where('series.hidden', '=', false)
-		.clearOrderBy()
-		.orderBy(['series_book.series_id', 'series_book.sort_order']);
-
-	if (q) {
-		query = query.where((eb) =>
+		.where((eb) =>
 			eb(
 				'cte_book.id',
 				'in',
@@ -78,13 +74,28 @@ export const load = async ({ params, locals, url }) => {
 					.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
 					.where('user_list_release.user_id', '=', listUser.id)
 					.where('release.hidden', '=', false)
-					.where((eb) =>
-						eb.or([
-							eb('release.title', 'ilike', `%${q}%`),
-							eb('release.romaji', 'ilike', `%${q}%`),
-						]),
+					.$if(Boolean(q), (qb) =>
+						qb.where((eb) =>
+							eb.or([
+								eb('release.title', 'ilike', `%${q}%`),
+								eb('release.romaji', 'ilike', `%${q}%`),
+							]),
+						),
 					),
 			),
+		)
+		.clearOrderBy()
+		.orderBy(['series_book.series_id', 'series_book.sort_order']);
+
+	let countQuery = db
+		.selectFrom('release')
+		.select((eb) => eb.fn.count<number>('release.id').as('count'))
+		.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
+		.where('user_list_release.user_id', '=', listUser.id)
+		.where('release.hidden', '=', false);
+	if (q) {
+		countQuery = countQuery.where((eb) =>
+			eb.or([eb('release.title', 'ilike', `%${q}%`), eb('release.romaji', 'ilike', `%${q}%`)]),
 		);
 	}
 
@@ -95,13 +106,7 @@ export const load = async ({ params, locals, url }) => {
 				page: currentPage,
 			}),
 			getUserListCounts({ userId: listUser.id }),
-			await db
-				.selectFrom('release')
-				.select((eb) => eb.fn.count('release.id').as('count'))
-				.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
-				.where('user_list_release.user_id', '=', listUser.id)
-				.where('release.hidden', '=', false)
-				.executeTakeFirstOrThrow(),
+			countQuery.executeTakeFirstOrThrow(),
 		]);
 
 	return {
