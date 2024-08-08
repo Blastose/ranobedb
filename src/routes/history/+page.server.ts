@@ -16,17 +16,22 @@ export const load = async ({ url, locals }) => {
 		error(400);
 	}
 
+	const changesQuery = new DBChanges(db).getChangesAll({ user: locals.user, filters: form.data });
+
 	const {
 		result: changes,
 		count,
 		totalPages,
 	} = await paginationBuilderExecuteWithCount(
-		new DBChanges(db).getChangesAll({ user: locals.user, filters: form.data }),
+		changesQuery,
 		{
 			limit: historyItemsPerPage,
 			page: currentPage,
 		},
-		db.selectFrom('change').select((eb) => eb.fn.count<number>('id').as('count')),
+		changesQuery
+			.clearSelect()
+			.clearOrderBy()
+			.select((eb) => eb.fn.count<number>('change.id').as('count')),
 		true,
 	);
 
