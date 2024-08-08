@@ -91,7 +91,7 @@
 			<TextFieldLink
 				form={sForm}
 				type="number"
-				field="pivix_id"
+				field="pixiv_id"
 				label="Pixiv"
 				resetPadding={true}
 				linkBeforeAfter={pixivLink}

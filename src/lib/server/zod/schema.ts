@@ -372,7 +372,7 @@ export const staffSchema = z.object({
 	locked: z.boolean(),
 	description: zDescription,
 	bookwalker_id: z.number().max(maxNumberValue).nullish(),
-	pivix_id: z.number().max(maxNumberValue).nullish(),
+	pixiv_id: z.number().max(maxNumberValue).nullish(),
 	twitter_id: z.string().trim().max(2000).nullish(),
 	website: zLink([]),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
