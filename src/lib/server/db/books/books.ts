@@ -5,7 +5,7 @@ import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
 import { defaultLangPrio } from '$lib/db/dbConsts';
 import type { User } from 'lucia';
-import { withSeriesTitleCte2 } from '../series/series';
+import { withSeriesTitleCte } from '../series/series';
 
 function titleCaseBuilder(
 	eb: ExpressionBuilder<DB, 'book_title' | 'book'>,
@@ -157,7 +157,7 @@ export class DBBooks {
 				),
 			)
 			.with('cte_series', () =>
-				withSeriesTitleCte2(this.ranobeDB.user?.display_prefs.title_prefs)
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
 					.innerJoin('series_book', 'series_book.series_id', 'series.id')
 					.where('series_book.book_id', '=', id),
 			)
