@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookOne } from '$lib/server/db/books/books';
 	import { superForm } from 'sveltekit-superforms';
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
 	import { fly } from 'svelte/transition';
@@ -10,7 +10,7 @@
 	import type { Infer } from 'sveltekit-superforms/server';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 
-	export let release: BookR['releases'][number];
+	export let release: BookOne['releases'][number];
 	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>>;
 	export let placement:
 		| 'top'

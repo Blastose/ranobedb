@@ -40,7 +40,7 @@ export class DBReleases {
 
 	getRelease(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release')
 			.selectAll('release')
 			.select((eb) => [
@@ -99,7 +99,7 @@ export class DBReleases {
 
 	getReleaseHist(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release_hist')
 			.innerJoin('change', 'change.id', 'release_hist.change_id')
 			.select([
@@ -186,7 +186,7 @@ export class DBReleases {
 
 	getReleaseEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release')
 			.select([
 				'release.id',
@@ -241,7 +241,7 @@ export class DBReleases {
 
 	getReleaseHistEdit(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('release_hist')
 			.innerJoin('change', 'change.id', 'release_hist.change_id')
 			.select([

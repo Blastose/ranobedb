@@ -27,10 +27,14 @@ export const load = async ({ params, locals }) => {
 	}
 
 	const dbBooks = DBBooks.fromDB(db, user);
-	const book = await dbBooks.getBook(bookId).executeTakeFirst();
-	if (!book) {
+
+	const res = await dbBooks.getBookWithBookSeries(bookId);
+
+	if (!res) {
 		error(404);
 	}
+
+	const { book, book_series } = res;
 
 	await new DBChanges(db).itemHiddenError({
 		item: book,
@@ -62,6 +66,7 @@ export const load = async ({ params, locals }) => {
 
 	return {
 		book,
+		book_series,
 		userListForm,
 		userListReleaseForm: locals.user ? userListReleaseForm : undefined,
 	};

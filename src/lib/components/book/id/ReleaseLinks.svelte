@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookOne } from '$lib/server/db/books/books';
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
 	import { fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let release: BookR['releases'][number];
+	export let release: BookOne['releases'][number];
 
-	function collectLinks(release: BookR['releases'][number]): { url: string; display: string }[] {
+	function collectLinks(release: BookOne['releases'][number]): { url: string; display: string }[] {
 		const links: { url: string; display: string }[] = [];
 		if (release.website) {
 			links.push({

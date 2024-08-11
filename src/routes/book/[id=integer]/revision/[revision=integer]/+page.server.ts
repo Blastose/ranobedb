@@ -21,7 +21,7 @@ export const load = async ({ params, locals }) => {
 		.getChanges('book', bookId, [previousRevision, revision, revision + 1])
 		.execute();
 
-	const [book, changes, currentBookVisibility] = await Promise.all([
+	const [book, changes, currentBookVisibility, book_series] = await Promise.all([
 		bookPromise,
 		changesPromise,
 		db
@@ -29,6 +29,7 @@ export const load = async ({ params, locals }) => {
 			.where('book.id', '=', bookId)
 			.select(['hidden', 'locked'])
 			.executeTakeFirst(),
+		dbBooks.getBookSeries(bookId).executeTakeFirst(),
 	]);
 
 	const prevChange = changes.find((i) => i.revision === previousRevision);
@@ -68,6 +69,7 @@ export const load = async ({ params, locals }) => {
 	return {
 		bookId,
 		book,
+		book_series,
 		diffs,
 		revision: { revision, previousRevision },
 		changes: { prevChange, change, nextChange },

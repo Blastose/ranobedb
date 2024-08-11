@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Collapsible from '$lib/components/display/Collapsible.svelte';
 	import { getLanguageFromString, groupBy, sortByLangObjEntries } from '$lib/db/array';
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookOne } from '$lib/server/db/books/books';
 	import type { Language } from '$lib/server/db/dbTypes';
 	import BookRelease from './BookRelease.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
@@ -9,7 +9,7 @@
 	import type { Infer } from 'sveltekit-superforms/server';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 
-	export let releases: BookR['releases'];
+	export let releases: BookOne['releases'];
 	export let olang: Language;
 	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
 

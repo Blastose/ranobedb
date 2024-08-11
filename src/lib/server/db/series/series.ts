@@ -68,8 +68,7 @@ function titleHistCaseBuilder(
 }
 
 export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
-	const eb = expressionBuilder<DB, 'series'>();
-
+	const eb = expressionBuilder<DB, never>();
 	return () => {
 		return eb
 			.selectFrom('series')
@@ -103,65 +102,41 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 	};
 }
 
-export function withSeriesTitleCteAndUserList(params: {
-	userId: string;
-	labelIds: number[];
-	langPrios?: LanguagePriority[];
-}) {
-	const eb = expressionBuilder<DB, 'book'>();
-	const labels = params.labelIds.length > 0 ? params.labelIds : [1, 2, 3, 4, 5];
-	return () => {
-		return eb
-			.selectFrom('series')
-			.innerJoin('series_title', 'series_title.series_id', 'series.id')
-			.leftJoin('series_title as series_title_orig', (join) =>
-				join
-					.onRef('series_title_orig.series_id', '=', 'series.id')
-					.onRef('series_title_orig.lang', '=', 'series.olang'),
-			)
-			.innerJoin('user_list_series', (join) =>
-				join
-					.onRef('user_list_series.series_id', '=', 'series.id')
-					.on('user_list_series.user_id', '=', params.userId),
-			)
-			.innerJoin('user_list_series_label', (join) =>
-				join
-					.onRef('user_list_series_label.series_id', '=', 'series.id')
-					.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id'),
-			)
-			.innerJoin('user_list_label', (join) =>
-				join
-					.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
-					.on((eb) => eb.between('user_list_label.id', 1, 10))
-					.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
-			)
-			.where('user_list_label.id', 'in', labels)
-			.distinctOn('series.id')
-			.select([
-				'series.id',
-				'series.hidden',
-				'series.locked',
-				'series.publication_status',
-				'series.bookwalker_id',
-				'series.description',
-				'series.aliases',
-				'series.anidb_id',
-				'series.start_date',
-				'series.end_date',
-				'series.web_novel',
-				'series.wikidata_id',
-				'series.olang',
-				'series.c_num_books',
-			])
-			.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
-			.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
-			.orderBy('series.id')
-			.orderBy((eb) => titleCaseBuilder(eb, params.langPrios ?? defaultLangPrio));
-	};
+export function withSeriesTitleCte2(langPrios?: LanguagePriority[]) {
+	const eb = expressionBuilder<DB, never>();
+	return eb
+		.selectFrom('series')
+		.innerJoin('series_title', 'series_title.series_id', 'series.id')
+		.leftJoin('series_title as series_title_orig', (join) =>
+			join
+				.onRef('series_title_orig.series_id', '=', 'series.id')
+				.onRef('series_title_orig.lang', '=', 'series.olang'),
+		)
+		.distinctOn('series.id')
+		.select([
+			'series.id',
+			'series.hidden',
+			'series.locked',
+			'series.publication_status',
+			'series.bookwalker_id',
+			'series.description',
+			'series.aliases',
+			'series.anidb_id',
+			'series.start_date',
+			'series.end_date',
+			'series.web_novel',
+			'series.wikidata_id',
+			'series.olang',
+			'series.c_num_books',
+		])
+		.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
+		.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
+		.orderBy('series.id')
+		.orderBy((eb) => titleCaseBuilder(eb, langPrios ?? defaultLangPrio));
 }
 
 export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
-	const eb = expressionBuilder<DB, 'series_hist'>();
+	const eb = expressionBuilder<DB, never>();
 
 	return () => {
 		return eb
@@ -259,14 +234,27 @@ export class DBSeries {
 	}
 
 	getSeriesUser(userId: string, labelIds: number[]) {
+		const labels = labelIds.length > 0 ? labelIds : [];
 		return this.ranobeDB.db
-			.with(
-				'cte_series',
-				withSeriesTitleCteAndUserList({
-					userId,
-					labelIds,
-					langPrios: this.ranobeDB.user?.display_prefs.title_prefs,
-				}),
+			.with('cte_series', () =>
+				withSeriesTitleCte2(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('user_list_series', (join) =>
+						join
+							.onRef('user_list_series.series_id', '=', 'series.id')
+							.on('user_list_series.user_id', '=', userId),
+					)
+					.innerJoin('user_list_series_label', (join) =>
+						join
+							.onRef('user_list_series_label.series_id', '=', 'series.id')
+							.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id'),
+					)
+					.innerJoin('user_list_label', (join) =>
+						join
+							.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
+							.on((eb) => eb.between('user_list_label.id', 1, 10))
+							.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
+					)
+					.where('user_list_label.id', 'in', labels),
 			)
 			.selectFrom('cte_series')
 			.select((eb) => [
@@ -316,7 +304,11 @@ export class DBSeries {
 
 	getSeriesOne(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('series_book', 'series_book.book_id', 'book.id')
+					.where('series_book.series_id', '=', id),
+			)
 			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_series')
 			.select([
@@ -469,7 +461,7 @@ export class DBSeries {
 
 	getSeriesHistOne(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.with(
 				'cte_series_non_hist',
@@ -639,7 +631,7 @@ export class DBSeries {
 
 	getSeriesOneEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_series')
 			.select([
@@ -723,7 +715,7 @@ export class DBSeries {
 
 	getSeriesHistOneEdit(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.with('cte_series', withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.with(
 				'cte_series_non_hist',

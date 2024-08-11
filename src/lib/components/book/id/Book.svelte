@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookOne, BookSeries } from '$lib/server/db/books/books';
 	import { getBgImageStyle, getThemeContext } from '$lib/stores/themeStore';
 	import type { User } from 'lucia';
 	import BookModal from './BookModal.svelte';
@@ -22,7 +22,8 @@
 	import { buildImageUrl } from '../book';
 	import Tags from '$lib/components/series/Tags.svelte';
 
-	export let book: BookR;
+	export let book: BookOne;
+	export let book_series: BookSeries | undefined;
 	export let revision: number | undefined;
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
@@ -35,7 +36,7 @@
 	const displayPrefs = getDisplayPrefsContext();
 </script>
 
-<main class="container-rndb -mt-32 flex flex-col gap-4">
+<div class="flex flex-col gap-4">
 	<div class="banner-img {revision ? 'h-[128px]' : 'h-[256px]'}" style={bgImageStyle}>
 		<div class="blur-image" />
 	</div>
@@ -110,8 +111,8 @@
 
 		<TitlesSection titles={book.titles} />
 
-		{#if book.series.at(0) && (book.series.at(0)?.tags?.length || -1) > 0}
-			<Tags tags={book.series.at(0)?.tags || []} />
+		{#if book_series && book_series.tags.length > 0}
+			<Tags tags={book_series.tags || []} />
 		{/if}
 
 		<section>
@@ -133,29 +134,29 @@
 
 		<BookReleases releases={book.releases} olang={book.olang} {userListReleaseForm} />
 
-		<section>
-			<h2 class="font-bold text-lg">Series</h2>
-			<div class="flex flex-col gap-2">
-				{#each book.series as series (series.id)}
+		{#if book_series}
+			<section>
+				<h2 class="font-bold text-lg">Series</h2>
+				<div class="flex flex-col gap-2">
 					<BookCarousel>
 						<svelte:fragment slot="link">
-							<a class="link w-fit font-bold" href="/series/{series.id}"
-								><TitleDisplay obj={series} /></a
+							<a class="link w-fit font-bold" href="/series/{book_series.id}"
+								><TitleDisplay obj={book_series} /></a
 							>
 						</svelte:fragment>
 						<svelte:fragment slot="items">
-							{#each series.books as other_book (other_book.id)}
+							{#each book_series.books as other_book (other_book.id)}
 								<div class="carousel-item">
 									<BookImage book={other_book} urlPrefix="/book/" />
 								</div>
 							{/each}
 						</svelte:fragment>
 					</BookCarousel>
-				{/each}
-			</div>
-		</section>
+				</div>
+			</section>
+		{/if}
 	</div>
-</main>
+</div>
 
 <style>
 	.banner-img {

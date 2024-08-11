@@ -5,7 +5,7 @@ import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
 import { defaultLangPrio } from '$lib/db/dbConsts';
 import type { User } from 'lucia';
-import { withSeriesTitleCte } from '../series/series';
+import { withSeriesTitleCte2 } from '../series/series';
 
 function titleCaseBuilder(
 	eb: ExpressionBuilder<DB, 'book_title' | 'book'>,
@@ -65,96 +65,51 @@ function titleHistCaseBuilder(
 }
 
 export function withBookTitleCte(langPrios?: LanguagePriority[]) {
-	const eb = expressionBuilder<DB, 'book'>();
-	return () => {
-		return eb
-			.selectFrom('book')
-			.innerJoin('book_title', 'book_title.book_id', 'book.id')
-			.leftJoin('book_title as book_title_orig', (join) =>
-				join
-					.onRef('book_title_orig.book_id', '=', 'book.id')
-					.onRef('book_title_orig.lang', '=', 'book.olang'),
-			)
-			.distinctOn('book.id')
-			.selectAll('book')
-			.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
-			.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
-			.orderBy('book.id')
-			.orderBy((eb) => titleCaseBuilder(eb, langPrios ?? defaultLangPrio));
-	};
-}
-
-export function withBookTitleCteAndUserList(params: {
-	userId: string;
-	labelIds: number[];
-	langPrios?: LanguagePriority[];
-}) {
-	const eb = expressionBuilder<DB, 'book'>();
-	const labels = params.labelIds.length > 0 ? params.labelIds : [1, 2, 3, 4, 5];
-	return () => {
-		return eb
-			.selectFrom('book')
-			.innerJoin('book_title', 'book_title.book_id', 'book.id')
-			.leftJoin('book_title as book_title_orig', (join) =>
-				join
-					.onRef('book_title_orig.book_id', '=', 'book.id')
-					.onRef('book_title_orig.lang', '=', 'book.olang'),
-			)
-			.innerJoin('user_list_book', (join) =>
-				join
-					.onRef('user_list_book.book_id', '=', 'book.id')
-					.on('user_list_book.user_id', '=', params.userId),
-			)
-			.innerJoin('user_list_book_label', (join) =>
-				join
-					.onRef('user_list_book_label.book_id', '=', 'book.id')
-					.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id'),
-			)
-			.innerJoin('user_list_label', (join) =>
-				join
-					.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
-					.on((eb) => eb.between('user_list_label.id', 1, 10))
-					.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
-			)
-			.where('user_list_label.id', 'in', labels)
-			.distinctOn('book.id')
-			.selectAll('book')
-			.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
-			.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
-			.orderBy('book.id')
-			.orderBy((eb) => titleCaseBuilder(eb, params.langPrios ?? defaultLangPrio));
-	};
+	const eb = expressionBuilder<DB, never>();
+	return eb
+		.selectFrom('book')
+		.innerJoin('book_title', 'book_title.book_id', 'book.id')
+		.leftJoin('book_title as book_title_orig', (join) =>
+			join
+				.onRef('book_title_orig.book_id', '=', 'book.id')
+				.onRef('book_title_orig.lang', '=', 'book.olang'),
+		)
+		.distinctOn('book.id')
+		.selectAll('book')
+		.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
+		.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
+		.orderBy('book.id')
+		.orderBy((eb) => titleCaseBuilder(eb, langPrios ?? defaultLangPrio));
 }
 
 export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
-	const eb = expressionBuilder<DB, 'book_hist'>();
-	return () => {
-		return eb
-			.selectFrom('book_hist')
-			.innerJoin('book_title_hist', 'book_title_hist.change_id', 'book_hist.change_id')
-			.leftJoin('book_title_hist as book_title_hist_orig', (join) =>
-				join
-					.onRef('book_title_hist_orig.change_id', '=', 'book_hist.change_id')
-					.onRef('book_title_hist_orig.lang', '=', 'book_hist.olang'),
-			)
-			.distinctOn('book_hist.change_id')
-			.select([
-				'book_hist.change_id as id',
-				'book_hist.description',
-				'book_hist.description_ja',
-				'book_hist.image_id',
-				'book_hist.release_date',
-				'book_hist.olang',
-			])
-			.select(['book_title_hist.lang', 'book_title_hist.romaji', 'book_title_hist.title'])
-			.select([
-				'book_title_hist_orig.title as title_orig',
-				'book_title_hist_orig.romaji as romaji_orig',
-			])
-			.orderBy('book_hist.change_id')
-			.orderBy('id')
-			.orderBy((eb) => titleHistCaseBuilder(eb, langPrios ?? defaultLangPrio));
-	};
+	const eb = expressionBuilder<DB, never>();
+
+	return eb
+		.selectFrom('book_hist')
+		.innerJoin('book_title_hist', 'book_title_hist.change_id', 'book_hist.change_id')
+		.leftJoin('book_title_hist as book_title_hist_orig', (join) =>
+			join
+				.onRef('book_title_hist_orig.change_id', '=', 'book_hist.change_id')
+				.onRef('book_title_hist_orig.lang', '=', 'book_hist.olang'),
+		)
+		.distinctOn('book_hist.change_id')
+		.select([
+			'book_hist.change_id as id',
+			'book_hist.description',
+			'book_hist.description_ja',
+			'book_hist.image_id',
+			'book_hist.release_date',
+			'book_hist.olang',
+		])
+		.select(['book_title_hist.lang', 'book_title_hist.romaji', 'book_title_hist.title'])
+		.select([
+			'book_title_hist_orig.title as title_orig',
+			'book_title_hist_orig.romaji as romaji_orig',
+		])
+		.orderBy('book_hist.change_id')
+		.orderBy('id')
+		.orderBy((eb) => titleHistCaseBuilder(eb, langPrios ?? defaultLangPrio));
 }
 
 export class DBBooks {
@@ -169,11 +124,97 @@ export class DBBooks {
 		return new this(ranobeDB);
 	}
 
+	async getBookWithBookSeries(id: number) {
+		const [book, book_series] = await Promise.all([
+			this.getBook(id).executeTakeFirst(),
+			this.getBookSeries(id).executeTakeFirst(),
+		]);
+
+		if (!book) {
+			return undefined;
+		}
+
+		return { book, book_series };
+	}
+
+	getBookSeries(id: number) {
+		return this.ranobeDB.db
+			.with('cte_book_2', () =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where((eb) =>
+					eb(
+						'book.id',
+						'in',
+						eb
+							.selectFrom('series_book')
+							.innerJoin(
+								'series_book as series_book_2',
+								'series_book.series_id',
+								'series_book_2.series_id',
+							)
+							.where('series_book.book_id', '=', id)
+							.select('series_book_2.book_id'),
+					),
+				),
+			)
+			.with('cte_series', () =>
+				withSeriesTitleCte2(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('series_book', 'series_book.series_id', 'series.id')
+					.where('series_book.book_id', '=', id),
+			)
+			.selectFrom('cte_series')
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('cte_book_2')
+						.select([
+							'cte_book_2.id',
+							'cte_book_2.title',
+							'cte_book_2.title_orig',
+							'cte_book_2.romaji',
+							'cte_book_2.romaji_orig',
+							'cte_book_2.lang',
+						])
+						.select((eb) =>
+							jsonObjectFrom(
+								eb
+									.selectFrom('image')
+									.selectAll('image')
+									.whereRef('image.id', '=', 'cte_book_2.image_id')
+									.limit(1),
+							).as('image'),
+						)
+						.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
+						.whereRef('series_book.series_id', '=', 'cte_series.id')
+						.where('cte_book_2.hidden', '=', false)
+						.orderBy('series_book.sort_order asc'),
+				).as('books'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('tag')
+						.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
+						.whereRef('series_tag.series_id', '=', 'cte_series.id')
+						.select(['tag.name', 'tag.ttype', 'tag.id'])
+						.orderBy(['tag.ttype', 'tag.name']),
+				).as('tags'),
+			])
+			.select([
+				'cte_series.title',
+				'cte_series.title_orig',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.id',
+				'cte_series.lang',
+			])
+			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
+			.where('series_book.book_id', '=', id)
+			.where('cte_series.hidden', '=', false);
+	}
+
 	getBook(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
-			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where('book.id', '=', id),
+			)
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.description',
@@ -260,56 +301,6 @@ export class DBBooks {
 				).as('releases'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('cte_series')
-						.innerJoin('series_book', 'cte_series.id', 'series_book.series_id')
-						.select((eb) => [
-							jsonArrayFrom(
-								eb
-									.selectFrom('cte_book_2')
-									.select([
-										'cte_book_2.id',
-										'cte_book_2.title',
-										'cte_book_2.title_orig',
-										'cte_book_2.romaji',
-										'cte_book_2.romaji_orig',
-										'cte_book_2.lang',
-									])
-									.select((eb) =>
-										jsonObjectFrom(
-											eb
-												.selectFrom('image')
-												.selectAll('image')
-												.whereRef('image.id', '=', 'cte_book_2.image_id')
-												.limit(1),
-										).as('image'),
-									)
-									.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
-									.whereRef('series_book.series_id', '=', 'cte_series.id')
-									.where('cte_book_2.hidden', '=', false)
-									.orderBy('series_book.sort_order asc'),
-							).as('books'),
-							jsonArrayFrom(
-								eb
-									.selectFrom('tag')
-									.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
-									.whereRef('series_tag.series_id', '=', 'cte_series.id')
-									.select(['tag.name', 'tag.ttype', 'tag.id'])
-									.orderBy(['tag.ttype', 'tag.name']),
-							).as('tags'),
-						])
-						.select([
-							'cte_series.title',
-							'cte_series.title_orig',
-							'cte_series.romaji',
-							'cte_series.romaji_orig',
-							'cte_series.id',
-							'cte_series.lang',
-						])
-						.whereRef('series_book.book_id', '=', 'cte_book.id')
-						.where('cte_series.hidden', '=', false),
-				).as('series'),
-				jsonArrayFrom(
-					eb
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.innerJoin('release_book', 'release_book.release_id', 'release_publisher.release_id')
@@ -332,9 +323,12 @@ export class DBBooks {
 
 	getBookHist(id: number, revision?: number) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
-			.with('cte_book_2', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
-			.with('cte_series', withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () =>
+				withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('change', 'change.id', 'book_hist.change_id')
+					.where('change.item_id', '=', id)
+					.where('change.item_name', '=', 'book'),
+			)
 			.selectFrom('cte_book')
 			.innerJoin('change', 'change.id', 'cte_book.id')
 			.select([
@@ -428,56 +422,6 @@ export class DBBooks {
 				).as('releases'),
 				jsonArrayFrom(
 					eb
-						.selectFrom('cte_series')
-						.innerJoin('series_book', 'cte_series.id', 'series_book.series_id')
-						.select((eb) => [
-							jsonArrayFrom(
-								eb
-									.selectFrom('cte_book_2')
-									.select([
-										'cte_book_2.id',
-										'cte_book_2.title',
-										'cte_book_2.title_orig',
-										'cte_book_2.romaji',
-										'cte_book_2.romaji_orig',
-										'cte_book_2.lang',
-									])
-									.select((eb) =>
-										jsonObjectFrom(
-											eb
-												.selectFrom('image')
-												.selectAll('image')
-												.whereRef('image.id', '=', 'cte_book_2.image_id')
-												.limit(1),
-										).as('image'),
-									)
-									.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
-									.whereRef('series_book.series_id', '=', 'cte_series.id')
-									.where('cte_book_2.hidden', '=', false)
-									.orderBy('series_book.sort_order asc'),
-							).as('books'),
-							jsonArrayFrom(
-								eb
-									.selectFrom('tag')
-									.innerJoin('series_tag_hist', 'series_tag_hist.tag_id', 'tag.id')
-									.whereRef('series_tag_hist.change_id', '=', 'cte_series.id')
-									.select(['tag.name', 'tag.ttype', 'tag.id'])
-									.orderBy(['tag.ttype', 'tag.name']),
-							).as('tags'),
-						])
-						.select([
-							'cte_series.title',
-							'cte_series.title_orig',
-							'cte_series.romaji',
-							'cte_series.romaji_orig',
-							'cte_series.id',
-							'cte_series.lang',
-						])
-						.where('series_book.book_id', '=', id)
-						.where('cte_series.hidden', '=', false),
-				).as('series'),
-				jsonArrayFrom(
-					eb
 						.selectFrom('publisher')
 						.innerJoin('release_publisher', 'release_publisher.publisher_id', 'publisher.id')
 						.innerJoin('release_book', 'release_book.release_id', 'release_publisher.release_id')
@@ -508,7 +452,7 @@ export class DBBooks {
 
 	getBookEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.select([
@@ -579,7 +523,12 @@ export class DBBooks {
 
 	getBookHistEdit(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () =>
+				withBookHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('change', 'change.id', 'book_hist.change_id')
+					.where('change.item_id', '=', params.id)
+					.where('change.item_name', '=', 'book'),
+			)
 			.selectFrom('cte_book')
 			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.innerJoin('change', 'change.id', 'cte_book.id')
@@ -666,7 +615,7 @@ export class DBBooks {
 
 	getBooks() {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.id',
@@ -691,14 +640,27 @@ export class DBBooks {
 	}
 
 	getBooksUser(userId: string, labelIds: number[]) {
+		const labels = labelIds.length > 0 ? labelIds : [1, 2, 3, 4, 5];
 		return this.ranobeDB.db
-			.with(
-				'cte_book',
-				withBookTitleCteAndUserList({
-					userId,
-					labelIds,
-					langPrios: this.ranobeDB.user?.display_prefs.title_prefs,
-				}),
+			.with('cte_book', () =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('user_list_book', (join) =>
+						join
+							.onRef('user_list_book.book_id', '=', 'book.id')
+							.on('user_list_book.user_id', '=', userId),
+					)
+					.innerJoin('user_list_book_label', (join) =>
+						join
+							.onRef('user_list_book_label.book_id', '=', 'book.id')
+							.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id'),
+					)
+					.innerJoin('user_list_label', (join) =>
+						join
+							.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
+							.on((eb) => eb.between('user_list_label.id', 1, 10))
+							.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
+					)
+					.where('user_list_label.id', 'in', labels),
 			)
 			.selectFrom('cte_book')
 			.select([
@@ -724,6 +686,7 @@ export class DBBooks {
 	}
 }
 
-export type BookR = InferResult<ReturnType<DBBooks['getBook']>>[number];
+export type BookOne = InferResult<ReturnType<DBBooks['getBook']>>[number];
+export type BookSeries = InferResult<ReturnType<DBBooks['getBookSeries']>>[number];
 export type Book = InferResult<ReturnType<DBBooks['getBooks']>>[number];
 export type BookEdit = InferResult<ReturnType<DBBooks['getBookEdit']>>[number];
