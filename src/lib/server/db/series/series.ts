@@ -197,7 +197,7 @@ export class DBSeries {
 	}
 
 	getSeriesUser(userId: string, labelIds: number[]) {
-		const labels = labelIds.length > 0 ? labelIds : [];
+		const labels = labelIds.length > 0 ? labelIds : [1, 2, 3, 4, 5];
 		return this.ranobeDB.db
 			.with('cte_series', () =>
 				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
