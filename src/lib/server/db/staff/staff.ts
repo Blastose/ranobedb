@@ -32,7 +32,7 @@ export class DBStaff {
 
 	getStaffOne(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', () => withBookTitleCte())
 			.selectFrom('staff')
 			.innerJoin('staff_alias', (join) =>
 				join.onRef('staff_alias.staff_id', '=', 'staff.id').on('staff_alias.main_alias', '=', true),
@@ -54,7 +54,7 @@ export class DBStaff {
 
 	getStaffHistOne(options: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', withBookTitleCte())
+			.with('cte_book', () => withBookTitleCte())
 			.selectFrom('staff_hist')
 			.innerJoin('staff_alias_hist', (join) =>
 				join

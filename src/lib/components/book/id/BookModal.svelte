@@ -2,7 +2,7 @@
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { fade, fly } from 'svelte/transition';
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookOne } from '$lib/server/db/books/books';
 	import type { userListBookSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import { superForm } from 'sveltekit-superforms';
@@ -14,7 +14,7 @@
 	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
-	export let book: BookR;
+	export let book: BookOne;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {

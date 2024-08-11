@@ -2,14 +2,14 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import Icon from '$lib/components/icon/Icon.svelte';
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookOne } from '$lib/server/db/books/books';
 	import ReleaseOptions from './ReleaseOptions.svelte';
 	import ReleaseLinks from './ReleaseLinks.svelte';
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import type { Infer } from 'sveltekit-superforms/server';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 
-	export let release: BookR['releases'][number];
+	export let release: BookOne['releases'][number];
 	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
 	export let showLang: boolean = false;
 

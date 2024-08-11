@@ -2,11 +2,11 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { groupBy, sortByLangObjEntries } from '$lib/db/array';
 	import { languageNames } from '$lib/db/dbConsts';
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookOne } from '$lib/server/db/books/books';
 	import type { Language } from '$lib/server/db/dbTypes';
 	import Collapsible from '../display/Collapsible.svelte';
 
-	export let publishers: BookR['publishers'];
+	export let publishers: BookOne['publishers'];
 	export let olang: Language;
 	export let onlyOpenOlang: boolean;
 

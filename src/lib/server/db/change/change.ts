@@ -19,8 +19,8 @@ export class DBChanges {
 	getChangesAll(params: { user: User | null; filters: HistoryFilters }) {
 		const { user, filters } = params;
 		let query = this.db
-			.with('cte_book_hist', withBookHistTitleCte(user?.display_prefs.title_prefs))
-			.with('cte_series_hist', withSeriesHistTitleCte(user?.display_prefs.title_prefs))
+			.with('cte_book_hist', () => withBookHistTitleCte(user?.display_prefs.title_prefs))
+			.with('cte_series_hist', () => withSeriesHistTitleCte(user?.display_prefs.title_prefs))
 			.selectFrom('change')
 			.innerJoin('auth_user', 'change.user_id', 'auth_user.id')
 			.selectAll('change')

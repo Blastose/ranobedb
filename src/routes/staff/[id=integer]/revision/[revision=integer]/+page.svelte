@@ -22,7 +22,7 @@
 <MetaTags {title} description={staff.description} site_name={'RanobeDB'} />
 <NoIndex />
 
-<div class="container-rndb flex flex-col gap-6">
+<main class="container-rndb flex flex-col gap-6">
 	<RevisionContainer>
 		<svelte:fragment slot="revision">
 			<Revision
@@ -46,4 +46,4 @@
 			/>
 		</svelte:fragment>
 	</RevisionContainer>
-</div>
+</main>

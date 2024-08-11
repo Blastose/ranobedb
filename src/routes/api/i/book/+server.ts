@@ -10,7 +10,7 @@ import { addCharacterBetweenString } from '$lib/db/match.js';
 
 async function getBookByTitle(title: string, titleAsNumber: number, user: User | null) {
 	return await db
-		.with('cte_book', withBookTitleCte(user?.display_prefs.title_prefs))
+		.with('cte_book', () => withBookTitleCte(user?.display_prefs.title_prefs))
 		.selectFrom('cte_book')
 		.select(['cte_book.title as name', 'cte_book.id', 'cte_book.romaji', 'cte_book.lang'])
 		.where(({ eb }) => {

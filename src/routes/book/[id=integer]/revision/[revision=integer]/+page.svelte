@@ -28,7 +28,7 @@
 />
 <NoIndex />
 
-<div class="container-rndb flex flex-col gap-6">
+<main class="container-rndb flex flex-col gap-6">
 	<RevisionContainer hideHr={true}>
 		<svelte:fragment slot="revision">
 			<Revision
@@ -40,12 +40,13 @@
 			/>
 		</svelte:fragment>
 
-		<div slot="content" class="mt-[150px]">
+		<div slot="content">
 			<Book
 				book={{ ...book, id: data.bookId }}
+				book_series={data.book_series}
 				user={data.user}
 				revision={data.revision.revision}
 			/>
 		</div>
 	</RevisionContainer>
-</div>
+</main>

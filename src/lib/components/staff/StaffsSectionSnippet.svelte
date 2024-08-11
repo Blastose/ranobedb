@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { BookR } from '$lib/server/db/books/books';
+	import type { BookOne } from '$lib/server/db/books/books';
 	import NameDisplay from '../display/NameDisplay.svelte';
 
-	export let staffs: BookR['editions'][number]['staff'];
+	export let staffs: BookOne['editions'][number]['staff'];
 </script>
 
 <div class="flex flex-wrap gap-4">

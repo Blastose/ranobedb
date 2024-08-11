@@ -9,6 +9,7 @@
 
 	const displayPrefs = getDisplayPrefsContext();
 	$: book = data.book;
+	$: book_series = data.book_series;
 	$: title = getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs });
 </script>
 
@@ -20,10 +21,13 @@
 	site_name={'RanobeDB'}
 />
 
-<Book
-	{book}
-	userListForm={data.userListForm}
-	userListReleaseForm={data.userListReleaseForm}
-	user={data.user}
-	revision={undefined}
-/>
+<main class="container-rndb -mt-32">
+	<Book
+		{book}
+		{book_series}
+		userListForm={data.userListForm}
+		userListReleaseForm={data.userListReleaseForm}
+		user={data.user}
+		revision={undefined}
+	/>
+</main>
