@@ -3,6 +3,23 @@ export function getTodayAsDateNumber(): number {
 	return today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate();
 }
 
+export class DateNumberGenerator {
+	date: number;
+
+	private constructor(date: number) {
+		this.date = date;
+	}
+
+	static fromToday() {
+		const today = new Date();
+		return new this(today.getFullYear() * 10000 + (today.getMonth() + 1) * 100 + today.getDate());
+	}
+
+	static fromYearAndMonth(year: number, month: number, dayType: 'start' | 'end') {
+		return new this(year * 10000 + month * 100 + (dayType === 'start' ? 1 : 99));
+	}
+}
+
 export class DateNumber {
 	date: number;
 

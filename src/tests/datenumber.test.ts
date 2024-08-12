@@ -1,4 +1,4 @@
-import { DateNumber } from '$lib/components/form/release/releaseDate';
+import { DateNumber, DateNumberGenerator } from '$lib/components/form/release/releaseDate';
 import { describe, it, expect } from 'vitest';
 
 describe('date number', () => {
@@ -42,5 +42,14 @@ describe('date number', () => {
 		expect(dateNumber2.isFullDate()).toBe(false);
 		const dateNumber3 = new DateNumber(99999999);
 		expect(dateNumber3.isFullDate()).toBe(false);
+	});
+});
+
+describe('make date number', () => {
+	it('makes a date number', () => {
+		const dateNumber1 = DateNumberGenerator.fromYearAndMonth(2024, 8, 'start');
+		expect(dateNumber1.date).toBe(20240801);
+		const dateNumber2 = DateNumberGenerator.fromYearAndMonth(2024, 8, 'end');
+		expect(dateNumber2.date).toBe(20240899);
 	});
 });
