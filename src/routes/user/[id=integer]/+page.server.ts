@@ -16,6 +16,7 @@ export const load = async ({ params, locals }) => {
 		isCurrentUser = true;
 	}
 
+	// TODO - Maybe use `MAKE_DATE()` instead of `DATE_TRUNC()`?
 	const readPerMonthQuery = db
 		.selectFrom((eb) =>
 			eb

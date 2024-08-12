@@ -1,4 +1,4 @@
-import { DateNumber } from '$lib/components/form/release/releaseDate';
+import { DateNumber, DateNumberGenerator } from '$lib/components/form/release/releaseDate';
 import {
 	booksSortArray,
 	dbItemArray,
@@ -625,6 +625,33 @@ export const releaseFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
+});
+export const releaseFiltersCalendarSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	sort: z.enum(releaseSortArray).catch('Relevance desc'),
+	date: z
+		.string()
+		.nullish()
+		.refine((v) => {
+			if (!v) {
+				return true;
+			}
+			const splits = v.split('-');
+			return splits.length === 2 && splits[0].length === 4 && splits[1].length === 2;
+		})
+		.transform((v) => {
+			if (v) {
+				const splits = v.split('-');
+				return [Number(splits[0]), Number(splits[1])];
+			}
+			const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
+			return [dateNumber.getYear(), dateNumber.getMonth()];
+		})
+		.catch(() => {
+			const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
+			return [dateNumber.getYear(), dateNumber.getMonth()];
+		}),
 });
 
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });

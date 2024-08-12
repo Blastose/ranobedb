@@ -82,7 +82,7 @@ export const load = async ({ params, locals, url }) => {
 				]),
 			]),
 		)
-		.orderBy(['release.release_date asc', 'book.id', 'release.format'])
+		.distinctOn('release.id')
 		.selectAll('release')
 		.$if(isMyList, (qb) =>
 			qb.select((eb) =>
@@ -115,7 +115,13 @@ export const load = async ({ params, locals, url }) => {
 		});
 	}
 
-	const releases = await query.execute();
+	const queryOrdered = db
+		.with('query', () => query)
+		.selectFrom('query')
+		.orderBy(['query.release_date asc', 'query.id', 'query.format'])
+		.selectAll();
+
+	const releases = await queryOrdered.execute();
 
 	const groupedReleases = groupBy(releases, (v) => {
 		const dateNumber = new DateNumber(v.release_date);

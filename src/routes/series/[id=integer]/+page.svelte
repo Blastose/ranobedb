@@ -21,7 +21,12 @@
 </script>
 
 <PageTitle {title} />
-<MetaTags {title} image={imageUrl} description={series.description} site_name={'RanobeDB'} />
+<MetaTags
+	{title}
+	image={imageUrl}
+	description={series.book_description?.description ?? ''}
+	site_name={'RanobeDB'}
+/>
 
 <DbRouteShell theme={$theme} {bgImageStyle}>
 	<Series

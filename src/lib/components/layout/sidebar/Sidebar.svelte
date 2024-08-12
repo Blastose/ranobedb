@@ -84,6 +84,12 @@
 				icon="releases"
 			/>
 			<SidebarListItem
+			active={$page.url.pathname === '/releases/calendar'}
+			href="/releases/calendar"
+			text="Releases Calendar"
+			icon="calendar"
+		/>
+			<SidebarListItem
 				active={$page.url.pathname === '/staff'}
 				href="/staff"
 				text="Staff"

@@ -12,6 +12,7 @@
 	export let release: BookOne['releases'][number];
 	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
 	export let showLang: boolean = false;
+	export let showMenus: boolean = true;
 
 	$: releaseDate = new DateNumber(release.release_date).getDateFormatted();
 
@@ -38,11 +39,13 @@
 			<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
 		</div>
 
-		<div class="flex gap-2 whitespace-nowrap">
-			{#if userListReleaseForm}
-				<ReleaseOptions {release} {userListReleaseForm} />
-			{/if}
-			<ReleaseLinks {release} />
-		</div>
+		{#if showMenus}
+			<div class="flex gap-2 whitespace-nowrap">
+				{#if userListReleaseForm}
+					<ReleaseOptions {release} {userListReleaseForm} />
+				{/if}
+				<ReleaseLinks {release} />
+			</div>
+		{/if}
 	</div>
 </div>
