@@ -11,7 +11,7 @@
 </script>
 
 <section>
-	<Collapsible open={true}>
+	<Collapsible open={false}>
 		<svelte:fragment slot="summary"><h2 class="font-bold text-lg">Titles</h2></svelte:fragment>
 		<svelte:fragment slot="details">
 			{#each titles as title}
