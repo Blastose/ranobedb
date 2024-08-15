@@ -1,9 +1,8 @@
 <script lang="ts">
 	import type { User } from 'lucia';
 	import ProfileButton from '$lib/components/layout/profile/ProfileButton.svelte';
-	import RanobeDb from './RanobeDB.svelte';
+	import RanobeDb from '../RanobeDB.svelte';
 	import { page } from '$app/stores';
-	import SearchInput from '$lib/components/form/SearchInput.svelte';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
 	export let user: User | null;

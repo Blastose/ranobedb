@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Header from './Header.svelte';
+	import Header from './header/Header.svelte';
 	import Sidebar from '$lib/components/layout/sidebar/Sidebar.svelte';
 	import type { User } from 'lucia';
 	import Fly from './Fly.svelte';
