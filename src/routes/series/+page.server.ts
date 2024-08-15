@@ -22,7 +22,7 @@ export const load = async ({ url, locals }) => {
 
 	const form = await superValidate(url, zod(seriesFiltersSchema));
 
-	let query = dbSeries.getSeries().where('cte_series.hidden', '=', false);
+	let query = dbSeries.getSeries(q).where('cte_series.hidden', '=', false);
 
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
@@ -102,40 +102,22 @@ export const load = async ({ url, locals }) => {
 					)
 					.as('sim_score'),
 			)
-			.where((eb) =>
-				eb.or([
-					eb(eb.val(q), sql.raw('<%'), eb.ref('series_title.title')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<%'), eb.ref('series_title.romaji')).$castTo<boolean>(),
-					eb('cte_series.aliases', 'ilike', `%${q}%`),
-				]),
-			)
-			.having(
-				(eb) =>
-					eb.fn.max(
-						eb.fn('greatest', [
-							eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
-							eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
-						]),
-					),
-				'>',
-				0.3,
-			)
 			.orderBy(`sim_score ${orderByDirection}`)
 			.orderBy(
 				(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
-			);
-		query = query.groupBy([
-			'cte_series.id',
-			'cte_series.hidden',
-			'cte_series.locked',
-			'cte_series.lang',
-			'cte_series.romaji',
-			'cte_series.romaji_orig',
-			'cte_series.title',
-			'cte_series.title_orig',
-			'cte_series.olang',
-			'cte_series.c_num_books',
-		]);
+			)
+			.groupBy([
+				'cte_series.id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+				'cte_series.olang',
+				'cte_series.c_num_books',
+			]);
 	}
 
 	if (
@@ -147,44 +129,13 @@ export const load = async ({ url, locals }) => {
 		);
 	}
 
-	if (
-		useQuery ||
-		useReleaseFormatFilters ||
-		useReleaseLangFilters ||
-		useStaffFilters ||
-		useTagsFilters
-	) {
+	if (useReleaseFormatFilters || useReleaseLangFilters || useStaffFilters || useTagsFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb('cte_series.id', 'in', (eb) =>
 				eb
 					.selectFrom('series')
 					.distinctOn('series.id')
 					.select('series.id')
-					.$if(useQuery && !sort.startsWith('Relevance'), (qb) =>
-						qb
-							.innerJoin('series_title', (join) =>
-								join.onRef('series_title.series_id', '=', 'series.id'),
-							)
-							.where((eb) =>
-								eb.or([
-									eb(eb.val(q), sql.raw('<%'), eb.ref('series_title.title')).$castTo<boolean>(),
-									eb(eb.val(q), sql.raw('<%'), eb.ref('series_title.romaji')).$castTo<boolean>(),
-									eb('cte_series.aliases', 'ilike', `%${q}%`),
-								]),
-							)
-							.having(
-								(eb) =>
-									eb.fn.max(
-										eb.fn('greatest', [
-											eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
-											eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
-										]),
-									),
-								'>',
-								0.3,
-							)
-							.groupBy('series.id'),
-					)
 					.$if(useReleaseLangFilters, (qb) =>
 						qb
 							.innerJoin('series_book', 'series_book.series_id', 'series.id')

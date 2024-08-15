@@ -3,7 +3,7 @@
 </script>
 
 <details {open}>
-	<summary class="cursor-pointer"><slot name="summary"></slot></summary>
+	<summary class="cursor-pointer w-fit"><slot name="summary"></slot></summary>
 	<slot name="details"></slot>
 </details>
 

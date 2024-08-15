@@ -1,5 +1,5 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
-import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
+import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely, sql } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
@@ -613,9 +613,29 @@ export class DBBooks {
 		return query;
 	}
 
-	getBooks() {
+	getBooks(q?: string | null) {
 		return this.ranobeDB.db
-			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).$if(
+					typeof q === 'string',
+					(qb) =>
+						qb.where((eb) =>
+							eb(
+								'book.id',
+								'in',
+								eb
+									.selectFrom('book_title as bt2')
+									.select('bt2.book_id')
+									.where((eb) =>
+										eb.or([
+											eb(eb.val(q), sql.raw('<%'), eb.ref('bt2.title')).$castTo<boolean>(),
+											eb(eb.val(q), sql.raw('<%'), eb.ref('bt2.romaji')).$castTo<boolean>(),
+										]),
+									),
+							),
+						),
+				),
+			)
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.id',

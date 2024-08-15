@@ -1,5 +1,5 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
-import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely } from 'kysely';
+import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely, sql } from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
@@ -147,9 +147,29 @@ export class DBSeries {
 		return new this(ranobeDB);
 	}
 
-	getSeries() {
+	getSeries(q?: string | null) {
 		return this.ranobeDB.db
-			.with('cte_series', () => withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series', () =>
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).$if(
+					typeof q === 'string',
+					(qb) =>
+						qb.where((eb) =>
+							eb(
+								'series.id',
+								'in',
+								eb
+									.selectFrom('series_title as st2')
+									.select('st2.series_id')
+									.where((eb) =>
+										eb.or([
+											eb(eb.val(q), sql.raw('<%'), eb.ref('st2.title')).$castTo<boolean>(),
+											eb(eb.val(q), sql.raw('<%'), eb.ref('st2.romaji')).$castTo<boolean>(),
+										]),
+									),
+							),
+						),
+				),
+			)
 			.selectFrom('cte_series')
 			.select((eb) => [
 				jsonObjectFrom(
