@@ -17,7 +17,7 @@ export const load = async ({ url, locals }) => {
 
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
-	let query = dbBooks.getBooks().where('cte_book.hidden', '=', false);
+	let query = dbBooks.getBooks(q).where('cte_book.hidden', '=', false);
 
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
@@ -50,38 +50,21 @@ export const load = async ({ url, locals }) => {
 					)
 					.as('sim_score'),
 			)
-			.where((eb) =>
-				eb.or([
-					eb(eb.val(q), sql.raw('<%'), eb.ref('book_title.title')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<%'), eb.ref('book_title.romaji')).$castTo<boolean>(),
-				]),
+			.orderBy(`sim_score ${orderByDirection}`)
+			.orderBy(
+				(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
 			)
-			.having(
-				(eb) =>
-					eb.fn.max(
-						eb.fn('greatest', [
-							eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
-							eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
-						]),
-					),
-				'>',
-				0.3,
-			)
-			.orderBy(`sim_score ${orderByDirection}`);
-		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
-		);
-		query = query.groupBy([
-			'cte_book.id',
-			'cte_book.image_id',
-			'cte_book.lang',
-			'cte_book.romaji',
-			'cte_book.romaji_orig',
-			'cte_book.title',
-			'cte_book.title_orig',
-			'cte_book.release_date',
-			'cte_book.olang',
-		]);
+			.groupBy([
+				'cte_book.id',
+				'cte_book.image_id',
+				'cte_book.lang',
+				'cte_book.romaji',
+				'cte_book.romaji_orig',
+				'cte_book.title',
+				'cte_book.title_orig',
+				'cte_book.release_date',
+				'cte_book.olang',
+			]);
 	}
 
 	if (
@@ -93,35 +76,13 @@ export const load = async ({ url, locals }) => {
 		);
 	}
 
-	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {
+	if (useReleaseLangFilters || useReleaseFormatFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb('cte_book.id', 'in', (eb) =>
 				eb
 					.selectFrom('book')
 					.distinctOn('book.id')
 					.select('book.id')
-					.$if(useQuery && !sort.startsWith('Relevance'), (qb) =>
-						qb
-							.innerJoin('book_title', (join) => join.onRef('book_title.book_id', '=', 'book.id'))
-							.where((eb) =>
-								eb.or([
-									eb(eb.val(q), sql.raw('<%'), eb.ref('book_title.title')).$castTo<boolean>(),
-									eb(eb.val(q), sql.raw('<%'), eb.ref('book_title.romaji')).$castTo<boolean>(),
-								]),
-							)
-							.having(
-								(eb) =>
-									eb.fn.max(
-										eb.fn('greatest', [
-											eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
-											eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
-										]),
-									),
-								'>',
-								0.3,
-							)
-							.groupBy('book.id'),
-					)
 					.$if(useReleaseLangFilters, (qb) =>
 						qb
 							.innerJoin('release_book', (join) =>
