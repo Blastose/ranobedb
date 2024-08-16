@@ -16,8 +16,8 @@
 		$values = $values;
 	}
 
-	function handleAddStaff(tag: ApiStaff[number]) {
-		$values.push({ id: tag.id, name: tag.name, mode: 'incl', ttype: 'tag' });
+	function handleAddStaff(staff: ApiStaff[number]) {
+		$values.push({ id: staff.id, name: staff.name, romaji: staff.romaji });
 		$values = $values;
 	}
 
@@ -38,6 +38,7 @@
 			{#each $values as staff, i (staff.id)}
 				<button
 					class="flex gap-1 items-center rounded-2xl bg-neutral-700 px-2 text-sm"
+					type="button"
 					on:click={() => {
 						handleRemoveStaff(i);
 					}}><NameDisplay obj={staff} /><Icon name="close" height="18" width="18"></Icon></button

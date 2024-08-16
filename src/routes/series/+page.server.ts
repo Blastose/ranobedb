@@ -29,6 +29,7 @@ export const load = async ({ url, locals }) => {
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 	const useStaffFilters = form.data.staff.length > 0;
 	const useTagsFilters = form.data.tagsInclude.length + form.data.tagsExclude.length > 0;
+	const usePublisherFilters = form.data.p.length > 0;
 
 	const genres = await db
 		.selectFrom('tag')
@@ -66,8 +67,27 @@ export const load = async ({ url, locals }) => {
 		mode: formSelectedTags.find((vv) => vv.id === v.id)?.mode ?? 'incl',
 	}));
 
+	const [staff_aliases, publishers] = await Promise.all([
+		await db
+			.selectFrom('staff_alias')
+			.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
+			.where('staff.hidden', '=', false)
+			.where('staff_alias.id', 'in', form.data.staff.length > 0 ? form.data.staff : [-1])
+			.select(['staff_alias.id', 'staff_alias.name', 'staff_alias.romaji'])
+			.execute(),
+		await db
+			.selectFrom('publisher')
+			.where('publisher.hidden', '=', false)
+			.where('publisher.id', 'in', form.data.p.length > 0 ? form.data.p : [-1])
+			.select(['publisher.id', 'publisher.name', 'publisher.romaji'])
+			.execute(),
+	]);
+
+	staff_aliases.sort((a, b) => form.data.staff.indexOf(a.id) - form.data.staff.indexOf(b.id));
+	publishers.sort((a, b) => form.data.p.indexOf(a.id) - form.data.p.indexOf(b.id));
+
 	const formObj = await superValidate(
-		{ ...form.data, tags: selectedTagsWithMode },
+		{ ...form.data, tags: selectedTagsWithMode, staff: staff_aliases, p: publishers },
 		zod(seriesFiltersObjSchema),
 	);
 
@@ -129,7 +149,13 @@ export const load = async ({ url, locals }) => {
 		);
 	}
 
-	if (useReleaseFormatFilters || useReleaseLangFilters || useStaffFilters || useTagsFilters) {
+	if (
+		useReleaseFormatFilters ||
+		useReleaseLangFilters ||
+		useStaffFilters ||
+		useTagsFilters ||
+		usePublisherFilters
+	) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb('cte_series.id', 'in', (eb) =>
 				eb
@@ -190,21 +216,6 @@ export const load = async ({ url, locals }) => {
 									),
 							),
 					)
-					.$if(useStaffFilters, (qb) =>
-						qb
-							.innerJoin('series_book', 'series_book.series_id', 'series.id')
-							.innerJoin('release_book', (join) =>
-								join.onRef('release_book.book_id', '=', 'series_book.book_id'),
-							)
-							.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'release_book.book_id')
-							.where((eb2) => {
-								const filters: Expression<SqlBool>[] = [];
-								for (const staff of form.data.staff) {
-									filters.push(eb2('book_staff_alias.staff_alias_id', '=', staff));
-								}
-								return eb2.or(filters);
-							}),
-					)
 					.$if(useTagsFilters, (qb) => {
 						let rqb = qb
 							.innerJoin('series_tag', 'series_tag.series_id', 'series.id')
@@ -233,7 +244,6 @@ export const load = async ({ url, locals }) => {
 									),
 							)
 							.groupBy('series.id');
-
 						if (form.data.tagsExclude.length > 0) {
 							if (form.data.tel === 'or') {
 								for (const tagExcl of form.data.tagsExclude) {
@@ -255,7 +265,66 @@ export const load = async ({ url, locals }) => {
 							}
 						}
 						return rqb;
-					}),
+					})
+					.$if(useStaffFilters, (qb) =>
+						qb
+							.innerJoin('series_book', 'series_book.series_id', 'series.id')
+							.innerJoin('book_staff_alias', (join) =>
+								join.onRef('book_staff_alias.book_id', '=', 'series_book.book_id'),
+							)
+							.$if(form.data.sl === 'or', (qb2) =>
+								qb2.where((eb2) => {
+									const filters: Expression<SqlBool>[] = [];
+									for (const aid of form.data.staff) {
+										filters.push(eb2('book_staff_alias.staff_alias_id', '=', aid));
+									}
+									return eb2.or(filters);
+								}),
+							)
+							.$if(form.data.sl === 'and', (qb2) =>
+								qb2
+									.where('book_staff_alias.staff_alias_id', 'in', form.data.staff)
+									.groupBy('series.id')
+									.having(
+										(eb) => eb.fn.count('book_staff_alias.staff_alias_id').distinct(),
+										'=',
+										form.data.staff.length,
+									),
+							),
+					)
+					.$if(usePublisherFilters, (qb) =>
+						qb
+							.innerJoin('series_book', 'series_book.series_id', 'series.id')
+							.innerJoin('book_staff_alias', (join) =>
+								join.onRef('book_staff_alias.book_id', '=', 'series_book.book_id'),
+							)
+							.innerJoin('release_book', (join) =>
+								join.onRef('release_book.book_id', '=', 'series_book.book_id'),
+							)
+							.innerJoin('release', (join) =>
+								join.onRef('release.id', '=', 'release_book.release_id'),
+							)
+							.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
+							.$if(form.data.pl === 'or', (qb2) =>
+								qb2.where((eb2) => {
+									const filters: Expression<SqlBool>[] = [];
+									for (const publisher_id of form.data.p) {
+										filters.push(eb2('release_publisher.publisher_id', '=', publisher_id));
+									}
+									return eb2.or(filters);
+								}),
+							)
+							.$if(form.data.pl === 'and', (qb2) =>
+								qb2
+									.where('release_publisher.publisher_id', 'in', form.data.p)
+									.groupBy('series.id')
+									.having(
+										(eb) => eb.fn.count('release_publisher.publisher_id').distinct(),
+										'=',
+										form.data.p.length,
+									),
+							),
+					),
 			),
 		);
 	}

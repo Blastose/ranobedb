@@ -639,13 +639,16 @@ export const seriesFiltersSchema = z.object({
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(seriesSortArray).catch('Relevance desc'),
-	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 	genresInclude: z.array(z.number().max(maxNumberValue)).catch([]),
 	genresExclude: z.array(z.number().max(maxNumberValue)).catch([]),
 	tagsInclude: z.array(z.number().max(maxNumberValue)).catch([]),
 	tagsExclude: z.array(z.number().max(maxNumberValue)).catch([]),
 	til: z.enum(logicalOps).catch('and'),
 	tel: z.enum(logicalOps).catch('or'),
+	staff: z.array(z.number().max(maxNumberValue)).catch([]),
+	sl: z.enum(logicalOps).catch('and'),
+	p: z.array(z.number().max(maxNumberValue)).catch([]),
+	pl: z.enum(logicalOps).catch('and'),
 });
 
 const zTags = z
@@ -666,10 +669,13 @@ export const seriesFiltersObjSchema = z.object({
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(seriesSortArray).catch('Relevance desc'),
-	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 	tags: zTags,
 	til: z.enum(logicalOps).catch('and'),
 	tel: z.enum(logicalOps).catch('or'),
+	staff: zStaff,
+	sl: z.enum(logicalOps).catch('and'),
+	p: zPublishers,
+	pl: z.enum(logicalOps).catch('and'),
 });
 
 export const releaseFiltersSchema = z.object({

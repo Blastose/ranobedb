@@ -16,8 +16,8 @@
 		$values = $values;
 	}
 
-	function handleAddPublisher(tag: ApiPublisher[number]) {
-		$values.push({ id: tag.id, name: tag.name, mode: 'incl', ttype: 'tag' });
+	function handleAddPublisher(publisher: ApiPublisher[number]) {
+		$values.push({ id: publisher.id, name: publisher.name, romaji: publisher.romaji });
 		$values = $values;
 	}
 
@@ -38,6 +38,7 @@
 			{#each $values as publisher, i (publisher.id)}
 				<button
 					class="flex gap-1 items-center rounded-2xl bg-neutral-700 px-2 text-sm"
+					type="button"
 					on:click={() => {
 						handleRemovePublisher(i);
 					}}

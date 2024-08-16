@@ -47,6 +47,7 @@ export const load = async ({ url, locals }) => {
 	]);
 
 	staff_aliases.sort((a, b) => form.data.staff.indexOf(a.id) - form.data.staff.indexOf(b.id));
+	publishers.sort((a, b) => form.data.p.indexOf(a.id) - form.data.p.indexOf(b.id));
 
 	const formObj = await superValidate(
 		{ ...form.data, staff: staff_aliases, p: publishers },
