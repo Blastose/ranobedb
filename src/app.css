@@ -161,6 +161,10 @@ input[type='number'].input {
 	border-radius: 9999rem;
 	padding: 0.5rem 1rem;
 }
+input.combobox.input.small {
+	border-radius: 9999rem;
+	padding: 0.125rem 0.25rem;
+}
 
 select.input {
 	border-radius: 9999rem;

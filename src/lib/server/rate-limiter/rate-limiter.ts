@@ -3,7 +3,7 @@ import type { RequestEvent } from '@sveltejs/kit';
 import { RateLimiter } from 'sveltekit-rate-limiter/server';
 
 export const dbItemActionsLimiter = new RateLimiter({
-	IP: [1, '10s'],
+	IP: [10, '10s'],
 });
 
 export const loginLimiter = new RateLimiter({

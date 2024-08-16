@@ -18,7 +18,7 @@
 	inputPlaceholder="Search by book title"
 >
 	<svelte:fragment slot="filters">
-		<BookFilters filtersForm={data.filtersForm} />
+		<BookFilters filtersForm={data.filtersFormObj} />
 	</svelte:fragment>
 
 	<svelte:fragment slot="display">

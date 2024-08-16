@@ -581,6 +581,56 @@ export const bookFiltersSchema = z.object({
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(booksSortArray).catch('Relevance desc'),
+	staff: z.array(z.number().max(maxNumberValue)).catch([]),
+	sl: z.enum(logicalOps).catch('and'),
+	p: z.array(z.number().max(maxNumberValue)).catch([]),
+	pl: z.enum(logicalOps).catch('or'),
+});
+
+const zStaff = z
+	.array(
+		z.object({
+			id: z.number().max(maxNumberValue),
+			name: z.string().max(maxTextLength),
+			romaji: z.string().max(maxTextLength).nullish(),
+		}),
+	)
+	.max(20);
+
+const zPublishers = z
+	.array(
+		z.object({
+			id: z.number().max(maxNumberValue),
+			name: z.string().max(maxTextLength),
+			romaji: z.string().max(maxTextLength).nullish(),
+		}),
+	)
+	.max(20);
+
+export const staffFilters = z.object({
+	staff: zStaff,
+});
+export const publisherFilters = z.object({
+	p: zPublishers,
+});
+
+export const staffPublisherFilters = z.object({
+	...staffFilters.shape,
+	...publisherFilters.shape,
+	sl: z.enum(logicalOps).catch('and'),
+	pl: z.enum(logicalOps).catch('or'),
+});
+
+export const bookFiltersObjSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rll: z.enum(logicalOps).catch('or'),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	rfl: z.enum(logicalOps).catch('or'),
+	sort: z.enum(booksSortArray).catch('Relevance desc'),
+	staff: zStaff,
+	sl: z.enum(logicalOps).catch('and'),
+	p: zPublishers,
+	pl: z.enum(logicalOps).catch('or'),
 });
 
 export const seriesFiltersSchema = z.object({
@@ -589,13 +639,16 @@ export const seriesFiltersSchema = z.object({
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(seriesSortArray).catch('Relevance desc'),
-	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 	genresInclude: z.array(z.number().max(maxNumberValue)).catch([]),
 	genresExclude: z.array(z.number().max(maxNumberValue)).catch([]),
 	tagsInclude: z.array(z.number().max(maxNumberValue)).catch([]),
 	tagsExclude: z.array(z.number().max(maxNumberValue)).catch([]),
 	til: z.enum(logicalOps).catch('and'),
 	tel: z.enum(logicalOps).catch('or'),
+	staff: z.array(z.number().max(maxNumberValue)).catch([]),
+	sl: z.enum(logicalOps).catch('and'),
+	p: z.array(z.number().max(maxNumberValue)).catch([]),
+	pl: z.enum(logicalOps).catch('or'),
 });
 
 const zTags = z
@@ -607,6 +660,7 @@ const zTags = z
 			mode: z.enum(['incl', 'excl'] as const),
 		}),
 	)
+	.max(50)
 	.catch([]);
 
 export const seriesFiltersObjSchema = z.object({
@@ -615,21 +669,35 @@ export const seriesFiltersObjSchema = z.object({
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(seriesSortArray).catch('Relevance desc'),
-	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 	tags: zTags,
 	til: z.enum(logicalOps).catch('and'),
 	tel: z.enum(logicalOps).catch('or'),
+	staff: zStaff,
+	sl: z.enum(logicalOps).catch('and'),
+	p: zPublishers,
+	pl: z.enum(logicalOps).catch('or'),
 });
 
 export const releaseFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
+	p: z.array(z.number().max(maxNumberValue)).catch([]),
+	pl: z.enum(logicalOps).catch('and'),
+});
+export const releaseFiltersObjSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	sort: z.enum(releaseSortArray).catch('Relevance desc'),
+	p: zPublishers,
+	pl: z.enum(logicalOps).catch('or'),
 });
 export const releaseFiltersCalendarSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
+	p: z.array(z.number().max(maxNumberValue)).catch([]),
+	pl: z.enum(logicalOps).catch('and'),
 	date: z
 		.string()
 		.nullish()
@@ -652,6 +720,10 @@ export const releaseFiltersCalendarSchema = z.object({
 			const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
 			return [dateNumber.getYear(), dateNumber.getMonth()];
 		}),
+});
+export const releaseFiltersObjCalendarSchema = z.object({
+	...releaseFiltersCalendarSchema.shape,
+	p: zPublishers,
 });
 
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });

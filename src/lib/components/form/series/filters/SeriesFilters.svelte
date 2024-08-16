@@ -15,6 +15,7 @@
 	import TagsFilters from './tags/TagsFilters.svelte';
 	import type { TagType } from '$lib/server/db/dbTypes';
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
+	import StaffPublisherFilters from '../../filters/StaffPublisherFilters.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof seriesFiltersObjSchema>>;
 	export let genres: { id: number; name: string; ttype: TagType; mode: 'incl' | 'excl' | 'none' }[];
@@ -107,5 +108,6 @@
 			/> -->
 			</div>
 		</div>
+		<StaffPublisherFilters {filtersForm} />
 	</div>
 </FiltersWrapper>
