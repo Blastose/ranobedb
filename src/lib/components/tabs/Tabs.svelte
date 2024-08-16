@@ -26,6 +26,7 @@
 			{@const active = tab === currentTab}
 			<div class="flex flex-col gap-2">
 				<a
+					data-sveltekit-noscroll
 					class="{active
 						? 'link no-underline'
 						: 'tab-hover'} capitalize duration-[250ms] px-2 font-semibold flex items-center gap-2"

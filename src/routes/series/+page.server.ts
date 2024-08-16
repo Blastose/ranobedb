@@ -162,9 +162,9 @@ export const load = async ({ url, locals }) => {
 					.selectFrom('series')
 					.distinctOn('series.id')
 					.select('series.id')
+					.innerJoin('series_book', 'series_book.series_id', 'series.id')
 					.$if(useReleaseLangFilters, (qb) =>
 						qb
-							.innerJoin('series_book', 'series_book.series_id', 'series.id')
 							.innerJoin('release_book', (join) =>
 								join.onRef('release_book.book_id', '=', 'series_book.book_id'),
 							)
@@ -189,7 +189,6 @@ export const load = async ({ url, locals }) => {
 					)
 					.$if(useReleaseFormatFilters, (qb) =>
 						qb
-							.innerJoin('series_book', 'series_book.series_id', 'series.id')
 							.innerJoin('release_book', (join) =>
 								join.onRef('release_book.book_id', '=', 'series_book.book_id'),
 							)
@@ -268,7 +267,6 @@ export const load = async ({ url, locals }) => {
 					})
 					.$if(useStaffFilters, (qb) =>
 						qb
-							.innerJoin('series_book', 'series_book.series_id', 'series.id')
 							.innerJoin('book_staff_alias', (join) =>
 								join.onRef('book_staff_alias.book_id', '=', 'series_book.book_id'),
 							)
