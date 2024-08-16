@@ -19,7 +19,7 @@
 	inputPlaceholder="Search by release title"
 >
 	<svelte:fragment slot="filters">
-		<ReleaseFilters filtersForm={data.filtersForm} />
+		<ReleaseFilters filtersForm={data.filtersFormObj} />
 	</svelte:fragment>
 
 	<svelte:fragment slot="display">

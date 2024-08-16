@@ -1,7 +1,12 @@
 import { db } from '$lib/server/db/db.js';
 import { orderNullsLast, paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBReleases } from '$lib/server/db/releases/releases.js';
-import { pageSchema, qSchema, releaseFiltersSchema } from '$lib/server/zod/schema.js';
+import {
+	pageSchema,
+	qSchema,
+	releaseFiltersObjSchema,
+	releaseFiltersSchema,
+} from '$lib/server/zod/schema.js';
 import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -22,6 +27,23 @@ export const load = async ({ url, locals }) => {
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
+	const useReleasePublisherFilters = form.data.p.length > 0;
+
+	const [publishers] = await Promise.all([
+		await db
+			.selectFrom('publisher')
+			.where('publisher.hidden', '=', false)
+			.where('publisher.id', 'in', form.data.p.length > 0 ? form.data.p : [-1])
+			.select(['publisher.id', 'publisher.name', 'publisher.romaji'])
+			.execute(),
+	]);
+
+	publishers.sort((a, b) => form.data.p.indexOf(a.id) - form.data.p.indexOf(b.id));
+
+	const formObj = await superValidate(
+		{ ...form.data, p: publishers },
+		zod(releaseFiltersObjSchema),
+	);
 
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
@@ -82,7 +104,7 @@ export const load = async ({ url, locals }) => {
 		);
 	}
 
-	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {
+	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters || useReleasePublisherFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin());
 		if (useQuery && !sort.startsWith('Relevance')) {
 			query = query
@@ -120,6 +142,29 @@ export const load = async ({ url, locals }) => {
 				return eb.or(filters);
 			});
 		}
+		if (useReleasePublisherFilters) {
+			query = query
+				.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
+				.$if(form.data.pl === 'or', (qb2) =>
+					qb2.where((eb2) => {
+						const filters: Expression<SqlBool>[] = [];
+						for (const publisher_id of form.data.p) {
+							filters.push(eb2('release_publisher.publisher_id', '=', publisher_id));
+						}
+						return eb2.or(filters);
+					}),
+				)
+				.$if(form.data.pl === 'and', (qb2) =>
+					qb2
+						.where('release_publisher.publisher_id', 'in', form.data.p)
+						.groupBy('release.id')
+						.having(
+							(eb) => eb.fn.count('release_publisher.publisher_id').distinct(),
+							'=',
+							form.data.p.length,
+						),
+				);
+		}
 	}
 
 	const {
@@ -137,5 +182,6 @@ export const load = async ({ url, locals }) => {
 		currentPage,
 		totalPages,
 		filtersForm: form,
+		filtersFormObj: formObj,
 	};
 };

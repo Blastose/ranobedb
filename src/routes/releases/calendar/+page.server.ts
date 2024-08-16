@@ -6,6 +6,7 @@ import {
 	pageSchema,
 	qSchema,
 	releaseFiltersCalendarSchema,
+	releaseFiltersObjCalendarSchema,
 	userListReleaseSchema,
 } from '$lib/server/zod/schema.js';
 import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
@@ -45,8 +46,25 @@ export const load = async ({ url, locals }) => {
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
+	const useReleasePublisherFilters = form.data.p.length > 0;
 
-	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters) {
+	const [publishers] = await Promise.all([
+		await db
+			.selectFrom('publisher')
+			.where('publisher.hidden', '=', false)
+			.where('publisher.id', 'in', form.data.p.length > 0 ? form.data.p : [-1])
+			.select(['publisher.id', 'publisher.name', 'publisher.romaji'])
+			.execute(),
+	]);
+
+	publishers.sort((a, b) => form.data.p.indexOf(a.id) - form.data.p.indexOf(b.id));
+
+	const formObj = await superValidate(
+		{ ...form.data, p: publishers },
+		zod(releaseFiltersObjCalendarSchema),
+	);
+
+	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters || useReleasePublisherFilters) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin());
 		if (useQuery) {
 			query = query
@@ -83,6 +101,29 @@ export const load = async ({ url, locals }) => {
 				}
 				return eb.or(filters);
 			});
+		}
+		if (useReleasePublisherFilters) {
+			query = query
+				.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
+				.$if(form.data.pl === 'or', (qb2) =>
+					qb2.where((eb2) => {
+						const filters: Expression<SqlBool>[] = [];
+						for (const publisher_id of form.data.p) {
+							filters.push(eb2('release_publisher.publisher_id', '=', publisher_id));
+						}
+						return eb2.or(filters);
+					}),
+				)
+				.$if(form.data.pl === 'and', (qb2) =>
+					qb2
+						.where('release_publisher.publisher_id', 'in', form.data.p)
+						.groupBy('release.id')
+						.having(
+							(eb) => eb.fn.count('release_publisher.publisher_id').distinct(),
+							'=',
+							form.data.p.length,
+						),
+				);
 		}
 	}
 
@@ -126,6 +167,7 @@ export const load = async ({ url, locals }) => {
 		groupedReleases,
 		currentPage,
 		filtersForm: form,
+		filtersFormObj: formObj,
 		userListReleaseForm,
 		nextMonth,
 		prevMonth,

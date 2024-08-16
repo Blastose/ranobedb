@@ -584,7 +584,7 @@ export const bookFiltersSchema = z.object({
 	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 	sl: z.enum(logicalOps).catch('and'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
-	pl: z.enum(logicalOps).catch('and'),
+	pl: z.enum(logicalOps).catch('or'),
 });
 
 const zStaff = z
@@ -618,7 +618,7 @@ export const staffPublisherFilters = z.object({
 	...staffFilters.shape,
 	...publisherFilters.shape,
 	sl: z.enum(logicalOps).catch('and'),
-	pl: z.enum(logicalOps).catch('and'),
+	pl: z.enum(logicalOps).catch('or'),
 });
 
 export const bookFiltersObjSchema = z.object({
@@ -630,7 +630,7 @@ export const bookFiltersObjSchema = z.object({
 	staff: zStaff,
 	sl: z.enum(logicalOps).catch('and'),
 	p: zPublishers,
-	pl: z.enum(logicalOps).catch('and'),
+	pl: z.enum(logicalOps).catch('or'),
 });
 
 export const seriesFiltersSchema = z.object({
@@ -648,7 +648,7 @@ export const seriesFiltersSchema = z.object({
 	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 	sl: z.enum(logicalOps).catch('and'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
-	pl: z.enum(logicalOps).catch('and'),
+	pl: z.enum(logicalOps).catch('or'),
 });
 
 const zTags = z
@@ -675,18 +675,29 @@ export const seriesFiltersObjSchema = z.object({
 	staff: zStaff,
 	sl: z.enum(logicalOps).catch('and'),
 	p: zPublishers,
-	pl: z.enum(logicalOps).catch('and'),
+	pl: z.enum(logicalOps).catch('or'),
 });
 
 export const releaseFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
+	p: z.array(z.number().max(maxNumberValue)).catch([]),
+	pl: z.enum(logicalOps).catch('and'),
+});
+export const releaseFiltersObjSchema = z.object({
+	rl: z.array(z.enum(languagesArray)).catch([]),
+	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	sort: z.enum(releaseSortArray).catch('Relevance desc'),
+	p: zPublishers,
+	pl: z.enum(logicalOps).catch('or'),
 });
 export const releaseFiltersCalendarSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
+	p: z.array(z.number().max(maxNumberValue)).catch([]),
+	pl: z.enum(logicalOps).catch('and'),
 	date: z
 		.string()
 		.nullish()
@@ -709,6 +720,10 @@ export const releaseFiltersCalendarSchema = z.object({
 			const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
 			return [dateNumber.getYear(), dateNumber.getMonth()];
 		}),
+});
+export const releaseFiltersObjCalendarSchema = z.object({
+	...releaseFiltersCalendarSchema.shape,
+	p: zPublishers,
 });
 
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });

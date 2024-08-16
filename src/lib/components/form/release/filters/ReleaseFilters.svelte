@@ -1,9 +1,10 @@
 <script lang="ts">
-	import type { releaseFiltersSchema } from '$lib/server/zod/schema';
+	import type { releaseFiltersObjSchema } from '$lib/server/zod/schema';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import {
 		languageNames,
 		languagesArray,
+		logicalOps,
 		releaseFormatArray,
 		releaseSortArray,
 	} from '$lib/db/dbConsts';
@@ -11,10 +12,11 @@
 	import SelectField from '../../SelectField.svelte';
 	import MultiSelectField from '../../MultiSelectField.svelte';
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
+	import PublisherFilters from '../../filters/publisher/PublisherFilters.svelte';
 
-	export let filtersForm: SuperValidated<Infer<typeof releaseFiltersSchema>>;
+	export let filtersForm: SuperValidated<Infer<typeof releaseFiltersObjSchema>>;
 	export let showSort: boolean = true;
-	const sForm = superForm(filtersForm);
+	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 
 <FiltersWrapper>
@@ -52,6 +54,20 @@
 					fit={true}
 				/>
 			{/if}
+		</div>
+
+		<div>
+			<PublisherFilters {filtersForm} />
+			<SelectField
+				form={sForm}
+				field="pl"
+				dropdownOptions={logicalOps.map((v) => ({ display: v, value: v }))}
+				selectedValue={filtersForm.data.pl}
+				label="Release publisher filter logic"
+				resetPadding={true}
+				showRequiredSymbolIfRequired={false}
+				fit={true}
+			/>
 		</div>
 
 		<slot />

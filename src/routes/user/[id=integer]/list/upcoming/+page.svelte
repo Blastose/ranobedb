@@ -23,7 +23,7 @@
 
 	<div class="flex flex-col gap-2">
 		<form method="get">
-			<ReleaseFilters filtersForm={data.filtersForm} showSort={false}>
+			<ReleaseFilters filtersForm={data.filtersFormObj} showSort={false}>
 				<div class="w-fit">
 					<SubmitButton text="Filter" delayed={false} submitting={false} />
 				</div>
