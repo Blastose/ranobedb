@@ -147,6 +147,13 @@ a {
 	visibility: visible;
 }
 
+.tag-chip {
+	background-color: var(--primary-200);
+}
+.dark .tag-chip {
+	background-color: var(--dark-500);
+}
+
 .input {
 	background-color: rgb(229 231 235);
 	padding: 0.5rem;

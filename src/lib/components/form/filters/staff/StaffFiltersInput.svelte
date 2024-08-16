@@ -37,14 +37,14 @@
 		<div class="flex flex-wrap gap-2">
 			{#each $values as staff, i (staff.id)}
 				<button
-					class="flex gap-1 items-center rounded-2xl bg-neutral-700 px-2 text-sm"
+					class="flex gap-1 items-center rounded-2xl tag-chip px-2 text-sm"
 					type="button"
 					on:click={() => {
 						handleRemoveStaff(i);
 					}}><NameDisplay obj={staff} /><Icon name="close" height="18" width="18"></Icon></button
 				>
 			{:else}
-				<p class="italic">No staff selected</p>
+				<p class="italic text-sm">No staff selected</p>
 			{/each}
 		</div>
 		<ComboboxInput

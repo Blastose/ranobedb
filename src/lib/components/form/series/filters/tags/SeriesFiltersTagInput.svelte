@@ -47,7 +47,7 @@
 					}}
 				/>
 			{:else}
-				<p class="italic">No tags selected</p>
+				<p class="italic text-sm">No tags selected</p>
 			{/each}
 		</div>
 		<ComboboxInput

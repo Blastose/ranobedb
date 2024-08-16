@@ -37,7 +37,7 @@
 		<div class="flex flex-wrap gap-2">
 			{#each $values as publisher, i (publisher.id)}
 				<button
-					class="flex gap-1 items-center rounded-2xl bg-neutral-700 px-2 text-sm"
+					class="flex gap-1 items-center rounded-2xl tag-chip px-2 text-sm"
 					type="button"
 					on:click={() => {
 						handleRemovePublisher(i);
@@ -45,7 +45,7 @@
 					><NameDisplay obj={publisher} /><Icon name="close" height="18" width="18"></Icon></button
 				>
 			{:else}
-				<p class="italic">No publishers selected</p>
+				<p class="italic text-sm">No publishers selected</p>
 			{/each}
 		</div>
 		<ComboboxInput
