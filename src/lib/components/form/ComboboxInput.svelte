@@ -16,6 +16,7 @@
 	export let selectedItems: Pick<T, 'id'>[];
 	export let filterDuplicateIds: boolean;
 	export let capitalize: boolean = false;
+	export let small: boolean = false;
 
 	const {
 		elements: { menu, input, option, label },
@@ -67,9 +68,15 @@
 		<span>{title}</span>
 	</label>
 
-	<div class="relative w-full max-w-sm">
+	<div class="relative w-full {small ? 'max-w-xs' : 'max-w-sm'}">
 		<div class="absolute left-2 top-1/2 -translate-y-1/2"><Icon name="search" /></div>
-		<input use:melt={$input} class="combobox input w-full !pl-10 !pr-8" placeholder="Name" />
+		<input
+			use:melt={$input}
+			class="combobox input w-full !pl-10 !pr-8"
+			class:small
+			placeholder="Name"
+			type="text"
+		/>
 		<div class="absolute right-2 top-1/2 z-10 -translate-y-1/2 text-magnum-900">
 			{#if $open && $inputValue.length > 0}
 				<Icon name="chevronUp" />
@@ -81,7 +88,7 @@
 </div>
 {#if $open && $inputValue.length > 0}
 	<ul
-		class="z-10 flex max-h-[300px] flex-col rounded-lg"
+		class="z-[99999] flex max-h-[300px] flex-col rounded-lg"
 		use:melt={$menu}
 		transition:fly={{ duration: 150, y: -5 }}
 	>

@@ -21,6 +21,7 @@
 	import TitlesSection from '$lib/components/titles/TitlesSection.svelte';
 	import { buildImageUrl } from '../book';
 	import Tags from '$lib/components/series/Tags.svelte';
+	import LangChip from '$lib/components/titles/LangChip.svelte';
 
 	export let book: BookOne;
 	export let book_series: BookSeries | undefined;
@@ -120,10 +121,10 @@
 			<div class="flex flex-col gap-y-2 gap-x-4">
 				{#each sortByLang(book.editions, book.olang) as edition (edition.eid)}
 					<div class="flex flex-col gap-2">
-						<p class="font-semibold">
-							{edition.title}
-							{#if edition.lang}- {edition.lang}{/if}
-						</p>
+						<div class="grid grid-cols-[24px_1fr] font-semibold gap-1">
+							<LangChip lang={edition.lang || book.olang} />
+							<p>{edition.title}</p>
+						</div>
 						<StaffsSectionSnippet staffs={edition.staff} />
 					</div>
 				{/each}

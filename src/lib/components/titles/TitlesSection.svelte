@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Language } from '$lib/server/db/dbTypes';
 	import Collapsible from '../display/Collapsible.svelte';
+	import LangChip from './LangChip.svelte';
 
 	export let titles: {
 		lang: Language;
@@ -16,11 +17,7 @@
 		<svelte:fragment slot="details">
 			{#each titles as title}
 				<div class="grid grid-cols-[24px_1fr] gap-2">
-					<div class="pt-[3px]">
-						<p class="sub-text">
-							{title.lang}
-						</p>
-					</div>
+					<LangChip lang={title.lang} />
 
 					<div>
 						<p>{title.title}</p>
@@ -33,23 +30,3 @@
 		>
 	</Collapsible>
 </section>
-
-<style>
-	.sub-text {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		height: fit-content;
-		font-size: 0.625rem;
-		line-height: 1rem;
-		font-weight: 600;
-		text-transform: uppercase;
-		border-radius: 0.375rem;
-		border-width: 1px;
-		border-color: var(--text-light-sub);
-	}
-
-	:global(.dark) .sub-text {
-		border-color: var(--text-dark-sub);
-	}
-</style>

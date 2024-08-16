@@ -57,6 +57,7 @@
 			selectedItems={$values}
 			filterDuplicateIds={true}
 			capitalize={true}
+			small={true}
 		/>
 		{#if $errors}
 			<p class="error-text-color">{$errors}</p>

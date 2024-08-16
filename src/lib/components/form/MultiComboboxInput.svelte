@@ -88,6 +88,7 @@
 				use:melt={$input}
 				class="combobox input reset-padding w-full !pl-10 !pr-8"
 				placeholder="Name"
+				type="text"
 			/>
 			<div class="absolute right-2 top-1/2 z-10 -translate-y-1/2 text-magnum-900">
 				{#if $open && $inputValue.length > 0}
