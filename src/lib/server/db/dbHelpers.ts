@@ -61,12 +61,12 @@ export async function paginationBuilderExecuteWithCount<O>(
 			? useOwnCountQuerySelect === true
 				? countQuery.executeTakeFirst()
 				: countQuery
-						.select((eb) => [eb.fn.countAll<number>().over().as('count')])
+						.select((eb) => [eb.fn.countAll<string>().over().as('count')])
 						.executeTakeFirst()
 			: query
 					.clearSelect()
 					.clearOrderBy()
-					.select((eb) => [eb.fn.countAll<number>().over().as('count')])
+					.select((eb) => [eb.fn.countAll<string>().over().as('count')])
 					.executeTakeFirst(),
 	]);
 

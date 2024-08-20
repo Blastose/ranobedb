@@ -31,7 +31,7 @@ export const load = async ({ url, locals }) => {
 		changesQuery
 			.clearSelect()
 			.clearOrderBy()
-			.select((eb) => eb.fn.count<number>('change.id').as('count')),
+			.select((eb) => eb.fn.count<string>('change.id').as('count')),
 		true,
 	);
 
