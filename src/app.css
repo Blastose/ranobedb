@@ -328,6 +328,7 @@ input[type='number'].input.reset-padding {
 	border-radius: 9999px;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	padding: 0.375rem 1rem;
 	color: white;
 	background-color: var(--primary-500);
