@@ -39,7 +39,7 @@ export async function paginationBuilderExecuteWithCountSameQuery<O, DB, TB exten
 
 interface PageResult<O> {
 	result: O[];
-	count: number;
+	count: string;
 	totalPages: number;
 }
 export async function paginationBuilderExecuteWithCount<O>(

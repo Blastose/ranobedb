@@ -103,7 +103,7 @@ export class DBUsers {
 				'auth_user.id',
 				'auth_user.role',
 			])
-			.executeTakeFirstOrThrow();
+			.executeTakeFirst();
 	}
 
 	transformUserToSafeUser(user: User & { joined: Date }): SafeUser {
@@ -189,4 +189,4 @@ export class DBUsers {
 	}
 }
 
-export type SafeUser = Awaited<ReturnType<DBUsers['getUserByIdNumbericSafe']>>;
+export type SafeUser = NonNullable<Awaited<ReturnType<DBUsers['getUserByIdNumbericSafe']>>>;

@@ -8,7 +8,7 @@
 	import type { StaffWorks } from '$lib/server/db/staff/staff';
 
 	export let works: StaffWorks;
-	export let results: number;
+	export let results: string;
 	export let currentPage: number;
 	export let totalPages: number;
 

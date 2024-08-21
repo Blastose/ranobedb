@@ -9,17 +9,13 @@
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 	import Works from './Works.svelte';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
-	import {
-		bookwalkerAuthorLink,
-		twitterLink,
-		wikidataLink,
-	} from '$lib/components/db-links/db-ext-links';
+	import { twitterLink, wikidataLink } from '$lib/components/db-links/db-ext-links';
 
 	export let publisher: Publisher;
 	export let revision: number | undefined;
 	export let works: PublisherWorks;
 	export let user: User | null;
-	export let results: number;
+	export let results: string;
 	export let currentPage: number;
 	export let totalPages: number;
 
