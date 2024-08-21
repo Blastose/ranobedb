@@ -10,7 +10,7 @@
 	import type { PublisherWorks } from '$lib/server/db/publishers/publishers';
 
 	export let works: PublisherWorks;
-	export let results: number;
+	export let results: string;
 	export let currentPage: number;
 	export let totalPages: number;
 

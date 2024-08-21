@@ -6,7 +6,7 @@
 	export let currentPage: number;
 	export let totalPages: number;
 	export let showTopPages: boolean = true;
-	export let results: number | undefined;
+	export let results: string | undefined;
 </script>
 
 <div class="flex flex-col gap-4">
@@ -26,7 +26,7 @@
 	{/if}
 
 	<Fly key={$page.url.searchParams.toString()}>
-		{#if results !== 0 && currentPage <= totalPages}
+		{#if results !== '0' && currentPage <= totalPages}
 			<slot />
 		{:else}
 			<p class="text-center sub-text">There are no results</p>

@@ -99,13 +99,17 @@
 
 				<section class="pt-4">
 					<h2 class="font-bold text-lg">Description</h2>
-					{#key book.id}
-						{#if $displayPrefs.descriptions === 'en'}
-							<Description description={(book.description || book.description_ja) ?? ''} />
-						{:else if $displayPrefs.descriptions === 'ja'}
-							<Description description={book.description_ja || book.description} />
-						{/if}
-					{/key}
+					{#if book.description || book.description_ja}
+						{#key book.id}
+							{#if $displayPrefs.descriptions === 'en'}
+								<Description description={(book.description || book.description_ja) ?? ''} />
+							{:else if $displayPrefs.descriptions === 'ja'}
+								<Description description={book.description_ja || book.description} />
+							{/if}
+						{/key}
+					{:else}
+						<p>This book doesn't have a description yet.</p>
+					{/if}
 				</section>
 			</div>
 		</div>

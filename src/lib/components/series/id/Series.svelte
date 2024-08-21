@@ -91,7 +91,7 @@
 
 		{#if series.end_date === 99999999 && series.books.at(-1)?.release_date !== undefined}
 			<div>
-				<dt>Lastest release:</dt>
+				<dt>Latest release:</dt>
 				<dd>
 					{new DateNumber(series.books.at(-1)?.release_date || 99999999).getDateFormatted()}
 				</dd>
@@ -170,9 +170,9 @@
 		</section>
 	{/if}
 
-	<StaffsSectionGroupedLang olang={series.olang} staffs={series.staff} onlyOlang={true} />
+	<StaffsSectionGroupedLang olang={series.olang} staffs={series.staff} onlyOlang={false} />
 
-	<PublishersSection publishers={series.publishers} olang={series.olang} onlyOpenOlang={true} />
+	<PublishersSection publishers={series.publishers} olang={series.olang} onlyOpenOlang={false} />
 
 	<section class="flex flex-col gap-2">
 		<h2 class="text-lg font-bold">Books in series</h2>

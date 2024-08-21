@@ -6,7 +6,7 @@
 	export let name: string;
 	export let currentPage: number;
 	export let totalPages: number;
-	export let results: number;
+	export let results: string;
 	export let inputPlaceholder: string;
 	export let customName: boolean = false;
 

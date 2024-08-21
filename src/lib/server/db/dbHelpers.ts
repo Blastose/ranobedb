@@ -39,7 +39,7 @@ export async function paginationBuilderExecuteWithCountSameQuery<O, DB, TB exten
 
 interface PageResult<O> {
 	result: O[];
-	count: number;
+	count: string;
 	totalPages: number;
 }
 export async function paginationBuilderExecuteWithCount<O>(
@@ -61,12 +61,12 @@ export async function paginationBuilderExecuteWithCount<O>(
 			? useOwnCountQuerySelect === true
 				? countQuery.executeTakeFirst()
 				: countQuery
-						.select((eb) => [eb.fn.countAll<number>().over().as('count')])
+						.select((eb) => [eb.fn.countAll<string>().over().as('count')])
 						.executeTakeFirst()
 			: query
 					.clearSelect()
 					.clearOrderBy()
-					.select((eb) => [eb.fn.countAll<number>().over().as('count')])
+					.select((eb) => [eb.fn.countAll<string>().over().as('count')])
 					.executeTakeFirst(),
 	]);
 

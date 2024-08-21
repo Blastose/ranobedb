@@ -43,6 +43,8 @@
 					</svelte:fragment>
 				</Collapsible>
 			</section>
+		{:else}
+			<p>This item doesn't have any publishers associated with it yet.</p>
 		{/each}
 	</div>
 </section>

@@ -89,7 +89,7 @@ export const load = async ({ params, locals, url }) => {
 
 	let countQuery = db
 		.selectFrom('release')
-		.select((eb) => eb.fn.count<number>('release.id').as('count'))
+		.select((eb) => eb.fn.count<string>('release.id').as('count'))
 		.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
 		.where('user_list_release.user_id', '=', listUser.id)
 		.where('release.hidden', '=', false);

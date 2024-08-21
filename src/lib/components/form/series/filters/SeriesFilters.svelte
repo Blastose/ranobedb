@@ -7,6 +7,7 @@
 		logicalOps,
 		releaseFormatArray,
 		seriesSortArray,
+		seriesStatusArray,
 	} from '$lib/db/dbConsts';
 	import Keyed from '../../Keyed.svelte';
 	import SelectField from '../../SelectField.svelte';
@@ -82,6 +83,18 @@
 		</div>
 
 		<div class="flex flex-col gap-2">
+			<div class="w-fit">
+				<Keyed>
+					<MultiSelectField
+						form={sForm}
+						field="pubStatus"
+						allSelectedText={'any'}
+						labelText="Pub. status"
+						dropdownOptions={seriesStatusArray.map((v) => ({ display: v, value: v }))}
+					/>
+				</Keyed>
+			</div>
+
 			<TagsFilters {genres} {filtersForm} />
 
 			<div class="flex gap-4">

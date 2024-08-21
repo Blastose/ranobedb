@@ -7,7 +7,7 @@
 </script>
 
 <section>
-	<Collapsible open={Boolean($page.url.search.replace(/\?page=\d+/, ''))}>
+	<Collapsible open={filterInUse}>
 		<svelte:fragment slot="summary">
 			<h2 class="text-lg font-bold">
 				Filters{#if filterInUse}<Icon name="filterCheck" />{:else}<Icon name="filter" />{/if}

@@ -15,6 +15,9 @@ export const load = async ({ url, params, locals }) => {
 
 	const dbUsers = new DBUsers(db);
 	const routeUser = await dbUsers.getUserByIdNumbericSafe(userIdNumeric);
+	if (!routeUser) {
+		error(404);
+	}
 
 	const form = await superValidate(url, zod(historyFiltersSchema));
 

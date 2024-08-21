@@ -2,6 +2,7 @@ import { db } from '$lib/server/db/db.js';
 import { getUserLabelCounts } from '$lib/server/db/user/list.js';
 import { getUserSeriesListCounts } from '$lib/server/db/user/series-list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
+import { error } from '@sveltejs/kit';
 import { sql } from 'kysely';
 
 export const load = async ({ params, locals }) => {
@@ -10,6 +11,10 @@ export const load = async ({ params, locals }) => {
 
 	const dbUsers = new DBUsers(db);
 	const listUser = await dbUsers.getUserByIdNumbericSafe(userIdNumeric);
+
+	if (!listUser) {
+		error(404);
+	}
 
 	let isCurrentUser = false;
 	if (user?.id_numeric === listUser.id_numeric) {

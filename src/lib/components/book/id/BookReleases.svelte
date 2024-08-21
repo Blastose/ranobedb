@@ -37,6 +37,8 @@
 					</svelte:fragment>
 				</Collapsible>
 			</section>
+		{:else}
+			<p>This book doesn't have any releases associated with it yet.</p>
 		{/each}
 	</div>
 </section>

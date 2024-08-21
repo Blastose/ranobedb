@@ -176,12 +176,12 @@ export const releaseTypeArray = ['complete', 'partial', 'omnibus'] as const;
 export const seriesBookTypeArray = ['main', 'sub'] as const;
 
 export const seriesRelTypeArray = [
-	'parent story',
 	'prequel',
 	'sequel',
 	'side story',
 	'main story',
 	'spin-off',
+	'parent story',
 	'alternate version',
 ] as const;
 

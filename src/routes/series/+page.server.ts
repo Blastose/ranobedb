@@ -30,6 +30,7 @@ export const load = async ({ url, locals }) => {
 	const useStaffFilters = form.data.staff.length > 0;
 	const useTagsFilters = form.data.tagsInclude.length + form.data.tagsExclude.length > 0;
 	const usePublisherFilters = form.data.p.length > 0;
+	const useStatusFilters = form.data.pubStatus.length > 0;
 
 	const genres = await db
 		.selectFrom('tag')
@@ -147,6 +148,10 @@ export const load = async ({ url, locals }) => {
 		query = query.orderBy(
 			(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
 		);
+	}
+
+	if (useStatusFilters) {
+		query = query.where('cte_series.publication_status', 'in', form.data.pubStatus);
 	}
 
 	if (
