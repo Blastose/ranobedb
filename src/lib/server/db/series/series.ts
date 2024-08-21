@@ -492,10 +492,34 @@ export class DBSeries {
 							'series.id',
 							'in',
 							eb
-								.selectFrom('series_relation')
-								.innerJoin('series as child_series', 'child_series.id', 'series_relation.id_child')
-								.select(['child_series.id'])
-								.where('series_relation.id_parent', '=', params.id)
+								.selectFrom('series_relation_hist')
+								.innerJoin('change', 'change.id', 'series_relation_hist.change_id')
+								.innerJoin(
+									'series as child_series',
+									'child_series.id',
+									'series_relation_hist.id_child',
+								)
+								.where('change.item_id', '=', params.id)
+								.where('change.item_name', '=', 'series')
+								.$if(params.revision !== undefined, (qb) =>
+									qb.where('change.revision', '=', params.revision!),
+								)
+								.$if(params.revision === undefined, (qb) =>
+									qb.where((eb) =>
+										eb(
+											'change.revision',
+											'=',
+											eb
+												.selectFrom('change as c2')
+												.where('c2.item_id', '=', params.id)
+												.where('c2.item_name', '=', 'series')
+												.select('revision')
+												.orderBy('revision desc')
+												.limit(1),
+										),
+									),
+								)
+								.select(['series_relation_hist.id_child'])
 								.where('child_series.hidden', '=', false),
 						),
 					]),
@@ -800,10 +824,34 @@ export class DBSeries {
 							'series.id',
 							'in',
 							eb
-								.selectFrom('series_relation')
-								.innerJoin('series as child_series', 'child_series.id', 'series_relation.id_child')
-								.select(['child_series.id'])
-								.where('series_relation.id_parent', '=', params.id)
+								.selectFrom('series_relation_hist')
+								.innerJoin('change', 'change.id', 'series_relation_hist.change_id')
+								.innerJoin(
+									'series as child_series',
+									'child_series.id',
+									'series_relation_hist.id_child',
+								)
+								.where('change.item_id', '=', params.id)
+								.where('change.item_name', '=', 'series')
+								.$if(params.revision !== undefined, (qb) =>
+									qb.where('change.revision', '=', params.revision!),
+								)
+								.$if(params.revision === undefined, (qb) =>
+									qb.where((eb) =>
+										eb(
+											'change.revision',
+											'=',
+											eb
+												.selectFrom('change as c2')
+												.where('c2.item_id', '=', params.id)
+												.where('c2.item_name', '=', 'series')
+												.select('revision')
+												.orderBy('revision desc')
+												.limit(1),
+										),
+									),
+								)
+								.select(['series_relation_hist.id_child'])
 								.where('child_series.hidden', '=', false),
 						),
 					]),
