@@ -19,7 +19,7 @@
 		$values.push({
 			title: book.name,
 			id: book.id,
-			romaji: '',
+			romaji: book.romaji,
 			lang: book.lang,
 			sort_order: $values.length + 1,
 			book_type: 'main',
