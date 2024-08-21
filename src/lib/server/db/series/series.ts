@@ -296,7 +296,6 @@ export class DBSeries {
 				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where((eb) =>
 					eb.or([
 						eb('series.id', '=', id),
-
 						eb(
 							'series.id',
 							'in',
@@ -462,12 +461,45 @@ export class DBSeries {
 
 	getSeriesHistOne(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('series_book', 'series_book.book_id', 'book.id')
+					.where('series_book.series_id', '=', params.id),
+			)
 			.with('cte_series', () =>
-				withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+				withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where((eb) =>
+					eb(
+						'series_hist.change_id',
+						'in',
+						eb
+							.selectFrom('change')
+							.where('change.item_id', '=', params.id)
+							.where('change.item_name', '=', 'series')
+							.$if(params.revision !== undefined, (qb) =>
+								qb.where('change.revision', '=', params.revision!),
+							)
+							.orderBy('change.revision desc')
+							.select('change.id')
+							.limit(1),
+					),
+				),
 			)
 			.with('cte_series_non_hist', () =>
-				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where((eb) =>
+					eb.or([
+						eb('series.id', '=', params.id),
+						eb(
+							'series.id',
+							'in',
+							eb
+								.selectFrom('series_relation')
+								.innerJoin('series as child_series', 'child_series.id', 'series_relation.id_child')
+								.select(['child_series.id'])
+								.where('series_relation.id_parent', '=', params.id)
+								.where('child_series.hidden', '=', false),
+						),
+					]),
+				),
 			)
 			.selectFrom('cte_series')
 			.innerJoin('change', 'change.id', 'cte_series.id')
@@ -633,8 +665,28 @@ export class DBSeries {
 
 	getSeriesOneEdit(id: number) {
 		return this.ranobeDB.db
-			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
-			.with('cte_series', () => withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('series_book', 'series_book.book_id', 'book.id')
+					.where('series_book.series_id', '=', id),
+			)
+			.with('cte_series', () =>
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where((eb) =>
+					eb.or([
+						eb('series.id', '=', id),
+						eb(
+							'series.id',
+							'in',
+							eb
+								.selectFrom('series_relation')
+								.innerJoin('series as child_series', 'child_series.id', 'series_relation.id_child')
+								.select(['child_series.id'])
+								.where('series_relation.id_parent', '=', id)
+								.where('child_series.hidden', '=', false),
+						),
+					]),
+				),
+			)
 			.selectFrom('cte_series')
 			.select([
 				'cte_series.id',
@@ -717,12 +769,45 @@ export class DBSeries {
 
 	getSeriesHistOneEdit(params: { id: number; revision?: number }) {
 		let query = this.ranobeDB.db
-			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_book', () =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.innerJoin('series_book', 'series_book.book_id', 'book.id')
+					.where('series_book.series_id', '=', params.id),
+			)
 			.with('cte_series', () =>
-				withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+				withSeriesHistTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where((eb) =>
+					eb(
+						'series_hist.change_id',
+						'in',
+						eb
+							.selectFrom('change')
+							.where('change.item_id', '=', params.id)
+							.where('change.item_name', '=', 'series')
+							.$if(params.revision !== undefined, (qb) =>
+								qb.where('change.revision', '=', params.revision!),
+							)
+							.orderBy('change.revision desc')
+							.select('change.id')
+							.limit(1),
+					),
+				),
 			)
 			.with('cte_series_non_hist', () =>
-				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where((eb) =>
+					eb.or([
+						eb('series.id', '=', params.id),
+						eb(
+							'series.id',
+							'in',
+							eb
+								.selectFrom('series_relation')
+								.innerJoin('series as child_series', 'child_series.id', 'series_relation.id_child')
+								.select(['child_series.id'])
+								.where('series_relation.id_parent', '=', params.id)
+								.where('child_series.hidden', '=', false),
+						),
+					]),
+				),
 			)
 			.selectFrom('cte_series')
 			.innerJoin('change', 'change.id', 'cte_series.id')

@@ -7,7 +7,7 @@ export function compileQuery(query: CompiledQuery) {
 	for (const [index, value] of query.parameters.entries()) {
 		const i = index + 1;
 		sql = sql.replaceAll(
-			new RegExp(`\\$${i}`, 'g'),
+			new RegExp(`\\$${i}\\b`, 'g'),
 			typeof value === 'string' ? `'${value}'` : (value as string),
 		);
 	}

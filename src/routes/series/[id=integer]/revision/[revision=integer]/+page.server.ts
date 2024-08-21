@@ -22,15 +22,28 @@ export const load = async ({ params, locals }) => {
 		.getChanges('series', seriesId, [previousRevision, revision, revision + 1])
 		.execute();
 
-	const [series, changes, currentSeriesVisibility] = await Promise.all([
-		seriesPromise,
-		changesPromise,
-		db
-			.selectFrom('series')
-			.where('series.id', '=', seriesId)
-			.select(['hidden', 'locked'])
-			.executeTakeFirst(),
-	]);
+	const [series, changes, currentSeriesVisibility, prevSeriesHistEdit, seriesHistEdit] =
+		await Promise.all([
+			seriesPromise,
+			changesPromise,
+			db
+				.selectFrom('series')
+				.where('series.id', '=', seriesId)
+				.select(['hidden', 'locked'])
+				.limit(1)
+				.executeTakeFirst(),
+			previousRevision > 0
+				? dbSeries
+						.getSeriesHistOneEdit({
+							id: seriesId,
+							revision: previousRevision,
+						})
+						.executeTakeFirst()
+				: undefined,
+			previousRevision > 0
+				? dbSeries.getSeriesHistOneEdit({ id: seriesId, revision }).executeTakeFirst()
+				: undefined,
+		]);
 
 	const prevChange = changes.find((i) => i.revision === previousRevision);
 	const change = changes.find((i) => i.revision === revision)!;
@@ -52,15 +65,6 @@ export const load = async ({ params, locals }) => {
 	let diffs: Diff[] = [];
 	const titlePrefs = getDisplayPrefsUser(locals?.user).title_prefs;
 	if (previousRevision > 0) {
-		const [prevSeriesHistEdit, seriesHistEdit] = await Promise.all([
-			dbSeries
-				.getSeriesHistOneEdit({
-					id: seriesId,
-					revision: previousRevision,
-				})
-				.executeTakeFirst(),
-			dbSeries.getSeriesHistOneEdit({ id: seriesId, revision }).executeTakeFirst(),
-		]);
 		if (!prevSeriesHistEdit || !seriesHistEdit) {
 			error(404);
 		}

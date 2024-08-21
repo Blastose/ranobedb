@@ -199,6 +199,7 @@ CREATE TABLE public.change (
     ilock boolean NOT NULL,
     user_id text NOT NULL,
     comments text NOT NULL,
+    UNIQUE (item_name, item_id, revision),
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id)
 );
 
