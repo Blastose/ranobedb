@@ -37,7 +37,7 @@ test.describe('edit series mod', () => {
 		);
 		await page.getByRole('link', { name: 'Edit', exact: true }).click();
 		await page
-			.getByLabel('Relation type: parent storyprequelsequelside storymain storyspin-off')
+			.getByLabel('Relation type: prequelsequelside storymain storyspin-offparent story')
 			.selectOption('main story');
 		await page.getByPlaceholder('Summarize the changes you have made').fill('Change relation type');
 		await page.getByLabel('Edit summary').fill('Change relation type');
