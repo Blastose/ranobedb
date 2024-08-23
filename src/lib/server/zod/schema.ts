@@ -589,6 +589,10 @@ export const bookFiltersSchema = z.object({
 	pl: z.enum(logicalOps).catch('or'),
 });
 
+export const userListBookFiltersSchema = bookFiltersSchema.extend({
+	l: z.array(z.number()),
+});
+
 const zStaff = z
 	.array(
 		z.object({
@@ -633,6 +637,11 @@ export const bookFiltersObjSchema = z.object({
 	sl: z.enum(logicalOps).catch('and'),
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),
+	l: z.array(z.number().max(maxNumberValue)).max(1).catch([]),
+});
+
+export const userListBookFiltersObjSchema = bookFiltersObjSchema.extend({
+	l: z.array(z.number().max(maxNumberValue)).max(100),
 });
 
 export const seriesFiltersSchema = z.object({

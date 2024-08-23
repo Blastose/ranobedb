@@ -29,7 +29,7 @@ export const load = async ({ params, locals, url }) => {
 	const dbBooks = DBBooks.fromDB(db);
 
 	const query = dbBooks
-		.getBooksUser(listUser.id, [])
+		.getBooksUser({ userId: listUser.id, labelIds: [] })
 		.select((eb) => [
 			jsonArrayFrom(
 				eb

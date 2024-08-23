@@ -16,7 +16,7 @@ export function getUserLabels(userId: string) {
 		.execute();
 }
 
-export function getUserLabelCounts(userId: string) {
+export function getUserLabelCounts(userId: string, min: number = 1, max: number = 10) {
 	return db
 		.selectFrom('user_list_book')
 		.leftJoin('user_list_book_label', (join) =>
@@ -38,8 +38,8 @@ export function getUserLabelCounts(userId: string) {
 			eb.or([eb('user_list_book.user_id', '=', userId), eb('user_list_book.user_id', 'is', null)]),
 		)
 		.where('user_list_label.user_id', '=', userId)
-		.where('user_list_label.id', '>=', 1)
-		.where('user_list_label.id', '<=', 10)
+		.where('user_list_label.id', '>=', min)
+		.where('user_list_label.id', '<=', max)
 		.where((eb) => eb.or([eb('book.hidden', '=', false), eb('book.hidden', 'is', null)]))
 		.groupBy(['user_list_label.label', 'user_list_label.id'])
 		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
