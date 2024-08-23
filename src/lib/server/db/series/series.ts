@@ -216,7 +216,8 @@ export class DBSeries {
 			]);
 	}
 
-	getSeriesUser(userId: string, labelIds: number[]) {
+	getSeriesUser(params: { q?: string | null; userId: string; labelIds: number[] }) {
+		const { q, userId, labelIds } = params;
 		const labels = labelIds.length > 0 ? labelIds : [1, 2, 3, 4, 5];
 		return this.ranobeDB.db
 			.with('cte_series', () =>
@@ -236,7 +237,24 @@ export class DBSeries {
 							.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
 							.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
 					)
-					.where('user_list_label.id', 'in', labels),
+					.where('user_list_label.id', 'in', labels)
+					.$if(typeof q === 'string', (qb) =>
+						qb.where((eb) =>
+							eb(
+								'series.id',
+								'in',
+								eb
+									.selectFrom('series_title as st2')
+									.select('st2.series_id')
+									.where((eb) =>
+										eb.or([
+											eb(eb.val(q), sql.raw('<%'), eb.ref('st2.title')).$castTo<boolean>(),
+											eb(eb.val(q), sql.raw('<%'), eb.ref('st2.romaji')).$castTo<boolean>(),
+										]),
+									),
+							),
+						),
+					),
 			)
 			.selectFrom('cte_series')
 			.select((eb) => [

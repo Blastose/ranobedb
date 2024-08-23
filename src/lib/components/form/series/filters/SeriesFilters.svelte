@@ -27,6 +27,8 @@
 
 <FiltersWrapper>
 	<div class="flex flex-col gap-4">
+		<slot {sForm} />
+
 		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">
 			<Keyed>
 				<MultiSelectField

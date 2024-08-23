@@ -9,7 +9,12 @@ import type {
 import { getToAddAndToRemoveFromArrays } from './list';
 import type { Nullish } from '$lib/server/zod/schema';
 
-export function getUserSeriesListCounts(db: Kysely<DB>, userId: string) {
+export function getUserSeriesListCounts(
+	db: Kysely<DB>,
+	userId: string,
+	min: number = 1,
+	max: number = 10,
+) {
 	return db
 		.selectFrom('user_list_series')
 		.leftJoin('user_list_series_label', (join) =>
@@ -34,8 +39,8 @@ export function getUserSeriesListCounts(db: Kysely<DB>, userId: string) {
 			]),
 		)
 		.where('user_list_label.user_id', '=', userId)
-		.where('user_list_label.id', '>=', 1)
-		.where('user_list_label.id', '<=', 10)
+		.where('user_list_label.id', '>=', min)
+		.where('user_list_label.id', '<=', max)
 		.where((eb) => eb.or([eb('series.hidden', '=', false), eb('series.hidden', 'is', null)]))
 		.groupBy(['user_list_label.label', 'user_list_label.id'])
 		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
