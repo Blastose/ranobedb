@@ -1,11 +1,20 @@
 import { db } from '$lib/server/db/db';
 import type { Nullish } from '$lib/server/zod/schema';
-import { defaultUserListLabels, defaultUserListLabelsArray } from '$lib/db/dbConsts';
+import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 import { Kysely, sql, type Transaction, type InferResult } from 'kysely';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import type { DB } from '../dbTypes';
 import { DBSeriesListActions } from './series-list';
 import { DBUsers } from './user';
+
+export function getUserLabels(userId: string) {
+	return db
+		.selectFrom('user_list_label')
+		.where('user_list_label.user_id', '=', userId)
+		.select(['user_list_label.id', 'user_list_label.label', 'user_list_label.private'])
+		.orderBy('user_list_label.id')
+		.execute();
+}
 
 export function getUserLabelCounts(userId: string) {
 	return db
@@ -29,6 +38,8 @@ export function getUserLabelCounts(userId: string) {
 			eb.or([eb('user_list_book.user_id', '=', userId), eb('user_list_book.user_id', 'is', null)]),
 		)
 		.where('user_list_label.user_id', '=', userId)
+		.where('user_list_label.id', '>=', 1)
+		.where('user_list_label.id', '<=', 10)
 		.where((eb) => eb.or([eb('book.hidden', '=', false), eb('book.hidden', 'is', null)]))
 		.groupBy(['user_list_label.label', 'user_list_label.id'])
 		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
@@ -78,7 +89,9 @@ export function getUserListBookWithLabels(userId: string, bookId: number) {
 					)
 					.select(['user_list_label.label', 'user_list_label.id'])
 					.whereRef('user_list_book_label.book_id', '=', 'user_list_book.book_id')
-					.whereRef('user_list_book_label.user_id', '=', 'user_list_book.user_id'),
+					.whereRef('user_list_book_label.user_id', '=', 'user_list_book.user_id')
+					.where('user_list_label.id', '<=', 10)
+					.orderBy('id asc'),
 			).as('labels'),
 		])
 		.where('user_list_book.user_id', '=', userId)
@@ -112,6 +125,7 @@ export class DBListActions {
 		userId: string;
 		bookId: number;
 		labelIds: number[];
+		selectedCustLabels: number[];
 		readingStatusId: number;
 		score: Nullish<number>;
 		started: Nullish<string>;
@@ -186,6 +200,13 @@ export class DBListActions {
 					label_id: labelId,
 				};
 			});
+			userListBookLabels.push(
+				...params.selectedCustLabels.map((v) => ({
+					book_id: params.bookId,
+					user_id: params.userId,
+					label_id: v,
+				})),
+			);
 			if (userListBookLabels.length > 0) {
 				await trx.insertInto('user_list_book_label').values(userListBookLabels).execute();
 			}
@@ -203,6 +224,7 @@ export class DBListActions {
 		userId: string;
 		bookId: number;
 		labelIds: number[];
+		selectedCustLabels: number[];
 		readingStatusId: number;
 		score: Nullish<number>;
 		started: Nullish<string>;
@@ -219,7 +241,7 @@ export class DBListActions {
 					.execute()
 			).map((v) => v.label_id);
 
-			const { toAdd, toRemove } = getToAddAndToRemoveFromArrays(params.labelIds, oldLabelIds);
+			const { toAdd } = getToAddAndToRemoveFromArrays(params.labelIds, oldLabelIds);
 
 			await trx
 				.updateTable('user_list_book')
@@ -235,20 +257,11 @@ export class DBListActions {
 				.where('user_id', '=', params.userId)
 				.execute();
 
-			// Remove all default status list ids
-			toRemove.push(...defaultUserListLabels.map((v) => v.id));
-			if (toRemove.length > 0) {
-				await trx
-					.deleteFrom('user_list_book_label')
-					.where((eb) =>
-						eb.and([
-							eb('book_id', '=', params.bookId),
-							eb('user_id', '=', params.userId),
-							eb('label_id', 'in', toRemove),
-						]),
-					)
-					.execute();
-			}
+			await trx
+				.deleteFrom('user_list_book_label')
+				.where('book_id', '=', params.bookId)
+				.where('user_id', '=', params.userId)
+				.execute();
 
 			toAdd.push(params.readingStatusId);
 			const toAddLabels = toAdd.map((labelId) => {
@@ -258,6 +271,13 @@ export class DBListActions {
 					label_id: labelId,
 				};
 			});
+			toAddLabels.push(
+				...params.selectedCustLabels.map((v) => ({
+					book_id: params.bookId,
+					user_id: params.userId,
+					label_id: v,
+				})),
+			);
 			if (toAddLabels.length > 0) {
 				await trx.insertInto('user_list_book_label').values(toAddLabels).execute();
 			}

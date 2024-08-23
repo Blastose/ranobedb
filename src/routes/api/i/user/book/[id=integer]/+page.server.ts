@@ -16,6 +16,7 @@ export const actions = {
 
 		const user = locals.user;
 		const form = await superValidate(request, zod(userListBookSchema));
+
 		if (!form.valid) {
 			return message(form, { type: 'error', text: 'Invalid form entries' });
 		}
@@ -28,6 +29,7 @@ export const actions = {
 			bookId,
 			labelIds,
 			readingStatusId,
+			selectedCustLabels: form.data.selectedCustLabels,
 			score: form.data.score,
 			started: form.data.started || null,
 			finished: form.data.finished || null,

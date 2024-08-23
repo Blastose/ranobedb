@@ -146,6 +146,7 @@ export const userListBookSchema = z.object({
 			label: z.string().max(2000),
 		}),
 	),
+	selectedCustLabels: z.array(z.number().max(maxNumberValue)).max(2000),
 	readingStatus: z.enum(defaultUserListLabelsArray),
 	score: z.number().min(1).max(10).nullish(),
 	started: zISODate.or(z.literal('')).nullish(),

@@ -56,8 +56,38 @@ export const load = async ({ params, locals }) => {
 		// ids 1 to 10 are reserved for reading status
 		readingStatus = userListBook.labels.filter((v) => v.id <= 10).at(0)?.label as ReadingStatus;
 	}
+
+	const allCustLabels = user
+		? await db
+				.selectFrom('user_list_label')
+				.where('user_list_label.user_id', '=', user.id)
+				.select(['user_list_label.id', 'user_list_label.label'])
+				.where('user_list_label.id', '>', 10)
+				.execute()
+		: [];
+	const selectedCustLabels = user
+		? await db
+				.selectFrom('user_list_book_label')
+				.innerJoin('user_list_label', (join) =>
+					join
+						.onRef('user_list_label.user_id', '=', 'user_list_book_label.user_id')
+						.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
+				)
+				.select(['user_list_label.label', 'user_list_label.id'])
+				.where('user_list_book_label.book_id', '=', bookId)
+				.where('user_list_book_label.user_id', '=', user.id)
+				.where('user_list_label.id', '>', 10)
+				.orderBy('id asc')
+				.execute()
+		: [];
+
 	const userListForm = await superValidate(
-		{ ...userListBook, readingStatus, type: formType },
+		{
+			...userListBook,
+			readingStatus,
+			type: formType,
+			selectedCustLabels: selectedCustLabels.map((v) => v.id),
+		},
 		zod(userListBookSchema),
 		{ errors: false },
 	);
@@ -69,5 +99,6 @@ export const load = async ({ params, locals }) => {
 		book_series,
 		userListForm,
 		userListReleaseForm: locals.user ? userListReleaseForm : undefined,
+		allCustLabels,
 	};
 };
