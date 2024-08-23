@@ -45,6 +45,7 @@ export class DBReleaseListActions {
 						started: undefined,
 						userId: user_id,
 						trx: trx,
+						selectedCustLabels: [],
 					});
 				}
 			}

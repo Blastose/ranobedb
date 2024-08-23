@@ -177,6 +177,7 @@ export class DBListActions {
 					langs: default_series_settings.langs,
 					show_upcoming: default_series_settings.show_upcoming,
 					volumes_read: null,
+					selectedCustLabels: [],
 				});
 			}
 

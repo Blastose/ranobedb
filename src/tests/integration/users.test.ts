@@ -71,6 +71,7 @@ describe('users', () => {
 			score: null,
 			started: null,
 			userId: userId,
+			selectedCustLabels: [],
 		});
 
 		const addedBookId = await DBBookActions.fromDB(db).addBook(

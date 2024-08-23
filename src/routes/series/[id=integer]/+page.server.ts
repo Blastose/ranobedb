@@ -19,12 +19,14 @@ export const load = async ({ params, locals }) => {
 		error(404);
 	}
 
+	const user = locals.user;
+
 	await new DBChanges(db).itemHiddenError({
 		item: series,
 		itemId: id,
 		itemName: 'series',
-		title: getTitleDisplay({ obj: series, prefs: getDisplayPrefsUser(locals.user).title_prefs }),
-		user: locals.user,
+		title: getTitleDisplay({ obj: series, prefs: getDisplayPrefsUser(user).title_prefs }),
+		user: user,
 	});
 
 	const userSeriesLabels = await db
@@ -40,7 +42,8 @@ export const load = async ({ params, locals }) => {
 					)
 					.select(['user_list_label.label', 'user_list_label.id'])
 					.whereRef('user_list_series_label.series_id', '=', 'user_list_series.series_id')
-					.whereRef('user_list_series_label.user_id', '=', 'user_list_series.user_id'),
+					.whereRef('user_list_series_label.user_id', '=', 'user_list_series.user_id')
+					.where('user_list_label.id', '<=', 10),
 			).as('labels'),
 			jsonArrayFrom(
 				eb
@@ -57,7 +60,7 @@ export const load = async ({ params, locals }) => {
 					.whereRef('user_list_series_format.user_id', '=', 'user_list_series.user_id'),
 			).as('formats'),
 		])
-		.where('user_list_series.user_id', '=', locals.user?.id || '')
+		.where('user_list_series.user_id', '=', user?.id || '')
 		.where('user_list_series.series_id', '=', id)
 		.select([
 			'user_list_series.series_id',
@@ -80,6 +83,21 @@ export const load = async ({ params, locals }) => {
 	}
 
 	async function getUserListSeriesForm() {
+		const selectedCustLabels = user
+			? await db
+					.selectFrom('user_list_series_label')
+					.innerJoin('user_list_label', (join) =>
+						join
+							.onRef('user_list_label.user_id', '=', 'user_list_series_label.user_id')
+							.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
+					)
+					.select(['user_list_label.label', 'user_list_label.id'])
+					.where('user_list_series_label.series_id', '=', id)
+					.where('user_list_series_label.user_id', '=', user.id)
+					.where('user_list_label.id', '>', 10)
+					.orderBy('id asc')
+					.execute()
+			: [];
 		if (userSeriesLabels) {
 			return await superValidate(
 				{
@@ -90,6 +108,7 @@ export const load = async ({ params, locals }) => {
 					langs: userSeriesLabels?.langs.map((v) => v.lang),
 					show_upcoming: userSeriesLabels?.show_upcoming,
 					volumes_read: userSeriesLabels?.volumes_read,
+					selectedCustLabels: selectedCustLabels.map((v) => v.id),
 				},
 				zod(userListSeriesSchema),
 				{
@@ -97,9 +116,8 @@ export const load = async ({ params, locals }) => {
 				},
 			);
 		}
-		if (locals?.user?.id) {
-			const series_settings = (await new DBUsers(db).getListPrefs(locals.user.id))
-				.default_series_settings;
+		if (user?.id) {
+			const series_settings = (await new DBUsers(db).getListPrefs(user.id)).default_series_settings;
 			return await superValidate(series_settings, zod(userListSeriesSchema), {
 				errors: false,
 			});
@@ -109,10 +127,19 @@ export const load = async ({ params, locals }) => {
 		});
 	}
 
+	const allCustLabels = user
+		? await db
+				.selectFrom('user_list_label')
+				.where('user_list_label.user_id', '=', user.id)
+				.select(['user_list_label.id', 'user_list_label.label'])
+				.where('user_list_label.id', '>', 10)
+				.execute()
+		: [];
 	const userListSeriesForm = await getUserListSeriesForm();
 
 	return {
 		series,
 		userListSeriesForm,
+		allCustLabels,
 	};
 };

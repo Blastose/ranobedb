@@ -35,6 +35,7 @@ export const actions = {
 					readingStatusId,
 					langs: form.data.langs,
 					formats: form.data.formats,
+					selectedCustLabels: form.data.selectedCustLabels,
 					show_upcoming: form.data.show_upcoming,
 					volumes_read: form.data.volumes_read,
 				});
@@ -47,6 +48,7 @@ export const actions = {
 					readingStatusId,
 					langs: form.data.langs,
 					formats: form.data.formats,
+					selectedCustLabels: form.data.selectedCustLabels,
 					show_upcoming: form.data.show_upcoming,
 					volumes_read: form.data.volumes_read,
 				});

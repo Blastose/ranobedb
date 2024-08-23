@@ -179,6 +179,7 @@ export const userListSeriesSchema = z.object({
 	show_upcoming: z.boolean().default(true),
 	volumes_read: z.number().max(maxNumberValue).nullish(),
 	// remove_all: z.boolean().default(false),
+	selectedCustLabels: z.array(z.number().max(maxNumberValue)).max(2000),
 	langs: z.array(z.enum(languagesArray)),
 	formats: z.array(z.enum(releaseFormatArray)),
 	readingStatus: z.enum(defaultUserListLabelsArray),
