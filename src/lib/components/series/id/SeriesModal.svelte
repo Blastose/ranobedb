@@ -17,7 +17,6 @@
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import type { Series } from '$lib/server/db/series/series';
 	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
-	import { getAllOrAny } from '$lib/components/form/filters/utils';
 	import Keyed from '$lib/components/form/Keyed.svelte';
 	import SelectField from '$lib/components/form/SelectField.svelte';
 	import TextField from '$lib/components/form/TextField.svelte';
@@ -136,8 +135,8 @@
 							<MultiSelectField
 								form={sForm}
 								field="selectedCustLabels"
-								allSelectedText={'All'}
-								noneSelectedText="None"
+								noneSelectedText="none"
+								allSelectedText={undefined}
 								labelText="Custom labels"
 								dropdownOptions={allCustLabels.map((v) => ({
 									display: v.label,
@@ -157,7 +156,8 @@
 											<MultiSelectField
 												form={sForm}
 												field="langs"
-												allSelectedText={getAllOrAny('or')}
+												noneSelectedText="any"
+												allSelectedText="any"
 												labelText="Release language is one of"
 												dropdownOptions={languagesArray.map((v) => ({
 													display: languageNames[v],
@@ -171,7 +171,8 @@
 											<MultiSelectField
 												form={sForm}
 												field="formats"
-												allSelectedText={getAllOrAny('or')}
+												noneSelectedText="any"
+												allSelectedText="any"
 												labelText="Release format is one of"
 												dropdownOptions={releaseFormatArray.map((v) => ({
 													display: v,

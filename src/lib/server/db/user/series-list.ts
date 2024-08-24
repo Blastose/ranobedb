@@ -10,12 +10,12 @@ import { getToAddAndToRemoveFromArrays } from './list';
 import type { Nullish } from '$lib/server/zod/schema';
 import { db } from '$lib/server/db/db';
 
-export function getUserSeriesLabels(userId: string) {
+export function getUserSeriesLabels(userId: string, all: boolean) {
 	return db
 		.selectFrom('user_list_label')
 		.where('user_list_label.user_id', '=', userId)
 		.select(['user_list_label.id', 'user_list_label.label'])
-		.where('user_list_label.id', '>', 10)
+		.$if(!all, (qb) => qb.where('user_list_label.id', '>', 10))
 		.where('user_list_label.target', 'in', ['series', 'both'])
 		.execute();
 }

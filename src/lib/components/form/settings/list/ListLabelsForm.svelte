@@ -38,7 +38,10 @@
 
 <form method="post" action="?/listlabels" class="flex flex-col gap-4" use:enhance>
 	<div class="flex flex-col gap-2">
-		<h3 class="font-bold text-lg">Custom labels</h3>
+		<div>
+			<h3 class="font-bold text-lg">Custom labels</h3>
+			<p class="text-sm">(Max 50 custom labels)</p>
+		</div>
 
 		{#each $form.labels as label, index}
 			<div class="flex flex-col">

@@ -16,7 +16,7 @@
 	export let field: FormPathArrays<T>;
 	export let labelText: string = '';
 	export let dropdownOptions: ReadonlyArray<DropdownOption>;
-	export let allSelectedText: string;
+	export let allSelectedText: string | undefined;
 	export let noneSelectedText: string | undefined = undefined;
 
 	let { values } = arrayProxy(form, field) as { values: Writable<(string | number)[]> };
@@ -70,8 +70,8 @@
 	>
 		<span class="flex flex-wrap gap-2 min-w-[220px]">
 			{#if $values.length === 0}
-				<span class="chip">{noneSelectedText ?? allSelectedText}</span>
-			{:else if $values.length === dropdownOptions.length}
+				<span class="chip">{noneSelectedText ?? allSelectedText ?? 'None'}</span>
+			{:else if $values.length === dropdownOptions.length && allSelectedText !== undefined}
 				<span class="chip">{allSelectedText}</span>
 			{:else if $values.length <= 2}
 				{#each selected as selectedItem}

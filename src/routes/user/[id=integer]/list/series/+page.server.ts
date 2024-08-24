@@ -362,7 +362,7 @@ export const load = async ({ params, locals, url }) => {
 		getUserListCounts({ userId: listUser.id }),
 	]);
 
-	const allCustLabels = await getUserSeriesLabels(listUser.id);
+	const allCustLabels = await getUserSeriesLabels(listUser.id, true);
 
 	return {
 		isMyList,
