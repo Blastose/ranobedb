@@ -31,6 +31,8 @@ export type DateString = ColumnType<string, string, string>;
 
 export type Language = (typeof languagesArray)[number];
 
+export type ListLabelTarget = 'book' | 'both' | 'series';
+
 export type UserListReleaseStatus = (typeof userListReleaseStatus)[number];
 
 export type PublisherRelType = (typeof publisherRelTypeArray)[number];
@@ -415,7 +417,7 @@ export interface StaffAliasHist {
 }
 
 export interface Tag {
-	description: string;
+	description: string | null;
 	id: Generated<number>;
 	name: string;
 	ttype: TagType;
@@ -441,6 +443,8 @@ export interface UserListLabel {
 	id: number;
 	label: string;
 	private: boolean;
+	sort_order: Generated<number>;
+	target: Generated<ListLabelTarget>;
 	user_id: string;
 }
 

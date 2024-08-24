@@ -32,7 +32,13 @@
 
 <form method="post" action="?/serieslistsettings" class="flex flex-col gap-4" use:enhance>
 	<div class="flex flex-col gap-2">
-		<h3 class="font-bold text-lg">Default series list preferences</h3>
+		<div>
+			<h3 class="font-bold text-lg">Default series list preferences</h3>
+			<p class="text-sm">
+				Used when automatically adding a series to your list or as the default when adding a series
+				to your list manually.
+			</p>
+		</div>
 
 		<div class="flex flex-wrap gap-x-4 gap-y-2">
 			<SelectField

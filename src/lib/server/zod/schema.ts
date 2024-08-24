@@ -565,6 +565,19 @@ export const displayPrefsSchema = z.object({
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
 
+export const userListLabelsSchema = z.object({
+	labels: z
+		.array(
+			z.object({
+				id: z.number().min(11).max(maxNumberValue).nullish(),
+				label: z.string().min(1).max(50),
+				target: z.enum(['both', 'book', 'series']).default('both'),
+				private: z.boolean(),
+			}),
+		)
+		.max(50),
+});
+
 // Url searchparams schemas
 export const historyFiltersSchema = z.object({
 	items: z
