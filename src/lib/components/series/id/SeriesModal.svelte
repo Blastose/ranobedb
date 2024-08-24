@@ -25,6 +25,7 @@
 
 	export let series: Series;
 	export let userListSeriesForm: SuperValidated<Infer<typeof userListSeriesSchema>>;
+	export let allCustLabels: { id: number; label: string }[];
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {
 		return { display: v, value: v };
@@ -120,12 +121,27 @@
 								fit={true}
 							/>
 
-							<TextField
+							<div class="series-modal-volumes-read">
+								<TextField
+									form={sForm}
+									field="volumes_read"
+									label="Volumes read"
+									type="number"
+									resetPadding={true}
+								/>
+							</div>
+						</div>
+
+						<div class="max-w-sm">
+							<MultiSelectField
 								form={sForm}
-								field="volumes_read"
-								label="Volumes read"
-								type="number"
-								resetPadding={true}
+								field="selectedCustLabels"
+								allSelectedText={'None'}
+								labelText="Custom labels"
+								dropdownOptions={allCustLabels.map((v) => ({
+									display: v.label,
+									value: v.id,
+								}))}
 							/>
 						</div>
 
@@ -244,5 +260,9 @@
 <style>
 	.modal-content-inner.confirm-modal {
 		max-width: 512px;
+	}
+
+	.series-modal-volumes-read :global(input) {
+		max-width: 72px;
 	}
 </style>

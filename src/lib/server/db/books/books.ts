@@ -659,7 +659,8 @@ export class DBBooks {
 			);
 	}
 
-	getBooksUser(userId: string, labelIds: number[]) {
+	getBooksUser(params: { q?: string | null; userId: string; labelIds: number[] }) {
+		const { q, userId, labelIds } = params;
 		const labels = labelIds.length > 0 ? labelIds : [1, 2, 3, 4, 5];
 		return this.ranobeDB.db
 			.with('cte_book', () =>
@@ -677,10 +678,26 @@ export class DBBooks {
 					.innerJoin('user_list_label', (join) =>
 						join
 							.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
-							.on((eb) => eb.between('user_list_label.id', 1, 10))
 							.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
 					)
-					.where('user_list_label.id', 'in', labels),
+					.where('user_list_label.id', 'in', labels)
+					.$if(typeof q === 'string', (qb) =>
+						qb.where((eb) =>
+							eb(
+								'book.id',
+								'in',
+								eb
+									.selectFrom('book_title as bt2')
+									.select('bt2.book_id')
+									.where((eb) =>
+										eb.or([
+											eb(eb.val(q), sql.raw('<%'), eb.ref('bt2.title')).$castTo<boolean>(),
+											eb(eb.val(q), sql.raw('<%'), eb.ref('bt2.romaji')).$castTo<boolean>(),
+										]),
+									),
+							),
+						),
+					),
 			)
 			.selectFrom('cte_book')
 			.select([

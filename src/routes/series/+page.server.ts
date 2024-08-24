@@ -346,7 +346,6 @@ export const load = async ({ url, locals }) => {
 		count,
 		currentPage,
 		totalPages,
-		filtersForm: form,
 		filtersFormObj: formObj,
 		genres: selectedGenresWithMode,
 	};

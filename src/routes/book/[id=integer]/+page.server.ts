@@ -1,6 +1,8 @@
 import { DBBooks } from '$lib/server/db/books/books';
 import { DBChanges } from '$lib/server/db/change/change.js';
 import {
+	getUserBookLabels,
+	getUserBookLabelsForBook,
 	getUserListBookWithLabels,
 	type UserListBookWithLabels,
 } from '$lib/server/db/user/list.js';
@@ -56,8 +58,17 @@ export const load = async ({ params, locals }) => {
 		// ids 1 to 10 are reserved for reading status
 		readingStatus = userListBook.labels.filter((v) => v.id <= 10).at(0)?.label as ReadingStatus;
 	}
+
+	const allCustLabels = user ? await getUserBookLabels(user.id) : [];
+	const selectedCustLabels = user ? await getUserBookLabelsForBook(user.id, bookId) : [];
+
 	const userListForm = await superValidate(
-		{ ...userListBook, readingStatus, type: formType },
+		{
+			...userListBook,
+			readingStatus,
+			type: formType,
+			selectedCustLabels: selectedCustLabels.map((v) => v.id),
+		},
 		zod(userListBookSchema),
 		{ errors: false },
 	);
@@ -69,5 +80,6 @@ export const load = async ({ params, locals }) => {
 		book_series,
 		userListForm,
 		userListReleaseForm: locals.user ? userListReleaseForm : undefined,
+		allCustLabels,
 	};
 };

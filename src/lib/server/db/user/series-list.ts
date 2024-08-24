@@ -7,10 +7,42 @@ import type {
 	UserListSeriesLang,
 } from '../dbTypes';
 import { getToAddAndToRemoveFromArrays } from './list';
-import { defaultUserListLabels } from '$lib/db/dbConsts';
 import type { Nullish } from '$lib/server/zod/schema';
+import { db } from '$lib/server/db/db';
 
-export function getUserSeriesListCounts(db: Kysely<DB>, userId: string) {
+export function getUserSeriesLabels(userId: string) {
+	return db
+		.selectFrom('user_list_label')
+		.where('user_list_label.user_id', '=', userId)
+		.select(['user_list_label.id', 'user_list_label.label'])
+		.where('user_list_label.id', '>', 10)
+		.where('user_list_label.target', 'in', ['series', 'both'])
+		.execute();
+}
+
+export function getUserSeriesLabelsForSeries(userId: string, seriesId: number) {
+	return db
+		.selectFrom('user_list_series_label')
+		.innerJoin('user_list_label', (join) =>
+			join
+				.onRef('user_list_label.user_id', '=', 'user_list_series_label.user_id')
+				.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
+		)
+		.select(['user_list_label.label', 'user_list_label.id'])
+		.where('user_list_series_label.series_id', '=', seriesId)
+		.where('user_list_series_label.user_id', '=', userId)
+		.where('user_list_label.id', '>', 10)
+		.where('user_list_label.target', 'in', ['series', 'both'])
+		.orderBy('id asc')
+		.execute();
+}
+
+export function getUserSeriesListCounts(
+	db: Kysely<DB>,
+	userId: string,
+	min: number = 1,
+	max: number = 10,
+) {
 	return db
 		.selectFrom('user_list_series')
 		.leftJoin('user_list_series_label', (join) =>
@@ -35,7 +67,10 @@ export function getUserSeriesListCounts(db: Kysely<DB>, userId: string) {
 			]),
 		)
 		.where('user_list_label.user_id', '=', userId)
+		.where('user_list_label.id', '>=', min)
+		.where('user_list_label.id', '<=', max)
 		.where((eb) => eb.or([eb('series.hidden', '=', false), eb('series.hidden', 'is', null)]))
+		.where('user_list_label.target', 'in', ['series', 'both'])
 		.groupBy(['user_list_label.label', 'user_list_label.id'])
 		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
 }
@@ -91,6 +126,7 @@ export class DBSeriesListActions {
 		langs: Language[];
 		formats: ReleaseFormat[];
 		show_upcoming: boolean;
+		selectedCustLabels: number[];
 		volumes_read: Nullish<number>;
 		trx?: Transaction<DB>;
 	}) {
@@ -116,6 +152,13 @@ export class DBSeriesListActions {
 					label_id: labelId,
 				};
 			});
+			userListSeriesLabels.push(
+				...params.selectedCustLabels.map((v) => ({
+					series_id: params.series_id,
+					user_id: params.user_id,
+					label_id: v,
+				})),
+			);
 			if (userListSeriesLabels.length > 0) {
 				await trx.insertInto('user_list_series_label').values(userListSeriesLabels).execute();
 			}
@@ -134,6 +177,7 @@ export class DBSeriesListActions {
 		user_id: string;
 		labelIds: number[];
 		readingStatusId: number;
+		selectedCustLabels: number[];
 		langs: Language[];
 		show_upcoming: boolean;
 		volumes_read: Nullish<number>;
@@ -149,7 +193,7 @@ export class DBSeriesListActions {
 					.execute()
 			).map((v) => v.label_id);
 
-			const { toAdd, toRemove } = getToAddAndToRemoveFromArrays(params.labelIds, oldLabelIds);
+			const { toAdd } = getToAddAndToRemoveFromArrays(params.labelIds, oldLabelIds);
 
 			await trx
 				.updateTable('user_list_series')
@@ -157,19 +201,12 @@ export class DBSeriesListActions {
 				.where('user_list_series.series_id', '=', params.series_id)
 				.where('user_list_series.user_id', '=', params.user_id)
 				.execute();
-			toRemove.push(...defaultUserListLabels.map((v) => v.id));
-			if (toRemove.length > 0) {
-				await trx
-					.deleteFrom('user_list_series_label')
-					.where((eb) =>
-						eb.and([
-							eb('series_id', '=', params.series_id),
-							eb('user_id', '=', params.user_id),
-							eb('label_id', 'in', toRemove),
-						]),
-					)
-					.execute();
-			}
+			await trx
+				.deleteFrom('user_list_series_label')
+				.where((eb) =>
+					eb.and([eb('series_id', '=', params.series_id), eb('user_id', '=', params.user_id)]),
+				)
+				.execute();
 			toAdd.push(params.readingStatusId);
 			const toAddLabels = toAdd.map((labelId) => {
 				return {
@@ -178,6 +215,13 @@ export class DBSeriesListActions {
 					label_id: labelId,
 				};
 			});
+			toAddLabels.push(
+				...params.selectedCustLabels.map((v) => ({
+					series_id: params.series_id,
+					user_id: params.user_id,
+					label_id: v,
+				})),
+			);
 			if (toAddLabels.length > 0) {
 				await trx.insertInto('user_list_series_label').values(toAddLabels).execute();
 			}

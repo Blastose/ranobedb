@@ -127,6 +127,8 @@ CREATE TYPE public.list_release_status AS ENUM (
     'unknown'
 );
 
+CREATE TYPE public.list_label_target AS ENUM ('both', 'book', 'series');
+
 CREATE TABLE public.auth_user (
     joined timestamptz NOT NULL DEFAULT NOW(),
     id_numeric integer NOT NULL GENERATED ALWAYS AS IDENTITY UNIQUE,
@@ -577,6 +579,8 @@ CREATE TABLE public.user_list_label (
     private boolean NOT NULL,
     user_id text NOT NULL,
     label text NOT NULL,
+    target public.list_label_target NOT NULL DEFAULT 'both',
+    sort_order integer NOT NULL DEFAULT 0,
     UNIQUE (user_id, label),
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
     PRIMARY KEY(user_id, id)

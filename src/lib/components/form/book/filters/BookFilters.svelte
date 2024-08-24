@@ -13,8 +13,6 @@
 	import MultiSelectField from '../../MultiSelectField.svelte';
 	import { getAllOrAny } from '$lib/components/form/filters/utils';
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
-	import StaffFilters from '../../filters/staff/StaffFilters.svelte';
-	import PublisherFilters from '../../filters/publisher/PublisherFilters.svelte';
 	import StaffPublisherFilters from '../../filters/StaffPublisherFilters.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof bookFiltersObjSchema>>;
@@ -24,6 +22,8 @@
 
 <FiltersWrapper>
 	<div class="flex flex-col gap-4">
+		<slot {sForm} />
+
 		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">
 			<Keyed>
 				<MultiSelectField

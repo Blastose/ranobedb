@@ -28,6 +28,7 @@
 	export let revision: number | undefined;
 	export let user: User | null;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
+	export let allCustLabels: { id: number; label: string }[] | undefined = undefined;
 	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined =
 		undefined;
 
@@ -67,7 +68,7 @@
 						<!-- This div is needed to prevent the flex from above because the BookModal component has a portal -->
 						<!-- so it will generate an empty gap space before hydration -->
 						<div class="w-full">
-							<BookModal {userListForm} {book} />
+							<BookModal {userListForm} {book} allCustLabels={allCustLabels ?? []} />
 						</div>
 					{:else}
 						<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}

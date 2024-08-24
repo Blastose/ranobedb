@@ -3,10 +3,6 @@
 </script>
 
 <script lang="ts" generics="T extends Rec">
-	import type { Language } from '$lib/server/db/dbTypes';
-
-	import { languageNames } from '$lib/db/dbConsts';
-
 	import { fly } from 'svelte/transition';
 
 	import { type SuperForm, arrayProxy, type FormPathArrays } from 'sveltekit-superforms';
@@ -15,14 +11,14 @@
 	import Icon from '../icon/Icon.svelte';
 	import HiddenInput from './HiddenInput.svelte';
 
-	type DropdownOption = { display: string; value: string };
+	type DropdownOption = { display: string; value: string | number };
 	export let form: SuperForm<T, App.Superforms.Message>;
 	export let field: FormPathArrays<T>;
 	export let labelText: string = '';
 	export let dropdownOptions: ReadonlyArray<DropdownOption>;
 	export let allSelectedText: string;
 
-	let { values } = arrayProxy(form, field) as { values: Writable<string[]> };
+	let { values } = arrayProxy(form, field) as { values: Writable<(string | number)[]> };
 
 	const {
 		elements: { trigger, menu, option, label },
@@ -38,16 +34,16 @@
 		multiple: true,
 		preventScroll: false,
 		defaultSelected: $values.map((v) => ({
-			value: String(v),
-			label: v,
+			value: v,
+			label: String(v),
 		})),
 		onSelectedChange: handleSelectedChange,
 	});
 
 	function handleSelectedChange(args: {
-		curr: SelectOption<string>[] | undefined;
-		next: SelectOption<string>[] | undefined;
-	}): SelectOption<string>[] | undefined {
+		curr: SelectOption<string | number>[] | undefined;
+		next: SelectOption<string | number>[] | undefined;
+	}): SelectOption<string | number>[] | undefined {
 		if (!args.next) {
 			return undefined;
 		}
@@ -67,7 +63,7 @@
 	<!-- svelte-ignore a11y-label-has-associated-control - $label contains the 'for' attribute -->
 	<label use:melt={$label}>{labelText}</label>
 	<button
-		class="flex input round multiselect-padding items-center"
+		class="flex input round multiselect-padding items-center justify-between"
 		use:melt={$trigger}
 		aria-label="Options"
 	>

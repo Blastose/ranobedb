@@ -34,5 +34,6 @@
 		{series}
 		user={data.user}
 		userListSeriesForm={data.userListSeriesForm}
+		allCustLabels={data.allCustLabels}
 	/>
 </DbRouteShell>

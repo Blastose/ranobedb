@@ -19,7 +19,7 @@
 	const size = '24';
 </script>
 
-<div class="grid grid-cols-[92px_1fr] gap-x-2">
+<div class="flex flex-col sm:grid sm:grid-cols-[92px_1fr] gap-x-2">
 	<time datetime={releaseDate}>{releaseDate}</time>
 
 	<div class="flex justify-between items-start">

@@ -20,6 +20,8 @@ export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
 export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "en" | "eo" | "es" | "eu" | "fa" | "fi" | "fr" | "ga" | "gd" | "he" | "hi" | "hr" | "hu" | "id" | "it" | "iu" | "ja" | "ko" | "la" | "lt" | "lv" | "mk" | "ms" | "nl" | "no" | "pl" | "pt-br" | "pt-pt" | "ro" | "ru" | "sk" | "sl" | "sr" | "sv" | "ta" | "th" | "tr" | "uk" | "ur" | "vi" | "zh-Hans" | "zh-Hant";
 
+export type ListLabelTarget = "book" | "both" | "series";
+
 export type ListReleaseStatus = "deleted" | "on loan" | "owned" | "pending" | "unknown";
 
 export type PublisherRelType = "imprint" | "parent brand" | "parent company" | "subsidiary";
@@ -403,7 +405,7 @@ export interface StaffHist {
 }
 
 export interface Tag {
-  description: string;
+  description: string | null;
   id: Generated<number>;
   name: string;
   ttype: TagType;
@@ -429,6 +431,8 @@ export interface UserListLabel {
   id: number;
   label: string;
   private: boolean;
+  sort_order: Generated<number>;
+  target: Generated<ListLabelTarget>;
   user_id: string;
 }
 

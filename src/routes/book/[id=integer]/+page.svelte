@@ -29,5 +29,6 @@
 		userListReleaseForm={data.userListReleaseForm}
 		user={data.user}
 		revision={undefined}
+		allCustLabels={data.allCustLabels}
 	/>
 </main>

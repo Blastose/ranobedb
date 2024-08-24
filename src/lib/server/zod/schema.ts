@@ -146,6 +146,7 @@ export const userListBookSchema = z.object({
 			label: z.string().max(2000),
 		}),
 	),
+	selectedCustLabels: z.array(z.number().max(maxNumberValue)).max(2000),
 	readingStatus: z.enum(defaultUserListLabelsArray),
 	score: z.number().min(1).max(10).nullish(),
 	started: zISODate.or(z.literal('')).nullish(),
@@ -178,6 +179,7 @@ export const userListSeriesSchema = z.object({
 	show_upcoming: z.boolean().default(true),
 	volumes_read: z.number().max(maxNumberValue).nullish(),
 	// remove_all: z.boolean().default(false),
+	selectedCustLabels: z.array(z.number().max(maxNumberValue)).max(2000),
 	langs: z.array(z.enum(languagesArray)),
 	formats: z.array(z.enum(releaseFormatArray)),
 	readingStatus: z.enum(defaultUserListLabelsArray),
@@ -563,6 +565,19 @@ export const displayPrefsSchema = z.object({
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
 
+export const userListLabelsSchema = z.object({
+	labels: z
+		.array(
+			z.object({
+				id: z.number().min(11).max(maxNumberValue).nullish(),
+				label: z.string().min(1).max(50),
+				target: z.enum(['both', 'book', 'series']).default('both'),
+				private: z.boolean(),
+			}),
+		)
+		.max(50),
+});
+
 // Url searchparams schemas
 export const historyFiltersSchema = z.object({
 	items: z
@@ -585,6 +600,10 @@ export const bookFiltersSchema = z.object({
 	sl: z.enum(logicalOps).catch('and'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('or'),
+});
+
+export const userListBookFiltersSchema = bookFiltersSchema.extend({
+	l: z.array(z.number().max(maxNumberValue)).max(100),
 });
 
 const zStaff = z
@@ -631,6 +650,11 @@ export const bookFiltersObjSchema = z.object({
 	sl: z.enum(logicalOps).catch('and'),
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),
+	l: z.array(z.number().max(maxNumberValue)).max(1).catch([]),
+});
+
+export const userListBookFiltersObjSchema = bookFiltersObjSchema.extend({
+	l: z.array(z.number().max(maxNumberValue)).max(100),
 });
 
 export const seriesFiltersSchema = z.object({
@@ -678,6 +702,14 @@ export const seriesFiltersObjSchema = z.object({
 	sl: z.enum(logicalOps).catch('and'),
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),
+	l: z.array(z.number().max(maxNumberValue)).max(100),
+});
+
+export const userListSeriesFiltersSchema = seriesFiltersSchema.extend({
+	l: z.array(z.number().max(maxNumberValue)).max(100),
+});
+export const userListSeriesFiltersObjSchema = seriesFiltersObjSchema.extend({
+	l: z.array(z.number().max(maxNumberValue)).max(100),
 });
 
 export const releaseFiltersSchema = z.object({

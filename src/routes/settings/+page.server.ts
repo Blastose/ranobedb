@@ -5,6 +5,7 @@ import {
 	passwordSchema,
 	sendEmailVerificationSchema,
 	settingsTabsSchema,
+	userListLabelsSchema,
 	userListSeriesSettingsSchema,
 	usernameSchema,
 	verifyEmailSchema,
@@ -34,6 +35,7 @@ import {
 	verifyCodeLimiter,
 } from '$lib/server/rate-limiter/rate-limiter.js';
 import { getMode } from '$lib/mode/mode.js';
+import { arrayDiff, arrayIntersection } from '$lib/db/array.js';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -49,6 +51,7 @@ type SettingsWithUser = {
 	changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
 	userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
+	listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 	view: SettingsTab;
 };
 type SettingsLoad = SettingsWithoutUser | SettingsWithUser;
@@ -86,6 +89,25 @@ export const load = async ({ locals, url }) => {
 					zod(userListSeriesSettingsSchema),
 				)
 			: await superValidate(defaultUserListSeriesSettings, zod(userListSeriesSettingsSchema));
+	const listLabelsForm =
+		settingsTabs.data.view === 'list'
+			? await superValidate(
+					{
+						labels: await db
+							.selectFrom('user_list_label')
+							.where('user_list_label.user_id', '=', locals.user.id)
+							.where('user_list_label.id', '>=', 11)
+							.select([
+								'user_list_label.id',
+								'user_list_label.label',
+								'user_list_label.private',
+								'user_list_label.target',
+							])
+							.execute(),
+					},
+					zod(userListLabelsSchema),
+				)
+			: await superValidate({}, zod(userListLabelsSchema));
 
 	return {
 		type: 'user',
@@ -97,6 +119,7 @@ export const load = async ({ locals, url }) => {
 		sendEmailVerificationForm,
 		displayPrefsForm,
 		userListSeriesSettingsForm,
+		listLabelsForm,
 		view: settingsTabs.data.view,
 	} satisfies SettingsLoad;
 };
@@ -424,6 +447,130 @@ export const actions = {
 
 		return message(changeEmailForm, {
 			text: 'Sent an email to new email address!',
+			type: 'success',
+		});
+	},
+
+	listlabels: async (event) => {
+		const { locals, request } = event;
+		const user = locals.user;
+		if (!user) {
+			return fail(401);
+		}
+
+		const formData = await request.formData();
+
+		const listLabelsForm = await superValidate(formData, zod(userListLabelsSchema));
+
+		if (!listLabelsForm.valid) {
+			return message(
+				listLabelsForm,
+				{ type: 'error', text: 'Invalid custom label entries.' },
+				{ status: 400 },
+			);
+		}
+
+		try {
+			await db.transaction().execute(async (trx) => {
+				const currentLabels = await trx
+					.selectFrom('user_list_label')
+					.where('user_list_label.user_id', '=', user.id)
+					.where('user_list_label.id', '>=', 11)
+					.select([
+						'user_list_label.id',
+						'user_list_label.label',
+						'user_list_label.private',
+						'user_list_label.target',
+					])
+					.execute();
+				const labels = listLabelsForm.data.labels;
+
+				const labelsWithIds = labels.filter((v) => typeof v.id === 'number') as {
+					id: number;
+					label: string;
+					target: 'both' | 'book' | 'series';
+					private: boolean;
+				}[];
+				const toAdd = labels.filter((v) => typeof v.id !== 'number');
+				const toRemove = arrayDiff(currentLabels, labelsWithIds);
+				const toUpdate = arrayIntersection(labelsWithIds, currentLabels);
+
+				for (const remove of toRemove) {
+					await trx
+						.deleteFrom('user_list_book_label')
+						.where('user_list_book_label.user_id', '=', user.id)
+						.where('user_list_book_label.label_id', '=', remove.id)
+						.execute();
+					await trx
+						.deleteFrom('user_list_series_label')
+						.where('user_list_series_label.user_id', '=', user.id)
+						.where('user_list_series_label.label_id', '=', remove.id)
+						.execute();
+					await trx
+						.deleteFrom('user_list_label')
+						.where('user_list_label.user_id', '=', user.id)
+						.where('user_list_label.id', '=', remove.id)
+						.execute();
+				}
+
+				for (const add of toAdd) {
+					// TODO This is pretty bad TBH
+					const highestLabelInList = await trx
+						.selectFrom('user_list_label')
+						.where('user_list_label.user_id', '=', user.id)
+						.where('user_list_label.id', '>', 10)
+						.orderBy('id desc')
+						.select('id')
+						.executeTakeFirst();
+					const highestLabelId = (highestLabelInList?.id || 10) + 1;
+
+					await trx
+						.insertInto('user_list_label')
+						.values({
+							id: highestLabelId,
+							label: add.label,
+							private: false,
+							user_id: user.id,
+							target: add.target,
+						})
+						.execute();
+				}
+
+				for (const update of toUpdate) {
+					await trx
+						.updateTable('user_list_label')
+						.set({
+							label: update.label,
+							target: update.target,
+						})
+						.where('user_list_label.id', '=', update.id)
+						.where('user_list_label.user_id', '=', user.id)
+						.execute();
+				}
+			});
+		} catch (e) {
+			if (e instanceof DatabaseError) {
+				if (
+					e.code === '23505' &&
+					e.table === 'user_list_label' &&
+					e.constraint === 'user_list_label_user_id_label_key'
+				) {
+					return setError(
+						listLabelsForm,
+						'labels._errors',
+						'Cannot have two labels with the same name. Please change one of the names.',
+					);
+				}
+			}
+			return message(
+				listLabelsForm,
+				{ type: 'error', text: 'An unexpected error has occurred. Please inform the developer.' },
+				{ status: 400 },
+			);
+		}
+
+		return message(listLabelsForm, {
+			text: 'Saved custom labels successfully!',
 			type: 'success',
 		});
 	},

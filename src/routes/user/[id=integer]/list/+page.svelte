@@ -6,6 +6,9 @@
 	import DBShell from '$lib/components/layout/db/DBShell.svelte';
 	import ListTabs from '$lib/components/layout/list/ListTabs.svelte';
 	import LabelContainer from '$lib/components/readinglist/LabelContainer.svelte';
+	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
+	import Keyed from '$lib/components/form/Keyed.svelte';
+	import BookFilters from '$lib/components/form/book/filters/BookFilters.svelte';
 
 	export let data;
 
@@ -23,12 +26,36 @@
 	results={data.count}
 	inputPlaceholder="Search by book title"
 >
+	<svelte:fragment slot="filters">
+		<BookFilters filtersForm={data.formObj} let:sForm>
+			<svelte:fragment>
+				<div class="max-w-xs">
+					<Keyed>
+						<MultiSelectField
+							form={sForm}
+							field="l"
+							allSelectedText={'All'}
+							labelText="Labels"
+							dropdownOptions={data.allCustLabels.map((v) => ({
+								display: v.label,
+								value: v.id,
+							}))}
+						/>
+					</Keyed>
+				</div>
+			</svelte:fragment>
+		</BookFilters>
+	</svelte:fragment>
+
 	<svelte:fragment slot="under-heading"
 		><ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} /></svelte:fragment
 	>
 
 	<svelte:fragment slot="info">
-		<LabelContainer userLabels={data.userLabelCounts} activeLabels={data.labels} />
+		<div class="flex flex-col gap-1">
+			<LabelContainer userLabels={data.userLabelCounts} activeLabels={data.labels} />
+			<LabelContainer userLabels={data.userCustLabelCounts} activeLabels={data.labels} />
+		</div>
 	</svelte:fragment>
 
 	<svelte:fragment slot="display">

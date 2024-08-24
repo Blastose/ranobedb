@@ -7,6 +7,7 @@
 		displayPrefsSchema,
 		passwordSchema,
 		sendEmailVerificationSchema,
+		userListLabelsSchema,
 		userListSeriesSettingsSchema,
 		usernameSchema,
 		verifyEmailSchema,
@@ -20,6 +21,7 @@
 	import VerifyEmailForm from './email/VerifyEmailForm.svelte';
 	import type { SettingsTab } from '$lib/db/dbConsts';
 	import SeriesListSettingsForm from './list/SeriesListSettingsForm.svelte';
+	import ListLabelsForm from './list/ListLabelsForm.svelte';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
@@ -29,6 +31,8 @@
 	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	export let displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
 	export let userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
+	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
+
 	export let view: SettingsTab;
 </script>
 
@@ -91,6 +95,10 @@
 	{:else if view === 'list'}
 		<h2 class="font-bold text-2xl">List settings</h2>
 		<div class="flex flex-col gap-4 max-w-lg">
+			<section>
+				<ListLabelsForm {listLabelsForm} />
+			</section>
+
 			<section>
 				<SeriesListSettingsForm {userListSeriesSettingsForm} />
 			</section>

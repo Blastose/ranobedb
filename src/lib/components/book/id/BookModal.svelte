@@ -13,9 +13,11 @@
 	import SelectField from '$lib/components/form/SelectField.svelte';
 	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
+	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
 
 	export let book: BookOne;
 	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
+	export let allCustLabels: { id: number; label: string }[];
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {
 		return { display: v, value: v };
@@ -126,6 +128,17 @@
 									field="notes"
 									label="Notes"
 									textareaRows={2}
+								/>
+
+								<MultiSelectField
+									form={sForm}
+									field="selectedCustLabels"
+									allSelectedText={'None'}
+									labelText="Custom labels"
+									dropdownOptions={allCustLabels.map((v) => ({
+										display: v.label,
+										value: v.id,
+									}))}
 								/>
 							</div>
 						</div>

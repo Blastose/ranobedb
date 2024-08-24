@@ -22,6 +22,7 @@
 			sendEmailVerificationForm={data.sendEmailVerificationForm}
 			displayPrefsForm={data.displayPrefsForm}
 			userListSeriesSettingsForm={data.userListSeriesSettingsForm}
+			listLabelsForm={data.listLabelsForm}
 			view={data.view}
 			email_verified={data.email_verified}
 		/>

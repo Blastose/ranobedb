@@ -32,6 +32,7 @@
 	export let revision: number | undefined;
 	export let userListSeriesForm: SuperValidated<Infer<typeof userListSeriesSchema>> | undefined =
 		undefined;
+	export let allCustLabels: { id: number; label: string }[] | undefined = undefined;
 
 	$: child_series = groupBy(series.child_series, (item) => item.relation_type);
 	const displayPrefs = getDisplayPrefsContext();
@@ -53,7 +54,7 @@
 
 	{#if userListSeriesForm}
 		{#if user}
-			<SeriesModal {series} {userListSeriesForm} />
+			<SeriesModal {series} {userListSeriesForm} allCustLabels={allCustLabels ?? []} />
 		{:else}
 			<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}
 				>Add to reading list</a

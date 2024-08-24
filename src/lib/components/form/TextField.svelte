@@ -16,18 +16,21 @@
 	export let textareaCols: number = 30;
 	export let resetPadding: boolean = false;
 	export let disabled: boolean = false;
+	export let showLabel: boolean = true;
 
 	const { value, errors, constraints } = formFieldProxy(form, field);
 </script>
 
 <div class="flex flex-col gap-1">
 	<label class="flex flex-col gap-1">
-		<span>
-			<span class="dark:text-[var(--text-dark)]">{label || String(field)}</span>
-			{#if $constraints?.required && showRequiredSymbolIfRequired}
-				<span class="error-text-color">*</span>
-			{/if}
-		</span>
+		{#if showLabel}
+			<span>
+				<span class="dark:text-[var(--text-dark)]">{label || String(field)}</span>
+				{#if $constraints?.required && showRequiredSymbolIfRequired}
+					<span class="error-text-color">*</span>
+				{/if}
+			</span>
+		{/if}
 		{#if type === 'textarea'}
 			<textarea
 				name={field}
