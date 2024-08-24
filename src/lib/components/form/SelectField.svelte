@@ -20,7 +20,7 @@
 </script>
 
 <div class="flex flex-col gap-1 {fit ? 'w-fit' : ''}">
-	<label class="flex {column ? 'flex-col' : ''} items-center gap-1">
+	<label class="flex {column ? 'flex-col' : 'items-center'} gap-1">
 		<span>
 			<span class="dark:text-white">{label || String(field)}</span>
 			{#if $constraints?.required && showRequiredSymbolIfRequired}

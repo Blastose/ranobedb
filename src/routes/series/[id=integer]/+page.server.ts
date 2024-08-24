@@ -3,6 +3,10 @@ import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import type { ReadingStatus } from '$lib/server/db/dbTypes.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
+import {
+	getUserSeriesLabels,
+	getUserSeriesLabelsForSeries,
+} from '$lib/server/db/user/series-list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { userListSeriesSchema, type UserListFormType } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
@@ -83,21 +87,7 @@ export const load = async ({ params, locals }) => {
 	}
 
 	async function getUserListSeriesForm() {
-		const selectedCustLabels = user
-			? await db
-					.selectFrom('user_list_series_label')
-					.innerJoin('user_list_label', (join) =>
-						join
-							.onRef('user_list_label.user_id', '=', 'user_list_series_label.user_id')
-							.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
-					)
-					.select(['user_list_label.label', 'user_list_label.id'])
-					.where('user_list_series_label.series_id', '=', id)
-					.where('user_list_series_label.user_id', '=', user.id)
-					.where('user_list_label.id', '>', 10)
-					.orderBy('id asc')
-					.execute()
-			: [];
+		const selectedCustLabels = user ? await getUserSeriesLabelsForSeries(user.id, id) : [];
 		if (userSeriesLabels) {
 			return await superValidate(
 				{
@@ -127,14 +117,7 @@ export const load = async ({ params, locals }) => {
 		});
 	}
 
-	const allCustLabels = user
-		? await db
-				.selectFrom('user_list_label')
-				.where('user_list_label.user_id', '=', user.id)
-				.select(['user_list_label.id', 'user_list_label.label'])
-				.where('user_list_label.id', '>', 10)
-				.execute()
-		: [];
+	const allCustLabels = user ? await getUserSeriesLabels(user.id) : [];
 	const userListSeriesForm = await getUserListSeriesForm();
 
 	return {

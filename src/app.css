@@ -335,7 +335,8 @@ input[type='number'].input.reset-padding {
 	transition: background-color 150ms;
 }
 
-.primary-btn:disabled {
+.primary-btn:disabled,
+.sub-btn:disabled {
 	background-color: var(--primary-800);
 }
 
@@ -357,7 +358,7 @@ input[type='number'].input.reset-padding {
 }
 
 .sub-btn.loading,
-.sub-btn:hover {
+.sub-btn:hover:not(:disabled) {
 	background-color: var(--primary-800);
 }
 

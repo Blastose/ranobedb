@@ -8,6 +8,34 @@ import type {
 } from '../dbTypes';
 import { getToAddAndToRemoveFromArrays } from './list';
 import type { Nullish } from '$lib/server/zod/schema';
+import { db } from '$lib/server/db/db';
+
+export function getUserSeriesLabels(userId: string) {
+	return db
+		.selectFrom('user_list_label')
+		.where('user_list_label.user_id', '=', userId)
+		.select(['user_list_label.id', 'user_list_label.label'])
+		.where('user_list_label.id', '>', 10)
+		.where('user_list_label.target', 'in', ['series', 'both'])
+		.execute();
+}
+
+export function getUserSeriesLabelsForSeries(userId: string, seriesId: number) {
+	return db
+		.selectFrom('user_list_series_label')
+		.innerJoin('user_list_label', (join) =>
+			join
+				.onRef('user_list_label.user_id', '=', 'user_list_series_label.user_id')
+				.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
+		)
+		.select(['user_list_label.label', 'user_list_label.id'])
+		.where('user_list_series_label.series_id', '=', seriesId)
+		.where('user_list_series_label.user_id', '=', userId)
+		.where('user_list_label.id', '>', 10)
+		.where('user_list_label.target', 'in', ['series', 'both'])
+		.orderBy('id asc')
+		.execute();
+}
 
 export function getUserSeriesListCounts(
 	db: Kysely<DB>,
@@ -42,6 +70,7 @@ export function getUserSeriesListCounts(
 		.where('user_list_label.id', '>=', min)
 		.where('user_list_label.id', '<=', max)
 		.where((eb) => eb.or([eb('series.hidden', '=', false), eb('series.hidden', 'is', null)]))
+		.where('user_list_label.target', 'in', ['series', 'both'])
 		.groupBy(['user_list_label.label', 'user_list_label.id'])
 		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
 }

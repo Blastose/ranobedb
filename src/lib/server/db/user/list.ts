@@ -7,12 +7,30 @@ import type { DB } from '../dbTypes';
 import { DBSeriesListActions } from './series-list';
 import { DBUsers } from './user';
 
-export function getUserLabels(userId: string) {
+export function getUserBookLabels(userId: string) {
 	return db
 		.selectFrom('user_list_label')
 		.where('user_list_label.user_id', '=', userId)
-		.select(['user_list_label.id', 'user_list_label.label', 'user_list_label.private'])
-		.orderBy('user_list_label.id')
+		.select(['user_list_label.id', 'user_list_label.label'])
+		.where('user_list_label.id', '>', 10)
+		.where('user_list_label.target', 'in', ['book', 'both'])
+		.execute();
+}
+
+export function getUserBookLabelsForBook(userId: string, bookId: number) {
+	return db
+		.selectFrom('user_list_book_label')
+		.innerJoin('user_list_label', (join) =>
+			join
+				.onRef('user_list_label.user_id', '=', 'user_list_book_label.user_id')
+				.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
+		)
+		.select(['user_list_label.label', 'user_list_label.id'])
+		.where('user_list_book_label.book_id', '=', bookId)
+		.where('user_list_book_label.user_id', '=', userId)
+		.where('user_list_label.id', '>', 10)
+		.where('user_list_label.target', 'in', ['book', 'both'])
+		.orderBy('id asc')
 		.execute();
 }
 
@@ -41,6 +59,7 @@ export function getUserLabelCounts(userId: string, min: number = 1, max: number 
 		.where('user_list_label.id', '>=', min)
 		.where('user_list_label.id', '<=', max)
 		.where((eb) => eb.or([eb('book.hidden', '=', false), eb('book.hidden', 'is', null)]))
+		.where('user_list_label.target', 'in', ['book', 'both'])
 		.groupBy(['user_list_label.label', 'user_list_label.id'])
 		.orderBy((eb) => eb.fn.coalesce('user_list_label.id', sql<number>`99999`));
 }

@@ -2,7 +2,7 @@ import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
 import { getUserListCounts } from '$lib/server/db/user/list.js';
-import { getUserSeriesListCounts } from '$lib/server/db/user/series-list.js';
+import { getUserSeriesLabels, getUserSeriesListCounts } from '$lib/server/db/user/series-list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import {
 	listLabelsSchema,
@@ -362,12 +362,7 @@ export const load = async ({ params, locals, url }) => {
 		getUserListCounts({ userId: listUser.id }),
 	]);
 
-	// TODO refactor this to separate function
-	const allCustLabels = await db
-		.selectFrom('user_list_label')
-		.where('user_list_label.user_id', '=', listUser.id)
-		.select(['user_list_label.id', 'user_list_label.label'])
-		.execute();
+	const allCustLabels = await getUserSeriesLabels(listUser.id);
 
 	return {
 		isMyList,

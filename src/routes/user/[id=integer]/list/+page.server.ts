@@ -1,7 +1,7 @@
 import { DBBooks } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
-import { getUserLabelCounts, getUserListCounts } from '$lib/server/db/user/list';
+import { getUserLabelCounts, getUserBookLabels, getUserListCounts } from '$lib/server/db/user/list';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import {
 	listLabelsSchema,
@@ -252,12 +252,7 @@ export const load = async ({ url, params, locals }) => {
 		getUserListCounts({ userId: listUser.id }),
 	]);
 
-	// TODO refactor this to separate function
-	const allCustLabels = await db
-		.selectFrom('user_list_label')
-		.where('user_list_label.user_id', '=', listUser.id)
-		.select(['user_list_label.id', 'user_list_label.label'])
-		.execute();
+	const allCustLabels = await getUserBookLabels(listUser.id);
 
 	return {
 		books,

@@ -22,6 +22,10 @@
 	}
 
 	function handleAddLabel() {
+		if ($form.labels.length > 50) {
+			return;
+		}
+
 		$form.labels.push({
 			id: undefined,
 			label: '',
@@ -65,7 +69,12 @@
 			</div>
 			<Hr />
 		{/each}
-		<button on:click={handleAddLabel} class="sub-btn w-fit" type="button">Add new label</button>
+		<button
+			on:click={handleAddLabel}
+			class="sub-btn w-fit"
+			disabled={$form.labels.length > 50}
+			type="button">Add new label</button
+		>
 	</div>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Save labels'} />
