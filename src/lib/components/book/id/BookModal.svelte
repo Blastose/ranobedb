@@ -133,8 +133,8 @@
 								<MultiSelectField
 									form={sForm}
 									field="selectedCustLabels"
-									allSelectedText={'All'}
 									noneSelectedText="None"
+									allSelectedText={undefined}
 									labelText="Custom labels"
 									dropdownOptions={allCustLabels.map((v) => ({
 										display: v.label,

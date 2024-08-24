@@ -117,7 +117,7 @@ export const load = async ({ params, locals }) => {
 		});
 	}
 
-	const allCustLabels = user ? await getUserSeriesLabels(user.id) : [];
+	const allCustLabels = user ? await getUserSeriesLabels(user.id, false) : [];
 	const userListSeriesForm = await getUserListSeriesForm();
 
 	return {

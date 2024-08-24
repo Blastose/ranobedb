@@ -35,7 +35,8 @@
 					<MultiSelectField
 						form={sForm}
 						field="l"
-						allSelectedText={'All'}
+						noneSelectedText="any"
+						allSelectedText="any"
 						labelText="Labels"
 						dropdownOptions={data.allCustLabels.map((v) => ({
 							display: v.label,

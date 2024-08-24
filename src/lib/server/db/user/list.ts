@@ -7,12 +7,12 @@ import type { DB } from '../dbTypes';
 import { DBSeriesListActions } from './series-list';
 import { DBUsers } from './user';
 
-export function getUserBookLabels(userId: string) {
+export function getUserBookLabels(userId: string, all: boolean) {
 	return db
 		.selectFrom('user_list_label')
 		.where('user_list_label.user_id', '=', userId)
 		.select(['user_list_label.id', 'user_list_label.label'])
-		.where('user_list_label.id', '>', 10)
+		.$if(!all, (qb) => qb.where('user_list_label.id', '>', 10))
 		.where('user_list_label.target', 'in', ['book', 'both'])
 		.execute();
 }

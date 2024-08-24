@@ -2,7 +2,6 @@
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import type { userListSeriesSettingsSchema } from '$lib/server/zod/schema';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import TitlePrefsInput from '../TitlePrefsInput.svelte';
 	import SelectField from '../../SelectField.svelte';
 	import SubmitButton from '../../SubmitButton.svelte';
 	import Keyed from '../../Keyed.svelte';
@@ -12,7 +11,6 @@
 		languagesArray,
 		releaseFormatArray,
 	} from '$lib/db/dbConsts';
-	import { getAllOrAny } from '../../filters/utils';
 	import MultiSelectField from '../../MultiSelectField.svelte';
 	import CheckboxField from '../../CheckboxField.svelte';
 
@@ -64,7 +62,8 @@
 							<MultiSelectField
 								form={sForm}
 								field="langs"
-								allSelectedText={getAllOrAny('or')}
+								noneSelectedText="any"
+								allSelectedText="any"
 								labelText="Release language is one of"
 								dropdownOptions={languagesArray.map((v) => ({
 									display: languageNames[v],
@@ -78,7 +77,8 @@
 							<MultiSelectField
 								form={sForm}
 								field="formats"
-								allSelectedText={getAllOrAny('or')}
+								noneSelectedText="any"
+								allSelectedText="any"
 								labelText="Release format is one of"
 								dropdownOptions={releaseFormatArray.map((v) => ({
 									display: v,

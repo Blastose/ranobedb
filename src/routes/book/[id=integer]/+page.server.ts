@@ -59,7 +59,7 @@ export const load = async ({ params, locals }) => {
 		readingStatus = userListBook.labels.filter((v) => v.id <= 10).at(0)?.label as ReadingStatus;
 	}
 
-	const allCustLabels = user ? await getUserBookLabels(user.id) : [];
+	const allCustLabels = user ? await getUserBookLabels(user.id, false) : [];
 	const selectedCustLabels = user ? await getUserBookLabelsForBook(user.id, bookId) : [];
 
 	const userListForm = await superValidate(

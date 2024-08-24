@@ -26,7 +26,8 @@
 				<MultiSelectField
 					form={sForm}
 					field="rl"
-					allSelectedText={'any'}
+					noneSelectedText="any"
+					allSelectedText="any"
 					labelText="Release language"
 					dropdownOptions={languagesArray.map((v) => ({ display: languageNames[v], value: v }))}
 				/>
@@ -36,7 +37,8 @@
 				<MultiSelectField
 					form={sForm}
 					field="rf"
-					allSelectedText={'any'}
+					noneSelectedText="any"
+					allSelectedText="any"
 					labelText="Release format"
 					dropdownOptions={releaseFormatArray.map((v) => ({ display: v, value: v }))}
 				/>

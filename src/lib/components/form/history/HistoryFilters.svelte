@@ -22,7 +22,8 @@
 				<MultiSelectField
 					form={sForm}
 					field="items"
-					allSelectedText="All"
+					noneSelectedText="any"
+					allSelectedText={'any'}
 					labelText="Items"
 					dropdownOptions={dbItemArray.map((v) => ({ display: v, value: v }))}
 				/>

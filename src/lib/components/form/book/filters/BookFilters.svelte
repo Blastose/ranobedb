@@ -11,7 +11,6 @@
 	import Keyed from '../../Keyed.svelte';
 	import SelectField from '../../SelectField.svelte';
 	import MultiSelectField from '../../MultiSelectField.svelte';
-	import { getAllOrAny } from '$lib/components/form/filters/utils';
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
 	import StaffPublisherFilters from '../../filters/StaffPublisherFilters.svelte';
 
@@ -29,7 +28,8 @@
 				<MultiSelectField
 					form={sForm}
 					field="rl"
-					allSelectedText={getAllOrAny($form.rll)}
+					noneSelectedText="any"
+					allSelectedText="any"
 					labelText="Release language"
 					dropdownOptions={languagesArray.map((v) => ({ display: languageNames[v], value: v }))}
 				/>
@@ -50,7 +50,8 @@
 				<MultiSelectField
 					form={sForm}
 					field="rf"
-					allSelectedText={getAllOrAny($form.rfl)}
+					noneSelectedText="any"
+					allSelectedText="any"
 					labelText="Release format"
 					dropdownOptions={releaseFormatArray.map((v) => ({ display: v, value: v }))}
 				/>
