@@ -136,7 +136,8 @@
 							<MultiSelectField
 								form={sForm}
 								field="selectedCustLabels"
-								allSelectedText={'None'}
+								allSelectedText={'All'}
+								noneSelectedText="None"
 								labelText="Custom labels"
 								dropdownOptions={allCustLabels.map((v) => ({
 									display: v.label,

@@ -17,6 +17,7 @@
 	export let labelText: string = '';
 	export let dropdownOptions: ReadonlyArray<DropdownOption>;
 	export let allSelectedText: string;
+	export let noneSelectedText: string | undefined = undefined;
 
 	let { values } = arrayProxy(form, field) as { values: Writable<(string | number)[]> };
 
@@ -68,7 +69,9 @@
 		aria-label="Options"
 	>
 		<span class="flex flex-wrap gap-2 min-w-[220px]">
-			{#if $values.length === 0 || $values.length === dropdownOptions.length}
+			{#if $values.length === 0}
+				<span class="chip">{noneSelectedText ?? allSelectedText}</span>
+			{:else if $values.length === dropdownOptions.length}
 				<span class="chip">{allSelectedText}</span>
 			{:else if $values.length <= 2}
 				{#each selected as selectedItem}
