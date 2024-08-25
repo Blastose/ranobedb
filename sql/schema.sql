@@ -588,6 +588,7 @@ CREATE TABLE public.user_list_label (
 
 CREATE TABLE public.user_list_book (
     added timestamptz NOT NULL DEFAULT NOW(),
+    last_updated timestamptz NOT NULL,
     book_id integer NOT NULL,
     score integer,
     started date,
@@ -619,9 +620,14 @@ CREATE TABLE public.user_list_release (
 );
 
 CREATE TABLE public.user_list_series (
+    added timestamptz NOT NULL DEFAULT NOW(),
+    last_updated timestamptz NOT NULL,
     series_id integer NOT NULL,
     volumes_read integer,
-    added timestamptz NOT NULL DEFAULT NOW(),
+    score integer,
+    started date,
+    finished date,
+    notes text NOT NULL,
     notify_book boolean NOT NULL,
     show_upcoming boolean NOT NULL,
     user_id text NOT NULL,

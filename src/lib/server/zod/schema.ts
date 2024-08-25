@@ -183,6 +183,14 @@ export const userListSeriesSchema = z.object({
 	langs: z.array(z.enum(languagesArray)),
 	formats: z.array(z.enum(releaseFormatArray)),
 	readingStatus: z.enum(defaultUserListLabelsArray),
+	score: z.number().min(1).max(10).nullish(),
+	started: zISODate.or(z.literal('')).nullish(),
+	finished: zISODate.or(z.literal('')).nullish(),
+	notes: z
+		.string()
+		.trim()
+		.max(2000, { message: 'Note must between less than 2000 characters' })
+		.nullish(),
 	type: z.enum(userListFormTypes),
 });
 

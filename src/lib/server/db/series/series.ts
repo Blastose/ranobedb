@@ -287,6 +287,20 @@ export class DBSeries {
 						.whereRef('sb3.series_id', '=', 'cte_series.id')
 						.select(({ fn }) => [fn.countAll().as('count')]),
 				).as('volumes'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_series_label')
+						.innerJoin('user_list_label', (join) =>
+							join
+								.onRef('user_list_series_label.label_id', '=', 'user_list_label.id')
+								.onRef('user_list_series_label.user_id', '=', 'user_list_label.user_id')
+								.onRef('user_list_series_label.series_id', '=', 'cte_series.id'),
+						)
+						.select('user_list_label.label')
+						.where('user_list_label.user_id', '=', userId)
+						.where('user_list_label.id', '<=', 10)
+						.limit(1),
+				).as('label'),
 			])
 			.select([
 				'cte_series.id',

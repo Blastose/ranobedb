@@ -189,6 +189,7 @@ input[type='radio'] {
 
 input[type='text'].input.reset-padding,
 input[type='password'].input.reset-padding,
+input[type='date'].input.reset-padding,
 input[type='number'].input.reset-padding {
 	padding: 0.125rem 0.5rem;
 }

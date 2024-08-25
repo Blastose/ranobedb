@@ -38,6 +38,10 @@ export const actions = {
 					selectedCustLabels: form.data.selectedCustLabels,
 					show_upcoming: form.data.show_upcoming,
 					volumes_read: form.data.volumes_read,
+					notes: form.data.notes ?? '',
+					started: form.data.started || null,
+					finished: form.data.finished || null,
+					score: form.data.score,
 				});
 				messageText = 'Added series to list!';
 			} else if (form.data.type === 'update') {
@@ -51,6 +55,10 @@ export const actions = {
 					selectedCustLabels: form.data.selectedCustLabels,
 					show_upcoming: form.data.show_upcoming,
 					volumes_read: form.data.volumes_read,
+					notes: form.data.notes ?? '',
+					started: form.data.started || null,
+					finished: form.data.finished || null,
+					score: form.data.score,
 				});
 				messageText = 'Updated series successfully!';
 			} else if (form.data.type === 'delete') {

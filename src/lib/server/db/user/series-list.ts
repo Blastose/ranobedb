@@ -122,6 +122,10 @@ export class DBSeriesListActions {
 		series_id: number;
 		user_id: string;
 		labelIds: number[];
+		score: Nullish<number>;
+		started: Nullish<string>;
+		finished: Nullish<string>;
+		notes: Nullish<string>;
 		readingStatusId: number;
 		langs: Language[];
 		formats: ReleaseFormat[];
@@ -139,6 +143,11 @@ export class DBSeriesListActions {
 					series_id: params.series_id,
 					user_id: params.user_id,
 					volumes_read: params.volumes_read,
+					last_updated: new Date(),
+					notes: params.notes ?? '',
+					started: params.started,
+					finished: params.finished,
+					score: params.score,
 				})
 				.execute();
 
@@ -176,6 +185,10 @@ export class DBSeriesListActions {
 		series_id: number;
 		user_id: string;
 		labelIds: number[];
+		score: Nullish<number>;
+		started: Nullish<string>;
+		finished: Nullish<string>;
+		notes: Nullish<string>;
 		readingStatusId: number;
 		selectedCustLabels: number[];
 		langs: Language[];
@@ -197,7 +210,15 @@ export class DBSeriesListActions {
 
 			await trx
 				.updateTable('user_list_series')
-				.set({ show_upcoming: params.show_upcoming, volumes_read: params.volumes_read })
+				.set({
+					show_upcoming: params.show_upcoming,
+					volumes_read: params.volumes_read,
+					last_updated: new Date(),
+					notes: params.notes ?? '',
+					started: params.started,
+					finished: params.finished,
+					score: params.score,
+				})
 				.where('user_list_series.series_id', '=', params.series_id)
 				.where('user_list_series.user_id', '=', params.user_id)
 				.execute();
