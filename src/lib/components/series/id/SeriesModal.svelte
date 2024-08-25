@@ -129,20 +129,56 @@
 									resetPadding={true}
 								/>
 							</div>
+
+							<TextField
+								form={sForm}
+								type="number"
+								field="score"
+								label="Score"
+								placeholder=""
+								resetPadding={true}
+							/>
 						</div>
 
-						<div class="max-w-sm">
-							<MultiSelectField
-								form={sForm}
-								field="selectedCustLabels"
-								noneSelectedText="none"
-								allSelectedText={undefined}
-								labelText="Custom labels"
-								dropdownOptions={allCustLabels.map((v) => ({
-									display: v.label,
-									value: v.id,
-								}))}
-							/>
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-2 sm:gap-x-4">
+							<div class="flex flex-col gap-1">
+								<TextField
+									form={sForm}
+									type="date"
+									field="started"
+									label="Started"
+									resetPadding={true}
+								/>
+								<TextField
+									form={sForm}
+									type="date"
+									field="finished"
+									label="Finished"
+									resetPadding={true}
+								/>
+							</div>
+							<div>
+								<TextField
+									form={sForm}
+									type="textarea"
+									field="notes"
+									label="Notes"
+									textareaRows={2}
+								/>
+								<div class="max-w-sm">
+									<MultiSelectField
+										form={sForm}
+										field="selectedCustLabels"
+										noneSelectedText="none"
+										allSelectedText={undefined}
+										labelText="Custom labels"
+										dropdownOptions={allCustLabels.map((v) => ({
+											display: v.label,
+											value: v.id,
+										}))}
+									/>
+								</div>
+							</div>
 						</div>
 
 						<div>

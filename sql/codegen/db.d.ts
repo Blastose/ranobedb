@@ -415,6 +415,7 @@ export interface UserListBook {
   added: Generated<Timestamp>;
   book_id: number;
   finished: Timestamp | null;
+  last_updated: Timestamp;
   notes: string;
   score: number | null;
   started: Timestamp | null;
@@ -445,9 +446,14 @@ export interface UserListRelease {
 
 export interface UserListSeries {
   added: Generated<Timestamp>;
+  finished: Timestamp | null;
+  last_updated: Timestamp;
+  notes: string;
   notify_book: boolean;
+  score: number | null;
   series_id: number;
   show_upcoming: boolean;
+  started: Timestamp | null;
   user_id: string;
   volumes_read: number | null;
 }

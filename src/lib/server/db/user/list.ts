@@ -197,6 +197,10 @@ export class DBListActions {
 					show_upcoming: default_series_settings.show_upcoming,
 					volumes_read: null,
 					selectedCustLabels: [],
+					notes: '',
+					finished: null,
+					score: null,
+					started: null,
 				});
 			}
 
@@ -209,6 +213,7 @@ export class DBListActions {
 					started: params.started,
 					finished: params.finished,
 					notes: params.notes ?? '',
+					last_updated: new Date(),
 				})
 				.execute();
 
@@ -272,6 +277,7 @@ export class DBListActions {
 					started: params.started,
 					finished: params.finished,
 					notes: params.notes ?? '',
+					last_updated: new Date(),
 				})
 				.where('book_id', '=', params.bookId)
 				.where('user_id', '=', params.userId)

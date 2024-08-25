@@ -70,6 +70,10 @@ export const load = async ({ params, locals }) => {
 			'user_list_series.series_id',
 			'user_list_series.show_upcoming',
 			'user_list_series.volumes_read',
+			'user_list_series.score',
+			'user_list_series.started',
+			'user_list_series.finished',
+			'user_list_series.notes',
 		])
 		.executeTakeFirst();
 
@@ -91,13 +95,17 @@ export const load = async ({ params, locals }) => {
 		if (userSeriesLabels) {
 			return await superValidate(
 				{
-					labels: userSeriesLabels?.labels,
+					labels: userSeriesLabels.labels,
 					type: formType,
 					readingStatus,
-					formats: userSeriesLabels?.formats.map((v) => v.format),
-					langs: userSeriesLabels?.langs.map((v) => v.lang),
-					show_upcoming: userSeriesLabels?.show_upcoming,
-					volumes_read: userSeriesLabels?.volumes_read,
+					formats: userSeriesLabels.formats.map((v) => v.format),
+					langs: userSeriesLabels.langs.map((v) => v.lang),
+					show_upcoming: userSeriesLabels.show_upcoming,
+					volumes_read: userSeriesLabels.volumes_read,
+					notes: userSeriesLabels.notes,
+					started: userSeriesLabels.started,
+					finished: userSeriesLabels.finished,
+					score: userSeriesLabels.score,
 					selectedCustLabels: selectedCustLabels.map((v) => v.id),
 				},
 				zod(userListSeriesSchema),
