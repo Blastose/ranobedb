@@ -9,6 +9,7 @@
 	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
 	import Keyed from '$lib/components/form/Keyed.svelte';
 	import BookFilters from '$lib/components/form/book/filters/BookFilters.svelte';
+	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 
 	export let data;
 
@@ -73,7 +74,9 @@
 						title_orig: book.title_orig,
 					}}
 					urlPrefix="/book/"
-				></BookImage>
+				>
+					<BookImageBadge badges={[`${book.label?.label}`]} location="top-right" />
+				</BookImage>
 			{/each}
 		</BookImageContainer>
 	</svelte:fragment>
