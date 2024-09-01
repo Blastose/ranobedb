@@ -48,14 +48,14 @@
 		</section>
 
 		<section>
-			<h2>Devlopment</h2>
-			<p>See <a href="/about/development">developement</a>.</p>
+			<h2>Development</h2>
+			<p>See <a href="/about/development">development</a>.</p>
 		</section>
 
 		<section>
 			<h2>Licensing</h2>
 			<p>
-				All information on RanoebDB is available under the <a
+				All information on RanobeDB is available under the <a
 					href="https://opendatacommons.org/licenses/odbl/1-0/"
 					target="_blank">Open Database License</a
 				>
@@ -73,7 +73,7 @@
 
 		<section>
 			<h2>Special thanks</h2>
-			<p>RanoebDB wouldn't be possible without any of the following:</p>
+			<p>RanobeDB wouldn't be possible without any of the following:</p>
 			<ul>
 				<li>
 					<a href="https://vndb.org/" target="_blank">vndb</a> for inspiring and influencing this project
