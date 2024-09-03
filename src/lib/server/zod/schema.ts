@@ -598,6 +598,8 @@ export const historyFiltersSchema = z.object({
 });
 export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
 
+const zQueryLimit = z.number().max(100).default(24);
+
 export const bookFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
@@ -608,6 +610,7 @@ export const bookFiltersSchema = z.object({
 	sl: z.enum(logicalOps).catch('and'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('or'),
+	limit: zQueryLimit,
 });
 
 export const userListBookFiltersSchema = bookFiltersSchema.extend({
@@ -682,6 +685,7 @@ export const seriesFiltersSchema = z.object({
 	sl: z.enum(logicalOps).catch('and'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('or'),
+	limit: zQueryLimit,
 });
 
 const zTags = z
