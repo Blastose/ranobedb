@@ -4,6 +4,7 @@
 	import RanobeDb from '../RanobeDB.svelte';
 	import { page } from '$app/stores';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
+	import SearchExpand from '$lib/components/layout/header/SearchExpand.svelte';
 
 	export let user: User | null;
 
@@ -41,6 +42,8 @@
 		</div>
 
 		<div class="flex gap-4">
+			<SearchExpand />
+
 			<ProfileButton {user} />
 		</div>
 	</div>
