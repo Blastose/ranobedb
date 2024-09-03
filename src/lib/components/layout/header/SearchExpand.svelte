@@ -14,7 +14,7 @@
 
 	const debounce = (callback: () => void) => {
 		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(callback, 450);
+		debounceTimer = setTimeout(callback, 550);
 	};
 
 	let inputElement: HTMLInputElement;
@@ -22,22 +22,26 @@
 
 	function handleInputChange() {
 		loading = true;
-		debounce(async () => {
-			if (!inputElement.value) {
-				clearInput();
-			} else {
-				const res = await search(inputElement.value);
-				console.log(res);
-				items = res;
-				loading = false;
-			}
-		});
+		if (!inputElement.value) {
+			items = undefined;
+			loading = false;
+		} else {
+			debounce(async () => {
+				if (inputElement.value) {
+					const res = await search(inputElement.value);
+					console.log(res);
+					items = res;
+					loading = false;
+				}
+			});
+		}
 	}
 
 	function clearInput() {
 		inputElement.value = '';
 		items = undefined;
 		loading = false;
+		state = 'not-active';
 	}
 
 	onNavigate(() => {
@@ -152,7 +156,9 @@
 						<p>No results found</p>
 					{/if}
 				{:else}
-					<p>Loading...</p>
+					<p class="flex gap-2 items-center">
+						<Icon class="animate-spin" name="loading"></Icon>Loading...
+					</p>
 				{/if}
 			</div>
 		</div>
