@@ -7,6 +7,7 @@
 	import { fly } from 'svelte/transition';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
+	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let loading = false;
@@ -29,7 +30,6 @@
 			debounce(async () => {
 				if (inputElement.value) {
 					const res = await search(inputElement.value);
-					console.log(res);
 					items = res;
 					loading = false;
 				}
@@ -54,7 +54,6 @@
 	use:clickOutside
 	on:outclick={() => {
 		state = 'not-active';
-		console.log('out');
 	}}
 >
 	<input
@@ -68,7 +67,6 @@
 		on:input={handleInputChange}
 		on:focus={() => {
 			state = 'active';
-			console.log('focus on');
 		}}
 	/>
 	<div class="search-icon pointer-events-none">
@@ -80,10 +78,7 @@
 		</button>
 	{/if}
 	{#if state === 'active' && inputElement?.value}
-		<div
-			class="absolute mt-2 w-full results-display thin-scrollbar"
-			transition:fly={{ duration: 150, y: -10 }}
-		>
+		<div class="results-display thin-scrollbar" transition:fly={{ duration: 150, y: -10 }}>
 			<div class="flex flex-col gap-4">
 				{#if !loading && items}
 					{#if items.books.books.length > 0}
@@ -152,7 +147,45 @@
 							{/each}
 						</div>
 					{/if}
-					{#if items.books.books.length + items.series.series.length === 0}
+					{#if items.publishers.publishers.length > 0}
+						<div class="flex flex-col gap-2">
+							<div class="flex justify-between">
+								<p class="text-lg font-bold">Publishers ({items.publishers.count})</p>
+								<a href="/publishers?q={encodeURIComponent(inputElement?.value)}" class="link"
+									>View all</a
+								>
+							</div>
+							{#each items.publishers.publishers as publisher}
+								<a href="/publisher/{publisher.id}" class="results-item">
+									<div class="flex flex-col text-sm sm:text-base">
+										<p class="font-bold line-clamp-2">
+											<NameDisplay obj={publisher} />
+										</p>
+									</div>
+								</a>
+							{/each}
+						</div>
+					{/if}
+					{#if items.staff.staff.length > 0}
+						<div class="flex flex-col gap-2">
+							<div class="flex justify-between">
+								<p class="text-lg font-bold">Staff ({items.staff.count})</p>
+								<a href="/staff?q={encodeURIComponent(inputElement?.value)}" class="link"
+									>View all</a
+								>
+							</div>
+							{#each items.staff.staff as staff}
+								<a href="/staff/{staff.id}" class="results-item">
+									<div class="flex flex-col text-sm sm:text-base">
+										<p class="font-bold line-clamp-2">
+											<NameDisplay obj={staff} />
+										</p>
+									</div>
+								</a>
+							{/each}
+						</div>
+					{/if}
+					{#if items.books.books.length + items.series.series.length + items.publishers.publishers.length + items.staff.staff.length === 0}
 						<p>No results found</p>
 					{/if}
 				{:else}
@@ -167,14 +200,23 @@
 
 <style>
 	.results-display {
+		position: absolute;
+		margin-top: 0.5rem;
 		background-color: var(--primary-100);
 		padding: 0.75rem;
 		border-radius: 0.5rem;
-		width: 200%;
-		max-width: calc(100vw - 128px);
-		right: 0;
+		width: calc(100vw - 48px);
+		right: calc(-48px);
 		max-height: calc(100dvh - 80px);
 		overflow-y: auto;
+	}
+
+	@media (min-width: 500px) {
+		.results-display {
+			width: 200%;
+			max-width: calc(100vw - 128px);
+			right: 0;
+		}
 	}
 
 	:global(.dark) .results-display {
@@ -209,10 +251,21 @@
 
 	.input.search-input {
 		width: 100%;
-		max-width: 1px;
-		max-width: 100%;
+		max-width: 96px;
 		padding-left: 2.5rem;
 		padding-right: 2.5rem;
+	}
+
+	@media (min-width: 350px) {
+		.input.search-input {
+			max-width: 156px;
+		}
+	}
+
+	@media (min-width: 500px) {
+		.input.search-input {
+			max-width: 100%;
+		}
 	}
 
 	.search-icon {
