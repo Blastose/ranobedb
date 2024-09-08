@@ -84,11 +84,11 @@
 				icon="releases"
 			/>
 			<SidebarListItem
-			active={$page.url.pathname === '/releases/calendar'}
-			href="/releases/calendar"
-			text="Releases Calendar"
-			icon="calendar"
-		/>
+				active={$page.url.pathname === '/releases/calendar'}
+				href="/releases/calendar"
+				text="Releases Calendar"
+				icon="calendar"
+			/>
 			<SidebarListItem
 				active={$page.url.pathname === '/staff'}
 				href="/staff"
@@ -205,10 +205,14 @@
 			</div>
 			<div class="flex flex-wrap gap-4">
 				<a href="/about">About</a>
+			</div>
+			<div class="flex flex-wrap gap-4">
+				<a href="/api">API</a>
+				<a href="/about/terms-of-use">Terms of Use</a>
+			</div>
+			<div class="flex flex-wrap gap-4">
 				<a href="/about/privacy-policy">Privacy policy</a>
 			</div>
-
-			<a href="/about/terms-of-use">Terms of Use</a>
 		</div>
 	</nav>
 </aside>
