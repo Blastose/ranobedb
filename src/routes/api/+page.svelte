@@ -62,6 +62,19 @@
 		<section class="api-docs mt-6">
 			<h2>Database querying</h2>
 			<section>
+				<h3>Common types</h3>
+				<div class="params">
+					<span>Language</span>
+					<span>
+						'ja' | 'en' | 'zh-Hans' | 'zh-Hant' | 'fr' | 'es' | 'ko' | 'ar' | 'bg' | 'ca' | 'cs' |
+						'ck' | 'da' | 'de' | 'el' | 'eo' | 'eu' | 'fa' | 'fi' | 'ga' | 'gd' | 'he' | 'hi' | 'hr'
+						| 'hu' | 'id' | 'it' | 'iu' | 'mk' | 'ms' | 'la' | 'lt' | 'lv' | 'nl' | 'no' | 'pl' |
+						'pt-pt' | 'pt-br' | 'ro' | 'ru' | 'sk' | 'sl' | 'sr' | 'sv' | 'ta' | 'th' | 'tr' | 'uk'
+						| 'ur' | 'vi'</span
+					>
+				</div>
+			</section>
+			<section>
 				<h3>Books</h3>
 				<section>
 					<h4>GET /books</h4>
@@ -84,7 +97,7 @@
 							<span>'and' | 'or' <span>Release lanuages logic</span></span>
 
 							<span>rf</span>
-							<span>ReleaseFormat[] <span>Release formats</span></span>
+							<span>('digital' | 'print' | 'audio')[] <span>Release formats</span></span>
 
 							<span>rfl</span>
 							<span>'and' | 'or' <span>Release formats logic</span></span>
@@ -165,7 +178,7 @@
 							<span>'and' | 'or' <span>Release lanuages logic</span></span>
 
 							<span>rf</span>
-							<span>ReleaseFormat[] <span>Release formats</span></span>
+							<span>('digital' | 'print' | 'audio')[] <span>Release formats</span></span>
 
 							<span>rfl</span>
 							<span>'and' | 'or' <span>Release formats logic</span></span>
@@ -226,7 +239,7 @@
 							<span>'and' | 'or' <span>Release lanuages logic</span></span>
 
 							<span>rf</span>
-							<span>ReleaseFormat[] <span>Release formats</span></span>
+							<span>('digital' | 'print' | 'audio')[] <span>Release formats</span></span>
 
 							<span>rfl</span>
 							<span>'and' | 'or' <span>Release formats logic</span></span>
