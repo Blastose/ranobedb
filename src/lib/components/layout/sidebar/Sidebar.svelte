@@ -207,7 +207,7 @@
 				<a href="/about">About</a>
 			</div>
 			<div class="flex flex-wrap gap-4">
-				<a href="/api">API</a>
+				<a href="/api/docs/v0">API</a>
 				<a href="/about/terms-of-use">Terms of Use</a>
 			</div>
 			<div class="flex flex-wrap gap-4">
