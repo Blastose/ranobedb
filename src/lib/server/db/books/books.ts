@@ -286,14 +286,16 @@ export class DBBooks {
 						.selectFrom('release')
 						.innerJoin('release_book', 'release.id', 'release_book.release_id')
 						.selectAll('release')
-						.select((eb) =>
-							jsonObjectFrom(
-								eb
-									.selectFrom('user_list_release')
-									.select(['user_list_release.release_status'])
-									.whereRef('user_list_release.release_id', '=', 'release.id')
-									.where('user_list_release.user_id', '=', this.ranobeDB.user?.id || ''),
-							).as('user_list_release'),
+						.$if(this.ranobeDB.user !== null, (qb) =>
+							qb.select((eb) =>
+								jsonObjectFrom(
+									eb
+										.selectFrom('user_list_release')
+										.select(['user_list_release.release_status'])
+										.whereRef('user_list_release.release_id', '=', 'release.id')
+										.where('user_list_release.user_id', '=', this.ranobeDB.user?.id || ''),
+								).as('user_list_release'),
+							),
 						)
 						.whereRef('release_book.book_id', '=', 'cte_book.id')
 						.where('release.hidden', '=', false)
