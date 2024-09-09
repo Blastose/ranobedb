@@ -730,6 +730,7 @@ export const releaseFiltersSchema = z.object({
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('and'),
+	limit: zQueryLimit,
 });
 export const releaseFiltersObjSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),

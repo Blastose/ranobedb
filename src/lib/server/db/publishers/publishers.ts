@@ -31,22 +31,6 @@ export class DBPublishers {
 			.select((eb) => [
 				jsonArrayFrom(
 					eb
-						.selectFrom('release')
-						.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
-						.select([
-							'release.title',
-							'release_publisher.publisher_type',
-							'release.id',
-							'release.release_date',
-						])
-						.whereRef('release_publisher.publisher_id', '=', 'publisher.id')
-						.where('release.hidden', '=', false)
-						.orderBy('release.release_date desc')
-						.orderBy('release.title')
-						.limit(100),
-				).as('releases'),
-				jsonArrayFrom(
-					eb
 						.selectFrom('publisher_relation')
 						.innerJoin(
 							'publisher as child_publisher',
