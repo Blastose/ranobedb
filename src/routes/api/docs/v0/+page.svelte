@@ -32,8 +32,8 @@
 					href="https://discord.com/channels/1252094266650656788/1259922625300529294"
 					class="link">#development</a
 				>
-				channel on our <a href="https://discord.gg/ZeAnhGncFx" target="_blank">Discord server</a> for
-				any help.
+				channel on our <a href="https://discord.gg/ZeAnhGncFx" target="_blank">Discord server</a> to
+				ask for any help or if you have any questions.
 			</p>
 		</section>
 
@@ -46,6 +46,16 @@
 				<code>4xx - 5xx</code> code.
 			</p>
 			<p>The responses of each endpoint are given as TypeScript types.</p>
+			<p>
+				The search params used in the endpoints are similar to the ones used on the website. You can
+				visit a page and add some filters to see what the url search params should look like. For
+				example, <a
+					href="/books?q=seishun+buta+yarou&rl=en&rll=or&rf=print&rfl=or&sort=Relevance+desc&staff=195&sl=and&p=41&pl=or"
+					><code
+						>/books?q=seishun+buta+yarou&rl=en&rll=or&rf=print&rfl=or&sort=Relevance+desc&staff=195&sl=and&p=41&pl=or</code
+					></a
+				>.
+			</p>
 			<p>
 				There are currently no rate-limits, but please do not exceed over 60 requests in 1 minute.
 			</p>
