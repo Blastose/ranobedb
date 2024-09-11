@@ -68,11 +68,11 @@ export class DBStaffActions {
 					hidden,
 					locked,
 					description: data.staff.description ?? '',
-					bookwalker_id: data.staff.bookwalker_id,
-					pixiv_id: data.staff.pixiv_id,
-					twitter_id: data.staff.twitter_id,
-					website: data.staff.website,
-					wikidata_id: data.staff.wikidata_id,
+					bookwalker_id: data.staff.bookwalker_id ?? null,
+					pixiv_id: data.staff.pixiv_id ?? null,
+					twitter_id: data.staff.twitter_id ?? null,
+					website: data.staff.website ?? null,
+					wikidata_id: data.staff.wikidata_id ?? null,
 				})
 				.where('staff.id', '=', data.id)
 				.executeTakeFirstOrThrow();
