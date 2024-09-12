@@ -24,7 +24,14 @@ export class DBReleases {
 	getReleasesWithImage() {
 		return this.ranobeDB.db
 			.selectFrom('release')
-			.selectAll('release')
+			.select([
+				'release.id',
+				'release.format',
+				'release.title',
+				'release.romaji',
+				'release.lang',
+				'release.release_date',
+			])
 			.select((eb) => [
 				jsonObjectFrom(
 					eb
@@ -33,6 +40,7 @@ export class DBReleases {
 						.innerJoin('release_book', 'release.id', 'release_book.release_id')
 						.innerJoin('book', 'book.id', 'release_book.book_id')
 						.whereRef('image.id', '=', 'book.image_id')
+						.where('book.hidden', '=', false)
 						.limit(1),
 				).as('image'),
 			]);

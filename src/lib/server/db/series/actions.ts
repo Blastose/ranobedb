@@ -414,9 +414,9 @@ export class DBSeriesActions {
 					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
-					anidb_id: data.series.anidb_id,
-					web_novel: data.series.web_novel,
-					wikidata_id: data.series.wikidata_id,
+					anidb_id: data.series.anidb_id ?? null,
+					web_novel: data.series.web_novel ?? null,
+					wikidata_id: data.series.wikidata_id ?? null,
 					olang: data.series.olang,
 				})
 				.where('series.id', '=', data.id)

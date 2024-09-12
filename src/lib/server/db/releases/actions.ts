@@ -86,16 +86,16 @@ export class DBReleaseActions {
 					locked,
 					description: data.release.description ?? '',
 					format: data.release.format,
-					isbn13: data.release.isbn13,
+					isbn13: data.release.isbn13 ?? null,
 					lang: data.release.lang,
-					pages: data.release.pages,
+					pages: data.release.pages ?? null,
 					release_date: data.release.release_date,
-					romaji: data.release.romaji,
+					romaji: data.release.romaji ?? null,
 					title: data.release.title,
-					amazon: data.release.amazon,
-					bookwalker: data.release.bookwalker,
-					rakuten: data.release.rakuten,
-					website: data.release.website,
+					amazon: data.release.amazon ?? null,
+					bookwalker: data.release.bookwalker ?? null,
+					rakuten: data.release.rakuten ?? null,
+					website: data.release.website ?? null,
 				})
 				.where('release.id', '=', data.id)
 				.executeTakeFirstOrThrow();

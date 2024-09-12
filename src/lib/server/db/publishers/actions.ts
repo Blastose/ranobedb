@@ -337,10 +337,10 @@ export class DBPublisherActions {
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
 					description: data.publisher.description ?? '',
-					bookwalker: data.publisher.bookwalker,
-					twitter_id: data.publisher.twitter_id,
-					website: data.publisher.website,
-					wikidata_id: data.publisher.wikidata_id,
+					bookwalker: data.publisher.bookwalker ?? null,
+					twitter_id: data.publisher.twitter_id ?? null,
+					website: data.publisher.website ?? null,
+					wikidata_id: data.publisher.wikidata_id ?? null,
 				})
 				.where('publisher.id', '=', data.id)
 				.executeTakeFirstOrThrow();
