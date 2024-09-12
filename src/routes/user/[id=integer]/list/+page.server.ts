@@ -37,7 +37,7 @@ export const load = async ({ url, params, locals }) => {
 	const userLabelCounts = await getUserLabelCounts(listUser.id).execute();
 	const userCustLabelCounts = await getUserLabelCounts(listUser.id, 11, 99).execute();
 
-	const dbBooks = DBBooks.fromDB(db);
+	const dbBooks = DBBooks.fromDB(db, user);
 
 	let query = dbBooks.getBooksUser({ q, userId: listUser.id, labelIds: labels });
 	query = query.where('cte_book.hidden', '=', false);
