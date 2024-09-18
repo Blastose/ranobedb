@@ -281,6 +281,7 @@ export class DBReleaseActions {
 									.where('book.hidden', '=', false)
 									.where('series.hidden', '=', false)
 									.where('user_list_series.show_upcoming', '=', true)
+									.where('user_list_series.notify_book', '=', true)
 									.where((eb) =>
 										eb.and([
 											eb.or([

@@ -1,4 +1,4 @@
-import { type Kysely } from 'kysely';
+import { type InferResult, type Kysely } from 'kysely';
 import type { DB } from '$lib/server/db/dbTypes';
 import { sendRecentlyReleasedNotifications } from './daily';
 
@@ -27,8 +27,8 @@ export class Notifications {
 		return Boolean(res.at(0)?.notifs);
 	}
 
-	async getNotifications(userId: string) {
-		return await this.db
+	getNotifications(userId: string) {
+		return this.db
 			.selectFrom('notification')
 			.where('notification.user_id', '=', userId)
 			.select((eb) => [
@@ -44,12 +44,10 @@ export class Notifications {
 				'notification.notification_type',
 				'notification.is_read',
 			])
-			.orderBy('notification.sent desc')
-			.limit(10)
-			.execute();
+			.orderBy('notification.sent desc');
 	}
 }
 
-export type Notification = Awaited<ReturnType<Notifications['getNotifications']>>[number];
+export type Notification = InferResult<ReturnType<Notifications['getNotifications']>>[number];
 
 await sendRecentlyReleasedNotifications();

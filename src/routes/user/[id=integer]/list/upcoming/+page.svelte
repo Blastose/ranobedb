@@ -44,7 +44,7 @@
 						{year}
 					</h2>
 				{:else}
-					<h2 class="font-bold">{year}</h2>
+					<h2 class="font-bold">{year === '9999' ? 'TBA' : year}</h2>
 				{/if}
 				{#each releases as release, index}
 					{#if (onlyInList && release.user_list_release) || !onlyInList}

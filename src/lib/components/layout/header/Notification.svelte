@@ -77,7 +77,7 @@
 
 			<div class="flex justify-between items-center">
 				<a class="link text-sm" href="/notifications" use:melt={$item}>View all notifications</a>
-				<button on:click={markAllAsRead} class="link text-sm" use:melt={$item}
+				<button type="button" on:click={markAllAsRead} class="link text-sm" use:melt={$item}
 					>Mark all as read</button
 				>
 			</div>

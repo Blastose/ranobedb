@@ -18,5 +18,8 @@ CREATE TABLE public.notification (
 	image_filename text,
 	FOREIGN KEY (user_id) REFERENCES public.auth_user(id)
 );
+
+UPDATE public.user_list_series
+SET notify_book = true;
 `.execute(db);
 }

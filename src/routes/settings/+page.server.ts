@@ -514,7 +514,7 @@ export const actions = {
 				}
 
 				for (const add of toAdd) {
-					// TODO This is pretty bad TBH
+					// TODO This is pretty bad TBH because it needs to make a query to get the current highest label id
 					const highestLabelInList = await trx
 						.selectFrom('user_list_label')
 						.where('user_list_label.user_id', '=', user.id)

@@ -11,7 +11,8 @@ export const GET: RequestHandler = async ({ locals }) => {
 	}
 
 	const notif = new Notifications(db);
-	const notifications = await notif.getNotifications(user.id);
+	const notificationsQuery = notif.getNotifications(user.id).limit(10);
+	const notifications = await notificationsQuery.execute();
 
 	return json(notifications);
 };
