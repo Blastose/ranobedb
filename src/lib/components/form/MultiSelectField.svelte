@@ -115,7 +115,7 @@
 
 <style>
 	.input.multiselect-padding {
-		padding: 0.125rem 0.5rem;
+		padding: 0.125rem 0.25rem;
 	}
 	.input.round {
 		border-radius: 9999px;

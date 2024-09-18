@@ -188,10 +188,12 @@ export interface Image {
 export interface Notification {
 	hidden: boolean;
 	id: Generated<number>;
+	image_filename: string | null;
 	is_read: boolean;
 	message: string;
 	notification_type: string;
 	sent: Generated<Timestamp>;
+	url: string;
 	user_id: string;
 }
 
@@ -511,6 +513,7 @@ export interface DB {
 	email_verification_code: EmailVerificationCode;
 	email_verification_token: EmailVerificationToken;
 	image: Image;
+	notification: Notification;
 	password_reset_token: PasswordResetToken;
 	publisher: Publisher;
 	publisher_hist: PublisherHist;

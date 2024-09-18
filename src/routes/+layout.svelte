@@ -47,6 +47,11 @@
 	const theme = createThemeStore();
 	$: theme.set(data.theme);
 	setContext('theme', theme);
+
+	// TODO
+	const notifications = writable();
+	$: notifications.set(data.notifications);
+	setContext('notifications', notifications);
 </script>
 
 <svelte:document on:keydown={handleKeyDown} />

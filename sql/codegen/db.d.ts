@@ -22,7 +22,7 @@ export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "
 
 export type ListLabelTarget = "book" | "both" | "series";
 
-export type ListReleaseStatus = "deleted" | "on loan" | "owned" | "pending" | "unknown";
+export type ListReleaseStatus = "deleted" | "notify" | "on loan" | "owned" | "pending" | "unknown";
 
 export type PublisherRelType = "imprint" | "parent brand" | "parent company" | "subsidiary";
 
@@ -70,6 +70,7 @@ export interface AuthUserCredentials {
 }
 
 export interface Book {
+  c_release_date: Generated<number>;
   description: string;
   description_ja: string;
   hidden: boolean;
@@ -175,10 +176,12 @@ export interface Image {
 export interface Notification {
   hidden: boolean;
   id: Generated<number>;
+  image_filename: string | null;
   is_read: boolean;
   message: string;
   notification_type: string;
   sent: Generated<Timestamp>;
+  url: string;
   user_id: string;
 }
 

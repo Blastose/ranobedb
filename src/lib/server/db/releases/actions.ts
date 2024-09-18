@@ -256,6 +256,165 @@ export class DBReleaseActions {
 			}) satisfies Insertable<ReleaseBook>[];
 			if (release_book_add.length > 0) {
 				await trx.insertInto('release_book').values(release_book_add).execute();
+
+				if (user.role === 'admin') {
+					// Release added notifications
+					for (const rba of release_book_add) {
+						await trx
+							.with('release_to_add', (qb) =>
+								qb
+									.selectFrom('release')
+									.innerJoin('release_book', 'release_book.release_id', 'release.id')
+									.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
+									.innerJoin(
+										'user_list_series',
+										'user_list_series.series_id',
+										'series_book.series_id',
+									)
+									.innerJoin('auth_user', 'auth_user.id', 'user_list_series.user_id')
+									.innerJoin('series', 'series.id', 'series_book.series_id')
+									.innerJoin('book', 'book.id', 'release_book.book_id')
+									.leftJoin('image', 'image.id', 'book.image_id')
+									.where('release.id', '=', rba.release_id)
+									.where('book.id', '=', rba.book_id)
+									.where('release.hidden', '=', false)
+									.where('book.hidden', '=', false)
+									.where('series.hidden', '=', false)
+									.where('user_list_series.show_upcoming', '=', true)
+									.where((eb) =>
+										eb.and([
+											eb.or([
+												eb(
+													'release.lang',
+													'in',
+													eb
+														.selectFrom('user_list_series_lang')
+														.whereRef(
+															'user_list_series_lang.user_id',
+															'=',
+															'user_list_series.user_id',
+														)
+														.whereRef(
+															'user_list_series_lang.series_id',
+															'=',
+															'user_list_series.series_id',
+														)
+														.select('user_list_series_lang.lang'),
+												),
+												eb(
+													eb
+														.selectFrom('user_list_series_lang')
+														.whereRef(
+															'user_list_series_lang.user_id',
+															'=',
+															'user_list_series.user_id',
+														)
+														.whereRef(
+															'user_list_series_lang.series_id',
+															'=',
+															'user_list_series.series_id',
+														)
+														.select((eb) => eb.fn.count('user_list_series_lang.lang').as('count')),
+													'=',
+													0,
+												),
+											]),
+											eb.or([
+												eb(
+													'release.format',
+													'in',
+													eb
+														.selectFrom('user_list_series_format')
+														.whereRef(
+															'user_list_series_format.user_id',
+															'=',
+															'user_list_series.user_id',
+														)
+														.whereRef(
+															'user_list_series_format.series_id',
+															'=',
+															'user_list_series.series_id',
+														)
+														.select('user_list_series_format.format'),
+												),
+												eb(
+													eb
+														.selectFrom('user_list_series_format')
+														.whereRef(
+															'user_list_series_format.user_id',
+															'=',
+															'user_list_series.user_id',
+														)
+														.whereRef(
+															'user_list_series_format.series_id',
+															'=',
+															'user_list_series.series_id',
+														)
+														.select((eb) =>
+															eb.fn.count('user_list_series_format.format').as('count'),
+														),
+													'=',
+													0,
+												),
+											]),
+										]),
+									)
+									.distinctOn(['user_list_series.user_id', 'release.id'])
+									.select([
+										'user_list_series.user_id',
+										'release.title',
+										'release.romaji',
+										'release.id as release_id',
+										'auth_user.display_prefs',
+										'image.filename',
+									]),
+							)
+							.insertInto('notification')
+							.columns([
+								'hidden',
+								'is_read',
+								'message',
+								'notification_type',
+								'user_id',
+								'url',
+								'image_filename',
+							])
+							.expression((eb) =>
+								eb
+									.selectFrom('release_to_add')
+									.select((eb) => [
+										eb.lit(false).as('hidden'),
+										eb.lit(false).as('is_read'),
+										eb
+											.fn('concat', [
+												eb.cast(
+													eb
+														.case()
+														.when(eb.ref('display_prefs', '->>').key('names'), '=', 'native')
+														.then(eb.ref('title'))
+														.when(eb.ref('display_prefs', '->>').key('names'), '=', 'romaji')
+														.then(eb.fn.coalesce('romaji', 'title'))
+														.end(),
+													'text',
+												),
+												eb.cast(eb.val(' '), 'text'),
+												eb.cast(eb.val('has been added to the database.'), 'text'),
+											])
+											.as('message'),
+										eb.val('New related release added').as('notification_type'),
+										'release_to_add.user_id',
+										eb
+											.fn('concat', [
+												eb.cast(eb.val('/release/'), 'text'),
+												eb.cast('release_to_add.release_id', 'text'),
+											])
+											.as('url'),
+										eb.ref('release_to_add.filename').as('image_filename'),
+									]),
+							)
+							.execute();
+					}
+				}
 			}
 			const release_book_add_hist = data.release.books.map((item) => {
 				return { book_id: item.id, change_id: change.change_id, rtype: item.rtype };

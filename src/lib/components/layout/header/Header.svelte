@@ -5,6 +5,7 @@
 	import { page } from '$app/stores';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 	import SearchExpand from '$lib/components/layout/header/SearchExpand.svelte';
+	import Notification from './Notification.svelte';
 
 	export let user: User | null;
 
@@ -43,7 +44,9 @@
 
 		<div class="flex gap-4">
 			<SearchExpand />
-
+			{#if user}
+				<Notification {user} />
+			{/if}
 			<ProfileButton {user} />
 		</div>
 	</div>
