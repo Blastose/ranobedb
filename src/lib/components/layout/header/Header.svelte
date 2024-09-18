@@ -45,7 +45,7 @@
 		<div class="flex gap-4">
 			<SearchExpand />
 			{#if user}
-				<Notification {user} />
+				<Notification />
 			{/if}
 			<ProfileButton {user} />
 		</div>

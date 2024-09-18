@@ -24,6 +24,7 @@ export async function sendRecentlyReleasedNotifications() {
 					'user_list_release.user_id',
 					'release.title',
 					'release.romaji',
+					'release.format',
 					'release.id as release_id',
 					'release.release_date',
 					'auth_user.display_prefs',
@@ -58,7 +59,9 @@ export async function sendRecentlyReleasedNotifications() {
 									.end(),
 								'text',
 							),
-							eb.cast(eb.val(' '), 'text'),
+							eb.cast(eb.val(' ('), 'text'),
+							eb.ref('format'),
+							eb.cast(eb.val(') '), 'text'),
 							eb.cast(eb.val('will be released on'), 'text'),
 							eb.cast(eb.val(' '), 'text'),
 							eb.cast(

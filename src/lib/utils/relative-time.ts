@@ -23,8 +23,8 @@ const formatRelativeTimeOutput = (difference: number, unit: string) => {
 	return `${difference} ${pluralize(unit, difference)} ago`;
 };
 
-export const relativeTime = (date: Date): string => {
-	const unixTimestampSeconds = date.getTime() / 1000;
+export const relativeTime = (date: number): string => {
+	const unixTimestampSeconds = date;
 	const unixTimeNowSeconds = Math.floor(new Date().getTime() / 1000);
 	const differenceInSeconds = unixTimeNowSeconds - unixTimestampSeconds;
 

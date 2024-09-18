@@ -9,20 +9,40 @@ export class Notifications {
 		this.db = db;
 	}
 
+	async hasNotifications(userId: string) {
+		const res = await this.db
+			.selectNoFrom((eb) => [
+				eb
+					.exists(
+						eb
+							.selectFrom('notification')
+							.where('notification.is_read', '=', false)
+							.where('notification.user_id', '=', userId),
+					)
+					.as('notifs'),
+			])
+			.limit(1)
+			.execute();
+
+		return Boolean(res.at(0)?.notifs);
+	}
+
 	async getNotifications(userId: string) {
 		return await this.db
 			.selectFrom('notification')
 			.where('notification.user_id', '=', userId)
-			.select([
+			.select((eb) => [
 				'notification.message',
-				'notification.is_read',
 				'notification.notification_type',
-				'notification.sent',
+				eb
+					.cast(eb.fn('date_part', [eb.val('epoch'), 'notification.sent']), 'integer')
+					.$castTo<number>()
+					.as('sent'),
 				'notification_type',
-				'notification.hidden',
 				'notification.url',
 				'notification.image_filename',
 				'notification.notification_type',
+				'notification.is_read',
 			])
 			.orderBy('notification.sent desc')
 			.limit(10)

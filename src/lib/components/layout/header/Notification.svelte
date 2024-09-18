@@ -1,43 +1,67 @@
 <script lang="ts">
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
-	import type { User } from 'lucia';
-	import { fly } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import Hr from '../Hr.svelte';
-	import { getContext } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { Notification } from '$lib/server/db/notifications/notifications';
-	import type { Writable } from 'svelte/store';
 	import { relativeTime } from '$lib/utils/relative-time';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 
-	export let user: User;
-	// TODO
-	user;
+	let hasNotifs: boolean = false;
 
-	const notifications = getContext<Writable<Notification[]>>('notifications');
+	let notifications: Notification[] | undefined = undefined;
+
+	onMount(async () => {
+		const res = (await (await fetch('/api/i/user/notifications/has')).json()) as boolean;
+		hasNotifs = res;
+	});
 
 	const {
-		elements: { trigger, menu, item, separator, arrow },
+		elements: { trigger, menu, item },
 		states: { open },
 	} = createDropdownMenu({
 		forceVisible: true,
 		preventScroll: false,
 		positioning: { placement: 'bottom-end', gutter: 16 },
 	});
+
+	async function getNotifications() {
+		if (!notifications) {
+			notifications = (await (await fetch('/api/i/user/notifications')).json()) as Notification[];
+		}
+	}
+
+	async function markAllAsRead() {
+		await fetch('/api/i/user/notifications', { method: 'POST' });
+		hasNotifs = false;
+		if (notifications) {
+			for (const n of notifications) {
+				n.is_read = true;
+			}
+		}
+	}
 </script>
 
-<button use:melt={$trigger} type="button" aria-label="Open notifications">
-	{#if $open}
-		<Icon name="bell" />
-	{:else}
-		<span class="relative">
+<button
+	use:melt={$trigger}
+	type="button"
+	aria-label="Open notifications"
+	on:click={getNotifications}
+>
+	<span class="relative">
+		{#if $open}
+			<Icon name="bell" />
+		{:else}
 			<Icon name="bellOutline" />
-			{#if $notifications.length > 0}
-				<span class="absolute w-2 h-2 top-0 right-0 bg-[#7c7bb4] dark:bg-[#c6c5ff] rounded-full"
-				></span>
-			{/if}
-		</span>
-	{/if}
+		{/if}
+		{#if hasNotifs}
+			<span
+				class="absolute w-2 h-2 top-0 right-0 bg-[#7c7bb4] dark:bg-[#c6c5ff] rounded-full"
+				transition:fade
+			></span>
+		{/if}
+	</span>
 </button>
 
 {#if $open}
@@ -52,44 +76,68 @@
 			</div>
 
 			<div class="flex justify-between items-center">
-				<a class="link text-sm" href="/" use:melt={$item}>View all notifications</a>
-				<button class="link text-sm" use:melt={$item}>Mark all as read</button>
+				<a class="link text-sm" href="/notifications" use:melt={$item}>View all notifications</a>
+				<button on:click={markAllAsRead} class="link text-sm" use:melt={$item}
+					>Mark all as read</button
+				>
 			</div>
 		</div>
 		<Hr />
 		<div class="content thin-scrollbar">
 			<div class="flex flex-col">
-				{#each $notifications as notification}
-					<a class="notif" href={notification.url} use:melt={$item}>
-						{#if notification.image_filename}
-							<img
-								src="https://images.ranobedb.org/{notification.image_filename}"
-								alt=""
-								width="240"
-								height="343"
-								class="rounded-lg w-[48px]"
-							/>
-						{:else}
-							<div class="flex items-center justify-center">
-								<Icon name="book" width="24" height="24" />
-							</div>
-						{/if}
-						<div class="flex flex-col">
-							<div class="flex justify-between items-center">
-								<p class="font-semibold text-sm">{notification.notification_type}</p>
-								<time
-									title={notification.sent.toLocaleString()}
-									datetime={notification.sent.toISOString()}
-									class="text-xs opacity-75">{relativeTime(notification.sent)}</time
-								>
-							</div>
+				{#if notifications}
+					{#each notifications as notification}
+						{@const date = new Date(notification.sent)}
+						<a
+							class="notif"
+							href={notification.url}
+							use:melt={$item}
+							on:m-pointermove={(e) => e.preventDefault()}
+						>
+							{#if notification.image_filename}
+								<img
+									src="https://images.ranobedb.org/{notification.image_filename}"
+									alt=""
+									width="240"
+									height="343"
+									class="rounded-lg w-[48px]"
+								/>
+							{:else}
+								<div class="flex items-center justify-center">
+									<Icon name="book" width="24" height="24" />
+								</div>
+							{/if}
+							<div class="flex flex-col">
+								<div class="flex justify-between items-center">
+									<div class="font-semibold text-sm flex gap-2 items-center">
+										<p>{notification.notification_type}</p>
+										{#if !notification.is_read}
+											<span
+												aria-label="Unread"
+												class="block w-2 h-2 bg-[#7c7bb4] dark:bg-[#c6c5ff] rounded-full"
+											></span>
+										{/if}
+									</div>
+									<time
+										title={date.toLocaleString()}
+										datetime={date.toISOString()}
+										class="text-xs opacity-75">{relativeTime(notification.sent)}</time
+									>
+								</div>
 
-							<div class="text-xs">
-								<MarkdownToHtml markdown={notification.message} type="full" />
+								<div class="text-xs">
+									<MarkdownToHtml markdown={notification.message} type="full" />
+								</div>
 							</div>
-						</div>
-					</a>
-				{/each}
+						</a>
+					{:else}
+						<p class="italic">No notifications</p>
+					{/each}
+				{:else}
+					<div class="flex items-center justify-center pb-2">
+						<Icon class="animate-spin" name="loading" height="24" width="24" />
+					</div>
+				{/if}
 			</div>
 		</div>
 	</section>

@@ -364,6 +364,7 @@ export class DBReleaseActions {
 										'user_list_series.user_id',
 										'release.title',
 										'release.romaji',
+										'release.format',
 										'release.id as release_id',
 										'auth_user.display_prefs',
 										'image.filename',
@@ -397,7 +398,9 @@ export class DBReleaseActions {
 														.end(),
 													'text',
 												),
-												eb.cast(eb.val(' '), 'text'),
+												eb.cast(eb.val(' ('), 'text'),
+												eb.ref('format'),
+												eb.cast(eb.val(') '), 'text'),
 												eb.cast(eb.val('has been added to the database.'), 'text'),
 											])
 											.as('message'),
