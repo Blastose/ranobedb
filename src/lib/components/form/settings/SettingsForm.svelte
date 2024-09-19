@@ -96,11 +96,11 @@
 		<h2 class="font-bold text-2xl">List settings</h2>
 		<div class="flex flex-col gap-4 max-w-lg">
 			<section>
-				<ListLabelsForm {listLabelsForm} />
+				<SeriesListSettingsForm {userListSeriesSettingsForm} />
 			</section>
 
 			<section>
-				<SeriesListSettingsForm {userListSeriesSettingsForm} />
+				<ListLabelsForm {listLabelsForm} />
 			</section>
 		</div>
 	{:else if view === 'email'}

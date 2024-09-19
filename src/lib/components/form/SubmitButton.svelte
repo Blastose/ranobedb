@@ -7,6 +7,7 @@
 	export let delayed: boolean;
 	export let name: string | undefined = undefined;
 	export let value: string | undefined = undefined;
+	export let wFull: boolean = true;
 </script>
 
 <button
@@ -14,7 +15,7 @@
 	{value}
 	disabled={disabled || submitting}
 	type="submit"
-	class="primary-btn w-full"
+	class="primary-btn {wFull ? 'w-full' : ''}"
 	class:loading={delayed}
 >
 	{#if !delayed}

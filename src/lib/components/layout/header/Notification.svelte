@@ -70,7 +70,7 @@
 			<div class="flex justify-between items-center">
 				<p class="text-lg font-bold">Notifications</p>
 
-				<a href="/settings" aria-label="Settings" use:melt={$item}>
+				<a href="/settings?view=list" aria-label="Settings" use:melt={$item}>
 					<Icon name="settings" />
 				</a>
 			</div>
@@ -94,9 +94,9 @@
 							use:melt={$item}
 							on:m-pointermove={(e) => e.preventDefault()}
 						>
-							{#if notification.image_filename}
+							{#if notification.image}
 								<img
-									src="https://images.ranobedb.org/{notification.image_filename}"
+									src="https://images.ranobedb.org/{notification.image.filename}"
 									alt=""
 									width="240"
 									height="343"
@@ -131,7 +131,9 @@
 							</div>
 						</a>
 					{:else}
-						<p class="italic">No notifications</p>
+						<div class="px-2 pb-2">
+							<p class="italic">No notifications</p>
+						</div>
 					{/each}
 				{:else}
 					<div class="flex items-center justify-center pb-2">

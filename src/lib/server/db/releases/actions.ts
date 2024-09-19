@@ -379,7 +379,8 @@ export class DBReleaseActions {
 								'notification_type',
 								'user_id',
 								'url',
-								'image_filename',
+								'item_id',
+								'item_name',
 							])
 							.expression((eb) =>
 								eb
@@ -413,7 +414,8 @@ export class DBReleaseActions {
 												eb.cast('release_to_add.release_id', 'text'),
 											])
 											.as('url'),
-										eb.ref('release_to_add.filename').as('image_filename'),
+										eb.ref('release_to_add.release_id').as('item_id'),
+										eb.val('release').as('item_name'),
 									]),
 							)
 							.execute();

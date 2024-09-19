@@ -24,9 +24,9 @@
 				{#each data.notifications as notification}
 					{@const date = new Date(notification.sent * 1000)}
 					<a class="notif" href={notification.url}>
-						{#if notification.image_filename}
+						{#if notification.image}
 							<img
-								src="https://images.ranobedb.org/{notification.image_filename}"
+								src="https://images.ranobedb.org/{notification.image.filename}"
 								alt=""
 								width="240"
 								height="343"
@@ -61,7 +61,9 @@
 						</div>
 					</a>
 				{:else}
-					<p class="italic">No notifications</p>
+					<div class="px-2 pb-2">
+						<p class="italic">No notifications</p>
+					</div>
 				{/each}
 			</div>
 		</PaginationContainer>

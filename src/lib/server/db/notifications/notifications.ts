@@ -1,6 +1,6 @@
 import { type InferResult, type Kysely } from 'kysely';
 import type { DB } from '$lib/server/db/dbTypes';
-import { sendRecentlyReleasedNotifications } from './daily';
+import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
 export class Notifications {
 	db: Kysely<DB>;
@@ -40,14 +40,23 @@ export class Notifications {
 					.as('sent'),
 				'notification_type',
 				'notification.url',
-				'notification.image_filename',
 				'notification.notification_type',
 				'notification.is_read',
 			])
+			.select((eb) =>
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.select(['image.filename'])
+						.innerJoin('release_book', 'notification.item_id', 'release_book.release_id')
+						.innerJoin('book', 'book.id', 'release_book.book_id')
+						.whereRef('image.id', '=', 'book.image_id')
+						.where('book.hidden', '=', false)
+						.limit(1),
+				).as('image'),
+			)
 			.orderBy('notification.sent desc');
 	}
 }
 
 export type Notification = InferResult<ReturnType<Notifications['getNotifications']>>[number];
-
-await sendRecentlyReleasedNotifications();

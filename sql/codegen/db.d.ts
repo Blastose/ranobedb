@@ -176,8 +176,9 @@ export interface Image {
 export interface Notification {
   hidden: boolean;
   id: Generated<number>;
-  image_filename: string | null;
   is_read: boolean;
+  item_id: number | null;
+  item_name: DbItem | null;
   message: string;
   notification_type: string;
   sent: Generated<Timestamp>;
