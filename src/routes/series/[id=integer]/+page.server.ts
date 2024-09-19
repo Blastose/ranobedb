@@ -69,6 +69,7 @@ export const load = async ({ params, locals }) => {
 		.select([
 			'user_list_series.series_id',
 			'user_list_series.show_upcoming',
+			'user_list_series.notify_book',
 			'user_list_series.volumes_read',
 			'user_list_series.score',
 			'user_list_series.started',
@@ -101,6 +102,7 @@ export const load = async ({ params, locals }) => {
 					formats: userSeriesLabels.formats.map((v) => v.format),
 					langs: userSeriesLabels.langs.map((v) => v.lang),
 					show_upcoming: userSeriesLabels.show_upcoming,
+					notify_book: userSeriesLabels.notify_book,
 					volumes_read: userSeriesLabels.volumes_read,
 					notes: userSeriesLabels.notes,
 					started: userSeriesLabels.started,

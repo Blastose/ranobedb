@@ -22,7 +22,7 @@
 		>
 			<div class="flex flex-col gap-4">
 				{#each data.notifications as notification}
-					{@const date = new Date(notification.sent)}
+					{@const date = new Date(notification.sent * 1000)}
 					<a class="notif" href={notification.url}>
 						{#if notification.image_filename}
 							<img

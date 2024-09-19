@@ -20,6 +20,7 @@ CREATE TABLE public.notification (
 );
 
 UPDATE public.user_list_series
-SET notify_book = true;
+SET notify_book = true
+WHERE show_upcoming = true;
 `.execute(db);
 }

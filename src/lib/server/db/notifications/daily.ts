@@ -2,6 +2,7 @@ import { sql } from 'kysely';
 import { db } from '$lib/server/db/db';
 
 export async function sendRecentlyReleasedNotifications() {
+	console.log('Running recently released notifications job');
 	await db
 		.with('release_to_add', (qb) =>
 			qb

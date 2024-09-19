@@ -130,6 +130,7 @@ export class DBSeriesListActions {
 		langs: Language[];
 		formats: ReleaseFormat[];
 		show_upcoming: boolean;
+		notify_book: boolean;
 		selectedCustLabels: number[];
 		volumes_read: Nullish<number>;
 		trx?: Transaction<DB>;
@@ -138,8 +139,8 @@ export class DBSeriesListActions {
 			await trx
 				.insertInto('user_list_series')
 				.values({
-					notify_book: false,
 					show_upcoming: params.show_upcoming,
+					notify_book: params.show_upcoming && params.notify_book,
 					series_id: params.series_id,
 					user_id: params.user_id,
 					volumes_read: params.volumes_read,
@@ -193,6 +194,7 @@ export class DBSeriesListActions {
 		selectedCustLabels: number[];
 		langs: Language[];
 		show_upcoming: boolean;
+		notify_book: boolean;
 		volumes_read: Nullish<number>;
 		formats: ReleaseFormat[];
 	}) {
@@ -212,6 +214,7 @@ export class DBSeriesListActions {
 				.updateTable('user_list_series')
 				.set({
 					show_upcoming: params.show_upcoming,
+					notify_book: params.show_upcoming && params.notify_book,
 					volumes_read: params.volumes_read,
 					last_updated: new Date(),
 					notes: params.notes ?? '',

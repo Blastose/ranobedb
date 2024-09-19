@@ -87,7 +87,7 @@
 			<div class="flex flex-col">
 				{#if notifications}
 					{#each notifications as notification}
-						{@const date = new Date(notification.sent)}
+						{@const date = new Date(notification.sent * 1000)}
 						<a
 							class="notif"
 							href={notification.url}

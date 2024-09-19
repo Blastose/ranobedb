@@ -185,7 +185,13 @@
 							<CheckboxField form={sForm} field="show_upcoming" label="Show upcoming releases" />
 
 							{#if $form.show_upcoming}
-								<p>Show upcoming releases when:</p>
+								<CheckboxField
+									form={sForm}
+									field="notify_book"
+									label="Also notify me when a new release is added"
+								/>
+
+								<p>When:</p>
 								<div class="flex flex-wrap gap-x-2">
 									<div class="max-w-fit">
 										<Keyed>
