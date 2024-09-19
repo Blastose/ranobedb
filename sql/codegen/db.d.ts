@@ -70,7 +70,6 @@ export interface AuthUserCredentials {
 }
 
 export interface Book {
-  c_release_date: Generated<number>;
   description: string;
   description_ja: string;
   hidden: boolean;
