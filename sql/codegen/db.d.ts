@@ -22,7 +22,7 @@ export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "
 
 export type ListLabelTarget = "book" | "both" | "series";
 
-export type ListReleaseStatus = "deleted" | "on loan" | "owned" | "pending" | "unknown";
+export type ListReleaseStatus = "deleted" | "notify" | "on loan" | "owned" | "pending" | "unknown";
 
 export type PublisherRelType = "imprint" | "parent brand" | "parent company" | "subsidiary";
 
@@ -176,9 +176,12 @@ export interface Notification {
   hidden: boolean;
   id: Generated<number>;
   is_read: boolean;
+  item_id: number | null;
+  item_name: DbItem | null;
   message: string;
   notification_type: string;
   sent: Generated<Timestamp>;
+  url: string;
   user_id: string;
 }
 

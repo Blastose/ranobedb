@@ -239,7 +239,14 @@ export const defaultUserListSeriesSettings = {
 	show_upcoming: true,
 } satisfies UserListSeriesSettings;
 
-export const userListReleaseStatus = ['owned', 'deleted', 'on loan', 'pending', 'unknown'] as const;
+export const userListReleaseStatus = [
+	'owned',
+	'deleted',
+	'on loan',
+	'pending',
+	'unknown',
+	'notify',
+] as const;
 
 export const defaultLangPrio: LanguagePriority[] = [
 	{ lang: 'en', romaji: false },

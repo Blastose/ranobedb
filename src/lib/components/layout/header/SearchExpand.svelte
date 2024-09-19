@@ -206,7 +206,7 @@
 		padding: 0.75rem;
 		border-radius: 0.5rem;
 		width: calc(100vw - 48px);
-		right: calc(-48px);
+		right: -88px;
 		max-height: calc(100dvh - 80px);
 		overflow-y: auto;
 	}
@@ -214,7 +214,7 @@
 	@media (min-width: 500px) {
 		.results-display {
 			width: 200%;
-			max-width: calc(100vw - 128px);
+			max-width: calc(100vw - 156px);
 			right: 0;
 		}
 	}
@@ -256,7 +256,7 @@
 		padding-right: 2.5rem;
 	}
 
-	@media (min-width: 350px) {
+	@media (min-width: 380px) {
 		.input.search-input {
 			max-width: 156px;
 		}

@@ -124,7 +124,8 @@ CREATE TYPE public.list_release_status AS ENUM (
     'pending',
     'on loan',
     'deleted',
-    'unknown'
+    'unknown',
+    'notify'
 );
 
 CREATE TYPE public.list_label_target AS ENUM ('both', 'book', 'series');
@@ -182,12 +183,15 @@ CREATE TABLE public.email_verification_token (
 
 CREATE TABLE public.notification (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    item_id integer,
+    item_name db_item,
     sent timestamptz NOT NULL DEFAULT NOW(),
     is_read boolean NOT NULL,
     hidden boolean NOT NULL,
     notification_type text NOT NULL,
     message text NOT NULL,
     user_id text NOT NULL,
+    url text NOT NULL,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id)
 );
 
@@ -663,7 +667,7 @@ CREATE TABLE public.user_list_series_format (
 
 CREATE TABLE public.user_list_settings (
     user_id text NOT NULL,
-    default_series_settings JSONB NOT NULL DEFAULT '{"formats": [], "langs": ["en"], "notify_book": false, "readingStatus": "Reading", "show_upcoming": true}'::jsonb,
+    default_series_settings JSONB NOT NULL DEFAULT '{"formats": [], "langs": ["en"], "notify_book": true, "readingStatus": "Reading", "show_upcoming": true}'::jsonb,
     default_book_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
     default_release_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),

@@ -36,6 +36,7 @@ import {
 } from '$lib/server/rate-limiter/rate-limiter.js';
 import { getMode } from '$lib/mode/mode.js';
 import { arrayDiff, arrayIntersection } from '$lib/db/array.js';
+import { sql } from 'kysely';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -277,6 +278,107 @@ export const actions = {
 		});
 	},
 
+	serieslistsettingsapplyall: async ({ request, locals }) => {
+		if (!locals.user) return fail(401);
+		const userListSeriesSettingsForm = await superValidate(
+			request,
+			zod(userListSeriesSettingsSchema),
+		);
+		if (!userListSeriesSettingsForm.valid) {
+			return fail(400, { userListSeriesSettingsForm });
+		}
+
+		const user = locals.user;
+		const data = userListSeriesSettingsForm.data;
+
+		await db.transaction().execute(async (trx) => {
+			await trx
+				.updateTable('user_list_settings')
+				.set({
+					default_series_settings: JSON.stringify(userListSeriesSettingsForm.data),
+				})
+				.where('user_id', '=', user.id)
+				.execute();
+
+			await trx
+				.updateTable('user_list_series')
+				.set({
+					show_upcoming: data.show_upcoming,
+					notify_book: data.show_upcoming && data.notify_book,
+				})
+				.where('user_list_series.user_id', '=', user.id)
+				.execute();
+
+			await trx
+				.deleteFrom('user_list_series_lang')
+				.where('user_list_series_lang.user_id', '=', user.id)
+				.execute();
+			await trx
+				.deleteFrom('user_list_series_format')
+				.where('user_list_series_format.user_id', '=', user.id)
+				.execute();
+
+			// TODO - Note that this should be sql safe from injections since the langs and formats are valdiated by zod before
+			// We use raw sql because Kysely doesn't support CROSS JOIN's
+			if (data.langs.length > 0) {
+				const langsQuery = `
+				WITH
+					"uls" AS (
+						SELECT
+							"user_list_series"."series_id",
+							"user_list_series"."user_id",
+							lang
+						FROM
+							"user_list_series"
+						CROSS JOIN (VALUES ${data.langs.map((v) => `('${v}')`).join(', ')}) AS lang(lang)
+						WHERE
+							"user_list_series"."user_id" = '${user.id}'
+					)
+				INSERT INTO
+					"user_list_series_lang" ("lang", "series_id", "user_id")
+				SELECT
+					"uls"."lang"::language AS "lang",
+					"uls"."series_id" AS "series_id",
+					"uls"."user_id" AS "user_id"
+				FROM
+					"uls"
+				`;
+				await sql(langsQuery as unknown as TemplateStringsArray).execute(trx);
+			}
+
+			if (data.formats.length > 0) {
+				const formatsQuery = `
+				WITH
+					"uls" AS (
+						SELECT
+							"user_list_series"."series_id",
+							"user_list_series"."user_id",
+							fmt
+						FROM
+							"user_list_series"
+						CROSS JOIN (VALUES ${data.formats.map((v) => `('${v}')`).join(', ')}) AS fmt(fmt)
+						WHERE
+							"user_list_series"."user_id" = '${user.id}'
+					)
+				INSERT INTO
+					"user_list_series_format" ("format", "series_id", "user_id")
+				SELECT
+					"uls"."fmt"::release_format AS "lang",
+					"uls"."series_id" AS "series_id",
+					"uls"."user_id" AS "user_id"
+				FROM
+					"uls"
+				`;
+				await sql(formatsQuery as unknown as TemplateStringsArray).execute(trx);
+			}
+		});
+
+		return message(userListSeriesSettingsForm, {
+			text: 'Applied series list preferences to all series in list!',
+			type: 'success',
+		});
+	},
+
 	sendemailverificationcode: async (event) => {
 		const { request, locals } = event;
 		if (!locals.user) return fail(401);
@@ -514,7 +616,7 @@ export const actions = {
 				}
 
 				for (const add of toAdd) {
-					// TODO This is pretty bad TBH
+					// TODO This is pretty bad TBH because it needs to make a query to get the current highest label id
 					const highestLabelInList = await trx
 						.selectFrom('user_list_label')
 						.where('user_list_label.user_id', '=', user.id)
