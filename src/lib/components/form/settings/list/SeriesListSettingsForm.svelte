@@ -151,7 +151,9 @@
 				<h2 use:melt={$title} class="text-lg font-medium">Warning</h2>
 				<p use:melt={$description}>
 					Are you sure you want to apply these series release settings to all series in your list?
-					This will overwrite all current settings.
+					<br />
+					This will apply the show upcoming releases and notify releases settings to all series in your
+					list and overwrite all current settings.
 				</p>
 				<form
 					action="?/serieslistsettingsapplyall"
