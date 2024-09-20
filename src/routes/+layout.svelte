@@ -10,6 +10,14 @@
 	import { writable } from 'svelte/store';
 	import { getDisplayPrefsUser } from '$lib/display/prefs';
 	import Progress from '$lib/components/layout/Progress.svelte';
+	import { beforeNavigate } from '$app/navigation';
+	import { updated } from '$app/stores';
+
+	beforeNavigate(({ willUnload, to }) => {
+		if ($updated && !willUnload && to?.url) {
+			location.href = to.url.href;
+		}
+	});
 
 	onNavigate((navigation) => {
 		// if (!document.startViewTransition) return;
