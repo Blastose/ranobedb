@@ -49,7 +49,7 @@
 	aria-label="Open notifications"
 	on:click={getNotifications}
 >
-	<span class="relative">
+	<span class="relative block">
 		{#if $open}
 			<Icon name="bell" />
 		{:else}
