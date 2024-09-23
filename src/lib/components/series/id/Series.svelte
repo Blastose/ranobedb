@@ -90,11 +90,11 @@
 			</dd>
 		</div>
 
-		{#if series.end_date === 99999999 && series.books.at(-1)?.release_date !== undefined}
+		{#if series.end_date === 99999999 && series.books.at(-1)?.c_release_date !== undefined}
 			<div>
 				<dt>Latest release:</dt>
 				<dd>
-					{new DateNumber(series.books.at(-1)?.release_date || 99999999).getDateFormatted()}
+					{new DateNumber(series.books.at(-1)?.c_release_date || 99999999).getDateFormatted()}
 				</dd>
 			</div>
 		{/if}
