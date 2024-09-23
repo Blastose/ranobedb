@@ -22,7 +22,8 @@ export async function initDatabase(db: Kysely<DB>) {
 			hidden: false,
 			locked: false,
 			description_ja: '',
-			release_date: 20140101,
+			c_release_date: 99999999,
+			release_date: 0,
 			olang: 'ja',
 		})
 		.returning('book.id')
@@ -46,7 +47,8 @@ export async function initDatabase(db: Kysely<DB>) {
 			change_id: changeBook.id,
 			description: '',
 			description_ja: '',
-			release_date: 20140101,
+			c_release_date: 99999999,
+			release_date: 0,
 			olang: 'ja',
 		})
 		.execute();

@@ -52,7 +52,6 @@ export const load = async ({ params, locals, url }) => {
 	const form = await superValidate(
 		{
 			lang: lang.data.lang || book.lang,
-			release_date: book.release_date,
 			romaji: bookTitle?.romaji || undefined,
 			title: bookTitle?.title || undefined,
 			books: [

@@ -309,6 +309,8 @@ export const bookSchema = z.object({
 	image_id: z.number().max(2000000).nullish(),
 	olang: z.enum(languagesArray),
 
+	c_release_date: zReleaseDate.nullish(),
+
 	titles: zTitles,
 
 	editions: z
@@ -371,9 +373,6 @@ export const bookSchema = z.object({
 			},
 			{ message: "Cannot name other editions 'Original edition'" },
 		),
-
-	release_date: zReleaseDate,
-
 	comment: zComment,
 });
 

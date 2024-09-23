@@ -82,7 +82,6 @@ describe('users', () => {
 					hidden: false,
 					locked: false,
 					olang: 'ja',
-					release_date: 99999999,
 					titles: [{ lang: 'ja', official: true, title: 'Title' }],
 				},
 			},

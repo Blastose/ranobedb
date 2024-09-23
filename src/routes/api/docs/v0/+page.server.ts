@@ -7,7 +7,7 @@ export const load = async () => {
         romaji: string | null;
         image_id: number | null;
         olang: Language;
-        release_date: number;
+        c_release_date: number;
         title_orig: string | null;
         romaji_orig: string | null;
         image: {
@@ -33,7 +33,7 @@ export const load = async () => {
     image_id: number | null;
     olang: Language;
     locked: boolean;
-    release_date: number;
+    c_release_date: number;
     title: string;
     title_orig: string | null;
     romaji_orig: string | null;
@@ -250,7 +250,7 @@ export const load = async () => {
         romaji: string | null;
         title: string;
         image_id: number | null;
-        release_date: number;
+        c_release_date: number;
         title_orig: string | null;
         romaji_orig: string | null;
         image: {

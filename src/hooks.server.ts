@@ -4,9 +4,11 @@ import { lucia } from '$lib/server/lucia';
 import { getMode } from '$lib/mode/mode';
 import schedule from 'node-schedule';
 import { sendRecentlyReleasedNotifications } from '$lib/server/db/cron/release';
+import { updateBookReleaseDate } from '$lib/server/db/cron/book';
 
-schedule.scheduleJob('0 0 * * *', function () {
-	sendRecentlyReleasedNotifications();
+schedule.scheduleJob('0 0 * * *', async function () {
+	await sendRecentlyReleasedNotifications();
+	await updateBookReleaseDate();
 });
 
 export const handle: Handle = async ({ event, resolve }) => {

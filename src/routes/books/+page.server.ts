@@ -64,9 +64,9 @@ export const load = async ({ url, locals }) => {
 			(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric desc`,
 		);
 	} else if (sort === 'Release date asc') {
-		query = query.orderBy('cte_book.release_date asc');
+		query = query.orderBy('cte_book.c_release_date asc');
 	} else if (sort === 'Release date desc') {
-		query = query.orderBy('cte_book.release_date desc');
+		query = query.orderBy('cte_book.c_release_date desc');
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query
@@ -93,7 +93,7 @@ export const load = async ({ url, locals }) => {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
-				'cte_book.release_date',
+				'cte_book.c_release_date',
 				'cte_book.olang',
 			]);
 	}

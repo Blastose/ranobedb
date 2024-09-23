@@ -38,7 +38,6 @@ export const load = async ({ locals, url }) => {
 				},
 			],
 			olang: 'ja',
-			release_date: 99999999,
 		},
 		zod(bookSchema),
 		{ errors: false },

@@ -151,6 +151,7 @@
 		flex-direction: column;
 		gap: 0.5rem;
 		width: 24rem;
+		max-width: calc(100vw - 48px);
 		background-color: var(--bg-light1);
 		border-radius: 0.375rem;
 		overflow: hidden;

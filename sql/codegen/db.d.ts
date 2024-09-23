@@ -70,6 +70,7 @@ export interface AuthUserCredentials {
 }
 
 export interface Book {
+  c_release_date: number;
   description: string;
   description_ja: string;
   hidden: boolean;
@@ -95,6 +96,7 @@ export interface BookEditionHist {
 }
 
 export interface BookHist {
+  c_release_date: Generated<number>;
   change_id: number;
   description: string;
   description_ja: string;
