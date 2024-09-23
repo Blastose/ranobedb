@@ -85,8 +85,6 @@
 		fit={true}
 	/>
 
-	<ReleaseDateInput form={sForm} field="release_date" label="Release date" />
-
 	<Hr />
 
 	<section>

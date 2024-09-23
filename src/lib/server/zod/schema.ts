@@ -371,9 +371,6 @@ export const bookSchema = z.object({
 			},
 			{ message: "Cannot name other editions 'Original edition'" },
 		),
-
-	release_date: zReleaseDate,
-
 	comment: zComment,
 });
 

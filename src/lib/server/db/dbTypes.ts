@@ -91,6 +91,7 @@ export interface Book {
 	olang: Language;
 	locked: boolean;
 	release_date: number;
+	c_release_date: number;
 }
 
 export interface BookEdition {
@@ -114,6 +115,7 @@ export interface BookHist {
 	image_id: number | null;
 	olang: Language;
 	release_date: number;
+	c_release_date: number;
 }
 
 export interface BookStaffAlias {

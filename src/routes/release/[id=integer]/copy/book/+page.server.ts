@@ -46,7 +46,6 @@ export const load = async ({ params, locals, url }) => {
 
 	const form = await superValidate(
 		{
-			release_date: release.release_date,
 			olang: release.lang,
 			titles: [
 				{

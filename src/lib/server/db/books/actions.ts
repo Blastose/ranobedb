@@ -79,7 +79,6 @@ export class DBBookActions {
 					hidden,
 					locked,
 					image_id: data.book.image_id,
-					release_date: data.book.release_date,
 					olang: data.book.olang,
 				})
 				.where('book.id', '=', data.id)
@@ -92,7 +91,8 @@ export class DBBookActions {
 					description_ja: data.book.description_ja ?? '',
 					change_id: change.change_id,
 					image_id: data.book.image_id,
-					release_date: data.book.release_date,
+					release_date: 99999999,
+					c_release_date: 99999999,
 					olang: data.book.olang,
 				})
 				.executeTakeFirstOrThrow();
@@ -194,7 +194,8 @@ export class DBBookActions {
 					description: data.book.description ?? '',
 					description_ja: data.book.description_ja ?? '',
 					image_id: data.book.image_id,
-					release_date: data.book.release_date,
+					release_date: 99999999,
+					c_release_date: 99999999,
 					olang: data.book.olang,
 				})
 				.returning('book.id')
@@ -219,7 +220,8 @@ export class DBBookActions {
 					description: data.book.description ?? '',
 					description_ja: data.book.description_ja ?? '',
 					image_id: data.book.image_id,
-					release_date: data.book.release_date,
+					release_date: 99999999,
+					c_release_date: 99999999,
 					olang: data.book.olang,
 				})
 				.executeTakeFirstOrThrow();

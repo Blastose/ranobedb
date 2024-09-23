@@ -1,4 +1,3 @@
-import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
 	generateBookEditionChangeStringFromEditions,
 	generateBookStaffChangeStringFromStaffs,
@@ -108,14 +107,6 @@ export function getBookDiffs(params: {
 			name: 'Description (Japanese)',
 			words1: prevBookHistEdit.description_ja,
 			words2: bookHistEdit.description_ja,
-		}),
-	);
-	pushIfNotUndefined(
-		diffs,
-		getDiffWords({
-			name: 'Release date',
-			words1: new DateNumber(prevBookHistEdit.release_date).getDateFormatted(),
-			words2: new DateNumber(bookHistEdit.release_date).getDateFormatted(),
 		}),
 	);
 	return diffs;

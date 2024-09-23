@@ -108,7 +108,7 @@
 										<p class="font-bold line-clamp-2">
 											<TitleDisplay obj={book} />
 										</p>
-										<p>{new DateNumber(book.release_date).getDateFormatted()}</p>
+										<p>{new DateNumber(book.c_release_date).getDateFormatted()}</p>
 									</div>
 								</a>
 							{/each}
