@@ -195,7 +195,7 @@ export class DBBookActions {
 					description_ja: data.book.description_ja ?? '',
 					image_id: data.book.image_id,
 					release_date: 99999999,
-					c_release_date: 99999999,
+					c_release_date: data.book.c_release_date ?? 99999999,
 					olang: data.book.olang,
 				})
 				.returning('book.id')
