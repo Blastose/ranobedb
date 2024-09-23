@@ -22,6 +22,5 @@ export async function updateBookReleaseDate() {
 			c_release_date: eb.ref('rel.min_release_date'),
 		}))
 		.whereRef('book.id', '=', 'rel.id')
-		.whereRef('book.c_release_date', '=', 'rel.min_release_date')
 		.execute();
 }
