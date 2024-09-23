@@ -93,7 +93,7 @@ export const load = async ({ url, locals }) => {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
-				'cte_book.release_date',
+				'cte_book.c_release_date',
 				'cte_book.olang',
 			]);
 	}
