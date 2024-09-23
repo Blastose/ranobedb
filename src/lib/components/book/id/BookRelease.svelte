@@ -19,54 +19,33 @@
 	const size = '24';
 </script>
 
-<div class="releases-container-wrapper">
-	<div class="releases-container">
-		<time datetime={releaseDate}>{releaseDate}</time>
+<div class="flex flex-col sm:grid sm:grid-cols-[92px_1fr] gap-x-2">
+	<time datetime={releaseDate}>{releaseDate}</time>
 
-		<div class="flex justify-between items-start">
-			<div class="flex gap-2">
-				<div title={release.format}>
-					{#if release.format === 'print'}
-						<Icon name="bookW" height={size} width={size} />
-					{:else if release.format === 'digital'}
-						<Icon name="laptop" height={size} width={size} />
-					{:else if release.format === 'audio'}
-						<Icon name="headphones" height={size} width={size} />
-					{/if}
-				</div>
-				{#if showLang}
-					<p class="whitespace-nowrap">{release.lang}</p>
+	<div class="flex justify-between items-start">
+		<div class="flex gap-2">
+			<div title={release.format}>
+				{#if release.format === 'print'}
+					<Icon name="bookW" height={size} width={size} />
+				{:else if release.format === 'digital'}
+					<Icon name="laptop" height={size} width={size} />
+				{:else if release.format === 'audio'}
+					<Icon name="headphones" height={size} width={size} />
 				{/if}
-				<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
 			</div>
-
-			{#if showMenus}
-				<div class="flex gap-2 whitespace-nowrap">
-					{#if userListReleaseForm}
-						<ReleaseOptions {release} {userListReleaseForm} />
-					{/if}
-					<ReleaseLinks {release} />
-				</div>
+			{#if showLang}
+				<p class="whitespace-nowrap">{release.lang}</p>
 			{/if}
+			<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
 		</div>
+
+		{#if showMenus}
+			<div class="flex gap-2 whitespace-nowrap">
+				{#if userListReleaseForm}
+					<ReleaseOptions {release} {userListReleaseForm} />
+				{/if}
+				<ReleaseLinks {release} />
+			</div>
+		{/if}
 	</div>
 </div>
-
-<style>
-	.releases-container-wrapper {
-		container-type: inline-size;
-	}
-
-	.releases-container {
-		display: flex;
-		flex-direction: column;
-		column-gap: 0.5rem;
-	}
-
-	@container (min-width: 640px) {
-		.releases-container {
-			display: grid;
-			grid-template-columns: 92px 1fr;
-		}
-	}
-</style>
