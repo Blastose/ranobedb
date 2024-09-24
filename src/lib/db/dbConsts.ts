@@ -239,6 +239,8 @@ export const defaultUserListSeriesSettings = {
 	show_upcoming: true,
 } satisfies UserListSeriesSettings;
 
+export const userListStatus = ['Any', 'In my list', 'Not in my list'] as const;
+
 export const userListReleaseStatus = [
 	'owned',
 	'deleted',

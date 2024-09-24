@@ -7,8 +7,8 @@ import {
 	listLabelsSchema,
 	pageSchema,
 	qSchema,
-	userListBookFiltersObjSchema,
-	userListBookFiltersSchema,
+	bookFiltersSchema,
+	bookFiltersObjSchema,
 } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
@@ -26,7 +26,7 @@ export const load = async ({ url, params, locals }) => {
 	const listLabels = await superValidate(url, zod(listLabelsSchema));
 	const labels = listLabels.valid ? listLabels.data.l : [];
 
-	const form = await superValidate(url, zod(userListBookFiltersSchema));
+	const form = await superValidate(url, zod(bookFiltersSchema));
 
 	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
 
@@ -71,7 +71,7 @@ export const load = async ({ url, params, locals }) => {
 
 	const formObj = await superValidate(
 		{ ...form.data, staff: staff_aliases, p: publishers },
-		zod(userListBookFiltersObjSchema),
+		zod(bookFiltersObjSchema),
 	);
 
 	const sort = form.data.sort;

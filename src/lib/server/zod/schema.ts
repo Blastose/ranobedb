@@ -18,6 +18,7 @@ import {
 	staffTabs,
 	tagTypeArray,
 	userListReleaseStatus,
+	userListStatus,
 } from '$lib/db/dbConsts';
 import { releaseFormatArray } from '$lib/db/dbConsts';
 import { publisherRelTypeArray } from '$lib/db/dbConsts';
@@ -599,6 +600,8 @@ export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
 
 const zQueryLimit = z.number().max(100).default(24);
 
+const zUserList = z.enum(userListStatus).catch('Any');
+
 export const bookFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
@@ -610,10 +613,8 @@ export const bookFiltersSchema = z.object({
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('or'),
 	limit: zQueryLimit,
-});
-
-export const userListBookFiltersSchema = bookFiltersSchema.extend({
 	l: z.array(z.number().max(maxNumberValue)).max(100),
+	list: zUserList,
 });
 
 const zStaff = z
@@ -660,11 +661,8 @@ export const bookFiltersObjSchema = z.object({
 	sl: z.enum(logicalOps).catch('and'),
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),
-	l: z.array(z.number().max(maxNumberValue)).max(1).catch([]),
-});
-
-export const userListBookFiltersObjSchema = bookFiltersObjSchema.extend({
 	l: z.array(z.number().max(maxNumberValue)).max(100),
+	list: zUserList,
 });
 
 export const seriesFiltersSchema = z.object({
