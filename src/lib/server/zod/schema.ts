@@ -724,6 +724,8 @@ export const releaseFiltersSchema = z.object({
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('and'),
 	limit: zQueryLimit,
+	inUpcoming: z.boolean().default(false),
+	list: zUserList,
 });
 export const releaseFiltersObjSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
@@ -731,6 +733,8 @@ export const releaseFiltersObjSchema = z.object({
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),
+	inUpcoming: z.boolean().default(false),
+	list: zUserList,
 });
 export const releaseFiltersCalendarSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
@@ -738,6 +742,8 @@ export const releaseFiltersCalendarSchema = z.object({
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('and'),
+	inUpcoming: z.boolean().default(false),
+	list: zUserList,
 	date: z
 		.string()
 		.nullish()

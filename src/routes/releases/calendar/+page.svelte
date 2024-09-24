@@ -33,7 +33,12 @@
 
 	<div class="flex flex-col gap-2">
 		<form method="get">
-			<ReleaseFilters filtersForm={data.filtersFormObj} showSort={false}>
+			<ReleaseFilters
+				filtersForm={data.filtersFormObj}
+				showSort={false}
+				isUser={Boolean(data.user)}
+				isList={false}
+			>
 				<HiddenInput name="date" value={`${data.year}-${String(data.month).padStart(2, '0')}`} />
 
 				<DateInput bind:vYear={data.year} bind:vMonth={data.month} />
