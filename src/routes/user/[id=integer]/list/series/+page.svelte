@@ -1,8 +1,6 @@
 <script lang="ts">
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
-	import Keyed from '$lib/components/form/Keyed.svelte';
-	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
 	import SeriesFilters from '$lib/components/form/series/filters/SeriesFilters.svelte';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
@@ -29,23 +27,13 @@
 	inputPlaceholder="Search by series title"
 >
 	<svelte:fragment slot="filters">
-		<SeriesFilters filtersForm={data.filtersFormObj} genres={data.genres} let:sForm>
-			<svelte:fragment>
-				<div class="max-w-xs">
-					<MultiSelectField
-						form={sForm}
-						field="l"
-						noneSelectedText="any"
-						allSelectedText="any"
-						labelText="Labels"
-						dropdownOptions={data.allCustLabels.map((v) => ({
-							display: v.label,
-							value: v.id,
-						}))}
-					/>
-				</div>
-			</svelte:fragment>
-		</SeriesFilters>
+		<SeriesFilters
+			filtersForm={data.filtersFormObj}
+			genres={data.genres}
+			isList={true}
+			isUser={true}
+			allCustLabels={data.allCustLabels}
+		></SeriesFilters>
 	</svelte:fragment>
 
 	<svelte:fragment slot="under-heading"

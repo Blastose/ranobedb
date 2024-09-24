@@ -24,6 +24,7 @@ export const load = async ({ url, locals }) => {
 
 	let query = dbReleases.getReleases().where('release.hidden', '=', false);
 
+	const user = locals.user;
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
@@ -165,6 +166,82 @@ export const load = async ({ url, locals }) => {
 						),
 				);
 		}
+	}
+
+	if (user && form.data.list === 'In my list') {
+		query = query.innerJoin('user_list_release', (join) =>
+			join
+				.onRef('user_list_release.release_id', '=', 'release.id')
+				.on('user_list_release.user_id', '=', user.id),
+		);
+	}
+
+	if (user && form.data.list === 'Not in my list') {
+		query = query
+			.leftJoin('user_list_release', (join) =>
+				join
+					.onRef('user_list_release.release_id', '=', 'release.id')
+					.on('user_list_release.user_id', '=', user.id),
+			)
+			.where('user_list_release.release_id', 'is', null);
+	}
+
+	if (user && form.data.inUpcoming) {
+		query = query
+			.innerJoin('release_book', 'release_book.release_id', 'release.id')
+			.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
+			.innerJoin('user_list_series', 'user_list_series.series_id', 'series_book.series_id')
+			.innerJoin('series', 'series.id', 'series_book.series_id')
+			.innerJoin('book', 'book.id', 'release_book.book_id')
+			.where('release.hidden', '=', false)
+			.where('book.hidden', '=', false)
+			.where('series.hidden', '=', false)
+			.where('user_list_series.user_id', '=', user.id)
+			.where('user_list_series.show_upcoming', '=', true)
+			.where((eb) =>
+				eb.and([
+					eb.or([
+						eb(
+							'release.lang',
+							'in',
+							eb
+								.selectFrom('user_list_series_lang')
+								.whereRef('user_list_series_lang.user_id', '=', 'user_list_series.user_id')
+								.whereRef('user_list_series_lang.series_id', '=', 'user_list_series.series_id')
+								.select('user_list_series_lang.lang'),
+						),
+						eb(
+							eb
+								.selectFrom('user_list_series_lang')
+								.whereRef('user_list_series_lang.user_id', '=', 'user_list_series.user_id')
+								.whereRef('user_list_series_lang.series_id', '=', 'user_list_series.series_id')
+								.select((eb) => eb.fn.count('user_list_series_lang.lang').as('count')),
+							'=',
+							0,
+						),
+					]),
+					eb.or([
+						eb(
+							'release.format',
+							'in',
+							eb
+								.selectFrom('user_list_series_format')
+								.whereRef('user_list_series_format.user_id', '=', 'user_list_series.user_id')
+								.whereRef('user_list_series_format.series_id', '=', 'user_list_series.series_id')
+								.select('user_list_series_format.format'),
+						),
+						eb(
+							eb
+								.selectFrom('user_list_series_format')
+								.whereRef('user_list_series_format.user_id', '=', 'user_list_series.user_id')
+								.whereRef('user_list_series_format.series_id', '=', 'user_list_series.series_id')
+								.select((eb) => eb.fn.count('user_list_series_format.format').as('count')),
+							'=',
+							0,
+						),
+					]),
+				]),
+			);
 	}
 
 	const {

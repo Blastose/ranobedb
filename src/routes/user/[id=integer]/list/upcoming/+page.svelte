@@ -11,8 +11,6 @@
 	$: pageTitle = data.isMyList
 		? 'My upcoming releases'
 		: `${data.listUser.username}'s upcoming releases`;
-
-	let onlyInList = false;
 </script>
 
 <PageTitle title={pageTitle} />
@@ -23,16 +21,23 @@
 
 	<div class="flex flex-col gap-2">
 		<form method="get">
-			<ReleaseFilters filtersForm={data.filtersFormObj} showSort={false}>
+			<ReleaseFilters
+				filtersForm={data.filtersFormObj}
+				showSort={false}
+				isList={false}
+				isUser={false}
+			>
 				<div class="w-fit">
 					<SubmitButton text="Filter" delayed={false} submitting={false} />
 				</div>
 			</ReleaseFilters>
 		</form>
-		<label>
-			<input type="checkbox" bind:checked={onlyInList} />
-			<span>Only show releases in list</span>
-		</label>
+		<p>
+			<a class="link" href="/releases/calendar?inUpcoming=on&date={data.currentYearMonth}"
+				>Previous upcoming releases</a
+			>
+		</p>
+
 		{#each Object.entries(data.groupedReleases) as [release_date, releases]}
 			{@const [month, year] = release_date.split('|')}
 			<section>
@@ -47,15 +52,13 @@
 					<h2 class="font-bold">{year === '9999' ? 'TBA' : year}</h2>
 				{/if}
 				{#each releases as release, index}
-					{#if (onlyInList && release.user_list_release) || !onlyInList}
-						<div>
-							<BookRelease
-								release={{ ...release, user_list_release: release.user_list_release || null }}
-								userListReleaseForm={data.userListReleaseForm}
-							/>
-							{#if index !== releases.length - 1}<Hr />{/if}
-						</div>
-					{/if}
+					<div>
+						<BookRelease
+							release={{ ...release, user_list_release: release.user_list_release || null }}
+							userListReleaseForm={data.userListReleaseForm}
+						/>
+						{#if index !== releases.length - 1}<Hr />{/if}
+					</div>
 				{/each}
 			</section>
 		{/each}

@@ -3,7 +3,7 @@ import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely, sq
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
-import { defaultLangPrio } from '$lib/db/dbConsts';
+import { defaultLangPrio, type UserListStatus } from '$lib/db/dbConsts';
 import type { User } from 'lucia';
 import { withSeriesTitleCte } from '../series/series';
 
@@ -615,12 +615,23 @@ export class DBBooks {
 		return query;
 	}
 
-	getBooks(q?: string | null) {
+	getBooks(params?: {
+		q?: string | null;
+		listStatus?: UserListStatus;
+		userId?: string;
+		labelIds?: number[];
+	}) {
+		let labels = undefined;
+		if (params?.labelIds && params?.labelIds.length > 0) {
+			labels = params.labelIds;
+		}
+
+		const userId = params?.userId;
+
 		return this.ranobeDB.db
 			.with('cte_book', () =>
-				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).$if(
-					typeof q === 'string',
-					(qb) =>
+				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.$if(typeof params?.q === 'string', (qb) =>
 						qb.where((eb) =>
 							eb(
 								'book.id',
@@ -630,13 +641,51 @@ export class DBBooks {
 									.select('bt2.book_id')
 									.where((eb) =>
 										eb.or([
-											eb(eb.val(q), sql.raw('<%'), eb.ref('bt2.title')).$castTo<boolean>(),
-											eb(eb.val(q), sql.raw('<%'), eb.ref('bt2.romaji')).$castTo<boolean>(),
+											eb(eb.val(params?.q), sql.raw('<%'), eb.ref('bt2.title')).$castTo<boolean>(),
+											eb(eb.val(params?.q), sql.raw('<%'), eb.ref('bt2.romaji')).$castTo<boolean>(),
 										]),
 									),
 							),
 						),
-				),
+					)
+					.$if(Boolean(labels) && params?.listStatus === 'Not in my list', (qb) =>
+						qb.where((eb) => eb(eb.val(1), '=', eb.val(2))),
+					)
+					.$if(Boolean(labels) && Boolean(userId), (qb) =>
+						qb
+							.innerJoin('user_list_book', (join) =>
+								join
+									.onRef('user_list_book.book_id', '=', 'book.id')
+									.on('user_list_book.user_id', '=', userId!),
+							)
+							.innerJoin('user_list_book_label', (join) =>
+								join
+									.onRef('user_list_book_label.book_id', '=', 'book.id')
+									.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id'),
+							)
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
+									.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
+							)
+							.where('user_list_label.id', 'in', labels!),
+					)
+					.$if(params?.listStatus === 'In my list' && !labels && Boolean(userId), (qb) =>
+						qb.innerJoin('user_list_book', (join) =>
+							join
+								.onRef('user_list_book.book_id', '=', 'book.id')
+								.on('user_list_book.user_id', '=', userId!),
+						),
+					)
+					.$if(params?.listStatus === 'Not in my list' && !labels && Boolean(userId), (qb) =>
+						qb
+							.leftJoin('user_list_book', (join) =>
+								join
+									.onRef('user_list_book.book_id', '=', 'book.id')
+									.on('user_list_book.user_id', '=', userId!),
+							)
+							.where('user_list_book.book_id', 'is', null),
+					),
 			)
 			.selectFrom('cte_book')
 			.select([

@@ -6,8 +6,6 @@
 	import DBShell from '$lib/components/layout/db/DBShell.svelte';
 	import ListTabs from '$lib/components/layout/list/ListTabs.svelte';
 	import LabelContainer from '$lib/components/readinglist/LabelContainer.svelte';
-	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
-	import Keyed from '$lib/components/form/Keyed.svelte';
 	import BookFilters from '$lib/components/form/book/filters/BookFilters.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 
@@ -28,25 +26,8 @@
 	inputPlaceholder="Search by book title"
 >
 	<svelte:fragment slot="filters">
-		<BookFilters filtersForm={data.formObj} let:sForm>
-			<svelte:fragment>
-				<div class="max-w-xs">
-					<Keyed>
-						<MultiSelectField
-							form={sForm}
-							field="l"
-							noneSelectedText="any"
-							allSelectedText="any"
-							labelText="Labels"
-							dropdownOptions={data.allCustLabels.map((v) => ({
-								display: v.label,
-								value: v.id,
-							}))}
-						/>
-					</Keyed>
-				</div>
-			</svelte:fragment>
-		</BookFilters>
+		<BookFilters filtersForm={data.formObj} isUser={true} allCustLabels={data.allCustLabels} isList={true}
+		></BookFilters>
 	</svelte:fragment>
 
 	<svelte:fragment slot="under-heading"

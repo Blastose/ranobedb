@@ -1,4 +1,8 @@
-import { DateNumber, getTodayAsDateNumber } from '$lib/components/form/release/releaseDate.js';
+import {
+	DateNumber,
+	DateNumberGenerator,
+	getTodayAsDateNumber,
+} from '$lib/components/form/release/releaseDate.js';
 import { groupBy } from '$lib/db/array.js';
 import { db } from '$lib/server/db/db';
 import { DBUsers } from '$lib/server/db/user/user.js';
@@ -175,6 +179,9 @@ export const load = async ({ params, locals, url }) => {
 
 	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
 
+	const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
+	const currentYearMonth = `${dateNumber.getYear()}-${dateNumber.getMonth()}`;
+
 	return {
 		isMyList,
 		listUser,
@@ -182,5 +189,6 @@ export const load = async ({ params, locals, url }) => {
 		userListReleaseForm: isMyList ? userListReleaseForm : undefined,
 		filtersForm: form,
 		filtersFormObj: formObj,
+		currentYearMonth,
 	};
 };

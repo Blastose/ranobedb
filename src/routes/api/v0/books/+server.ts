@@ -20,7 +20,7 @@ async function get(params: { url: URL; locals: App.Locals }) {
 
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
-	let query = dbBooks.getBooks(q).where('cte_book.hidden', '=', false);
+	let query = dbBooks.getBooks({ q }).where('cte_book.hidden', '=', false);
 
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;

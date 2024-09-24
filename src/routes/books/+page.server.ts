@@ -1,9 +1,11 @@
 import { DBBooks } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
+import { getUserBookLabels } from '$lib/server/db/user/list.js';
 import {
 	bookFiltersObjSchema,
 	bookFiltersSchema,
+	listLabelsSchema,
 	pageSchema,
 	qSchema,
 } from '$lib/server/zod/schema.js';
@@ -19,10 +21,15 @@ export const load = async ({ url, locals }) => {
 	const q = qS.data.q;
 
 	const form = await superValidate(url, zod(bookFiltersSchema));
+	const listLabels = await superValidate(url, zod(listLabelsSchema));
+	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
-	let query = dbBooks.getBooks(q).where('cte_book.hidden', '=', false);
+
+	let query = dbBooks
+		.getBooks({ q, listStatus: form.data.list, userId: user?.id, labelIds: labels })
+		.where('cte_book.hidden', '=', false);
 
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
@@ -233,6 +240,8 @@ export const load = async ({ url, locals }) => {
 		page: currentPage,
 	});
 
+	const allCustLabels = locals.user ? await getUserBookLabels(locals.user.id, true) : [];
+
 	return {
 		books,
 		count,
@@ -240,5 +249,6 @@ export const load = async ({ url, locals }) => {
 		totalPages,
 		filtersForm: form,
 		filtersFormObj: formObj,
+		allCustLabels,
 	};
 };

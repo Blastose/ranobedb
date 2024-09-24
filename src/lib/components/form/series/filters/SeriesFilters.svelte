@@ -8,6 +8,7 @@
 		releaseFormatArray,
 		seriesSortArray,
 		seriesStatusArray,
+		userListStatus,
 	} from '$lib/db/dbConsts';
 	import Keyed from '../../Keyed.svelte';
 	import SelectField from '../../SelectField.svelte';
@@ -19,14 +20,46 @@
 
 	export let filtersForm: SuperValidated<Infer<typeof seriesFiltersObjSchema>>;
 	export let genres: { id: number; name: string; ttype: TagType; mode: 'incl' | 'excl' | 'none' }[];
-
+	export let isUser: boolean;
+	export let isList: boolean;
+	export let allCustLabels: {
+		id: number;
+		label: string;
+	}[] = [];
 	const sForm = superForm(filtersForm, { dataType: 'json' });
-	const { form } = sForm;
 </script>
 
 <FiltersWrapper>
 	<div class="flex flex-col gap-4">
-		<slot {sForm} />
+		{#if isUser}
+			<div class="flex flex-wrap gap-4">
+				<Keyed>
+					<MultiSelectField
+						form={sForm}
+						field="l"
+						noneSelectedText="any"
+						allSelectedText="any"
+						labelText="Labels"
+						dropdownOptions={allCustLabels.map((v) => ({
+							display: v.label,
+							value: v.id,
+						}))}
+					/>
+				</Keyed>
+				{#if !isList}
+					<SelectField
+						form={sForm}
+						field="list"
+						dropdownOptions={userListStatus.map((v) => ({ display: v, value: v }))}
+						selectedValue={filtersForm.data.list}
+						label="List status"
+						resetPadding={true}
+						showRequiredSymbolIfRequired={false}
+						fit={true}
+					/>
+				{/if}
+			</div>
+		{/if}
 
 		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">
 			<Keyed>

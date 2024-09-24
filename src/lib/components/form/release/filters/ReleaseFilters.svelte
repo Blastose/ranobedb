@@ -7,20 +7,40 @@
 		logicalOps,
 		releaseFormatArray,
 		releaseSortArray,
+		userListStatus,
 	} from '$lib/db/dbConsts';
 	import Keyed from '../../Keyed.svelte';
 	import SelectField from '../../SelectField.svelte';
 	import MultiSelectField from '../../MultiSelectField.svelte';
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
 	import PublisherFilters from '../../filters/publisher/PublisherFilters.svelte';
+	import CheckboxField from '../../CheckboxField.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof releaseFiltersObjSchema>>;
 	export let showSort: boolean = true;
+	export let isUser: boolean;
+	export let isList: boolean;
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 
 <FiltersWrapper>
 	<div class="flex flex-col gap-2">
+		{#if isUser}
+			{#if !isList}
+				<SelectField
+					form={sForm}
+					field="list"
+					dropdownOptions={userListStatus.map((v) => ({ display: v, value: v }))}
+					selectedValue={filtersForm.data.list}
+					label="List status"
+					resetPadding={true}
+					showRequiredSymbolIfRequired={false}
+					fit={true}
+				/>
+			{/if}
+			<CheckboxField form={sForm} field="inUpcoming" label="Release in upcoming" />
+		{/if}
+
 		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">
 			<Keyed>
 				<MultiSelectField
