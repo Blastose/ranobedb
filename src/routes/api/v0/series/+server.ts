@@ -20,7 +20,7 @@ async function get(params: { url: URL; locals: App.Locals }) {
 
 	const form = await superValidate(url, zod(seriesFiltersSchema));
 
-	let query = dbSeries.getSeries(q).where('cte_series.hidden', '=', false);
+	let query = dbSeries.getSeries({ q }).where('cte_series.hidden', '=', false);
 
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;

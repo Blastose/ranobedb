@@ -3,7 +3,7 @@ import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely, sq
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
-import { defaultLangPrio } from '$lib/db/dbConsts';
+import { defaultLangPrio, type UserListStatus } from '$lib/db/dbConsts';
 import { withBookTitleCte } from '../books/books';
 import type { User } from 'lucia';
 
@@ -147,12 +147,22 @@ export class DBSeries {
 		return new this(ranobeDB);
 	}
 
-	getSeries(q?: string | null) {
+	getSeries(params?: {
+		q?: string | null;
+		listStatus?: UserListStatus;
+		userId?: string;
+		labelIds?: number[];
+	}) {
+		let labels = undefined;
+		if (params?.labelIds && params?.labelIds.length > 0) {
+			labels = params.labelIds;
+		}
+		const userId = params?.userId;
+
 		return this.ranobeDB.db
 			.with('cte_series', () =>
-				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).$if(
-					typeof q === 'string',
-					(qb) =>
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
+					.$if(typeof params?.q === 'string', (qb) =>
 						qb.where((eb) =>
 							eb(
 								'series.id',
@@ -162,13 +172,51 @@ export class DBSeries {
 									.select('st2.series_id')
 									.where((eb) =>
 										eb.or([
-											eb(eb.val(q), sql.raw('<%'), eb.ref('st2.title')).$castTo<boolean>(),
-											eb(eb.val(q), sql.raw('<%'), eb.ref('st2.romaji')).$castTo<boolean>(),
+											eb(eb.val(params?.q), sql.raw('<%'), eb.ref('st2.title')).$castTo<boolean>(),
+											eb(eb.val(params?.q), sql.raw('<%'), eb.ref('st2.romaji')).$castTo<boolean>(),
 										]),
 									),
 							),
 						),
-				),
+					)
+					.$if(Boolean(labels) && params?.listStatus === 'Not in my list', (qb) =>
+						qb.where((eb) => eb(eb.val(1), '=', eb.val(2))),
+					)
+					.$if(Boolean(labels) && Boolean(userId), (qb) =>
+						qb
+							.innerJoin('user_list_series', (join) =>
+								join
+									.onRef('user_list_series.series_id', '=', 'series.id')
+									.on('user_list_series.user_id', '=', userId!),
+							)
+							.innerJoin('user_list_series_label', (join) =>
+								join
+									.onRef('user_list_series_label.series_id', '=', 'series.id')
+									.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id'),
+							)
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
+									.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
+							)
+							.where('user_list_label.id', 'in', labels!),
+					)
+					.$if(params?.listStatus === 'In my list' && !labels && Boolean(userId), (qb) =>
+						qb.innerJoin('user_list_series', (join) =>
+							join
+								.onRef('user_list_series.series_id', '=', 'series.id')
+								.on('user_list_series.user_id', '=', userId!),
+						),
+					)
+					.$if(params?.listStatus === 'Not in my list' && !labels && Boolean(userId), (qb) =>
+						qb
+							.leftJoin('user_list_series', (join) =>
+								join
+									.onRef('user_list_series.series_id', '=', 'series.id')
+									.on('user_list_series.user_id', '=', userId!),
+							)
+							.where('user_list_series.series_id', 'is', null),
+					),
 			)
 			.selectFrom('cte_series')
 			.select((eb) => [

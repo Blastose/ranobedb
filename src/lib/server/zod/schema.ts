@@ -683,6 +683,8 @@ export const seriesFiltersSchema = z.object({
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('or'),
 	limit: zQueryLimit,
+	l: z.array(z.number().max(maxNumberValue)).max(100),
+	list: zUserList,
 });
 
 const zTags = z
@@ -712,13 +714,7 @@ export const seriesFiltersObjSchema = z.object({
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),
 	l: z.array(z.number().max(maxNumberValue)).max(100),
-});
-
-export const userListSeriesFiltersSchema = seriesFiltersSchema.extend({
-	l: z.array(z.number().max(maxNumberValue)).max(100),
-});
-export const userListSeriesFiltersObjSchema = seriesFiltersObjSchema.extend({
-	l: z.array(z.number().max(maxNumberValue)).max(100),
+	list: zUserList,
 });
 
 export const releaseFiltersSchema = z.object({

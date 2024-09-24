@@ -1,7 +1,9 @@
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBSeries } from '$lib/server/db/series/series.js';
+import { getUserSeriesLabels } from '$lib/server/db/user/series-list.js';
 import {
+	listLabelsSchema,
 	pageSchema,
 	qSchema,
 	seriesFiltersObjSchema,
@@ -21,8 +23,13 @@ export const load = async ({ url, locals }) => {
 	const dbSeries = DBSeries.fromDB(db, locals.user);
 
 	const form = await superValidate(url, zod(seriesFiltersSchema));
+	const listLabels = await superValidate(url, zod(listLabelsSchema));
+	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
-	let query = dbSeries.getSeries(q).where('cte_series.hidden', '=', false);
+	const user = locals.user;
+	let query = dbSeries
+		.getSeries({ q, listStatus: form.data.list, userId: user?.id, labelIds: labels })
+		.where('cte_series.hidden', '=', false);
 
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
@@ -341,6 +348,8 @@ export const load = async ({ url, locals }) => {
 		page: currentPage,
 	});
 
+	const allCustLabels = locals.user ? await getUserSeriesLabels(locals.user.id, true) : [];
+
 	return {
 		series,
 		count,
@@ -348,5 +357,6 @@ export const load = async ({ url, locals }) => {
 		totalPages,
 		filtersFormObj: formObj,
 		genres: selectedGenresWithMode,
+		allCustLabels,
 	};
 };

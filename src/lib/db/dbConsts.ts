@@ -240,6 +240,7 @@ export const defaultUserListSeriesSettings = {
 } satisfies UserListSeriesSettings;
 
 export const userListStatus = ['Any', 'In my list', 'Not in my list'] as const;
+export type UserListStatus = (typeof userListStatus)[number];
 
 export const userListReleaseStatus = [
 	'owned',

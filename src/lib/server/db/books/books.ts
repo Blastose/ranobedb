@@ -3,7 +3,7 @@ import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely, sq
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
-import { defaultLangPrio, userListStatus } from '$lib/db/dbConsts';
+import { defaultLangPrio, type UserListStatus } from '$lib/db/dbConsts';
 import type { User } from 'lucia';
 import { withSeriesTitleCte } from '../series/series';
 
@@ -617,7 +617,7 @@ export class DBBooks {
 
 	getBooks(params?: {
 		q?: string | null;
-		listStatus?: (typeof userListStatus)[number];
+		listStatus?: UserListStatus;
 		userId?: string;
 		labelIds?: number[];
 	}) {
