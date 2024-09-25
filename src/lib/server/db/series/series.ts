@@ -331,10 +331,16 @@ export class DBSeries {
 					eb
 						.selectFrom('series_book as sb3')
 						.innerJoin('book', 'book.id', 'sb3.book_id')
+						.innerJoin('user_list_book_label', (join) =>
+							join
+								.onRef('user_list_book_label.book_id', '=', 'book.id')
+								.on('user_list_book_label.label_id', '=', 2)
+								.on('user_list_book_label.user_id', '=', userId),
+						)
 						.where('book.hidden', '=', false)
 						.whereRef('sb3.series_id', '=', 'cte_series.id')
 						.select(({ fn }) => [fn.countAll().as('count')]),
-				).as('volumes'),
+				).as('c_vols_read'),
 				jsonObjectFrom(
 					eb
 						.selectFrom('user_list_series_label')
@@ -349,6 +355,14 @@ export class DBSeries {
 						.where('user_list_label.id', '<=', 10)
 						.limit(1),
 				).as('label'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_series')
+						.select(['user_list_series.volumes_read'])
+						.where('user_list_series.user_id', '=', userId)
+						.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+						.limit(1),
+				).as('vols_read'),
 			])
 			.select([
 				'cte_series.id',

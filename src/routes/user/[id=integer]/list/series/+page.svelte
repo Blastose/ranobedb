@@ -50,6 +50,7 @@
 	<svelte:fragment slot="display">
 		<BookImageContainer moreColumns={true}>
 			{#each data.user_list_series as series (series.id)}
+				{@const volumes_read = series.vols_read?.volumes_read ?? series.c_vols_read?.count}
 				{#if series.book}
 					<BookImage
 						book={{
@@ -64,9 +65,15 @@
 						urlPrefix="/series/"
 					>
 						<BookImageBadge badges={[`${series.label?.label}`]} location="top-right" />
-						{#if series.volumes}
-							<BookImageBadge badges={[`${series.volumes.count} vols.`]} location="bottom-right" />
-						{/if}
+
+						<BookImageBadge
+							badges={[
+								volumes_read
+									? `${series.vols_read?.volumes_read ?? (series.c_vols_read?.count || '?')} / ${series.c_num_books} vols.`
+									: `${series.c_num_books} vols.`,
+							]}
+							location="bottom-right"
+						/>
 					</BookImage>
 				{:else}
 					<LinkBox display={series.title ?? ''} href="/series/{series.id}" />
