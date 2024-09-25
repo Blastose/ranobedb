@@ -30,7 +30,7 @@ export const load = async ({ params, locals }) => {
 
 	const dbBooks = DBBooks.fromDB(db, user);
 
-	const res = await dbBooks.getBookWithBookSeries(bookId);
+	const res = await dbBooks.getBookWithBookSeries(bookId, locals.user?.id);
 
 	if (!res) {
 		error(404);

@@ -22,6 +22,7 @@
 	import { buildImageUrl } from '../book';
 	import Tags from '$lib/components/series/Tags.svelte';
 	import LangChip from '$lib/components/titles/LangChip.svelte';
+	import BookImageBadge from '../BookImageBadge.svelte';
 
 	export let book: BookOne;
 	export let book_series: BookSeries | undefined;
@@ -45,18 +46,20 @@
 
 	<div class="-mt-32 z-10 flex flex-col gap-4">
 		<div
-			class="grid grid-cols-1 sm:grid-cols-[200px_1fr] md:grid-cols-[256px_1fr] gap-6 sm:gap-8 pb-4"
+			class="grid grid-cols-1 @sm:grid-cols-[168px_1fr] @md:grid-cols-[256px_1fr] gap-6 sm:gap-4 md:gap-8 pb-4"
 		>
 			<div class="flex flex-col items-center gap-4">
 				{#if book.image}
-					<img
-						width={book.image.width}
-						height={book.image.height}
-						class="max-w-[175px] h-fit sm:max-w-[200px] rounded-md shadow-sm"
-						src={imageUrl}
-						alt=""
-						loading="lazy"
-					/>
+					{#key book.image.id}
+						<img
+							width={book.image.width}
+							height={book.image.height}
+							class="max-w-[196px] h-fit @sm:max-w-[150px] @md:max-w-[200px] rounded-md shadow-sm"
+							src={imageUrl}
+							alt=""
+							loading="lazy"
+						/>
+					{/key}
 				{:else}
 					<div class="bg-neutral-500 w-[240px] h-[320px] rounded-md">
 						<p class="p-4">No cover</p>
@@ -141,25 +144,34 @@
 		<BookReleases releases={book.releases} olang={book.olang} {userListReleaseForm} />
 
 		{#if book_series}
-			<section>
-				<h2 class="font-bold text-lg">Series</h2>
-				<div class="flex flex-col gap-2">
-					<BookCarousel>
-						<svelte:fragment slot="link">
-							<a class="link w-fit font-bold" href="/series/{book_series.id}"
-								><TitleDisplay obj={book_series} /></a
-							>
-						</svelte:fragment>
-						<svelte:fragment slot="items">
-							{#each book_series.books as other_book (other_book.id)}
-								<div class="carousel-item">
-									<BookImage book={other_book} urlPrefix="/book/" />
-								</div>
-							{/each}
-						</svelte:fragment>
-					</BookCarousel>
-				</div>
-			</section>
+			{#key book_series.id}
+				<section>
+					<h2 class="font-bold text-lg">Series</h2>
+					<div class="flex flex-col gap-2">
+						<BookCarousel>
+							<svelte:fragment slot="link">
+								<a class="link w-fit font-bold" href="/series/{book_series.id}"
+									><TitleDisplay obj={book_series} /></a
+								>
+							</svelte:fragment>
+							<svelte:fragment slot="items">
+								{#each book_series.books as other_book (other_book.id)}
+									<div class="carousel-item">
+										<BookImage book={other_book} urlPrefix="/book/">
+											{#if other_book.label}
+												<BookImageBadge
+													badges={[`${other_book.label.label}`]}
+													location="top-right"
+												/>
+											{/if}
+										</BookImage>
+									</div>
+								{/each}
+							</svelte:fragment>
+						</BookCarousel>
+					</div>
+				</section>
+			{/key}
 		{/if}
 	</div>
 </div>

@@ -124,10 +124,10 @@ export class DBBooks {
 		return new this(ranobeDB);
 	}
 
-	async getBookWithBookSeries(id: number) {
+	async getBookWithBookSeries(id: number, userId?: string) {
 		const [book, book_series] = await Promise.all([
 			this.getBook(id).executeTakeFirst(),
-			this.getBookSeries(id).executeTakeFirst(),
+			this.getBookSeries(id, userId).executeTakeFirst(),
 		]);
 
 		if (!book) {
@@ -137,7 +137,7 @@ export class DBBooks {
 		return { book, book_series };
 	}
 
-	getBookSeries(id: number) {
+	getBookSeries(id: number, userId?: string) {
 		return this.ranobeDB.db
 			.with('cte_book_2', () =>
 				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs).where((eb) =>
@@ -182,6 +182,24 @@ export class DBBooks {
 									.whereRef('image.id', '=', 'cte_book_2.image_id')
 									.limit(1),
 							).as('image'),
+						)
+						.$if(typeof userId === 'string', (qb) =>
+							qb.select((eb) =>
+								jsonObjectFrom(
+									eb
+										.selectFrom('user_list_book_label')
+										.innerJoin('user_list_label', (join) =>
+											join
+												.onRef('user_list_book_label.label_id', '=', 'user_list_label.id')
+												.onRef('user_list_book_label.user_id', '=', 'user_list_label.user_id')
+												.onRef('user_list_book_label.book_id', '=', 'cte_book_2.id'),
+										)
+										.select('user_list_label.label')
+										.where('user_list_label.user_id', '=', String(userId))
+										.where('user_list_label.id', '<=', 10)
+										.limit(1),
+								).as('label'),
+							),
 						)
 						.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
 						.whereRef('series_book.series_id', '=', 'cte_series.id')

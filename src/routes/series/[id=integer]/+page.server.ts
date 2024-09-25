@@ -17,7 +17,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 export const load = async ({ params, locals }) => {
 	const id = Number(params.id);
 	const dbSeries = DBSeries.fromDB(db, locals.user);
-	const series = await dbSeries.getSeriesOne(id).limit(1).executeTakeFirst();
+	const series = await dbSeries.getSeriesOne(id, locals.user?.id).limit(1).executeTakeFirst();
 
 	if (!series) {
 		error(404);

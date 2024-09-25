@@ -26,6 +26,7 @@
 	import { page } from '$app/stores';
 	import Tags from '../Tags.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
+	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -181,7 +182,11 @@
 		{#if series.books.length > 0}
 			<BookImageContainer moreColumns={true}>
 				{#each series.books as book (book.id)}
-					<BookImage {book} urlPrefix="/book/" />
+					<BookImage {book} urlPrefix="/book/">
+						{#if book.label}
+							<BookImageBadge badges={[`${book.label.label}`]} location="top-right" />
+						{/if}
+					</BookImage>
 				{/each}
 			</BookImageContainer>
 		{:else}
