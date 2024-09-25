@@ -3,7 +3,7 @@ import { languageSchema, releaseSchema, revisionSchema } from '$lib/server/zod/s
 import { error, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { hasAddPerms, hasVisibilityPerms } from '$lib/db/permissions';
+import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { db } from '$lib/server/db/db.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
@@ -39,7 +39,8 @@ export const load = async ({ params, locals, url }) => {
 			error(403);
 		}
 	}
-	if (!hasAddPerms(user)) {
+	// Let users with edit perms add new releases
+	if (!hasEditPerms(user)) {
 		error(403, { missingPerm: 'add' });
 	}
 

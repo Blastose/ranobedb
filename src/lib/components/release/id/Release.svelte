@@ -12,6 +12,7 @@
 	import ReleaseOptions from '$lib/components/book/id/ReleaseOptions.svelte';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
+	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 
 	export let release: Release;
 	export let revision: number | undefined;
@@ -128,7 +129,11 @@
 		{#if release.books.length > 0}
 			<BookImageContainer moreColumns={true}>
 				{#each release.books as book (book.id)}
-					<BookImage {book} urlPrefix="/book/" />
+					<BookImage {book} urlPrefix="/book/">
+						{#if book.label}
+							<BookImageBadge badges={[book.label.label]} location="top-right" />
+						{/if}
+					</BookImage>
 				{/each}
 			</BookImageContainer>
 		{:else}
