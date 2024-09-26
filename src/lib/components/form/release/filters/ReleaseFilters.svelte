@@ -38,7 +38,11 @@
 					fit={true}
 				/>
 			{/if}
-			<CheckboxField form={sForm} field="inUpcoming" label="Release in upcoming" />
+			<CheckboxField
+				form={sForm}
+				field="inUpcoming"
+				label="Release in upcoming/previously released"
+			/>
 		{/if}
 
 		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">

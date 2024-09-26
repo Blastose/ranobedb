@@ -4,7 +4,7 @@ import { message, setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
-import { hasAddPerms } from '$lib/db/permissions';
+import { hasEditPerms } from '$lib/db/permissions';
 import { DBReleaseActions } from '$lib/server/db/releases/actions.js';
 import { db } from '$lib/server/db/db.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
@@ -16,8 +16,9 @@ export const load = async ({ locals, url }) => {
 		redirect(302, buildRedirectUrl(url, '/login'));
 	}
 
-	if (!hasAddPerms(locals.user)) {
-		error(403, { missingPerm: 'add' });
+	// Let users with edit perms add new releases
+	if (!hasEditPerms(locals.user)) {
+		error(403, { missingPerm: 'edit' });
 	}
 
 	const form = await superValidate(
@@ -37,7 +38,8 @@ export const actions = {
 		if (!locals.user) return fail(401);
 
 		const form = await superValidate(request, zod(releaseSchema));
-		if (!hasAddPerms(locals.user)) {
+		// Let users with edit perms add new releases
+		if (!hasEditPerms(locals.user)) {
 			return fail(403, { form });
 		}
 

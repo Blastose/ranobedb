@@ -4,6 +4,7 @@
 	import BookFilters from '$lib/components/form/book/filters/BookFilters.svelte';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
+	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 
 	export let data;
 </script>
@@ -40,7 +41,11 @@
 						title_orig: book.title_orig,
 					}}
 					urlPrefix="/book/"
-				></BookImage>
+				>
+					{#if book.label}
+						<BookImageBadge badges={[book.label.label]} location="top-right" />
+					{/if}
+				</BookImage>
 			{/each}
 		</BookImageContainer>
 	</svelte:fragment>

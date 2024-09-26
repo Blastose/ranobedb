@@ -45,6 +45,9 @@
 						}}
 						urlPrefix="/series/"
 					>
+						{#if series.label}
+							<BookImageBadge badges={[series.label.label]} location="top-right" />
+						{/if}
 						{#if series.volumes}
 							<BookImageBadge badges={[`${series.volumes.count} vols.`]} location="bottom-right" />
 						{/if}

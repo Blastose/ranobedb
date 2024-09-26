@@ -250,6 +250,24 @@ export class DBSeries {
 						.select(({ fn }) => [fn.countAll().as('count')]),
 				).as('volumes'),
 			])
+			.$if(typeof userId === 'string', (qb) =>
+				qb.select((eb) =>
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_series_label')
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_series_label.label_id', '=', 'user_list_label.id')
+									.onRef('user_list_series_label.user_id', '=', 'user_list_label.user_id')
+									.onRef('user_list_series_label.series_id', '=', 'cte_series.id'),
+							)
+							.select('user_list_label.label')
+							.where('user_list_label.user_id', '=', String(userId))
+							.where('user_list_label.id', '<=', 10)
+							.limit(1),
+					).as('label'),
+				),
+			)
 			.select([
 				'cte_series.id',
 				'cte_series.hidden',
@@ -378,7 +396,7 @@ export class DBSeries {
 			]);
 	}
 
-	getSeriesOne(id: number) {
+	getSeriesOne(id: number, userId?: string) {
 		return this.ranobeDB.db
 			.with('cte_book', () =>
 				withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
@@ -459,6 +477,24 @@ export class DBSeries {
 									.selectAll('image')
 									.limit(1),
 							).as('image'),
+						)
+						.$if(typeof userId === 'string', (qb) =>
+							qb.select((eb) =>
+								jsonObjectFrom(
+									eb
+										.selectFrom('user_list_book_label')
+										.innerJoin('user_list_label', (join) =>
+											join
+												.onRef('user_list_book_label.label_id', '=', 'user_list_label.id')
+												.onRef('user_list_book_label.user_id', '=', 'user_list_label.user_id')
+												.onRef('user_list_book_label.book_id', '=', 'cte_book.id'),
+										)
+										.select('user_list_label.label')
+										.where('user_list_label.user_id', '=', String(userId))
+										.where('user_list_label.id', '<=', 10)
+										.limit(1),
+								).as('label'),
+							),
 						)
 						.where('cte_book.hidden', '=', false)
 						.whereRef('series_book.series_id', '=', 'cte_series.id')

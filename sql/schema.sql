@@ -684,7 +684,10 @@ CREATE INDEX release_publisher_publisher_id_idx ON public.release_publisher USIN
 
 CREATE INDEX series_book_book_id_idx ON public.series_book USING btree (book_id);
 
+-- TODO This book and series index for user lists is needed because their respective ids are in a composite PK as the last item
 CREATE INDEX user_list_book_label_book_id_idx ON public.user_list_book_label USING btree (book_id);
+
+CREATE INDEX user_list_series_label_series_id_idx ON public.user_list_series_label USING btree (series_id);
 
 -- TODO This index is because the PK on staff_alias_hist uses (aid, change_id), which means we don't get the benefit of an index on change_id when joining
 CREATE INDEX IF NOT EXISTS staff_alias_hist_change_id_idx ON public.staff_alias_hist USING btree (change_id);
