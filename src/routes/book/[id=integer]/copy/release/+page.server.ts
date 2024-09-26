@@ -41,7 +41,7 @@ export const load = async ({ params, locals, url }) => {
 	}
 	// Let users with edit perms add new releases
 	if (!hasEditPerms(user)) {
-		error(403, { missingPerm: 'add' });
+		error(403, { missingPerm: 'edit' });
 	}
 
 	const lang = await superValidate(url, zod(languageSchema));

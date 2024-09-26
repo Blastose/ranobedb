@@ -18,7 +18,7 @@ export const load = async ({ locals, url }) => {
 
 	// Let users with edit perms add new releases
 	if (!hasEditPerms(locals.user)) {
-		error(403, { missingPerm: 'add' });
+		error(403, { missingPerm: 'edit' });
 	}
 
 	const form = await superValidate(
