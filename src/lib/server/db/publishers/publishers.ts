@@ -1,6 +1,6 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
-import type { InferResult, Kysely } from 'kysely';
+import { sql, type InferResult, type Kysely } from 'kysely';
 import { DBBooks } from '../books/books';
 import type { DB, ReleasePublisherType } from '$lib/server/db/dbTypes';
 import type { User } from 'lucia';
@@ -240,6 +240,9 @@ export class DBPublishers {
 				'cte_book.title',
 				'cte_book.title_orig',
 			])
+			.orderBy(
+				(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
+			)
 			.clearOrderBy();
 	}
 
@@ -330,7 +333,10 @@ export class DBPublishers {
 				'cte_series.romaji_orig',
 				'cte_series.title_orig',
 				'cte_series.title',
-			]);
+			])
+			.orderBy(
+				(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+			);
 	}
 
 	getSeriesBelongingToPublisherCount(publisherId: number) {
@@ -355,7 +361,10 @@ export class DBPublishers {
 			.select('release_publisher.publisher_type')
 			.where('release.hidden', '=', false)
 			.where('publisher.id', '=', publisherId)
-			.orderBy('release.release_date desc');
+			.orderBy('release.release_date desc')
+			.orderBy(
+				(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
+			);
 	}
 
 	async getWorksPaged(params: {
