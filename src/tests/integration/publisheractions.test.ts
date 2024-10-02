@@ -3,7 +3,7 @@ import { clearDatabase, db, initDatabase, ranobeBot } from './test-setup';
 import { DBPublisherActions } from '$lib/server/db/publishers/actions';
 import { DBPublishers, type PublisherEdit } from '$lib/server/db/publishers/publishers';
 import { setupPublisherEditObjsForEqualityTest } from '$lib/db/obj';
-import type { MaybePromise } from '@sveltejs/kit';
+import type { MaybePromise } from '$lib/utils/types';
 
 beforeAll(async () => {
 	await clearDatabase(db);

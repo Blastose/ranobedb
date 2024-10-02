@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { clearDatabase, db, initDatabase, ranobeBot } from './test-setup';
 import { DBStaffActions } from '$lib/server/db/staff/actions';
 import { DBStaff, type StaffEdit } from '$lib/server/db/staff/staff';
-import type { MaybePromise } from '@sveltejs/kit';
+import type { MaybePromise } from '$lib/utils/types';
 import { setupStaffEditObjsForEqualityTest } from '$lib/db/obj';
 
 beforeAll(async () => {

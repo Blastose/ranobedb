@@ -17,7 +17,7 @@ const db = new Kysely<DB>({
 });
 
 test.describe('auth', () => {
-	test('user can verify their email', async ({ page }) => {
+	test('user can verify their email with verification code', async ({ page }) => {
 		const dbUsers = new DBUsers(db);
 		const createdUser1 = await dbUsers.createUser({
 			email: 'aaaa+4231@aaaa.ca',
