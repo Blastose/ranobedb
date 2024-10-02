@@ -38,7 +38,7 @@
 		<section>
 			<h2 class="text-lg font-bold">Other names</h2>
 
-			{#each staff.aliases as alias (alias.id)}
+			{#each staff.aliases.filter((v) => v.main_alias === false) as alias (alias.id)}
 				<p><NameDisplay obj={alias} /></p>
 			{:else}
 				<p>No other names</p>
@@ -83,6 +83,12 @@
 	<Hr />
 
 	<div class="mt-2">
-		<Works {currentPage} {results} {totalPages} {works} />
+		<Works
+			{currentPage}
+			{results}
+			{totalPages}
+			{works}
+			staffId={staff.aliases.find((v) => v.main_alias == true)?.id ?? -1}
+		/>
 	</div>
 </DBItemShell>

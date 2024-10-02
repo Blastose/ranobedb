@@ -83,6 +83,6 @@
 	<Hr />
 
 	<div class="mt-2">
-		<Works {currentPage} {results} {totalPages} {works} />
+		<Works {currentPage} {results} {totalPages} {works} publisherId={publisher.id} />
 	</div>
 </DBItemShell>

@@ -9,6 +9,7 @@
 	import { publisherTabs, publisherTabsIconsMap } from '$lib/db/dbConsts';
 	import type { PublisherWorks } from '$lib/server/db/publishers/publishers';
 
+	export let publisherId: number;
 	export let works: PublisherWorks;
 	export let results: string;
 	export let currentPage: number;
@@ -29,6 +30,8 @@
 
 <section class="flex flex-col gap-2">
 	<Tabs tabs={publisherTabs} currentTab={works.type} tabsIcons={publisherTabsIconsMap} />
+
+	<a class="link w-fit" href="/{works.type}?p={publisherId}">Filter results</a>
 
 	<PaginationContainer
 		{currentPage}

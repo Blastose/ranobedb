@@ -32,11 +32,14 @@
 				</div>
 			</ReleaseFilters>
 		</form>
-		<p>
-			<a class="link" href="/releases/calendar?inUpcoming=on&date={data.currentYearMonth}"
-				>Previous upcoming releases</a
-			>
-		</p>
+
+		{#if data.isMyList}
+			<p>
+				<a class="link" href="/releases/calendar?inUpcoming=on&date={data.currentYearMonth}"
+					>Previous upcoming releases</a
+				>
+			</p>
+		{/if}
 
 		{#each Object.entries(data.groupedReleases) as [release_date, releases]}
 			{@const [month, year] = release_date.split('|')}

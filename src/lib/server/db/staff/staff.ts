@@ -1,6 +1,6 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
-import { Kysely, type InferResult } from 'kysely';
+import { Kysely, sql, type InferResult } from 'kysely';
 import { DBBooks, withBookTitleCte } from '../books/books';
 import type { DB, StaffRole } from '$lib/server/db/dbTypes';
 import type { User } from 'lucia';
@@ -44,7 +44,6 @@ export class DBStaff {
 					eb
 						.selectFrom('staff_alias as all_aliases')
 						.whereRef('all_aliases.staff_id', '=', 'staff.id')
-						.where('all_aliases.main_alias', '=', false)
 						.selectAll('all_aliases')
 						.orderBy((eb) => eb.fn.coalesce('all_aliases.romaji', 'all_aliases.name')),
 				).as('aliases'),
@@ -233,7 +232,10 @@ export class DBStaff {
 				'staff_alias.main_alias',
 				'staff_alias.staff_id',
 				'book_staff_alias.note',
-			]);
+			])
+			.orderBy(
+				(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
+			);
 	}
 
 	getSeriesBelongingToStaff(staffId: number) {
@@ -312,7 +314,10 @@ export class DBStaff {
 				'cte_series.romaji_orig',
 				'cte_series.title_orig',
 				'cte_series.title',
-			]);
+			])
+			.orderBy(
+				(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+			);
 	}
 
 	async getWorksPaged(params: {

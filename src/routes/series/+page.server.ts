@@ -75,7 +75,7 @@ export const load = async ({ url, locals }) => {
 		mode: formSelectedTags.find((vv) => vv.id === v.id)?.mode ?? 'incl',
 	}));
 
-	const [staff_aliases, publishers] = await Promise.all([
+	const [staff_aliases, publishers, staff_ids] = await Promise.all([
 		await db
 			.selectFrom('staff_alias')
 			.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
@@ -88,6 +88,13 @@ export const load = async ({ url, locals }) => {
 			.where('publisher.hidden', '=', false)
 			.where('publisher.id', 'in', form.data.p.length > 0 ? form.data.p : [-1])
 			.select(['publisher.id', 'publisher.name', 'publisher.romaji'])
+			.execute(),
+		await db
+			.selectFrom('staff')
+			.innerJoin('staff_alias', 'staff_alias.staff_id', 'staff.id')
+			.where('staff_alias.id', 'in', form.data.staff.length > 0 ? form.data.staff : [-1])
+			.groupBy('staff.id')
+			.select('staff.id')
 			.execute(),
 	]);
 
@@ -282,23 +289,28 @@ export const load = async ({ url, locals }) => {
 							.innerJoin('book_staff_alias', (join) =>
 								join.onRef('book_staff_alias.book_id', '=', 'series_book.book_id'),
 							)
+							.innerJoin('staff_alias', 'staff_alias.id', 'book_staff_alias.staff_alias_id')
 							.$if(form.data.sl === 'or', (qb2) =>
 								qb2.where((eb2) => {
 									const filters: Expression<SqlBool>[] = [];
-									for (const aid of form.data.staff) {
-										filters.push(eb2('book_staff_alias.staff_alias_id', '=', aid));
+									for (const staff of staff_ids) {
+										filters.push(eb2('staff_alias.staff_id', '=', staff.id));
 									}
 									return eb2.or(filters);
 								}),
 							)
 							.$if(form.data.sl === 'and', (qb2) =>
 								qb2
-									.where('book_staff_alias.staff_alias_id', 'in', form.data.staff)
+									.where(
+										'staff_alias.staff_id',
+										'in',
+										staff_ids.map((v) => v.id),
+									)
 									.groupBy('series.id')
 									.having(
-										(eb) => eb.fn.count('book_staff_alias.staff_alias_id').distinct(),
+										(eb) => eb.fn.count('staff_alias.staff_id').distinct(),
 										'=',
-										form.data.staff.length,
+										staff_ids.length,
 									),
 							),
 					)

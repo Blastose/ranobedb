@@ -7,6 +7,7 @@
 	import { staffTabs, staffTabsIconsMap } from '$lib/db/dbConsts';
 	import type { StaffWorks } from '$lib/server/db/staff/staff';
 
+	export let staffId: number;
 	export let works: StaffWorks;
 	export let results: string;
 	export let currentPage: number;
@@ -17,6 +18,8 @@
 
 <section class="flex flex-col gap-2">
 	<Tabs tabs={staffTabs} currentTab={works.type} tabsIcons={staffTabsIconsMap} />
+
+	<a class="link w-fit" href="/{works.type}?staff={staffId}">Filter results</a>
 
 	<PaginationContainer
 		{currentPage}
