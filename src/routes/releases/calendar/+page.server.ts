@@ -49,6 +49,7 @@ export const load = async ({ url, locals }) => {
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 	const useReleasePublisherFilters = form.data.p.length > 0;
+	const useReleaseLabelFilters = form.data.l.length > 0;
 
 	const [publishers] = await Promise.all([
 		await db
@@ -66,7 +67,13 @@ export const load = async ({ url, locals }) => {
 		zod(releaseFiltersObjCalendarSchema),
 	);
 
-	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters || useReleasePublisherFilters) {
+	if (
+		useQuery ||
+		useReleaseLangFilters ||
+		useReleaseFormatFilters ||
+		useReleasePublisherFilters ||
+		useReleaseLabelFilters
+	) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin());
 		if (useQuery) {
 			query = query
@@ -126,6 +133,12 @@ export const load = async ({ url, locals }) => {
 							form.data.p.length,
 						),
 				);
+		}
+		if (useReleaseLabelFilters && locals.user) {
+			query = query
+				.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
+				.where('user_list_release.user_id', '=', locals.user.id)
+				.where('user_list_release.release_status', 'in', form.data.l);
 		}
 	}
 
@@ -244,7 +257,6 @@ export const load = async ({ url, locals }) => {
 	return {
 		groupedReleases,
 		currentPage,
-		filtersForm: form,
 		filtersFormObj: formObj,
 		userListReleaseForm,
 		nextMonth,
