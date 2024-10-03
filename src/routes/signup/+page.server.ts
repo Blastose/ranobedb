@@ -11,6 +11,7 @@ import { db } from '$lib/server/db/db';
 import { validateTurnstile } from '$lib/server/cf.js';
 import { isLimited, signUpLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
+import { EmailVerification } from '$lib/server/email/email';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
@@ -93,6 +94,14 @@ export const actions = {
 				{ status: 500 },
 			);
 		}
+
+		const emailVerification = new EmailVerification(db);
+		const code = await emailVerification.generateEmailVerificationCode(userId, email);
+		await emailVerification.sendVerificationCodeEmail({
+			email: email,
+			verificationCode: code,
+			username: username,
+		});
 
 		flashRedirect(
 			303,

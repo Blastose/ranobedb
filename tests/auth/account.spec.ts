@@ -5,6 +5,7 @@ import pkg from 'pg';
 const { Pool } = pkg;
 import type { DB } from '$lib/server/db/dbTypes';
 import { DBUsers } from '$lib/server/db/user/user';
+import { generateId } from 'lucia';
 
 dotenv.config({ path: '.env.testing' });
 
@@ -17,6 +18,30 @@ const db = new Kysely<DB>({
 });
 
 test.describe('auth', () => {
+	test('user can verify their email right after they sign up', async ({ page }) => {
+		await page.goto('/signup');
+		const email = `${generateId(15)}@a.com`;
+		await page.getByLabel('email').fill(email);
+		await page.getByLabel('username').fill(generateId(15));
+		const password = generateId(15);
+		await page.getByLabel('Password (15+ characters)').fill(password);
+		await page.getByLabel('Confirm password').fill(password);
+		await page
+			.getByLabel('I have read and agree with the privacy policy and terms of use.')
+			.check();
+		await page.getByRole('button', { name: 'Sign Up' }).click();
+		await expect(page).toHaveURL('/welcome');
+		await page.goto('/settings?view=email');
+		await page.getByLabel('Code').first().fill('12345678');
+		await page.getByRole('button', { name: 'Verify' }).click();
+		await expect(page.locator('.toast-container').last()).toHaveText('Invalid code!');
+
+		await page.getByLabel('Code').first().fill('99999999');
+		await page.getByRole('button', { name: 'Verify' }).click();
+
+		await expect(page.getByText('Your email is verified')).toBeVisible();
+	});
+
 	test('user can verify their email with verification code', async ({ page }) => {
 		const dbUsers = new DBUsers(db);
 		const createdUser1 = await dbUsers.createUser({

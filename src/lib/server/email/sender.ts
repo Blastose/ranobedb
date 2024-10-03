@@ -37,7 +37,7 @@ export class EmailBuilder {
 
 	createVerificationCodeEmail(name: string, code: string): Email {
 		const body = `<p>Hello ${name},</p>
-<p>To complete the email verification process, please enter the following code into the verification code field.</p>
+<p>To complete the email verification process, please enter the following code into the verification code field at the <a href="https://ranobedb.org/settings?view=email">settings page</a>.</p>
 <p>${code}</p>
 <p>The code will expire in 15 minutes.</p>
 <p>If this request was not made by you, please ignore this email.</p>
