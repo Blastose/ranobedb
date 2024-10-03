@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { clearDatabase, db, initDatabase, ranobeBot } from './test-setup';
 import { DBReleaseActions } from '$lib/server/db/releases/actions';
 import { DBReleases, type ReleaseEdit } from '$lib/server/db/releases/releases';
-import type { MaybePromise } from '@sveltejs/kit';
+import type { MaybePromise } from '$lib/utils/types';
 import { setupReleaseEditObjsForEqualityTest } from '$lib/db/obj';
 
 beforeAll(async () => {

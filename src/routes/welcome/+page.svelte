@@ -22,26 +22,31 @@
 			<ul>
 				<li>
 					<strong>Verify your email:</strong> You can verify your email by going to the
-					<a href="/settings?view=email">email settings page</a> and clicking the Send verification code
-					button. You will receive a code in your email that you need to input to verify your email
+					<a href="/settings?view=email">email settings page</a>. You will receive a code in your
+					email that you need to input to verify your email. If you did not receive a code or your
+					code has expired, you can also request a new code with by clicking the Send verification
+					code button.
 				</li>
 				<li>
 					<strong>Contribute:</strong> After you have verified your email, you can now start
 					contributing to the database. Be sure to read the
 					<a href="/editing-guidelines">editing guidelines</a> before you make any changes. You can
 					also join the <a href="https://discord.gg/ZeAnhGncFx" target="_blank">Discord server</a> if
-					you have any questions about editing
+					you have any questions about editing.
 				</li>
 				<li>
 					<strong>Customize:</strong> On the
 					<a href="/settings?view=display">display settings page</a>, you can customize the way
-					RanobeDB looks. You can change the title display of books as well as the theme of the site
+					RanobeDB looks. You can change the title display of books as well as the theme of the
+					site.
 				</li>
 				<li>
 					<strong>Fill your reading list:</strong> Browse our catalog of <a href="/books">books</a> and
-					add those that interest you to your reading list
+					add those that interest you to your reading list.
 				</li>
-				<li><strong>Explore:</strong> Explore the database and all of the information it offers</li>
+				<li>
+					<strong>Explore:</strong> Explore the database and all of the information it offers.
+				</li>
 			</ul>
 
 			<p>
