@@ -30,8 +30,6 @@ export const load = async ({ url, locals }) => {
 
 	let query = dbReleases
 		.getReleases()
-		.clearSelect()
-		.selectAll('release')
 		.$if(locals.user !== undefined, (qb) =>
 			qb.select((eb) =>
 				jsonObjectFrom(

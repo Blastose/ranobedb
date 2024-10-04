@@ -22,7 +22,7 @@ export const load = async ({ url, locals }) => {
 
 	const dbReleases = DBReleases.fromDB(db, locals.user);
 
-	let query = dbReleases.getReleases().where('release.hidden', '=', false);
+	let query = dbReleases.getReleasesWithImage().where('release.hidden', '=', false);
 
 	const user = locals.user;
 	const useQuery = Boolean(q);
