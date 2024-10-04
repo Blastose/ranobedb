@@ -49,6 +49,13 @@
 									/>
 								{/key}
 							</a>
+						{:else}
+							<a
+								class="bg-neutral-500 rounded-md flex items-center justify-center"
+								href="/book/{book.id}"
+							>
+								<Icon name="book" height="24" width="24" />
+							</a>
 						{/if}
 						<div>
 							<p class="font-bold">
