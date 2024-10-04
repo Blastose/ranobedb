@@ -21,6 +21,7 @@
 	export let showSort: boolean = true;
 	export let isUser: boolean;
 	export let isList: boolean;
+	export let allowPublisherFiltersLogic: boolean = true;
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 
@@ -100,16 +101,18 @@
 
 		<div>
 			<PublisherFilters {filtersForm} />
-			<SelectField
-				form={sForm}
-				field="pl"
-				dropdownOptions={logicalOps.map((v) => ({ display: v, value: v }))}
-				selectedValue={filtersForm.data.pl}
-				label="Release publisher filter logic"
-				resetPadding={true}
-				showRequiredSymbolIfRequired={false}
-				fit={true}
-			/>
+			{#if allowPublisherFiltersLogic}
+				<SelectField
+					form={sForm}
+					field="pl"
+					dropdownOptions={logicalOps.map((v) => ({ display: v, value: v }))}
+					selectedValue={filtersForm.data.pl}
+					label="Release publisher filter logic"
+					resetPadding={true}
+					showRequiredSymbolIfRequired={false}
+					fit={true}
+				/>
+			{/if}
 		</div>
 
 		<slot />
