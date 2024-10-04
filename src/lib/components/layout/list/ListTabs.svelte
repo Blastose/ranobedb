@@ -11,7 +11,7 @@
 		{
 			type: 'Books',
 			key: 'book',
-			url: '',
+			url: 'books',
 		},
 		{
 			type: 'Series',
@@ -40,7 +40,7 @@
 	<div class="grid overflow-x-auto overflow-y-hidden whitespace-nowrap">
 		<nav class="flex gap-4">
 			{#each tabs as tab}
-				{@const active = tab.url === currentTab || (tab.url === '' && currentTab === 'list')}
+				{@const active = tab.url === currentTab}
 				<div class="flex flex-col gap-2">
 					<a
 						class="{active
