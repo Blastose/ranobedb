@@ -187,7 +187,6 @@ export const load = async ({ params, locals, url }) => {
 		listUser,
 		groupedReleases,
 		userListReleaseForm: isMyList ? userListReleaseForm : undefined,
-		filtersForm: form,
 		filtersFormObj: formObj,
 		currentYearMonth,
 	};

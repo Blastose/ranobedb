@@ -1,43 +1,56 @@
 import { DBBooks } from '$lib/server/db/books/books.js';
-import { db } from '$lib/server/db/db.js';
+import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
-import { getUserBookLabels } from '$lib/server/db/user/list.js';
+import { getUserLabelCounts, getUserBookLabels, getUserListCounts } from '$lib/server/db/user/list';
+import { DBUsers } from '$lib/server/db/user/user.js';
 import {
-	bookFiltersObjSchema,
-	bookFiltersSchema,
 	listLabelsSchema,
 	pageSchema,
 	qSchema,
+	bookFiltersSchema,
+	bookFiltersObjSchema,
 } from '$lib/server/zod/schema.js';
+import { error } from '@sveltejs/kit';
 import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
-export const load = async ({ url, locals }) => {
+export const load = async ({ url, params, locals }) => {
+	const user = locals.user;
+	const userIdNumeric = Number(params.id);
 	const page = await superValidate(url, zod(pageSchema));
 	const qS = await superValidate(url, zod(qSchema));
 
 	const currentPage = page.data.page;
 	const q = qS.data.q;
+	const listLabels = await superValidate(url, zod(listLabelsSchema));
+	const labels = listLabels.valid ? listLabels.data.l : [];
 
 	const form = await superValidate(url, zod(bookFiltersSchema));
-	const listLabels = await superValidate(url, zod(listLabelsSchema));
-	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
-	const user = locals.user;
+	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
+
+	if (!listUser) {
+		error(404);
+	}
+
+	const userLabelCounts = await getUserLabelCounts(listUser.id).execute();
+	const userCustLabelCounts = await getUserLabelCounts(listUser.id, 11, 99).execute();
+
 	const dbBooks = DBBooks.fromDB(db, user);
 
-	let query = dbBooks
-		.getBooks({ q, listStatus: form.data.list, userId: user?.id, labelIds: labels })
-		.where('cte_book.hidden', '=', false);
+	let query = dbBooks.getBooksUser({ q, userId: listUser.id, labelIds: labels });
+	query = query.where('cte_book.hidden', '=', false);
 
+	// TODO This is copied from /books/+page.server.ts
+	// Maybe refactor later
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 	const useStaffFilters = form.data.staff.length > 0;
 	const usePublisherFilters = form.data.p.length > 0;
 
-	const [staff_aliases, publishers, staff_ids] = await Promise.all([
+	const [staff_aliases, publishers] = await Promise.all([
 		await db
 			.selectFrom('staff_alias')
 			.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
@@ -50,13 +63,6 @@ export const load = async ({ url, locals }) => {
 			.where('publisher.hidden', '=', false)
 			.where('publisher.id', 'in', form.data.p.length > 0 ? form.data.p : [-1])
 			.select(['publisher.id', 'publisher.name', 'publisher.romaji'])
-			.execute(),
-		await db
-			.selectFrom('staff')
-			.innerJoin('staff_alias', 'staff_alias.staff_id', 'staff.id')
-			.where('staff_alias.id', 'in', form.data.staff.length > 0 ? form.data.staff : [-1])
-			.groupBy('staff.id')
-			.select('staff.id')
 			.execute(),
 	]);
 
@@ -185,28 +191,23 @@ export const load = async ({ url, locals }) => {
 							.innerJoin('book_staff_alias', (join) =>
 								join.onRef('book_staff_alias.book_id', '=', 'book.id'),
 							)
-							.innerJoin('staff_alias', 'staff_alias.id', 'book_staff_alias.staff_alias_id')
 							.$if(form.data.sl === 'or', (qb2) =>
 								qb2.where((eb2) => {
 									const filters: Expression<SqlBool>[] = [];
-									for (const staff of staff_ids) {
-										filters.push(eb2('staff_alias.staff_id', '=', staff.id));
+									for (const aid of form.data.staff) {
+										filters.push(eb2('book_staff_alias.staff_alias_id', '=', aid));
 									}
 									return eb2.or(filters);
 								}),
 							)
 							.$if(form.data.sl === 'and', (qb2) =>
 								qb2
-									.where(
-										'staff_alias.staff_id',
-										'in',
-										staff_ids.map((v) => v.id),
-									)
+									.where('book_staff_alias.staff_alias_id', 'in', form.data.staff)
 									.groupBy('book.id')
 									.having(
-										(eb) => eb.fn.count('staff_alias.staff_id').distinct(),
+										(eb) => eb.fn.count('book_staff_alias.staff_alias_id').distinct(),
 										'=',
-										staff_ids.length,
+										form.data.staff.length,
 									),
 							),
 					)
@@ -243,23 +244,28 @@ export const load = async ({ url, locals }) => {
 		);
 	}
 
-	const {
-		result: books,
-		count,
-		totalPages,
-	} = await paginationBuilderExecuteWithCount(query, {
-		limit: 24,
-		page: currentPage,
-	});
+	const [{ result: books, count, totalPages }, listCounts] = await Promise.all([
+		paginationBuilderExecuteWithCount(query, {
+			limit: 24,
+			page: currentPage,
+		}),
+		getUserListCounts({ userId: listUser.id }),
+	]);
 
-	const allCustLabels = locals.user ? await getUserBookLabels(locals.user.id, true) : [];
+	const allCustLabels = await getUserBookLabels(listUser.id, true);
 
 	return {
 		books,
 		count,
 		currentPage,
 		totalPages,
-		filtersFormObj: formObj,
+		userLabelCounts,
+		userCustLabelCounts,
+		isMyList: user?.id_numeric === userIdNumeric,
+		listUser,
+		labels,
+		listCounts,
 		allCustLabels,
+		formObj,
 	};
 };

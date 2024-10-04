@@ -22,13 +22,14 @@ export const load = async ({ url, locals }) => {
 
 	const dbReleases = DBReleases.fromDB(db, locals.user);
 
-	let query = dbReleases.getReleases().where('release.hidden', '=', false);
+	let query = dbReleases.getReleasesWithImage().where('release.hidden', '=', false);
 
 	const user = locals.user;
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 	const useReleasePublisherFilters = form.data.p.length > 0;
+	const useReleaseLabelFilters = form.data.l.length > 0;
 
 	const [publishers] = await Promise.all([
 		await db
@@ -105,7 +106,13 @@ export const load = async ({ url, locals }) => {
 		);
 	}
 
-	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters || useReleasePublisherFilters) {
+	if (
+		useQuery ||
+		useReleaseLangFilters ||
+		useReleaseFormatFilters ||
+		useReleasePublisherFilters ||
+		useReleaseLabelFilters
+	) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin());
 		if (useQuery && !sort.startsWith('Relevance')) {
 			query = query
@@ -165,6 +172,12 @@ export const load = async ({ url, locals }) => {
 							form.data.p.length,
 						),
 				);
+		}
+		if (useReleaseLabelFilters && locals.user) {
+			query = query
+				.innerJoin('user_list_release', 'user_list_release.release_id', 'release.id')
+				.where('user_list_release.user_id', '=', locals.user.id)
+				.where('user_list_release.release_status', 'in', form.data.l);
 		}
 	}
 
@@ -258,7 +271,6 @@ export const load = async ({ url, locals }) => {
 		count,
 		currentPage,
 		totalPages,
-		filtersForm: form,
 		filtersFormObj: formObj,
 	};
 };

@@ -7,6 +7,7 @@
 		logicalOps,
 		releaseFormatArray,
 		releaseSortArray,
+		userListReleaseStatus,
 		userListStatus,
 	} from '$lib/db/dbConsts';
 	import Keyed from '../../Keyed.svelte';
@@ -20,12 +21,28 @@
 	export let showSort: boolean = true;
 	export let isUser: boolean;
 	export let isList: boolean;
+	export let allowPublisherFiltersLogic: boolean = true;
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 
 <FiltersWrapper>
 	<div class="flex flex-col gap-2">
 		{#if isUser}
+			<div class="max-w-fit">
+				<Keyed>
+					<MultiSelectField
+						form={sForm}
+						field="l"
+						noneSelectedText="any"
+						allSelectedText="any"
+						labelText="List label status"
+						dropdownOptions={userListReleaseStatus.map((v) => ({
+							display: v,
+							value: v,
+						}))}
+					/>
+				</Keyed>
+			</div>
 			{#if !isList}
 				<SelectField
 					form={sForm}
@@ -37,12 +54,12 @@
 					showRequiredSymbolIfRequired={false}
 					fit={true}
 				/>
+				<CheckboxField
+					form={sForm}
+					field="inUpcoming"
+					label="Release in upcoming/previously released"
+				/>
 			{/if}
-			<CheckboxField
-				form={sForm}
-				field="inUpcoming"
-				label="Release in upcoming/previously released"
-			/>
 		{/if}
 
 		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">
@@ -84,16 +101,18 @@
 
 		<div>
 			<PublisherFilters {filtersForm} />
-			<SelectField
-				form={sForm}
-				field="pl"
-				dropdownOptions={logicalOps.map((v) => ({ display: v, value: v }))}
-				selectedValue={filtersForm.data.pl}
-				label="Release publisher filter logic"
-				resetPadding={true}
-				showRequiredSymbolIfRequired={false}
-				fit={true}
-			/>
+			{#if allowPublisherFiltersLogic}
+				<SelectField
+					form={sForm}
+					field="pl"
+					dropdownOptions={logicalOps.map((v) => ({ display: v, value: v }))}
+					selectedValue={filtersForm.data.pl}
+					label="Release publisher filter logic"
+					resetPadding={true}
+					showRequiredSymbolIfRequired={false}
+					fit={true}
+				/>
+			{/if}
 		</div>
 
 		<slot />

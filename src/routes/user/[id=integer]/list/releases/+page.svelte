@@ -3,6 +3,7 @@
 	import ReleaseOptions from '$lib/components/book/id/ReleaseOptions.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
+	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
 	import ListTabs from '$lib/components/layout/list/ListTabs.svelte';
@@ -30,6 +31,15 @@
 	<svelte:fragment slot="under-heading"
 		><ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} /></svelte:fragment
 	>
+	<svelte:fragment slot="filters">
+		<ReleaseFilters
+			filtersForm={data.filtersFormObj}
+			isUser={Boolean(data.user)}
+			isList={true}
+			showSort={false}
+			allowPublisherFiltersLogic={false}
+		/>
+	</svelte:fragment>
 
 	<svelte:fragment slot="display">
 		<div class="flex flex-col gap-2">
@@ -48,6 +58,13 @@
 										loading="lazy"
 									/>
 								{/key}
+							</a>
+						{:else}
+							<a
+								class="bg-neutral-500 rounded-md flex items-center justify-center"
+								href="/book/{book.id}"
+							>
+								<Icon name="book" height="24" width="24" />
 							</a>
 						{/if}
 						<div>

@@ -24,14 +24,7 @@ export class DBReleases {
 	getReleasesWithImage() {
 		return this.ranobeDB.db
 			.selectFrom('release')
-			.select([
-				'release.id',
-				'release.format',
-				'release.title',
-				'release.romaji',
-				'release.lang',
-				'release.release_date',
-			])
+			.selectAll('release')
 			.select((eb) => [
 				jsonObjectFrom(
 					eb
