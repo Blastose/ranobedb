@@ -500,6 +500,54 @@ export class DBSeries {
 						.whereRef('series_book.series_id', '=', 'cte_series.id')
 						.orderBy('sort_order asc'),
 				).as('books'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_series')
+						.select((eb) => eb.fn.avg('user_list_series.score').as('score'))
+						.select((eb) => eb.fn.count('user_list_series.series_id').as('count'))
+						.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+						.where('user_list_series.score', 'is not', null)
+						.groupBy('user_list_series.series_id')
+						.limit(1),
+				).as('rating'),
+				jsonArrayFrom(
+					eb
+						.selectFrom((eb) =>
+							eb
+								.fn('generate_series', [eb.lit(1), eb.lit(10)])
+								.$castTo<{ gs: number }>()
+								.as('gs'),
+						)
+						.leftJoin(
+							(eb) =>
+								eb
+									.selectFrom('user_list_series')
+									.select('user_list_series.score')
+									.select((eb) => eb.fn.count('user_list_series.score').as('cnt'))
+									.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+									.where('user_list_series.score', 'is not', null)
+									.groupBy('user_list_series.score')
+									.as('user_score'),
+							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
+						)
+						.orderBy('gs.gs desc')
+						.select('gs.gs')
+						.select((eb) => eb.fn.coalesce('user_score.cnt', eb.val('0')).as('count')),
+				).as('user_stats_score'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('user_list_series')
+						.innerJoin('user_list_series_label', (join) =>
+							join
+								.onRef('user_list_series.series_id', '=', 'user_list_series_label.series_id')
+								.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id')
+								.on('user_list_series_label.label_id', '<', 10),
+						)
+						.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+						.groupBy('user_list_series_label.label_id')
+						.select('user_list_series_label.label_id')
+						.select((eb) => eb.fn.countAll().as('count')),
+				).as('user_stats_label'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('series_title')
@@ -735,6 +783,54 @@ export class DBSeries {
 						.where('cte_book.hidden', '=', false)
 						.orderBy('sort_order asc'),
 				).as('books'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_series')
+						.select((eb) => eb.fn.avg('user_list_series.score').as('score'))
+						.select((eb) => eb.fn.count('user_list_series.series_id').as('count'))
+						.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+						.where('user_list_series.score', 'is not', null)
+						.groupBy('user_list_series.series_id')
+						.limit(1),
+				).as('rating'),
+				jsonArrayFrom(
+					eb
+						.selectFrom((eb) =>
+							eb
+								.fn('generate_series', [eb.lit(1), eb.lit(10)])
+								.$castTo<{ gs: number }>()
+								.as('gs'),
+						)
+						.leftJoin(
+							(eb) =>
+								eb
+									.selectFrom('user_list_series')
+									.select('user_list_series.score')
+									.select((eb) => eb.fn.count('user_list_series.score').as('cnt'))
+									.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+									.where('user_list_series.score', 'is not', null)
+									.groupBy('user_list_series.score')
+									.as('user_score'),
+							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
+						)
+						.orderBy('gs.gs desc')
+						.select('gs.gs')
+						.select((eb) => eb.fn.coalesce('user_score.cnt', eb.val('0')).as('count')),
+				).as('user_stats_score'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('user_list_series')
+						.innerJoin('user_list_series_label', (join) =>
+							join
+								.onRef('user_list_series.series_id', '=', 'user_list_series_label.series_id')
+								.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id')
+								.on('user_list_series_label.label_id', '<', 10),
+						)
+						.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+						.groupBy('user_list_series_label.label_id')
+						.select('user_list_series_label.label_id')
+						.select((eb) => eb.fn.countAll().as('count')),
+				).as('user_stats_label'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('series_title_hist')
