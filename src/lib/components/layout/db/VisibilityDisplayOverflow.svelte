@@ -116,6 +116,7 @@
 		font-size: 0.875rem;
 		line-height: 1.25rem;
 		white-space: nowrap;
+		z-index: 40;
 	}
 
 	:global(.dark) .menu {

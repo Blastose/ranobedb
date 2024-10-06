@@ -23,6 +23,8 @@
 	import Tags from '$lib/components/series/Tags.svelte';
 	import LangChip from '$lib/components/titles/LangChip.svelte';
 	import BookImageBadge from '../BookImageBadge.svelte';
+	import UserStats from '$lib/components/shared/UserStats.svelte';
+	import Rating from '$lib/components/shared/Rating.svelte';
 
 	export let book: BookOne;
 	export let book_series: BookSeries | undefined;
@@ -101,7 +103,9 @@
 					<VisibilityDisplayPerm item={book} {user} />
 				</section>
 
-				<section class="pt-4">
+				<Rating rating={book.rating} />
+
+				<section class="pt-2">
 					<h2 class="font-bold text-lg">Description</h2>
 					{#if book.description || book.description_ja}
 						{#key book.id}
@@ -173,6 +177,13 @@
 				</section>
 			{/key}
 		{/if}
+
+		<UserStats
+			rating={book.rating}
+			type="book"
+			user_stats_score={book.user_stats_score}
+			user_stats_label={book.user_stats_label}
+		/>
 	</div>
 </div>
 

@@ -257,6 +257,54 @@ export class DBBooks {
 						.whereRef('image.id', '=', 'cte_book.image_id')
 						.limit(1),
 				).as('image'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_book')
+						.select((eb) => eb.fn.avg('user_list_book.score').as('score'))
+						.select((eb) => eb.fn.count('user_list_book.book_id').as('count'))
+						.whereRef('user_list_book.book_id', '=', 'cte_book.id')
+						.where('user_list_book.score', 'is not', null)
+						.groupBy('user_list_book.book_id')
+						.limit(1),
+				).as('rating'),
+				jsonArrayFrom(
+					eb
+						.selectFrom((eb) =>
+							eb
+								.fn('generate_series', [eb.lit(1), eb.lit(10)])
+								.$castTo<{ gs: number }>()
+								.as('gs'),
+						)
+						.leftJoin(
+							(eb) =>
+								eb
+									.selectFrom('user_list_book')
+									.select('user_list_book.score')
+									.select((eb) => eb.fn.count('user_list_book.score').as('cnt'))
+									.whereRef('user_list_book.book_id', '=', 'cte_book.id')
+									.where('user_list_book.score', 'is not', null)
+									.groupBy('user_list_book.score')
+									.as('user_score'),
+							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
+						)
+						.orderBy('gs.gs desc')
+						.select('gs.gs')
+						.select((eb) => eb.fn.coalesce('user_score.cnt', eb.val('0')).as('count')),
+				).as('user_stats_score'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('user_list_book')
+						.innerJoin('user_list_book_label', (join) =>
+							join
+								.onRef('user_list_book.book_id', '=', 'user_list_book_label.book_id')
+								.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id')
+								.on('user_list_book_label.label_id', '<', 10),
+						)
+						.whereRef('user_list_book.book_id', '=', 'cte_book.id')
+						.groupBy('user_list_book_label.label_id')
+						.select('user_list_book_label.label_id')
+						.select((eb) => eb.fn.countAll().as('count')),
+				).as('user_stats_label'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('book_title')
@@ -374,6 +422,54 @@ export class DBBooks {
 						.whereRef('image.id', '=', 'cte_book.image_id')
 						.limit(1),
 				).as('image'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_book')
+						.select((eb) => eb.fn.avg('user_list_book.score').as('score'))
+						.select((eb) => eb.fn.count('user_list_book.book_id').as('count'))
+						.whereRef('user_list_book.book_id', '=', 'cte_book.id')
+						.where('user_list_book.score', 'is not', null)
+						.groupBy('user_list_book.book_id')
+						.limit(1),
+				).as('rating'),
+				jsonArrayFrom(
+					eb
+						.selectFrom((eb) =>
+							eb
+								.fn('generate_series', [eb.lit(1), eb.lit(10)])
+								.$castTo<{ gs: number }>()
+								.as('gs'),
+						)
+						.leftJoin(
+							(eb) =>
+								eb
+									.selectFrom('user_list_book')
+									.select('user_list_book.score')
+									.select((eb) => eb.fn.count('user_list_book.score').as('cnt'))
+									.whereRef('user_list_book.book_id', '=', 'cte_book.id')
+									.where('user_list_book.score', 'is not', null)
+									.groupBy('user_list_book.score')
+									.as('user_score'),
+							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
+						)
+						.orderBy('gs.gs desc')
+						.select('gs.gs')
+						.select((eb) => eb.fn.coalesce('user_score.cnt', eb.val('0')).as('count')),
+				).as('user_stats_score'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('user_list_book')
+						.innerJoin('user_list_book_label', (join) =>
+							join
+								.onRef('user_list_book.book_id', '=', 'user_list_book_label.book_id')
+								.onRef('user_list_book_label.user_id', '=', 'user_list_book.user_id')
+								.on('user_list_book_label.label_id', '<', 10),
+						)
+						.whereRef('user_list_book.book_id', '=', 'cte_book.id')
+						.groupBy('user_list_book_label.label_id')
+						.select('user_list_book_label.label_id')
+						.select((eb) => eb.fn.countAll().as('count')),
+				).as('user_stats_label'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('book_title_hist')

@@ -27,6 +27,8 @@
 	import Tags from '../Tags.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
+	import UserStats from '$lib/components/shared/UserStats.svelte';
+	import Rating from '$lib/components/shared/Rating.svelte';
 
 	export let series: Series;
 	export let user: User | null;
@@ -48,10 +50,13 @@
 	item={series}
 	copyTo={{ to: ['book'], langs: series.titles.map((t) => t.lang) }}
 >
-	<p class="text-sm font-bold -mt-2">
-		{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
-		total books
-	</p>
+	<div>
+		<p class="text-sm font-bold -mt-2">
+			{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
+			total books
+		</p>
+		<Rating rating={series.rating} />
+	</div>
 
 	{#if userListSeriesForm}
 		{#if user}
@@ -193,6 +198,13 @@
 			<p class="italic">None</p>
 		{/if}
 	</section>
+
+	<UserStats
+		rating={series.rating}
+		type="series"
+		user_stats_score={series.user_stats_score}
+		user_stats_label={series.user_stats_label}
+	/>
 </DBItemShell>
 
 <style>
