@@ -5,6 +5,9 @@
 		score: string | number;
 		count: string | number | bigint;
 	} | null;
+	export let numReviews: number | undefined;
+	export let itemId: number;
+	export let itemType: 'book' | 'series';
 </script>
 
 {#if rating}
@@ -14,10 +17,14 @@
 				<Icon class="text-[#ffa844]" name="star" height="24" width="24" />
 				<span>{Number(rating.score).toFixed(1)} from {rating.count} scores</span>
 			</div>
-			<!-- TODO -->
-			<!-- <p class="font-semibold">
-				<a class="flex items-center link" href="/">{234} reviews</a>
-			</p> -->
+
+			{#if numReviews}
+				<p class="font-semibold">
+					<a class="flex items-center link" href="/{itemType}/{itemId}/reviews"
+						>{numReviews} reviews</a
+					>
+				</p>
+			{/if}
 		</div>
 	</section>
 {/if}

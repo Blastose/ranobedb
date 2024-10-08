@@ -428,6 +428,16 @@ export interface Tag {
 	ttype: TagType;
 }
 
+export interface UserBookReview {
+	book_id: number;
+	created: Generated<Timestamp>;
+	id: Generated<number>;
+	last_updated: Timestamp;
+	review_text: string;
+	spoiler: boolean;
+	user_id: string;
+}
+
 export interface UserListBook {
 	added: Generated<Timestamp>;
 	book_id: number;
@@ -500,6 +510,16 @@ export interface UserListSettings {
 	user_id: string;
 }
 
+export interface UserSeriesReview {
+	created: Generated<Timestamp>;
+	id: Generated<number>;
+	last_updated: Timestamp;
+	review_text: string;
+	series_id: number;
+	spoiler: boolean;
+	user_id: string;
+}
+
 export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
@@ -543,6 +563,7 @@ export interface DB {
 	staff_hist: StaffHist;
 	staff_alias_hist: StaffAliasHist;
 	tag: Tag;
+	user_book_review: UserBookReview;
 	user_list_book: UserListBook;
 	user_list_book_label: UserListBookLabel;
 	user_list_label: UserListLabel;
@@ -552,4 +573,5 @@ export interface DB {
 	user_list_series_label: UserListSeriesLabel;
 	user_list_series_lang: UserListSeriesLang;
 	user_list_settings: UserListSettings;
+	user_series_review: UserSeriesReview;
 }

@@ -103,7 +103,12 @@
 					<VisibilityDisplayPerm item={book} {user} />
 				</section>
 
-				<Rating rating={book.rating} />
+				<Rating
+					rating={book.rating}
+					itemId={book.id}
+					itemType="book"
+					numReviews={Number(book.num_reviews?.count) || undefined}
+				/>
 
 				<section class="pt-2">
 					<h2 class="font-bold text-lg">Description</h2>

@@ -55,7 +55,7 @@
 			{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
 			total books
 		</p>
-		<Rating rating={series.rating} />
+		<Rating rating={series.rating} itemId={series.id} itemType="series" numReviews={-999} />
 	</div>
 
 	{#if userListSeriesForm}

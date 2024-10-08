@@ -160,6 +160,16 @@ export const userListBookSchema = z.object({
 	type: z.enum(userListFormTypes),
 });
 
+export const userReviewSchema = z.object({
+	review_text: z
+		.string()
+		.trim()
+		.min(100, { message: 'Review must contain at least 100 characters' })
+		.max(10000),
+	spoiler: z.boolean().default(false),
+	type: z.enum(userListFormTypes),
+});
+
 export const userListSeriesSettingsSchema = z.object({
 	notify_book: z.boolean().default(false),
 	show_upcoming: z.boolean().default(true),
