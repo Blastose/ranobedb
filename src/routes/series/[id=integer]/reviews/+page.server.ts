@@ -1,9 +1,9 @@
 import { getDisplayPrefsUser, getTitleDisplay } from '$lib/display/prefs.js';
-import { DBBooks } from '$lib/server/db/books/books.js';
 import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { DBReviews } from '$lib/server/db/reviews/reviews.js';
+import { DBSeries } from '$lib/server/db/series/series.js';
 import { pageSchema, userReviewSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
@@ -14,44 +14,55 @@ export const load = async ({ params, locals, url }) => {
 	const page = await superValidate(url, zod(pageSchema));
 	const currentPage = page.data.page;
 	const id = params.id;
-	const bookId = Number(id);
+	const seriesId = Number(id);
 	const user = locals.user;
 
-	const dbBooks = DBBooks.fromDB(db, user);
+	const dbSeries = DBSeries.fromDB(db, user);
 	const dbReviews = DBReviews.fromDB(db, user);
-	const bookQuery = dbBooks
-		.getBook(bookId)
+	const seriesQuery = dbSeries
+		.getSeriesOne(seriesId)
 		.clearSelect()
 		.select([
-			'cte_book.image_id',
-			'cte_book.lang',
-			'cte_book.romaji',
-			'cte_book.romaji_orig',
-			'cte_book.title',
-			'cte_book.title_orig',
-			'cte_book.olang',
-			'cte_book.locked',
-			'cte_book.hidden',
-			'cte_book.id',
+			'cte_series.lang',
+			'cte_series.romaji',
+			'cte_series.romaji_orig',
+			'cte_series.title',
+			'cte_series.title_orig',
+			'cte_series.olang',
+			'cte_series.locked',
+			'cte_series.hidden',
+			'cte_series.id',
 		])
-		.select((eb) => [
+		.select((eb) =>
 			jsonObjectFrom(
 				eb
-					.selectFrom('image')
-					.selectAll('image')
-					.whereRef('image.id', '=', 'cte_book.image_id')
-					.limit(1),
-			).as('image'),
-		])
+					.selectFrom('cte_book')
+					.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
+					.select((eb) =>
+						jsonObjectFrom(
+							eb
+								.selectFrom('image')
+								.whereRef('image.id', '=', 'cte_book.image_id')
+								.selectAll('image')
+								.limit(1),
+						).as('image'),
+					)
+					.where('cte_book.hidden', '=', false)
+					.whereRef('series_book.series_id', '=', 'cte_series.id')
+					.limit(1)
+					.orderBy('sort_order asc'),
+			).as('books'),
+		)
 		.executeTakeFirst();
 
-	const reviewsQuery = dbReviews.getBookReviews({ bookId });
+	const reviewsQuery = dbReviews.getSeriesReviews({ seriesId });
+
 	const userHasReviewQuery = locals.user
-		? dbReviews.hasBookReview({ userId: locals.user.id, bookId }).executeTakeFirst()
+		? dbReviews.hasSeriesReview({ userId: locals.user.id, seriesId }).executeTakeFirst()
 		: undefined;
 
-	const [book, reviews, userHasReview] = await Promise.all([
-		bookQuery,
+	const [series, reviews, userHasReview] = await Promise.all([
+		seriesQuery,
 		paginationBuilderExecuteWithCount(reviewsQuery, {
 			limit: 100,
 			page: currentPage,
@@ -59,21 +70,21 @@ export const load = async ({ params, locals, url }) => {
 		userHasReviewQuery,
 	]);
 
-	if (!book) {
+	if (!series) {
 		error(404);
 	}
 
 	await new DBChanges(db).itemHiddenError({
-		item: book,
-		itemId: bookId,
+		item: series,
+		itemId: seriesId,
 		itemName: 'book',
-		title: getTitleDisplay({ obj: book, prefs: getDisplayPrefsUser(user).title_prefs }),
+		title: getTitleDisplay({ obj: series, prefs: getDisplayPrefsUser(user).title_prefs }),
 		user,
 	});
 
 	const userReviewForm = await superValidate(zod(userReviewSchema));
 	return {
-		book,
+		series,
 		userReviewForm,
 		reviews: reviews.result,
 		userHasReview: Boolean(userHasReview),

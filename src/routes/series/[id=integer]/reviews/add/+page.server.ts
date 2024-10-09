@@ -1,8 +1,8 @@
 import { getDisplayPrefsUser, getTitleDisplay } from '$lib/display/prefs.js';
-import { DBBooks } from '$lib/server/db/books/books.js';
 import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { DBReviews } from '$lib/server/db/reviews/reviews.js';
+import { DBSeries } from '$lib/server/db/series/series.js';
 import { userReviewSchema } from '$lib/server/zod/schema.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
 import { error, fail, redirect } from '@sveltejs/kit';
@@ -13,54 +13,63 @@ import { zod } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
 	const id = params.id;
-	const bookId = Number(id);
+	const seriesId = Number(id);
 	const user = locals.user;
 
 	if (!user) {
 		redirect(302, buildRedirectUrl(url, '/login'));
 	}
-
-	const dbBooks = DBBooks.fromDB(db, user);
+	const dbSeries = DBSeries.fromDB(db, user);
 	const dbReviews = DBReviews.fromDB(db, user);
-	const bookQuery = dbBooks
-		.getBook(bookId)
+	const seriesQuery = dbSeries
+		.getSeriesOne(seriesId)
 		.clearSelect()
 		.select([
-			'cte_book.image_id',
-			'cte_book.lang',
-			'cte_book.romaji',
-			'cte_book.romaji_orig',
-			'cte_book.title',
-			'cte_book.title_orig',
-			'cte_book.olang',
-			'cte_book.locked',
-			'cte_book.hidden',
-			'cte_book.id',
+			'cte_series.lang',
+			'cte_series.romaji',
+			'cte_series.romaji_orig',
+			'cte_series.title',
+			'cte_series.title_orig',
+			'cte_series.olang',
+			'cte_series.locked',
+			'cte_series.hidden',
+			'cte_series.id',
 		])
-		.select((eb) => [
+		.select((eb) =>
 			jsonObjectFrom(
 				eb
-					.selectFrom('image')
-					.selectAll('image')
-					.whereRef('image.id', '=', 'cte_book.image_id')
-					.limit(1),
-			).as('image'),
-		])
+					.selectFrom('cte_book')
+					.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
+					.select((eb) =>
+						jsonObjectFrom(
+							eb
+								.selectFrom('image')
+								.whereRef('image.id', '=', 'cte_book.image_id')
+								.selectAll('image')
+								.limit(1),
+						).as('image'),
+					)
+					.where('cte_book.hidden', '=', false)
+					.whereRef('series_book.series_id', '=', 'cte_series.id')
+					.limit(1)
+					.orderBy('sort_order asc'),
+			).as('books'),
+		)
 		.executeTakeFirst();
 
-	const reviewQuery = dbReviews.getBookReviews({ userId: user.id, bookId }).executeTakeFirst();
+	const reviewQuery = dbReviews.getSeriesReviews({ userId: user.id, seriesId }).executeTakeFirst();
 
-	const [book, review] = await Promise.all([bookQuery, reviewQuery]);
+	const [series, review] = await Promise.all([seriesQuery, reviewQuery]);
 
-	if (!book) {
+	if (!series) {
 		error(404);
 	}
 
 	await new DBChanges(db).itemHiddenError({
-		item: book,
-		itemId: bookId,
+		item: series,
+		itemId: seriesId,
 		itemName: 'book',
-		title: getTitleDisplay({ obj: book, prefs: getDisplayPrefsUser(user).title_prefs }),
+		title: getTitleDisplay({ obj: series, prefs: getDisplayPrefsUser(user).title_prefs }),
 		user,
 	});
 
@@ -75,7 +84,7 @@ export const load = async ({ params, locals, url }) => {
 			errors: false,
 		},
 	);
-	return { book, userReviewForm, reviews: review };
+	return { series, userReviewForm, reviews: review };
 };
 
 export const actions = {
@@ -98,16 +107,16 @@ export const actions = {
 				message = 'Successfully edited your review!';
 			}
 			await db
-				.insertInto('user_book_review')
+				.insertInto('user_series_review')
 				.values({
-					book_id: id,
+					series_id: id,
 					last_updated: new Date(),
 					review_text: form.data.review_text,
 					spoiler: form.data.spoiler,
 					user_id: locals.user.id,
 				})
 				.onConflict((oc) =>
-					oc.columns(['book_id', 'user_id']).doUpdateSet({
+					oc.columns(['series_id', 'user_id']).doUpdateSet({
 						review_text: form.data.review_text,
 						spoiler: form.data.spoiler,
 						last_updated: new Date(),
@@ -117,15 +126,15 @@ export const actions = {
 		} else {
 			message = 'Deleted review!';
 			await db
-				.deleteFrom('user_book_review')
-				.where('user_book_review.user_id', '=', locals.user.id)
-				.where('user_book_review.book_id', '=', id)
+				.deleteFrom('user_series_review')
+				.where('user_series_review.user_id', '=', locals.user.id)
+				.where('user_series_review.series_id', '=', id)
 				.execute();
 		}
 
 		return flashRedirect(
 			303,
-			`/book/${id}/reviews`,
+			`/series/${id}/reviews`,
 			{ type: 'success', message: message },
 			cookies,
 		);

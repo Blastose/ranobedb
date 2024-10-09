@@ -510,6 +510,13 @@ export class DBSeries {
 						.groupBy('user_list_series.series_id')
 						.limit(1),
 				).as('rating'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_series_review')
+						.select((eb) => eb.fn.countAll().as('count'))
+						.whereRef('user_series_review.series_id', '=', 'cte_series.id')
+						.limit(1),
+				).as('num_reviews'),
 				jsonArrayFrom(
 					eb
 						.selectFrom((eb) =>
@@ -793,6 +800,13 @@ export class DBSeries {
 						.groupBy('user_list_series.series_id')
 						.limit(1),
 				).as('rating'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_series_review')
+						.select((eb) => eb.fn.countAll().as('count'))
+						.whereRef('user_series_review.series_id', '=', 'cte_series.id')
+						.limit(1),
+				).as('num_reviews'),
 				jsonArrayFrom(
 					eb
 						.selectFrom((eb) =>

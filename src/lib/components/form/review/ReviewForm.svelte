@@ -40,10 +40,10 @@
 <!-- <SuperDebug data={$form} /> -->
 
 <form method="post" class="flex flex-col gap-4 mt-2" action={actionUrl} use:enhance>
-	<h2 class="font-bold text-2xl">{type === 'add' ? 'Submit' : 'Edit'} review</h2>
+	<h2 class="font-bold text-2xl">{type === 'add' ? 'Submit' : 'Edit'} {itemType} review</h2>
 
 	<div>
-		<p>You are {type === 'add' ? 'writing a' : 'editing your'} review for:</p>
+		<p>You are {type === 'add' ? 'writing a' : 'editing your'} review for the {itemType}:</p>
 		<a target="_blank" class="link font-bold text-xl" href="/{itemType}/{itemId}">{title}</a>
 	</div>
 
