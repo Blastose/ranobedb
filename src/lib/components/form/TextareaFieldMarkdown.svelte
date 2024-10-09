@@ -75,7 +75,7 @@
 		class:error-text-color={$value.length >= ($constraints?.maxlength ?? Infinity)}
 		class="text-sm pt-1 flex justify-end"
 	>
-		{$value.length} / {$constraints?.maxlength} characters
+		{$value.trim().length} / {$constraints?.maxlength} characters
 	</p>
 	{#if $errors}
 		<span class="error-text-color">{$errors}</span>

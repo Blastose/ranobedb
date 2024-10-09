@@ -10,21 +10,17 @@
 	export let itemType: 'book' | 'series';
 </script>
 
-{#if rating}
-	<section>
-		<div class="flex gap-4">
-			<div class="flex items-center gap-1">
-				<Icon class="text-[#ffa844]" name="star" height="24" width="24" />
-				<span>{Number(rating.score).toFixed(1)} from {rating.count} scores</span>
-			</div>
-
-			{#if numReviews}
-				<p class="font-semibold">
-					<a class="flex items-center link" href="/{itemType}/{itemId}/reviews"
-						>{numReviews} reviews</a
-					>
-				</p>
-			{/if}
+<section>
+	<div class="flex gap-4 items-center">
+		<div class="flex items-center gap-1">
+			<Icon class="text-[#ffa844]" name="star" height="24" width="24" />
+			<span>{Number(rating?.score ?? '0').toFixed(1)} from {rating?.count ?? 0} scores</span>
 		</div>
-	</section>
-{/if}
+
+		<p class="font-semibold">
+			<a class="flex items-center link" href="/{itemType}/{itemId}/reviews"
+				>{numReviews ?? 0} reviews</a
+			>
+		</p>
+	</div>
+</section>
