@@ -8,6 +8,7 @@
 	import { createDialog, melt } from '@melt-ui/svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { fade, fly } from 'svelte/transition';
+	import TextField from '../TextField.svelte';
 
 	export let title: string;
 	export let itemType: 'book' | 'series';
@@ -47,10 +48,40 @@
 		<a target="_blank" class="link font-bold text-xl" href="/{itemType}/{itemId}">{title}</a>
 	</div>
 
-	<div>
-		<!-- TODO Add input for this -->
-		<p>Score: 1/10</p>
-		<p class="text-sm sub-text">Your score is linked to the one in your list</p>
+	<div class="flex flex-col gap-y-1">
+		{#if itemType === 'series'}
+			<div class="flex flex-col gap-1">
+				<div class="w-fit">
+					<TextField
+						form={sForm}
+						type="number"
+						field="volumes_read"
+						label="Volumes read"
+						placeholder=""
+						resetPadding={true}
+					/>
+				</div>
+				<p class="text-sm sub-text">
+					How many volumes you have read at the time of the review. Pre-filled from your list data,
+					but it can be changed if needed.
+				</p>
+			</div>
+		{/if}
+		<div class="flex flex-col gap-1">
+			<div class="w-fit">
+				<TextField
+					form={sForm}
+					type="number"
+					field="score"
+					label="Score"
+					placeholder=""
+					resetPadding={true}
+				/>
+			</div>
+			<p class="text-sm sub-text">
+				This score is pre-filled with your list score, but it can be changed if needed.
+			</p>
+		</div>
 	</div>
 
 	<div>

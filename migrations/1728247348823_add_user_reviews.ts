@@ -10,6 +10,7 @@ CREATE TABLE public.user_book_review (
     spoiler boolean NOT NULL,
     user_id text NOT NULL,
     review_text text NOT NULL,
+    score integer,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
     FOREIGN KEY (book_id) REFERENCES public.book(id),
     UNIQUE (user_id, book_id)
@@ -23,6 +24,8 @@ CREATE TABLE public.user_series_review (
     spoiler boolean NOT NULL,
     user_id text NOT NULL,
     review_text text NOT NULL,
+    score integer,
+    volumes_read integer,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
     FOREIGN KEY (series_id) REFERENCES public.series(id),
     UNIQUE (user_id, series_id)

@@ -40,11 +40,13 @@ export class DBReviews {
 				'user_book_review.created',
 				'user_book_review.spoiler',
 				'user_book_review.review_text',
+				'user_book_review.score',
 				'auth_user.username',
 				'auth_user.id_numeric as user_id',
 				'auth_user.id as user_id_string',
 				'user_book_review.book_id as item_id',
-			]);
+			])
+			.select((eb) => eb.val<number | null>(null).as('volumes_read'));
 
 		if (userId) {
 			query = query.where('user_book_review.user_id', '=', userId);
@@ -71,6 +73,8 @@ export class DBReviews {
 				'user_series_review.created',
 				'user_series_review.spoiler',
 				'user_series_review.review_text',
+				'user_series_review.score',
+				'user_series_review.volumes_read',
 				'auth_user.username',
 				'auth_user.id_numeric as user_id',
 				'auth_user.id as user_id_string',
@@ -158,6 +162,9 @@ export class DBReviews {
 
 export type BookReview = InferResult<ReturnType<DBReviews['getBookReviews']>>[number];
 export type SeriesReview = InferResult<ReturnType<DBReviews['getSeriesReviews']>>[number];
+export type BookReviewWithBookObj = InferResult<
+	ReturnType<DBReviews['getBookReviewsWithBookObj']>
+>[number];
 export type SeriesReviewWithSeriesObj = InferResult<
 	ReturnType<DBReviews['getSeriesReviewsWithSeriesObj']>
 >[number];

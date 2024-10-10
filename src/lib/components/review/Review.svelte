@@ -34,11 +34,21 @@
 			</div>
 		</div>
 
-		<div class="flex gap-2 items-center">
-			Score:
-			<div class="flex">
-				<Icon class="text-[#ffa844]" name="star" height="24" width="24" /> 10/10
+		<div>
+			<div class="flex gap-2 items-center">
+				Score:
+				{#if review.score}
+					<div class="flex">
+						<Icon class="text-[#ffa844]" name="star" height="24" width="24" />
+						{review.score}/10
+					</div>
+				{:else}
+					No score given
+				{/if}
 			</div>
+			{#if review.volumes_read}
+				<div>Volumes read: {review.volumes_read}</div>
+			{/if}
 		</div>
 
 		{#if !singleReview}

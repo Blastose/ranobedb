@@ -427,6 +427,7 @@ export interface UserBookReview {
   id: Generated<number>;
   last_updated: Timestamp;
   review_text: string;
+  score: number | null;
   spoiler: boolean;
   user_id: string;
 }
@@ -508,9 +509,11 @@ export interface UserSeriesReview {
   id: Generated<number>;
   last_updated: Timestamp;
   review_text: string;
+  score: number | null;
   series_id: number;
   spoiler: boolean;
   user_id: string;
+  volumes_read: number | null;
 }
 
 export interface DB {

@@ -167,6 +167,8 @@ export const userReviewSchema = z.object({
 		.min(100, { message: 'Review must contain at least 100 characters' })
 		.max(10000),
 	spoiler: z.boolean().default(false),
+	score: z.number().min(1).max(10).nullish(),
+	volumes_read: z.number().min(1).max(maxNumberValue).nullish(),
 	type: z.enum(userListFormTypes),
 });
 

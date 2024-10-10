@@ -58,8 +58,36 @@ export const load = async ({ params, locals, url }) => {
 		.executeTakeFirst();
 
 	const reviewQuery = dbReviews.getSeriesReviews({ userId: user.id, seriesId }).executeTakeFirst();
+	const userListSeriesQuery = user
+		? db
+				.selectFrom('user_list_series')
+				.where('user_list_series.series_id', '=', seriesId)
+				.where('user_list_series.user_id', '=', user.id)
+				.select(['user_list_series.score', 'user_list_series.volumes_read'])
+				.select((eb) =>
+					jsonObjectFrom(
+						eb
+							.selectFrom('series_book as sb3')
+							.innerJoin('book', 'book.id', 'sb3.book_id')
+							.innerJoin('user_list_book_label', (join) =>
+								join
+									.onRef('user_list_book_label.book_id', '=', 'book.id')
+									.on('user_list_book_label.label_id', '=', 2)
+									.on('user_list_book_label.user_id', '=', user.id),
+							)
+							.where('book.hidden', '=', false)
+							.whereRef('sb3.series_id', '=', 'user_list_series.series_id')
+							.select(({ fn }) => [fn.countAll().as('count')]),
+					).as('c_vols_read'),
+				)
+				.executeTakeFirst()
+		: undefined;
 
-	const [series, review] = await Promise.all([seriesQuery, reviewQuery]);
+	const [series, review, userListSeries] = await Promise.all([
+		seriesQuery,
+		reviewQuery,
+		userListSeriesQuery,
+	]);
 
 	if (!series) {
 		error(404);
@@ -78,6 +106,9 @@ export const load = async ({ params, locals, url }) => {
 			review_text: review?.review_text,
 			spoiler: review?.spoiler,
 			type: review ? 'update' : 'add',
+			score: review?.score ?? userListSeries?.score,
+			volumes_read:
+				userListSeries?.volumes_read ?? (Number(userListSeries?.c_vols_read?.count) || undefined),
 		},
 		zod(userReviewSchema),
 		{
@@ -114,11 +145,15 @@ export const actions = {
 					review_text: form.data.review_text,
 					spoiler: form.data.spoiler,
 					user_id: locals.user.id,
+					volumes_read: form.data.volumes_read,
+					score: form.data.score,
 				})
 				.onConflict((oc) =>
 					oc.columns(['series_id', 'user_id']).doUpdateSet({
 						review_text: form.data.review_text,
 						spoiler: form.data.spoiler,
+						score: form.data.score,
+						volumes_read: form.data.volumes_read,
 						last_updated: new Date(),
 					}),
 				)

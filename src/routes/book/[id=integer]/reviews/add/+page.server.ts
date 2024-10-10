@@ -49,8 +49,20 @@ export const load = async ({ params, locals, url }) => {
 		.executeTakeFirst();
 
 	const reviewQuery = dbReviews.getBookReviews({ userId: user.id, bookId }).executeTakeFirst();
+	const userListBookQuery = user
+		? db
+				.selectFrom('user_list_book')
+				.where('user_list_book.book_id', '=', bookId)
+				.where('user_list_book.user_id', '=', user.id)
+				.select('user_list_book.score')
+				.executeTakeFirst()
+		: undefined;
 
-	const [book, review] = await Promise.all([bookQuery, reviewQuery]);
+	const [book, review, userListBook] = await Promise.all([
+		bookQuery,
+		reviewQuery,
+		userListBookQuery,
+	]);
 
 	if (!book) {
 		error(404);
@@ -69,6 +81,7 @@ export const load = async ({ params, locals, url }) => {
 			review_text: review?.review_text,
 			spoiler: review?.spoiler,
 			type: review ? 'update' : 'add',
+			score: review?.score ?? userListBook?.score,
 		},
 		zod(userReviewSchema),
 		{
@@ -105,11 +118,13 @@ export const actions = {
 					review_text: form.data.review_text,
 					spoiler: form.data.spoiler,
 					user_id: locals.user.id,
+					score: form.data.score,
 				})
 				.onConflict((oc) =>
 					oc.columns(['book_id', 'user_id']).doUpdateSet({
 						review_text: form.data.review_text,
 						spoiler: form.data.spoiler,
+						score: form.data.score,
 						last_updated: new Date(),
 					}),
 				)
