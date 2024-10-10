@@ -2,6 +2,7 @@ import { getDisplayPrefsUser, getTitleDisplay } from '$lib/display/prefs.js';
 import { DBBooks } from '$lib/server/db/books/books.js';
 import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
+import { DBReviews } from '$lib/server/db/reviews/reviews.js';
 import { error } from '@sveltejs/kit';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 
@@ -10,22 +11,10 @@ export const load = async ({ params, locals }) => {
 	const reviewId = Number(id);
 	const user = locals.user;
 
-	const review = await db
-		.selectFrom('user_book_review')
-		.innerJoin('auth_user', 'auth_user.id', 'user_book_review.user_id')
-		.where('user_book_review.id', '=', reviewId)
-		.clearSelect()
-		.select([
-			'user_book_review.id as review_id',
-			'user_book_review.last_updated',
-			'user_book_review.created',
-			'user_book_review.spoiler',
-			'user_book_review.review_text',
-			'auth_user.username',
-			'auth_user.id_numeric as user_id_numeric',
-			'auth_user.id as user_id',
-			'user_book_review.book_id',
-		])
+	const review = await DBReviews.fromDB(db)
+		.getBookReviews({
+			reviewId,
+		})
 		.executeTakeFirst();
 
 	if (!review) {
@@ -34,7 +23,7 @@ export const load = async ({ params, locals }) => {
 
 	const dbBooks = DBBooks.fromDB(db, user);
 	const bookQuery = dbBooks
-		.getBook(review.book_id)
+		.getBook(review.item_id)
 		.clearSelect()
 		.select([
 			'cte_book.image_id',
@@ -73,6 +62,6 @@ export const load = async ({ params, locals }) => {
 		user,
 	});
 
-	const isOwnReview = review.user_id === locals.user?.id;
+	const isOwnReview = review.user_id_string === locals.user?.id;
 	return { book, review, isOwnReview };
 };
