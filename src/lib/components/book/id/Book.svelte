@@ -99,13 +99,20 @@
 					/>
 				</section>
 
-				<section class="mt-2">
+				<section>
 					<VisibilityDisplayPerm item={book} {user} />
 				</section>
 
-				<Rating rating={book.rating} />
+				<div class="pt-3 pb-2">
+					<Rating
+						rating={book.rating}
+						itemId={book.id}
+						itemType="book"
+						numReviews={Number(book.num_reviews?.count) || undefined}
+					/>
+				</div>
 
-				<section class="pt-2">
+				<section>
 					<h2 class="font-bold text-lg">Description</h2>
 					{#if book.description || book.description_ja}
 						{#key book.id}

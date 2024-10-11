@@ -267,6 +267,13 @@ export class DBBooks {
 						.groupBy('user_list_book.book_id')
 						.limit(1),
 				).as('rating'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_book_review')
+						.select((eb) => eb.fn.countAll().as('count'))
+						.whereRef('user_book_review.book_id', '=', 'cte_book.id')
+						.limit(1),
+				).as('num_reviews'),
 				jsonArrayFrom(
 					eb
 						.selectFrom((eb) =>
@@ -432,6 +439,13 @@ export class DBBooks {
 						.groupBy('user_list_book.book_id')
 						.limit(1),
 				).as('rating'),
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_book_review')
+						.select((eb) => eb.fn.countAll().as('count'))
+						.whereRef('user_book_review.book_id', '=', 'cte_book.id')
+						.limit(1),
+				).as('num_reviews'),
 				jsonArrayFrom(
 					eb
 						.selectFrom((eb) =>

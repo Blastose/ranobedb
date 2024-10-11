@@ -11,7 +11,7 @@
 </script>
 
 {#if hasVisibilityPerms(user) && (item.locked || item.hidden)}
-	<div class="flex flex-col">
+	<div class="flex flex-col mt-2">
 		{#if hasVisibilityPerms(user)}
 			{#if item.locked}
 				<p>
