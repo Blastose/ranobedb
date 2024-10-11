@@ -55,7 +55,7 @@
 			<div>
 				{#each defaultUserListLabelsArray as ar, index}
 					<div>
-						{ar}: {user_stats_label.at(index)?.count ?? 0}
+						{ar}: {user_stats_label.find((v) => v.label_id === index + 1)?.count ?? 0}
 					</div>
 				{/each}
 				<div>Total: {listCounts}</div>
