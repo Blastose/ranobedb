@@ -4,7 +4,7 @@
 
 	export let data;
 
-	$: title = `${data.listUser.username}'s series reviews`;
+	$: title = `${data.isMyList ? 'My' : `${data.listUser.username}'s`} series reviews`;
 </script>
 
 <PageTitle {title}></PageTitle>

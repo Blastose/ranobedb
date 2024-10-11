@@ -37,5 +37,6 @@ export const load = async ({ params, locals, url }) => {
 		currentPage: currentPage,
 		totalPages: reviews.totalPages,
 		listUser,
+		isMyList: user?.id_numeric === userIdNumeric,
 	};
 };
