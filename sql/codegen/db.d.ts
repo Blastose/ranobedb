@@ -297,7 +297,9 @@ export interface Series {
   aliases: string;
   anidb_id: number | null;
   bookwalker_id: number | null;
+  c_end_date: number;
   c_num_books: number;
+  c_start_date: number;
   description: string;
   end_date: number;
   hidden: boolean;
@@ -328,6 +330,8 @@ export interface SeriesHist {
   aliases: string;
   anidb_id: number | null;
   bookwalker_id: number | null;
+  c_end_date: Generated<number>;
+  c_start_date: Generated<number>;
   change_id: number;
   description: string;
   end_date: number;

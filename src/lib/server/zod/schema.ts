@@ -521,6 +521,8 @@ export const seriesSchema = z.object({
 	anidb_id: z.number().max(maxNumberValue).nullish(),
 	start_date: zReleaseDate,
 	end_date: zReleaseDate,
+	c_start_date: zReleaseDate.nullish(),
+	c_end_date: zReleaseDate.nullish(),
 	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com']),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
 

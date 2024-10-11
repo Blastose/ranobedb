@@ -5,10 +5,12 @@ import { getMode } from '$lib/mode/mode';
 import schedule from 'node-schedule';
 import { sendRecentlyReleasedNotifications } from '$lib/server/db/cron/release';
 import { updateBookReleaseDate } from '$lib/server/db/cron/book';
+import { updateSeriesStartEndDates } from '$lib/server/db/cron/series';
 
 schedule.scheduleJob('0 0 * * *', async function () {
 	await sendRecentlyReleasedNotifications();
 	await updateBookReleaseDate();
+	await updateSeriesStartEndDates();
 });
 
 export const handle: Handle = async ({ event, resolve }) => {
