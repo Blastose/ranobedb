@@ -12,7 +12,9 @@
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import {
 		aniDbLink,
+		anilistLink,
 		bookwalkerSeriesLink,
+		malLink,
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
@@ -151,6 +153,12 @@
 				{/if}
 				{#if series.bookwalker_id}
 					<DbExtLinkShort fullLink={{ ...bookwalkerSeriesLink, value: series.bookwalker_id }} />
+				{/if}
+				{#if series.anilist_id}
+					<DbExtLinkShort fullLink={{ ...anilistLink, value: series.anilist_id }} />
+				{/if}
+				{#if series.mal_id}
+					<DbExtLinkShort fullLink={{ ...malLink, value: series.mal_id }} />
 				{/if}
 				{#if series.anidb_id}
 					<DbExtLinkShort fullLink={{ ...aniDbLink, value: series.anidb_id }} />

@@ -296,6 +296,7 @@ export interface ReleasePublisherHist {
 export interface Series {
   aliases: string;
   anidb_id: number | null;
+  anilist_id: number | null;
   bookwalker_id: number | null;
   c_end_date: number;
   c_num_books: number;
@@ -305,6 +306,7 @@ export interface Series {
   hidden: boolean;
   id: Generated<number>;
   locked: boolean;
+  mal_id: number | null;
   olang: Language;
   publication_status: SeriesStatus;
   start_date: number;
@@ -329,12 +331,14 @@ export interface SeriesBookHist {
 export interface SeriesHist {
   aliases: string;
   anidb_id: number | null;
+  anilist_id: number | null;
   bookwalker_id: number | null;
   c_end_date: Generated<number>;
   c_start_date: Generated<number>;
   change_id: number;
   description: string;
   end_date: number;
+  mal_id: number | null;
   olang: Language;
   publication_status: SeriesStatus;
   start_date: number;

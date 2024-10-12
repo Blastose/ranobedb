@@ -525,6 +525,8 @@ export const seriesSchema = z.object({
 	c_end_date: zReleaseDate.nullish(),
 	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com']),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
+	mal_id: z.number().max(maxNumberValue).nullish(),
+	anilist_id: z.number().max(maxNumberValue).nullish(),
 
 	books: z
 		.array(

@@ -109,6 +109,22 @@ export function getSeriesDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
+			name: 'Anilist',
+			words1: prevSeriesHistEdit.anilist_id?.toString(),
+			words2: seriesHistEdit.anilist_id?.toString(),
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
+			name: 'MyAnimeList',
+			words1: prevSeriesHistEdit.mal_id?.toString(),
+			words2: seriesHistEdit.mal_id?.toString(),
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
 			name: 'AniDB',
 			words1: prevSeriesHistEdit.anidb_id?.toString(),
 			words2: seriesHistEdit.anidb_id?.toString(),
