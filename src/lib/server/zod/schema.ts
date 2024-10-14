@@ -594,7 +594,10 @@ export const userListLabelsSchema = z.object({
 		.array(
 			z.object({
 				id: z.number().min(11).max(maxNumberValue).nullish(),
-				label: z.string().min(1).max(50),
+				label: z
+					.string()
+					.min(1, { message: 'Label name must contain at least 1 character' })
+					.max(50),
 				target: z.enum(['both', 'book', 'series']).default('both'),
 				private: z.boolean(),
 			}),

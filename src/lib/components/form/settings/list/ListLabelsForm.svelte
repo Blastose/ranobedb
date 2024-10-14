@@ -24,7 +24,10 @@
 	const sForm = superForm(listLabelsForm, {
 		dataType: 'json',
 		onUpdated: async ({ form }) => {
-			if (!form.valid) return;
+			if (!form.valid) {
+				open.set(false);
+				return;
+			}
 			await tick();
 			open.set(false);
 		},
