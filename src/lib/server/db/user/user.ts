@@ -7,11 +7,12 @@ import { deletedUser } from './ranobebot';
 import type { User } from 'lucia';
 
 export async function insertDefaultUserListLabels(trx: Transaction<DB>, userId: string) {
-	const defaultUserListLabelValues = defaultUserListLabels.map((v) => {
+	const defaultUserListLabelValues = defaultUserListLabels.map((v, i) => {
 		return {
 			...v,
 			private: false,
 			user_id: userId,
+			sort_order: i - 11,
 		};
 	}) satisfies Insertable<UserListLabel>[];
 	await trx

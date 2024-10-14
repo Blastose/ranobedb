@@ -6,6 +6,7 @@
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import TextField from '$lib/components/form/TextField.svelte';
 	import SelectField from '../../SelectField.svelte';
+	import Icon from '$lib/components/icon/Icon.svelte';
 
 	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 
@@ -34,6 +35,14 @@
 		});
 		$form.labels = $form.labels;
 	}
+
+	function swap<T>(arr: T[], indexL: number, indexR: number) {
+		if (indexL < 0 || indexR < 0) return;
+		if (indexL > arr.length - 1 || indexR > arr.length - 1) return;
+
+		[arr[indexR], arr[indexL]] = [arr[indexL], arr[indexR]];
+		$form.labels = $form.labels;
+	}
 </script>
 
 <form method="post" action="?/listlabels" class="flex flex-col gap-4" use:enhance>
@@ -53,17 +62,39 @@
 					showLabel={false}
 				/>
 				<div class="flex gap-1 text-sm items-center justify-between pt-[4px]">
-					<SelectField
-						form={sForm}
-						dropdownOptions={['both', 'book', 'series'].map((v) => ({ display: v, value: v }))}
-						field="labels[{index}].target"
-						fit={true}
-						label="Applies to"
-						showRequiredSymbolIfRequired={false}
-						selectedValue={listLabelsForm.data.labels.at(index)?.target ?? 'both'}
-						resetPadding={true}
-						column={false}
-					/>
+					<div class="flex gap-4">
+						<div class="flex">
+							<button
+								class="btn rounded-full"
+								disabled={index === 0}
+								on:click={() => {
+									swap($form.labels, index, index - 1);
+								}}
+								type="button"
+								aria-label="Move up"><Icon name="chevronUp" /></button
+							>
+							<button
+								class="btn rounded-full"
+								disabled={index === $form.labels.length - 1}
+								on:click={() => {
+									swap($form.labels, index, index + 1);
+								}}
+								type="button"
+								aria-label="Move down"><Icon name="chevronDown" /></button
+							>
+						</div>
+						<SelectField
+							form={sForm}
+							dropdownOptions={['both', 'book', 'series'].map((v) => ({ display: v, value: v }))}
+							field="labels[{index}].target"
+							fit={true}
+							label="Applies to"
+							showRequiredSymbolIfRequired={false}
+							selectedValue={listLabelsForm.data.labels.at(index)?.target ?? 'both'}
+							resetPadding={true}
+							column={false}
+						/>
+					</div>
 
 					<button type="button" class="sub-btn" on:click={() => handleRemoveLabel(index)}
 						>Remove</button
