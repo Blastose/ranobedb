@@ -521,8 +521,12 @@ export const seriesSchema = z.object({
 	anidb_id: z.number().max(maxNumberValue).nullish(),
 	start_date: zReleaseDate,
 	end_date: zReleaseDate,
+	c_start_date: zReleaseDate.nullish(),
+	c_end_date: zReleaseDate.nullish(),
 	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com']),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
+	mal_id: z.number().max(maxNumberValue).nullish(),
+	anilist_id: z.number().max(maxNumberValue).nullish(),
 
 	books: z
 		.array(
@@ -590,7 +594,10 @@ export const userListLabelsSchema = z.object({
 		.array(
 			z.object({
 				id: z.number().min(11).max(maxNumberValue).nullish(),
-				label: z.string().min(1).max(50),
+				label: z
+					.string()
+					.min(1, { message: 'Label name must contain at least 1 character' })
+					.max(50),
 				target: z.enum(['both', 'book', 'series']).default('both'),
 				private: z.boolean(),
 			}),

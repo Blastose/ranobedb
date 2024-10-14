@@ -174,6 +174,8 @@ async function updateReverseSeriesRelations(params: {
 				anidb_id: series_to_update.anidb_id,
 				web_novel: series_to_update.web_novel,
 				wikidata_id: series_to_update.wikidata_id,
+				anilist_id: series_to_update.anilist_id,
+				mal_id: series_to_update.mal_id,
 				olang: series_to_update.olang,
 			})
 			.execute();
@@ -238,6 +240,8 @@ async function removeReverseSeriesRelations(params: {
 				anidb_id: series_to_remove.anidb_id,
 				web_novel: series_to_remove.web_novel,
 				wikidata_id: series_to_remove.wikidata_id,
+				anilist_id: series_to_remove.anilist_id,
+				mal_id: series_to_remove.mal_id,
 				olang: series_to_remove.olang,
 			})
 			.execute();
@@ -328,6 +332,8 @@ async function addReverseSeriesRelations(params: {
 				anidb_id: series_to_add.anidb_id,
 				web_novel: series_to_add.web_novel,
 				wikidata_id: series_to_add.wikidata_id,
+				anilist_id: series_to_add.anilist_id,
+				mal_id: series_to_add.mal_id,
 				olang: series_to_add.olang,
 			})
 			.execute();
@@ -414,9 +420,13 @@ export class DBSeriesActions {
 					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
+					c_end_date: data.series.c_end_date ?? 99999999,
+					c_start_date: data.series.c_start_date ?? 99999999,
 					anidb_id: data.series.anidb_id ?? null,
 					web_novel: data.series.web_novel ?? null,
 					wikidata_id: data.series.wikidata_id ?? null,
+					anilist_id: data.series.anilist_id,
+					mal_id: data.series.mal_id,
 					olang: data.series.olang,
 				})
 				.where('series.id', '=', data.id)
@@ -432,9 +442,13 @@ export class DBSeriesActions {
 					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
+					c_end_date: 99999999,
+					c_start_date: 99999999,
 					anidb_id: data.series.anidb_id,
 					web_novel: data.series.web_novel,
 					wikidata_id: data.series.wikidata_id,
+					anilist_id: data.series.anilist_id,
+					mal_id: data.series.mal_id,
 					olang: data.series.olang,
 				})
 				.executeTakeFirstOrThrow();
@@ -634,9 +648,13 @@ export class DBSeriesActions {
 					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
+					c_end_date: data.series.c_end_date ?? 99999999,
+					c_start_date: data.series.c_start_date ?? 99999999,
 					anidb_id: data.series.anidb_id,
 					web_novel: data.series.web_novel,
 					wikidata_id: data.series.wikidata_id,
+					anilist_id: data.series.anilist_id,
+					mal_id: data.series.mal_id,
 					olang: data.series.olang,
 				})
 				.returning('series.id')
@@ -664,9 +682,13 @@ export class DBSeriesActions {
 					aliases: data.series.aliases || '',
 					end_date: data.series.end_date,
 					start_date: data.series.start_date,
+					c_end_date: 99999999,
+					c_start_date: 99999999,
 					anidb_id: data.series.anidb_id,
 					web_novel: data.series.web_novel,
 					wikidata_id: data.series.wikidata_id,
+					anilist_id: data.series.anilist_id,
+					mal_id: data.series.mal_id,
 					olang: data.series.olang,
 				})
 				.executeTakeFirstOrThrow();

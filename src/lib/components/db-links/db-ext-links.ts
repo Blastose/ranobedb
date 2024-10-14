@@ -14,6 +14,18 @@ export const aniDbLink: LinkBeforeAfter = {
 	name: 'AniDB',
 };
 
+export const malLink: LinkBeforeAfter = {
+	before: 'https://myanimelist.net/manga/',
+	after: '',
+	name: 'MyAnimeList',
+};
+
+export const anilistLink: LinkBeforeAfter = {
+	before: 'https://anilist.co/manga/',
+	after: '',
+	name: 'Anilist',
+};
+
 export const bookwalkerSeriesLink: LinkBeforeAfter = {
 	before: 'https://bookwalker.jp/series/',
 	after: '/list/',

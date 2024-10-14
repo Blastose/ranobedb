@@ -218,6 +218,7 @@ CREATE TABLE public.image (
     filename text NOT NULL
 );
 
+-- TODO Remove release_date when all books have releases with the correct release date
 CREATE TABLE public.book (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     image_id integer,
@@ -470,8 +471,12 @@ CREATE TABLE public.series (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     bookwalker_id integer,
     anidb_id integer,
+    mal_id integer,
+    anilist_id integer,
     start_date integer NOT NULL,
+    c_start_date integer NOT NULL,
     end_date integer NOT NULL,
+    c_end_date integer NOT NULL,
     wikidata_id integer,
     c_num_books integer NOT NULL,
     olang public.language NOT NULL,
@@ -487,8 +492,12 @@ CREATE TABLE public.series_hist (
     change_id integer NOT NULL,
     bookwalker_id integer,
     anidb_id integer,
+    mal_id integer,
+    anilist_id integer,
     start_date integer NOT NULL,
+    c_start_date integer NOT NULL DEFAULT 99999999,
     end_date integer NOT NULL,
+    c_end_date integer NOT NULL DEFAULT 99999999,
     wikidata_id integer,
     olang public.language NOT NULL,
     publication_status series_status NOT NULL,

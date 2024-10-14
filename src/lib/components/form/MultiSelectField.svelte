@@ -95,7 +95,7 @@
 		>
 			{#each dropdownOptions as dropdownOption}
 				<div
-					class="relative cursor-pointer scroll-my-2 rounded-full pr-2 pl-8
+					class="overflow-hidden text-ellipsis relative cursor-pointer scroll-my-2 rounded-full pr-2 pl-8
         data-[highlighted]:bg-gray-300 data-[highlighted]:text-gray-900
 				dark:data-[highlighted]:bg-neutral-600 dark:data-[highlighted]:text-white
           data-[disabled]:opacity-50

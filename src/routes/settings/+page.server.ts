@@ -103,7 +103,9 @@ export const load = async ({ locals, url }) => {
 								'user_list_label.label',
 								'user_list_label.private',
 								'user_list_label.target',
+								'user_list_label.sort_order',
 							])
+							.orderBy('user_list_label.sort_order asc')
 							.execute(),
 					},
 					zod(userListLabelsSchema),
@@ -577,21 +579,31 @@ export const actions = {
 				const currentLabels = await trx
 					.selectFrom('user_list_label')
 					.where('user_list_label.user_id', '=', user.id)
-					.where('user_list_label.id', '>=', 11)
+					.where('user_list_label.id', '>', 10)
 					.select([
 						'user_list_label.id',
 						'user_list_label.label',
 						'user_list_label.private',
 						'user_list_label.target',
+						'user_list_label.sort_order',
 					])
 					.execute();
-				const labels = listLabelsForm.data.labels;
+				const labels = listLabelsForm.data.labels
+					.map((v, i) => ({ ...v, sort_order: i }))
+					.filter((v) => {
+						// Filter for custom labels only
+						if (v.id) {
+							return v.id > 10;
+						}
+						return true;
+					});
 
 				const labelsWithIds = labels.filter((v) => typeof v.id === 'number') as {
 					id: number;
 					label: string;
 					target: 'both' | 'book' | 'series';
 					private: boolean;
+					sort_order: number;
 				}[];
 				const toAdd = labels.filter((v) => typeof v.id !== 'number');
 				const toRemove = arrayDiff(currentLabels, labelsWithIds);
@@ -634,6 +646,7 @@ export const actions = {
 							private: false,
 							user_id: user.id,
 							target: add.target,
+							sort_order: add.sort_order,
 						})
 						.execute();
 				}
@@ -644,6 +657,7 @@ export const actions = {
 						.set({
 							label: update.label,
 							target: update.target,
+							sort_order: update.sort_order,
 						})
 						.where('user_list_label.id', '=', update.id)
 						.where('user_list_label.user_id', '=', user.id)

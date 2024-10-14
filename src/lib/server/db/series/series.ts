@@ -91,6 +91,8 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 			'series.end_date',
 			'series.web_novel',
 			'series.wikidata_id',
+			'series.anilist_id',
+			'series.mal_id',
 			'series.olang',
 			'series.c_num_books',
 		])
@@ -123,6 +125,8 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 			'series_hist.end_date',
 			'series_hist.web_novel',
 			'series_hist.wikidata_id',
+			'series_hist.anilist_id',
+			'series_hist.mal_id',
 			'series_hist.olang',
 		])
 		.select(['series_title_hist.lang', 'series_title_hist.romaji', 'series_title_hist.title'])
@@ -440,6 +444,8 @@ export class DBSeries {
 				'cte_series.end_date',
 				'cte_series.web_novel',
 				'cte_series.wikidata_id',
+				'cte_series.anilist_id',
+				'cte_series.mal_id',
 				'cte_series.olang',
 			])
 			.select((eb) => [
@@ -746,6 +752,8 @@ export class DBSeries {
 				'cte_series.end_date',
 				'cte_series.web_novel',
 				'cte_series.wikidata_id',
+				'cte_series.anilist_id',
+				'cte_series.mal_id',
 				'cte_series.olang',
 				'change.ilock as locked',
 				'change.ihid as hidden',
@@ -988,6 +996,8 @@ export class DBSeries {
 				'cte_series.end_date',
 				'cte_series.web_novel',
 				'cte_series.wikidata_id',
+				'cte_series.anilist_id',
+				'cte_series.mal_id',
 				'cte_series.olang',
 			])
 			.select((eb) => [
@@ -1152,6 +1162,8 @@ export class DBSeries {
 				'cte_series.end_date',
 				'cte_series.web_novel',
 				'cte_series.wikidata_id',
+				'cte_series.anilist_id',
+				'cte_series.mal_id',
 				'cte_series.olang',
 				'change.ihid as hidden',
 				'change.ilock as locked',

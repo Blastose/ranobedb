@@ -21,7 +21,9 @@
 	import ReleaseDateInput from '../release/ReleaseDateInput.svelte';
 	import {
 		aniDbLink,
+		anilistLink,
 		bookwalkerSeriesLink,
+		malLink,
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
 	import SeriesTagInput from './SeriesTagInput.svelte';
@@ -126,10 +128,19 @@
 	<TextFieldLink
 		form={sForm}
 		type="number"
-		field="anidb_id"
-		label="AniDB id"
+		field="mal_id"
+		label="MyAnimeList id"
 		resetPadding={true}
-		linkBeforeAfter={aniDbLink}
+		linkBeforeAfter={malLink}
+	/>
+
+	<TextFieldLink
+		form={sForm}
+		type="number"
+		field="anilist_id"
+		label="Anilist id"
+		resetPadding={true}
+		linkBeforeAfter={anilistLink}
 	/>
 
 	<TextFieldLink
@@ -148,6 +159,15 @@
 		label="Wikidata id"
 		resetPadding={true}
 		linkBeforeAfter={wikidataLink}
+	/>
+
+	<TextFieldLink
+		form={sForm}
+		type="number"
+		field="anidb_id"
+		label="AniDB id"
+		resetPadding={true}
+		linkBeforeAfter={aniDbLink}
 	/>
 
 	<Hr />
