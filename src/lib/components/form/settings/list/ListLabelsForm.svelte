@@ -7,10 +7,29 @@
 	import TextField from '$lib/components/form/TextField.svelte';
 	import SelectField from '../../SelectField.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import { createDialog, melt } from '@melt-ui/svelte';
+	import { fade, fly } from 'svelte/transition';
+	import { tick } from 'svelte';
 
 	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 
-	const sForm = superForm(listLabelsForm, { dataType: 'json', invalidateAll: 'force' });
+	const {
+		elements: { trigger, overlay, content, title, close, portalled, description },
+		states: { open },
+	} = createDialog({
+		forceVisible: true,
+		preventScroll: false,
+	});
+
+	const sForm = superForm(listLabelsForm, {
+		dataType: 'json',
+		onUpdated: async ({ form }) => {
+			if (!form.valid) return;
+			await tick();
+			open.set(false);
+		},
+		invalidateAll: 'force',
+	});
 	const { form, enhance, delayed, submitting, message } = sForm;
 
 	$: if (!$delayed && $message) {
@@ -111,5 +130,55 @@
 		>
 	</div>
 
-	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Save labels'} />
+	<button
+		use:melt={$trigger}
+		class="primary-btn w-full"
+		type="button"
+		class:loading={$delayed}
+		disabled={$submitting}
+	>
+		{#if !$delayed}
+			Save labels
+		{:else}
+			<Icon name="loading" class="animate-spin" />
+		{/if}</button
+	>
 </form>
+
+{#if $open}
+	<div use:melt={$portalled}>
+		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
+		<div class="modal-content">
+			<div
+				class="modal-content-inner confirm-modal"
+				transition:fly={{
+					duration: 250,
+					y: 8,
+				}}
+				use:melt={$content}
+			>
+				<h2 use:melt={$title} class="text-lg font-medium">Confirm</h2>
+				<p use:melt={$description}>Are you sure you want to save these custom labels?</p>
+				<form action="?/listlabels" method="post" use:enhance class="mt-6 flex justify-end gap-2">
+					<button type="button" use:melt={$close} class="btn btn-pad">Cancel</button>
+					<SubmitButton
+						delayed={$delayed}
+						submitting={$submitting}
+						text="Save labels"
+						wFull={false}
+					/>
+				</form>
+
+				<button use:melt={$close} aria-label="close" class="close-btn btn">
+					<Icon name="close" />
+				</button>
+			</div>
+		</div>
+	</div>
+{/if}
+
+<style>
+	.modal-content-inner.confirm-modal {
+		max-width: 512px;
+	}
+</style>
