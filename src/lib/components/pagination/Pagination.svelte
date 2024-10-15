@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Icon from '$lib/components/icon/Icon.svelte';
 
+	export let hideTotalPages: boolean = false;
 	export let currentPage: number;
 	export let totalPages: number;
 	export let siblingCount: number = 1;
@@ -105,11 +106,13 @@
 				{#if page.type === 'ellipsis'}
 					<span class="flex items-end"><Icon name="dotsHorizontal" /></span>
 				{:else if page.value !== 0}
-					<a
-						class:active={currentPage === page.value}
-						class="pagination-button"
-						href={createPaginationUrl(page.value, url)}>{page.value}</a
-					>
+					{#if !hideTotalPages || (hideTotalPages && page.value && page.value - currentPage < 4)}
+						<a
+							class:active={currentPage === page.value}
+							class="pagination-button"
+							href={createPaginationUrl(page.value, url)}>{page.value}</a
+						>
+					{/if}
 				{/if}
 			{/each}
 			{#if isNextDisabled}

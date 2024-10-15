@@ -7,17 +7,18 @@
 	export let totalPages: number;
 	export let showTopPages: boolean = true;
 	export let results: string | undefined;
+	export let hideTotalPages: boolean = totalPages > 5000;
 </script>
 
 <div class="flex flex-col gap-4">
 	{#if showTopPages && results !== undefined}
 		<div class="flex flex-col gap-2">
-			<Pagination url={$page.url} {currentPage} {totalPages} />
+			<Pagination url={$page.url} {currentPage} {totalPages} {hideTotalPages} />
 			<p>{results} results</p>
 		</div>
 	{:else}
 		{#if showTopPages}
-			<Pagination url={$page.url} {currentPage} {totalPages} />
+			<Pagination url={$page.url} {currentPage} {totalPages} {hideTotalPages} />
 		{/if}
 
 		{#if results !== undefined}
@@ -33,5 +34,5 @@
 		{/if}
 	</Fly>
 
-	<Pagination url={$page.url} {currentPage} {totalPages} />
+	<Pagination url={$page.url} {currentPage} {totalPages} {hideTotalPages} />
 </div>

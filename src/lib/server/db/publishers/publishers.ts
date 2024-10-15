@@ -242,8 +242,7 @@ export class DBPublishers {
 			])
 			.orderBy(
 				(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
-			)
-			.clearOrderBy();
+			);
 	}
 
 	getBooksBelongingToPublisherCount(publisherId: number) {
