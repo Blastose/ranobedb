@@ -671,10 +671,13 @@ export const actions = {
 					e.table === 'user_list_label' &&
 					e.constraint === 'user_list_label_user_id_label_key'
 				) {
-					return setError(
+					return message(
 						listLabelsForm,
-						'labels._errors',
-						'Cannot have two labels with the same name. Please change one of the names.',
+						{
+							type: 'error',
+							text: 'Cannot have two labels with the same name. Please change one of the names.',
+						},
+						{ status: 400 },
 					);
 				}
 			}
