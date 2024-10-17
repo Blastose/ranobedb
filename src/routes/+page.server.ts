@@ -23,12 +23,14 @@ export const load = async ({ locals }) => {
 	const recentlyReleasedPromise = dbReleases
 		.getReleasesWithImage()
 		.where('release.release_date', '<', now)
+		.where('release.hidden', '=', false)
 		.orderBy(['release.release_date desc', 'release.id'])
 		.limit(10)
 		.execute();
 	const upcomingReleasesPromise = dbReleases
 		.getReleasesWithImage()
 		.where('release.release_date', '>=', now)
+		.where('release.hidden', '=', false)
 		.orderBy(['release.release_date asc', 'release.id'])
 		.limit(10)
 		.execute();
