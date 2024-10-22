@@ -190,7 +190,7 @@ export const userListSeriesSchema = z.object({
 	),
 	notify_book: z.boolean().default(false),
 	show_upcoming: z.boolean().default(true),
-	volumes_read: z.number().max(maxNumberValue).nullish(),
+	volumes_read: z.number().min(0).max(maxNumberValue).nullish(),
 	// remove_all: z.boolean().default(false),
 	selectedCustLabels: z.array(z.number().min(11).max(maxNumberValue)).max(2000),
 	langs: z.array(z.enum(languagesArray)),

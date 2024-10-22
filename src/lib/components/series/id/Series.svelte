@@ -201,11 +201,12 @@
 
 		{#if series.books.length > 0}
 			<BookImageContainer moreColumns={true}>
-				{#each series.books as book (book.id)}
+				{#each series.books as book, index (book.id)}
 					<BookImage {book} urlPrefix="/book/">
 						{#if book.label}
 							<BookImageBadge badges={[`${book.label.label}`]} location="top-right" />
 						{/if}
+						<BookImageBadge badges={[`#${index + 1}`]} location="bottom-right" />
 					</BookImage>
 				{/each}
 			</BookImageContainer>
