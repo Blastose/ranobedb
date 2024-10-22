@@ -13,8 +13,9 @@
 			<p>
 				Only Japanese series or series that are considered light novels and have a Japanese release
 				can be added to the database.
-				<br>
-				Exceptions: Japanese web novels that are translated to English and published as a book can be included.
+				<br />
+				Exceptions: Japanese web novels that are translated to English and published as a book can be
+				included.
 			</p>
 		</section>
 
@@ -110,7 +111,10 @@
 				</section>
 				<section>
 					<h4>Sort order</h4>
-					<p>You can reorder books in the series based on the order they should be read in.</p>
+					<p>
+						You can reorder books in the series. The order should be based on the release order of
+						the books in the series.
+					</p>
 				</section>
 			</section>
 
@@ -132,10 +136,6 @@
 						<li>Main story: Corresponds to side story</li>
 						<li>Spin-off: Corresponds to parent story</li>
 					</ul>
-				</section>
-				<section>
-					<h4>Sort order</h4>
-					<p>You can reorder books in the series based on the order they should be read in.</p>
 				</section>
 			</section>
 		</section>
