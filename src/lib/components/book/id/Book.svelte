@@ -38,6 +38,8 @@
 	const theme = getThemeContext();
 	$: imageUrl = buildImageUrl(book.image?.filename);
 	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
+	$: previousBook = book_series?.books[book_series?.books.findIndex((v) => v.id === book.id) - 1]; // We use [] brackets here because using -1 with .at() gets the last element of the array and we don't want that
+	$: nextBook = book_series?.books.at(book_series?.books.findIndex((v) => v.id === book.id) + 1);
 	const displayPrefs = getDisplayPrefsContext();
 </script>
 
@@ -103,6 +105,15 @@
 					<VisibilityDisplayPerm item={book} {user} />
 				</section>
 
+				<div class="flex justify-between @sm:justify-normal gap-6 pt-4">
+					{#if previousBook}
+						<a class="link" href="/book/{previousBook.id}">{'<-'} Previous book</a>
+					{/if}
+					{#if nextBook}
+						<a class="link" href="/book/{nextBook.id}">Next book {'->'}</a>
+					{/if}
+				</div>
+
 				<div class="pt-3 pb-2">
 					<Rating
 						rating={book.rating}
@@ -167,6 +178,7 @@
 							</svelte:fragment>
 							<svelte:fragment slot="items">
 								{#each book_series.books as other_book (other_book.id)}
+									{@const isCurrent = other_book.id === book.id}
 									<div class="carousel-item">
 										<BookImage book={other_book} urlPrefix="/book/">
 											{#if other_book.label}
@@ -174,6 +186,9 @@
 													badges={[`${other_book.label.label}`]}
 													location="top-right"
 												/>
+											{/if}
+											{#if isCurrent}
+												<BookImageBadge badges={['Viewing']} location="bottom-right" />
 											{/if}
 										</BookImage>
 									</div>
