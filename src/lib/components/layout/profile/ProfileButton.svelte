@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import { fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import ProfileItem from './ProfileItem.svelte';

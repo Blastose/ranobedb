@@ -1,6 +1,6 @@
 import type { staffSchema } from '$lib/server/zod/schema';
 import type { Infer } from 'sveltekit-superforms';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import { addChange } from '../change/change';
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError } from '../errors/errors';

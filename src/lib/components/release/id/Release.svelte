@@ -5,7 +5,7 @@
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 	import { languageNames } from '$lib/db/dbConsts';
 	import type { Release } from '$lib/server/db/releases/releases';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';

@@ -3,7 +3,7 @@
 	import { page } from '$app/stores';
 	import SidebarListItem from './SidebarListItem.svelte';
 	import SidebarSection from './SidebarSection.svelte';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import SidebarFormButton from './SidebarFormButton.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';

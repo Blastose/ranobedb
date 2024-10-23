@@ -1,15 +1,15 @@
 import { loginSchema, redirectSchema } from '$lib/server/zod/schema';
 import { fail, redirect } from '@sveltejs/kit';
-import { lucia } from '$lib/server/lucia';
 import { superValidate, message } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { Argon2id } from 'oslo/password';
 import { buildUrlFromRedirect } from '$lib/utils/url.js';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { db } from '$lib/server/db/db.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { validateTurnstile } from '$lib/server/cf.js';
 import { isLimited, loginLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
+import { Lucia } from '$lib/server/lucia/lucia.js';
+import { verifyPasswordHash } from '$lib/server/password/hash.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) {
@@ -58,17 +58,15 @@ export const actions = {
 			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
 		}
 
-		const validPassword = await new Argon2id().verify(user.hashed_password, password);
+		const validPassword = await verifyPasswordHash(user.hashed_password, password);
 		if (!validPassword) {
 			return message(form, { type: 'error', text: 'Invalid login credentials' }, { status: 400 });
 		}
 
-		const session = await lucia.createSession(user.id, {});
-		const sessionCookie = lucia.createSessionCookie(session.id);
-		cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '.',
-			...sessionCookie.attributes,
-		});
+		const lucia = new Lucia(db);
+		const token = lucia.generateSessionToken();
+		const session = await lucia.createSession(token, user.id);
+		lucia.setSessionTokenCookie(event, token, session.expiresAt);
 
 		const redirect = await superValidate(url, zod(redirectSchema));
 		let redirectUrl = '/';

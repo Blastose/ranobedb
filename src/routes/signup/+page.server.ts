@@ -1,8 +1,6 @@
-import { lucia } from '$lib/server/lucia.js';
 import { DBUsers } from '$lib/server/db/user/user';
 import { signupSchema } from '$lib/server/zod/schema';
 import { redirect } from '@sveltejs/kit';
-import { generateId } from 'lucia';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { message, setError, superValidate } from 'sveltekit-superforms';
@@ -12,6 +10,7 @@ import { validateTurnstile } from '$lib/server/cf.js';
 import { isLimited, signUpLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { EmailVerification } from '$lib/server/email/email';
+import { generateUserId, Lucia } from '$lib/server/lucia/lucia.js';
 
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
@@ -53,7 +52,7 @@ export const actions = {
 		const email = form.data.email;
 		const username = form.data.username;
 		const password = form.data.password;
-		const userId = generateId(15);
+		const userId = generateUserId(15);
 
 		const dbUsers = new DBUsers(db);
 
@@ -65,13 +64,10 @@ export const actions = {
 				username,
 			});
 
-			const session = await lucia.createSession(userId, {});
-			const sessionCookie = lucia.createSessionCookie(session.id);
-
-			cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes,
-			});
+			const lucia = new Lucia(db);
+			const token = lucia.generateSessionToken();
+			const session = await lucia.createSession(token, userId);
+			lucia.setSessionTokenCookie(event, token, session.expiresAt);
 		} catch (error) {
 			if (error instanceof DatabaseError) {
 				if (error.code === '23505' && error.detail?.includes('Key (email)')) {

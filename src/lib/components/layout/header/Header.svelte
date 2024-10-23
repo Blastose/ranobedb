@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import ProfileButton from '$lib/components/layout/profile/ProfileButton.svelte';
 	import RanobeDb from '../RanobeDB.svelte';
 	import { page } from '$app/stores';

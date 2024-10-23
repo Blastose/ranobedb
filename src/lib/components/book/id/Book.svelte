@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { BookOne, BookSeries } from '$lib/server/db/books/books';
 	import { getBgImageStyle, getThemeContext } from '$lib/stores/themeStore';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import BookModal from './BookModal.svelte';
 	import type { userListBookSchema, userListReleaseSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';

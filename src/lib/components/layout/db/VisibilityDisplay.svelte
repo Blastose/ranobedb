@@ -8,7 +8,7 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import type { DbItem, Language } from '$lib/server/db/dbTypes';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 
 	export let item: T;
 	export let type: DbItem;

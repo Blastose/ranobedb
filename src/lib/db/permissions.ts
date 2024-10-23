@@ -1,4 +1,4 @@
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import type { UserRole } from '../server/db/dbTypes';
 
 export type Perm = 'edit' | 'add' | 'visibility';

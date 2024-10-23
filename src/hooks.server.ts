@@ -1,11 +1,12 @@
 import type { Theme } from '$lib/stores/themeStore';
 import type { Handle } from '@sveltejs/kit';
-import { lucia } from '$lib/server/lucia';
 import { getMode } from '$lib/mode/mode';
 import schedule from 'node-schedule';
 import { sendRecentlyReleasedNotifications } from '$lib/server/db/cron/release';
 import { updateBookReleaseDate } from '$lib/server/db/cron/book';
 import { updateSeriesStartEndDates } from '$lib/server/db/cron/series';
+import { Lucia } from '$lib/server/lucia/lucia';
+import { db } from '$lib/server/db/db';
 
 schedule.scheduleJob('0 0 * * *', async function () {
 	await sendRecentlyReleasedNotifications();
@@ -14,25 +15,18 @@ schedule.scheduleJob('0 0 * * *', async function () {
 });
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const sessionId = event.cookies.get(lucia.sessionCookieName);
+	const sessionCookieName = 'auth_session';
+	const sessionId = event.cookies.get(sessionCookieName);
+	const lucia = new Lucia(db);
 	if (!sessionId) {
 		event.locals.user = null;
 		event.locals.session = null;
 	} else {
-		const { session, user } = await lucia.validateSession(sessionId);
-		if (session && session.fresh) {
-			const sessionCookie = lucia.createSessionCookie(session.id);
-			event.cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes,
-			});
-		}
-		if (!session) {
-			const sessionCookie = lucia.createBlankSessionCookie();
-			event.cookies.set(sessionCookie.name, sessionCookie.value, {
-				path: '.',
-				...sessionCookie.attributes,
-			});
+		const { session, user } = await lucia.validateSessionToken(sessionId);
+		if (session !== null) {
+			lucia.setSessionTokenCookie(event, sessionId, session.expiresAt);
+		} else {
+			lucia.deleteSessionTokenCookie(event);
 		}
 		event.locals.user = user;
 		event.locals.session = session;

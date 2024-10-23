@@ -1,6 +1,6 @@
 import type { DB, DbItem } from '$lib/server/db/dbTypes';
 import type { Expression, InferResult, Kysely, SqlBool, Transaction } from 'kysely';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import { error } from '@sveltejs/kit';
 import { hasVisibilityPerms } from '$lib/db/permissions';
 import { withBookHistTitleCte } from '../books/books';

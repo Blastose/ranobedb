@@ -1,4 +1,3 @@
-import { lucia } from '$lib/server/lucia.js';
 import {
 	changeEmailSchema,
 	displayPrefsSchema,
@@ -10,7 +9,6 @@ import {
 	usernameSchema,
 	verifyEmailSchema,
 } from '$lib/server/zod/schema.js';
-import { Argon2id } from 'oslo/password';
 import {
 	fail,
 	message,
@@ -37,6 +35,8 @@ import {
 import { getMode } from '$lib/mode/mode.js';
 import { arrayDiff, arrayIntersection } from '$lib/db/array.js';
 import { sql } from 'kysely';
+import { Lucia } from '$lib/server/lucia/lucia.js';
+import { verifyPasswordHash } from '$lib/server/password/hash.js';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -152,7 +152,7 @@ export const actions = {
 			);
 		}
 
-		const validPassword = await new Argon2id().verify(user.hashed_password, password);
+		const validPassword = await verifyPasswordHash(user.hashed_password, password);
 		if (!validPassword) {
 			return message(usernameForm, { type: 'error', text: 'Invalid password' }, { status: 400 });
 		}
@@ -192,7 +192,7 @@ export const actions = {
 	},
 
 	password: async (event) => {
-		const { request, locals, cookies } = event;
+		const { request, locals } = event;
 		if (!locals.user) {
 			return fail(401);
 		}
@@ -212,7 +212,7 @@ export const actions = {
 		const currentPassword = passwordForm.data.currentPassword;
 		const newPassword = passwordForm.data.newPassword;
 
-		const validPassword = await new Argon2id().verify(user.hashed_password, currentPassword);
+		const validPassword = await verifyPasswordHash(user.hashed_password, currentPassword);
 		if (!validPassword) {
 			return message(passwordForm, { type: 'error', text: 'Invalid password' }, { status: 400 });
 		}
@@ -226,15 +226,10 @@ export const actions = {
 		}
 
 		await dbUsers.changePassword({ userId: user.id, newPassword });
-
-		await lucia.invalidateUserSessions(user.id);
-		const session = await lucia.createSession(user.id, {});
-		const sessionCookie = lucia.createSessionCookie(session.id);
-
-		cookies.set(sessionCookie.name, sessionCookie.value, {
-			path: '.',
-			...sessionCookie.attributes,
-		});
+		const lucia = new Lucia(db);
+		const token = lucia.generateSessionToken();
+		const session = await lucia.createSession(token, user.id);
+		lucia.setSessionTokenCookie(event, token, session.expiresAt);
 
 		return message(passwordForm, { text: 'Updated password!', type: 'success' });
 	},
@@ -408,7 +403,7 @@ export const actions = {
 			return fail(401);
 		}
 
-		const validPassword = await new Argon2id().verify(user.hashed_password, form.data.password);
+		const validPassword = await verifyPasswordHash(user.hashed_password, form.data.password);
 		if (!validPassword) {
 			return message(form, { type: 'error', text: 'Invalid password' }, { status: 400 });
 		}
@@ -504,7 +499,7 @@ export const actions = {
 			);
 		}
 
-		const validPassword = await new Argon2id().verify(
+		const validPassword = await verifyPasswordHash(
 			user.hashed_password,
 			changeEmailForm.data.password,
 		);

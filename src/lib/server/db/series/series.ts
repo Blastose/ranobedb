@@ -5,7 +5,7 @@ import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
 import { defaultLangPrio, type UserListStatus } from '$lib/db/dbConsts';
 import { withBookTitleCte } from '../books/books';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 
 function titleCaseBuilder(
 	eb: ExpressionBuilder<DB, 'series_title' | 'series'>,

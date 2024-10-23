@@ -3,7 +3,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import Sidebar from '$lib/components/layout/sidebar/Sidebar.svelte';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import { writable } from 'svelte/store';
 	import { quintOut } from 'svelte/easing';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';

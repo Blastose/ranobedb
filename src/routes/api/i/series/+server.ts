@@ -5,7 +5,7 @@ import { superValidate } from 'sveltekit-superforms';
 import { searchNameSchema } from '$lib/server/zod/schema';
 import { zod } from 'sveltekit-superforms/adapters';
 import { withSeriesTitleCte } from '$lib/server/db/series/series';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import { addCharacterBetweenString } from '$lib/db/match.js';
 
 async function getSeriesByTitle(title: string, titleAsNumber: number, user: User | null) {
