@@ -7,7 +7,7 @@
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import VisibilityInputs from '../all/VisibilityInputs.svelte';
 	import { hasVisibilityPerms } from '$lib/db/permissions';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import type { ReleaseEdit } from '$lib/server/db/releases/releases';
 	import ReleasePublisherInput from './ReleasePublisherInput.svelte';
 	import ReleaseBookInput from './ReleaseBookInput.svelte';

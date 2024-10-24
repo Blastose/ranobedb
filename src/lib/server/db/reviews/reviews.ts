@@ -1,7 +1,7 @@
 import { RanobeDB } from '$lib/server/db/db';
 import type { InferResult, Kysely } from 'kysely';
 import type { DB } from '$lib/server/db/dbTypes';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import { withBookTitleCte } from '../books/books';
 import { withSeriesTitleCte } from '../series/series';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';

@@ -2,7 +2,7 @@
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import DBItemShell from '$lib/components/layout/db/DBItemShell.svelte';
 	import type { Series } from '$lib/server/db/series/series';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import { groupBy } from '$lib/db/array';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import { getDisplayPrefsContext, getTitleDisplay, getTitleDisplaySub } from '$lib/display/prefs';

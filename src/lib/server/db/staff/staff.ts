@@ -3,7 +3,7 @@ import { RanobeDB } from '$lib/server/db/db';
 import { Kysely, sql, type InferResult } from 'kysely';
 import { DBBooks, withBookTitleCte } from '../books/books';
 import type { DB, StaffRole } from '$lib/server/db/dbTypes';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import { DBSeries } from '../series/series';
 import type { staffTabs } from '$lib/db/dbConsts';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';

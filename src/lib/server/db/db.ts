@@ -3,7 +3,7 @@ import { Kysely, PostgresDialect } from 'kysely';
 import pkg from 'pg';
 const { types, Pool } = pkg;
 import type { DB } from '$lib/server/db/dbTypes';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 
 // Return pg `date` as string instead of JS date
 types.setTypeParser(types.builtins.DATE, (value: string) => {

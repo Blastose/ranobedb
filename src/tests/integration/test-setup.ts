@@ -1,6 +1,6 @@
 import type { DB } from '$lib/server/db/dbTypes';
 import { sql, Kysely, PostgresDialect } from 'kysely';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import dotenv from 'dotenv';
 import pkg from 'pg';
 import { defaultDisplayPrefs } from '$lib/db/dbConsts';

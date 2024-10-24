@@ -3,6 +3,7 @@
 import type { Theme } from '$lib/stores/themeStore';
 import type { ToastData } from '$lib/components/toast/toast';
 import type { Perm } from '$lib/db/permissions';
+import type { Session, User } from '$lib/server/lucia/lucia';
 
 interface RenderParameters {
 	sitekey: string;
@@ -40,8 +41,8 @@ declare global {
 			missingPerm?: Perm;
 		}
 		interface Locals {
-			user: import('lucia').User | null;
-			session: import('lucia').Session | null;
+			user: User | null;
+			session: Session | null;
 			theme: Theme;
 		}
 		interface PageData {

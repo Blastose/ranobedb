@@ -94,22 +94,22 @@ VALUES (
 
 INSERT INTO public.auth_session (id, user_id, expires_at)
 VALUES (
-        '5wcmie0i2awnd89w9tkjqjbkswdgbfs8qnmn1o9e',
+        '2910c6232f0d1d837d5cdce18112a61dec3873102e9874aba698d39ba8eceb26',
         'q5tphufdf9pdlyo',
         '2999-03-17 20:20:35.38-07'
     ),
     (
-        'jg4wct243wq4y8kc9nq52w91dhkwm3tyswfo2ii7',
+        '522a48397aba09b428d5ca902cd774709fef85b7620f5fd4c2f1d6f147b698bf',
         '9ugxrixoqb5u64x',
         '2024-03-18 07:54:38.247-07'
     ),
     (
-        '9s5egrllhysy571e9i3970o6d8l7dxe056obrdme',
+        'b16ca54f6cd9b0a82e11fd564970c14d465ecbcdf8589bf897aa9658b6262b7a',
         'ap0mo8i0vvog6wi',
         '2999-03-18 12:28:33.134-07'
     ),
     (
-        '4gx7d03zwy0gyu0i3dioh5mhexhgz6o496f3hayd',
+        'f0e81579046dadbe447516e9d09ee9f6aca23f5ffedcf4a8135d117ab01e0e72',
         '0opogjc1rrkdc6r',
         '2999-03-28 14:03:16.973-07'
     );

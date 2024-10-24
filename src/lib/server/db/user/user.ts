@@ -1,10 +1,10 @@
 import type { DB, UserListLabel } from '$lib/server/db/dbTypes';
 import { defaultUserListLabels } from '$lib/db/dbConsts';
 import type { Insertable, Kysely, Transaction } from 'kysely';
-import { Argon2id } from 'oslo/password';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
 import { deletedUser } from './ranobebot';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
+import { hashPassword } from '$lib/server/password/hash';
 
 export async function insertDefaultUserListLabels(trx: Transaction<DB>, userId: string) {
 	const defaultUserListLabelValues = defaultUserListLabels.map((v, i) => {
@@ -30,7 +30,7 @@ export class DBUsers {
 	}
 
 	async createUser(user: { email: string; password: string; username: string; id: string }) {
-		const hashed_password = await new Argon2id().hash(user.password);
+		const hashed_password = await hashPassword(user.password);
 
 		return await this.db.transaction().execute(async (trx) => {
 			const createdUser = await trx
@@ -129,7 +129,7 @@ export class DBUsers {
 	}
 
 	async changePassword(params: { userId: string; newPassword: string }) {
-		const hashed_password = await new Argon2id().hash(params.newPassword);
+		const hashed_password = await hashPassword(params.newPassword);
 
 		await this.db.transaction().execute(async (trx) => {
 			await trx

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { DbItem } from '$lib/server/db/dbTypes';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import type { CopyTo, Rec } from '$lib/components/layout/db/VisibilityDisplay.svelte';
 	import VisibilityDisplay from './VisibilityDisplay.svelte';
 	import type { Nullish } from '$lib/server/zod/schema';

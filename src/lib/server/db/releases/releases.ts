@@ -3,7 +3,7 @@ import { RanobeDB } from '$lib/server/db/db';
 import type { InferResult, Kysely } from 'kysely';
 import { withBookTitleCte } from '../books/books';
 import type { DB } from '$lib/server/db/dbTypes';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 
 export class DBReleases {
 	ranobeDB: RanobeDB;

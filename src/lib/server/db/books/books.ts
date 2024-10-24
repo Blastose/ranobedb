@@ -4,7 +4,7 @@ import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
 import { defaultLangPrio, type UserListStatus } from '$lib/db/dbConsts';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import { withSeriesTitleCte } from '../series/series';
 
 function titleCaseBuilder(

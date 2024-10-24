@@ -1,11 +1,9 @@
 import type { Kysely } from 'kysely';
-import { TimeSpan, createDate, isWithinExpirationDate } from 'oslo';
-import { generateRandomString, alphabet } from 'oslo/crypto';
 import type { DB } from '../db/dbTypes';
-import { type User } from 'lucia';
 import { EmailBuilder, EmailSender } from './sender';
 import { getMode } from '$lib/mode/mode';
-import { generateId } from '../lucia';
+import { generateCode, generateEntropyId, type User } from '../lucia/lucia';
+import dayjs from 'dayjs';
 
 export class EmailVerification {
 	db: Kysely<DB>;
@@ -18,18 +16,18 @@ export class EmailVerification {
 		await this.db.deleteFrom('email_verification_code').where('user_id', '=', userId).execute();
 		let code: string;
 		if (getMode() === 'production') {
-			code = generateRandomString(8, alphabet('0-9'));
+			code = generateCode(8);
 		} else {
 			code = '99999999';
 		}
-
+		const now = dayjs();
 		await this.db
 			.insertInto('email_verification_code')
 			.values({
 				user_id: userId,
 				email,
 				code,
-				expires_at: createDate(new TimeSpan(15, 'm')), // 15 minutes
+				expires_at: now.add(15, 'minutes').toDate(),
 			})
 			.execute();
 		return code;
@@ -65,7 +63,7 @@ export class EmailVerification {
 			}
 			await trx.deleteFrom('email_verification_code').where('id', '=', databaseCode.id).execute();
 
-			if (!isWithinExpirationDate(databaseCode.expires_at)) {
+			if (Date.now() >= databaseCode.expires_at.getTime()) {
 				return false;
 			}
 			const userAuthCreds = await trx
@@ -102,14 +100,15 @@ export class EmailVerification {
 
 	async createEmailVerificationToken(userId: string, new_email: string): Promise<string> {
 		await this.db.deleteFrom('email_verification_token').where('user_id', '=', userId).execute();
-		const tokenId = generateId();
+		const tokenId = generateEntropyId();
+		const now = dayjs();
 		await this.db
 			.insertInto('email_verification_token')
 			.values({
 				token_hash: tokenId,
 				user_id: userId,
 				new_email: new_email,
-				expires_at: createDate(new TimeSpan(2, 'h')),
+				expires_at: now.add(2, 'hour').toDate(),
 			})
 			.execute();
 

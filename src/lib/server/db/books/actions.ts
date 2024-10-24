@@ -1,7 +1,7 @@
 import type { bookSchema } from '$lib/server/zod/schema';
 import type { Infer } from 'sveltekit-superforms';
 import { RanobeDB } from '../db';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import { addChange } from '../change/change';
 import type { Insertable, Kysely } from 'kysely';
 import type {

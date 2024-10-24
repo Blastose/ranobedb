@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Drawer from './drawer/Drawer.svelte';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 
 	export let user: User | null;
 

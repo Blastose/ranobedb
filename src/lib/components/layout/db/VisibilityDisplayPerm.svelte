@@ -4,7 +4,7 @@
 
 <script lang="ts" generics="T extends Rec">
 	import { hasVisibilityPerms } from '$lib/db/permissions';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 
 	export let item: T;
 	export let user: User | null;

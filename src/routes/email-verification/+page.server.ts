@@ -3,7 +3,6 @@ import { EmailVerification } from '$lib/server/email/email.js';
 import { isLimited, verifyEmailLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
 import { tokenSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
-import { isWithinExpirationDate } from 'oslo';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -42,7 +41,7 @@ export const load = async (event) => {
 		return token;
 	});
 
-	if (!token || !isWithinExpirationDate(token.expires_at)) {
+	if (!token || Date.now() >= token.expires_at.getTime()) {
 		return error(400);
 	}
 

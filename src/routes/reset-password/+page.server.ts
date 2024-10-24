@@ -4,12 +4,11 @@ import { message, superValidate } from 'sveltekit-superforms';
 import { db } from '$lib/server/db/db.js';
 import { zod } from 'sveltekit-superforms/adapters';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
-import { encodeHex } from 'oslo/encoding';
-import { sha256 } from 'oslo/crypto';
-import { isWithinExpirationDate } from 'oslo';
-import { lucia } from '$lib/server/lucia.js';
-import { Argon2id } from 'oslo/password';
 import { isLimited, resetPasswordLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
+import { Lucia } from '$lib/server/lucia/lucia.js';
+import { hashPassword } from '$lib/server/password/hash.js';
+import { encodeHexLowerCase } from '@oslojs/encoding';
+import { sha256 } from '@oslojs/crypto/sha2';
 
 export const load = async ({ setHeaders, url }) => {
 	const verificationToken = await superValidate(url, zod(tokenSchema));
@@ -58,8 +57,8 @@ export const actions = {
 			);
 		}
 
-		const tokenHash = encodeHex(
-			await sha256(new TextEncoder().encode(verificationToken.data.token)),
+		const tokenHash = encodeHexLowerCase(
+			sha256(new TextEncoder().encode(verificationToken.data.token)),
 		);
 		const token = await db
 			.selectFrom('password_reset_token')
@@ -70,7 +69,7 @@ export const actions = {
 			await db.deleteFrom('password_reset_token').where('token_hash', '=', tokenHash).execute();
 		}
 
-		if (!token || !isWithinExpirationDate(token.expires_at)) {
+		if (!token || Date.now() >= token.expires_at.getTime()) {
 			return message(
 				form,
 				{ type: 'error', text: 'Invalid password reset token' },
@@ -78,8 +77,9 @@ export const actions = {
 			);
 		}
 
+		const lucia = new Lucia(db);
 		await lucia.invalidateUserSessions(token.user_id);
-		const hashed_password = await new Argon2id().hash(form.data.password);
+		const hashed_password = await hashPassword(form.data.password);
 
 		await db
 			.updateTable('auth_user_credentials')

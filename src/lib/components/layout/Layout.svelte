@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Header from './header/Header.svelte';
 	import Sidebar from '$lib/components/layout/sidebar/Sidebar.svelte';
-	import type { User } from 'lucia';
+	import type { User } from '$lib/server/lucia/lucia';
 	import Fly from './Fly.svelte';
 	import Toaster from '$lib/components/toast/Toaster.svelte';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';

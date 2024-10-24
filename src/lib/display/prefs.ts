@@ -1,7 +1,7 @@
 import { defaultDisplayPrefs } from '$lib/db/dbConsts';
 import type { Language } from '$lib/server/db/dbTypes';
 import type { DisplayPrefs, Nullish } from '$lib/server/zod/schema';
-import type { User } from 'lucia';
+import type { User } from '$lib/server/lucia/lucia';
 import { getContext } from 'svelte';
 import type { Writable } from 'svelte/store';
 
