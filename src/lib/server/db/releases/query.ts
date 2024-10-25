@@ -10,13 +10,14 @@ import { zod } from 'sveltekit-superforms/adapters';
 export async function getReleases(params: {
 	currentPage: number;
 	q: string | undefined | null;
+	limit: number;
 	db: Kysely<DB>;
 	listUser: Pick<User, 'id'> | null;
 	currentUser: User | null;
 	url: URL;
 	form: SuperValidated<Infer<typeof releaseFiltersSchema>>;
 }) {
-	const { currentPage, q, db, listUser, currentUser, form } = params;
+	const { currentPage, q, db, listUser, currentUser, form, limit } = params;
 
 	const dbReleases = DBReleases.fromDB(db, currentUser);
 
@@ -267,7 +268,7 @@ export async function getReleases(params: {
 		count,
 		totalPages,
 	} = await paginationBuilderExecuteWithCount(query, {
-		limit: 24,
+		limit: limit,
 		page: currentPage,
 	});
 

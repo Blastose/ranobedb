@@ -23,6 +23,7 @@ async function get(params: { url: URL; locals: App.Locals }) {
 		listUser: null,
 		currentUser: locals.user,
 		form,
+		limit: form.data.limit,
 	});
 
 	return {

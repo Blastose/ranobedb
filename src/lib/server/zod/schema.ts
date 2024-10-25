@@ -619,6 +619,10 @@ export type HistoryFilters = z.infer<typeof historyFiltersSchema>;
 
 const zQueryLimit = z.number().max(100).default(24);
 
+export const queryLimitSchema = z.object({
+	limit: zQueryLimit,
+});
+
 const zUserList = z.enum(userListStatus).catch('Any');
 
 export const bookFiltersSchema = z.object({

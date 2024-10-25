@@ -43,6 +43,7 @@ export const load = async ({ params, locals, url }) => {
 			listUser: listUser,
 			currentUser: locals.user,
 			form,
+			limit: 24,
 		}),
 		getUserListCounts({ userId: listUser.id }),
 	]);

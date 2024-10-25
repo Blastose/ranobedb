@@ -9,6 +9,7 @@ import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserBookLabels } from '../user/list';
 
 export async function getBooks(params: {
+	limit: number;
 	currentPage: number;
 	q: string | undefined | null;
 	db: Kysely<DB>;
@@ -17,7 +18,7 @@ export async function getBooks(params: {
 	url: URL;
 	form: SuperValidated<Infer<typeof bookFiltersSchema>>;
 }) {
-	const { currentPage, q, db, listUser, currentUser, url, form } = params;
+	const { currentPage, q, db, listUser, currentUser, url, form, limit } = params;
 
 	const dbBooks = DBBooks.fromDB(db, currentUser);
 
@@ -245,7 +246,7 @@ export async function getBooks(params: {
 		count,
 		totalPages,
 	} = await paginationBuilderExecuteWithCount(query, {
-		limit: 24,
+		limit: limit,
 		page: currentPage,
 	});
 

@@ -21,6 +21,7 @@ export const load = async ({ url, locals }) => {
 		listUser: locals.user,
 		currentUser: locals.user,
 		form,
+		limit: 24,
 	});
 
 	return {

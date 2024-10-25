@@ -15,13 +15,14 @@ import { getUserSeriesLabels } from '../user/series-list';
 export async function getSeries(params: {
 	currentPage: number;
 	q: string | undefined | null;
+	limit: number;
 	db: Kysely<DB>;
 	listUser: Pick<User, 'id'> | null;
 	currentUser: User | null;
 	url: URL;
 	form: SuperValidated<Infer<typeof seriesFiltersSchema>>;
 }) {
-	const { currentPage, q, db, listUser, currentUser, url, form } = params;
+	const { currentPage, q, db, listUser, currentUser, url, form, limit } = params;
 
 	const dbSeries = DBSeries.fromDB(db, currentUser);
 
@@ -356,7 +357,7 @@ export async function getSeries(params: {
 		count,
 		totalPages,
 	} = await paginationBuilderExecuteWithCount(query, {
-		limit: 24,
+		limit: limit,
 		page: currentPage,
 	});
 
