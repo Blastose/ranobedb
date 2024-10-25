@@ -1,12 +1,10 @@
 import { db } from '$lib/server/db/db.js';
-import { orderNullsLast, paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
-import { DBReleases } from '$lib/server/db/releases/releases.js';
 import { pageSchema, qSchema, releaseFiltersSchema } from '$lib/server/zod/schema.js';
-import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
+import { getReleases } from '$lib/server/db/releases/query';
 
 async function get(params: { url: URL; locals: App.Locals }) {
 	const { url, locals } = params;
@@ -18,151 +16,21 @@ async function get(params: { url: URL; locals: App.Locals }) {
 
 	const form = await superValidate(url, zod(releaseFiltersSchema));
 
-	const dbReleases = DBReleases.fromDB(db, locals.user);
-
-	let query = dbReleases.getReleases().where('release.hidden', '=', false);
-
-	const useQuery = Boolean(q);
-	const useReleaseLangFilters = form.data.rl.length > 0;
-	const useReleaseFormatFilters = form.data.rf.length > 0;
-	const useReleasePublisherFilters = form.data.p.length > 0;
-
-	const sort = form.data.sort;
-	if (sort === 'Title asc') {
-		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
-		);
-	} else if (sort === 'Title desc') {
-		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric desc`,
-		);
-	} else if (sort === 'Release date asc') {
-		query = query.orderBy('release.release_date asc');
-	} else if (sort === 'Release date desc') {
-		query = query.orderBy('release.release_date desc');
-	} else if (sort === 'Pages asc') {
-		query = query.orderBy('release.pages', 'asc');
-	} else if (sort === 'Pages desc') {
-		query = query.orderBy('release.pages', orderNullsLast('desc'));
-	} else if (sort.startsWith('Relevance') && useQuery) {
-		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
-		query = query
-			.select((eb) =>
-				eb
-					.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
-						eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
-					])
-					.as('sim_score'),
-			)
-			.where((eb) =>
-				eb.or([
-					eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
-				]),
-			)
-			.where(
-				(eb) =>
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
-						eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
-					]),
-
-				'>',
-				0.3,
-			)
-			.orderBy(`sim_score ${orderByDirection}`)
-			.orderBy(
-				(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
-			);
-	}
-
-	if (
-		(sort !== 'Title asc' && sort !== 'Title desc') ||
-		(sort.startsWith('Relevance') && !useQuery)
-	) {
-		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
-		);
-	}
-
-	if (useQuery || useReleaseLangFilters || useReleaseFormatFilters || useReleasePublisherFilters) {
-		query = query.withPlugin(new DeduplicateJoinsPlugin());
-		if (useQuery && !sort.startsWith('Relevance')) {
-			query = query
-				.where((eb) =>
-					eb.or([
-						eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
-						eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
-					]),
-				)
-				.where(
-					(eb) =>
-						eb.fn('greatest', [
-							eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
-							eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
-						]),
-					'>',
-					0.3,
-				);
-		}
-		if (useReleaseLangFilters) {
-			query = query.where((eb) => {
-				const filters: Expression<SqlBool>[] = [];
-				for (const lang of form.data.rl) {
-					filters.push(eb('release.lang', '=', lang));
-				}
-				return eb.or(filters);
-			});
-		}
-		if (useReleaseFormatFilters) {
-			query = query.where((eb) => {
-				const filters: Expression<SqlBool>[] = [];
-				for (const format of form.data.rf) {
-					filters.push(eb('release.format', '=', format));
-				}
-				return eb.or(filters);
-			});
-		}
-		if (useReleasePublisherFilters) {
-			query = query
-				.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
-				.$if(form.data.pl === 'or', (qb2) =>
-					qb2.where((eb2) => {
-						const filters: Expression<SqlBool>[] = [];
-						for (const publisher_id of form.data.p) {
-							filters.push(eb2('release_publisher.publisher_id', '=', publisher_id));
-						}
-						return eb2.or(filters);
-					}),
-				)
-				.$if(form.data.pl === 'and', (qb2) =>
-					qb2
-						.where('release_publisher.publisher_id', 'in', form.data.p)
-						.groupBy('release.id')
-						.having(
-							(eb) => eb.fn.count('release_publisher.publisher_id').distinct(),
-							'=',
-							form.data.p.length,
-						),
-				);
-		}
-	}
-
-	const {
-		result: releases,
-		count,
-		totalPages,
-	} = await paginationBuilderExecuteWithCount(query, {
-		limit: form.data.limit,
-		page: currentPage,
+	const res = await getReleases({
+		currentPage,
+		db,
+		q,
+		url,
+		listUser: locals.user,
+		currentUser: locals.user,
+		form,
 	});
 
 	return {
-		releases,
-		count,
-		currentPage,
-		totalPages,
+		releases: res.releases,
+		count: res.count,
+		currentPage: res.currentPage,
+		totalPages: res.totalPages,
 	};
 }
 
