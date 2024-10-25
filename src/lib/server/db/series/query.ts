@@ -21,7 +21,7 @@ export async function getSeries(params: {
 	url: URL;
 	form: SuperValidated<Infer<typeof seriesFiltersSchema>>;
 }) {
-	const { currentPage, q, db, listUser: user, currentUser, url, form } = params;
+	const { currentPage, q, db, listUser, currentUser, url, form } = params;
 
 	const dbSeries = DBSeries.fromDB(db, currentUser);
 
@@ -29,7 +29,7 @@ export async function getSeries(params: {
 	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
 	let query = dbSeries
-		.getSeries({ q, listStatus: form.data.list, userId: user?.id, labelIds: labels })
+		.getSeries({ q, listStatus: form.data.list, userId: listUser?.id, labelIds: labels })
 		.where('cte_series.hidden', '=', false);
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
@@ -360,7 +360,7 @@ export async function getSeries(params: {
 		page: currentPage,
 	});
 
-	const allCustLabels = user ? await getUserSeriesLabels(user.id, true) : [];
+	const allCustLabels = listUser ? await getUserSeriesLabels(listUser.id, true) : [];
 
 	return {
 		series,

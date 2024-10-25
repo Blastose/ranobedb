@@ -17,7 +17,7 @@ export async function getBooks(params: {
 	url: URL;
 	form: SuperValidated<Infer<typeof bookFiltersSchema>>;
 }) {
-	const { currentPage, q, db, listUser: user, currentUser, url, form } = params;
+	const { currentPage, q, db, listUser, currentUser, url, form } = params;
 
 	const dbBooks = DBBooks.fromDB(db, currentUser);
 
@@ -25,7 +25,7 @@ export async function getBooks(params: {
 	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
 	let query = dbBooks
-		.getBooks({ q, listStatus: form.data.list, userId: user?.id, labelIds: labels })
+		.getBooks({ q, listStatus: form.data.list, userId: listUser?.id, labelIds: labels })
 		.where('cte_book.hidden', '=', false);
 
 	const useQuery = Boolean(q);
@@ -249,7 +249,7 @@ export async function getBooks(params: {
 		page: currentPage,
 	});
 
-	const allCustLabels = user ? await getUserBookLabels(user.id, true) : [];
+	const allCustLabels = listUser ? await getUserBookLabels(listUser.id, true) : [];
 
 	return {
 		books,
