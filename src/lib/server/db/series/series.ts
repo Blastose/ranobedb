@@ -255,7 +255,21 @@ export class DBSeries {
 				).as('volumes'),
 			])
 			.$if(typeof userId === 'string', (qb) =>
-				qb.select((eb) =>
+				qb.select((eb) => [
+					jsonObjectFrom(
+						eb
+							.selectFrom('series_book as sb3')
+							.innerJoin('book', 'book.id', 'sb3.book_id')
+							.innerJoin('user_list_book_label', (join) =>
+								join
+									.onRef('user_list_book_label.book_id', '=', 'book.id')
+									.on('user_list_book_label.label_id', '=', 2)
+									.on('user_list_book_label.user_id', '=', userId!),
+							)
+							.where('book.hidden', '=', false)
+							.whereRef('sb3.series_id', '=', 'cte_series.id')
+							.select(({ fn }) => [fn.countAll().as('count')]),
+					).as('c_vols_read'),
 					jsonObjectFrom(
 						eb
 							.selectFrom('user_list_series_label')
@@ -266,126 +280,20 @@ export class DBSeries {
 									.onRef('user_list_series_label.series_id', '=', 'cte_series.id'),
 							)
 							.select('user_list_label.label')
-							.where('user_list_label.user_id', '=', String(userId))
+							.where('user_list_label.user_id', '=', userId!)
 							.where('user_list_label.id', '<=', 10)
 							.limit(1),
 					).as('label'),
-				),
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_series')
+							.select(['user_list_series.volumes_read'])
+							.where('user_list_series.user_id', '=', userId!)
+							.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+							.limit(1),
+					).as('vols_read'),
+				]),
 			)
-			.select([
-				'cte_series.id',
-				'cte_series.hidden',
-				'cte_series.locked',
-				'cte_series.lang',
-				'cte_series.romaji',
-				'cte_series.romaji_orig',
-				'cte_series.title',
-				'cte_series.title_orig',
-				'cte_series.olang',
-				'cte_series.c_num_books',
-			]);
-	}
-
-	getSeriesUser(params: { q?: string | null; userId: string; labelIds: number[] }) {
-		const { q, userId, labelIds } = params;
-		const labels = labelIds.length > 0 ? labelIds : [1, 2, 3, 4, 5];
-		return this.ranobeDB.db
-			.with('cte_series', () =>
-				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
-					.innerJoin('user_list_series', (join) =>
-						join
-							.onRef('user_list_series.series_id', '=', 'series.id')
-							.on('user_list_series.user_id', '=', userId),
-					)
-					.innerJoin('user_list_series_label', (join) =>
-						join
-							.onRef('user_list_series_label.series_id', '=', 'series.id')
-							.onRef('user_list_series_label.user_id', '=', 'user_list_series.user_id'),
-					)
-					.innerJoin('user_list_label', (join) =>
-						join
-							.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
-							.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
-					)
-					.where('user_list_label.id', 'in', labels)
-					.$if(typeof q === 'string', (qb) =>
-						qb.where((eb) =>
-							eb(
-								'series.id',
-								'in',
-								eb
-									.selectFrom('series_title as st2')
-									.select('st2.series_id')
-									.where((eb) =>
-										eb.or([
-											eb(eb.val(q), sql.raw('<%'), eb.ref('st2.title')).$castTo<boolean>(),
-											eb(eb.val(q), sql.raw('<%'), eb.ref('st2.romaji')).$castTo<boolean>(),
-										]),
-									),
-							),
-						),
-					),
-			)
-			.selectFrom('cte_series')
-			.select((eb) => [
-				jsonObjectFrom(
-					eb
-						.selectFrom('book')
-						.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
-						.select('book.id')
-						.select((eb) =>
-							jsonObjectFrom(
-								eb
-									.selectFrom('image')
-									.whereRef('image.id', '=', 'book.image_id')
-									.selectAll('image')
-									.limit(1),
-							).as('image'),
-						)
-						.whereRef('series_book.book_id', '=', 'book.id')
-						.where('book.hidden', '=', false)
-						.orderBy('series_book.sort_order asc')
-						.limit(1),
-				).as('book'),
-			])
-			.select((eb) => [
-				jsonObjectFrom(
-					eb
-						.selectFrom('series_book as sb3')
-						.innerJoin('book', 'book.id', 'sb3.book_id')
-						.innerJoin('user_list_book_label', (join) =>
-							join
-								.onRef('user_list_book_label.book_id', '=', 'book.id')
-								.on('user_list_book_label.label_id', '=', 2)
-								.on('user_list_book_label.user_id', '=', userId),
-						)
-						.where('book.hidden', '=', false)
-						.whereRef('sb3.series_id', '=', 'cte_series.id')
-						.select(({ fn }) => [fn.countAll().as('count')]),
-				).as('c_vols_read'),
-				jsonObjectFrom(
-					eb
-						.selectFrom('user_list_series_label')
-						.innerJoin('user_list_label', (join) =>
-							join
-								.onRef('user_list_series_label.label_id', '=', 'user_list_label.id')
-								.onRef('user_list_series_label.user_id', '=', 'user_list_label.user_id')
-								.onRef('user_list_series_label.series_id', '=', 'cte_series.id'),
-						)
-						.select('user_list_label.label')
-						.where('user_list_label.user_id', '=', userId)
-						.where('user_list_label.id', '<=', 10)
-						.limit(1),
-				).as('label'),
-				jsonObjectFrom(
-					eb
-						.selectFrom('user_list_series')
-						.select(['user_list_series.volumes_read'])
-						.where('user_list_series.user_id', '=', userId)
-						.whereRef('user_list_series.series_id', '=', 'cte_series.id')
-						.limit(1),
-				).as('vols_read'),
-			])
 			.select([
 				'cte_series.id',
 				'cte_series.hidden',
