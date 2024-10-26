@@ -1,8 +1,6 @@
 import { db } from '$lib/server/db/db.js';
-import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
-import { DBPublishers } from '$lib/server/db/publishers/publishers.js';
+import { getPublishers } from '$lib/server/db/publishers/query.js';
 import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
-import { sql } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 
@@ -13,52 +11,19 @@ export const load = async ({ url, locals }) => {
 	const currentPage = page.data.page;
 	const q = qS.data.q;
 
-	const dbPublishers = DBPublishers.fromDB(db, locals.user);
-
-	let query = dbPublishers.getPublishers().where('publisher.hidden', '=', false);
-
-	if (q) {
-		query = query
-			.where(
-				(eb) =>
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.name')]),
-						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
-					]),
-				'>',
-				0.3,
-			)
-			.where((eb) =>
-				eb.or([
-					eb(eb.val(q), sql.raw('<%'), eb.ref('publisher.name')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<%'), eb.ref('publisher.romaji')).$castTo<boolean>(),
-				]),
-			)
-			.orderBy(
-				(eb) =>
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.name')]),
-						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
-					]),
-				'desc',
-			);
-	}
-
-	query = query.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
-
-	const {
-		result: publishers,
-		count,
-		totalPages,
-	} = await paginationBuilderExecuteWithCount(query, {
+	const res = await getPublishers({
+		currentPage,
+		db,
+		q,
+		url,
+		currentUser: locals.user,
 		limit: 40,
-		page: currentPage,
 	});
 
 	return {
-		publishers,
-		count,
-		currentPage,
-		totalPages,
+		publishers: res.publishers,
+		count: res.count,
+		currentPage: res.currentPage,
+		totalPages: res.totalPages,
 	};
 };

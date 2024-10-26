@@ -26,7 +26,11 @@
 	inputPlaceholder="Search by book title"
 >
 	<svelte:fragment slot="filters">
-		<BookFilters filtersForm={data.formObj} isUser={true} allCustLabels={data.allCustLabels} isList={true}
+		<BookFilters
+			filtersForm={data.filtersFormObj}
+			isUser={true}
+			allCustLabels={data.allCustLabels}
+			isList={true}
 		></BookFilters>
 	</svelte:fragment>
 
