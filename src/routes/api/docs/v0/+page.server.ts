@@ -315,6 +315,14 @@ export const load = async () => {
         isbn13: string | null;
         amazon: string | null;
         rakuten: string | null;
+        image: {
+            id: number;
+            filename: string;
+            height: number;
+            nsfw: boolean;
+            spoiler: boolean;
+            width: number;
+        } | null;
     }[];
     count: string;
     currentPage: number;
