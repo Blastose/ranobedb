@@ -46,13 +46,11 @@ export const actions = {
 					await trx
 						.deleteFrom('user_list_book_label')
 						.where('book_id', 'in', form.data.book_ids)
-
 						.where('user_id', '=', user.id)
 						.execute();
 					await trx
 						.deleteFrom('user_list_book')
 						.where('book_id', 'in', form.data.book_ids)
-
 						.where('user_id', '=', user.id)
 						.execute();
 					await trx
