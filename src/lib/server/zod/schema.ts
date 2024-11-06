@@ -2,6 +2,7 @@ import { DateNumber, DateNumberGenerator } from '$lib/components/form/release/re
 import {
 	booksSortArray,
 	dbItemArray,
+	defaultUserListLabelsArrayAndRemove,
 	historyFilterChangeType,
 	historyFilterVisibilitys,
 	logicalOps,
@@ -158,6 +159,12 @@ export const userListBookSchema = z.object({
 		.max(2000, { message: 'Note must between less than 2000 characters' })
 		.nullish(),
 	type: z.enum(userListFormTypes),
+});
+
+export const userListBookBatchSchema = z.object({
+	book_ids: z.array(z.number().min(1).max(maxNumberValue)).max(200),
+	readingStatus: z.enum(defaultUserListLabelsArrayAndRemove),
+	selectedCustLabels: z.array(z.number().min(11).max(maxNumberValue)).max(2000),
 });
 
 export const userReviewSchema = z.object({

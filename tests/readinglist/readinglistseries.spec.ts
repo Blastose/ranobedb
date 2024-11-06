@@ -50,4 +50,47 @@ test.describe('add/edit/remove series from reading list', () => {
 		await page.goto('/release/21');
 		await expect(page.locator('dd').filter({ hasText: 'Not in your collection' })).toBeVisible();
 	});
+
+	test('user can batch edit their books in series reading list', async ({ page }) => {
+		await page.goto('/series/9');
+		await page.locator('main').getByRole('button', { name: 'Add to reading list' }).click();
+		await page.getByLabel('Reading status').selectOption('Reading');
+		await page
+			.getByLabel('Add series to reading list')
+			.getByRole('button', { name: 'Add to reading list' })
+			.click();
+		await expect(page.locator('.toast-container').last()).toHaveText('Added series to list!');
+
+		await page
+			.locator('main')
+			.getByRole('button', { name: 'Batch edit your books in series' })
+			.click();
+		await page.getByLabel('New reading status').selectOption('Plan to read');
+		await page.getByRole('button', { name: 'Batch edit', exact: true }).click();
+		await page.getByRole('button', { name: 'Confirm' }).click();
+		await expect(page.locator('.toast-container').last()).toHaveText(
+			'Successfully batch edited books!',
+		);
+
+		await page.goto('/book/17');
+		await expect(page.locator('main button[aria-haspopup="dialog"]')).toHaveText('Plan to read');
+
+		await page.goto('/series/9');
+
+		await page
+			.locator('main')
+			.getByRole('button', { name: 'Batch edit your books in series' })
+			.click();
+		await page.getByLabel('New reading status').selectOption('Remove');
+		await page.getByRole('button', { name: 'Batch edit', exact: true }).click();
+		await page.getByRole('button', { name: 'Confirm' }).click();
+		await expect(page.locator('.toast-container').last()).toHaveText(
+			'Successfully batch edited books!',
+		);
+
+		await page.goto('/book/17');
+		await expect(page.locator('main button[aria-haspopup="dialog"]')).toHaveText(
+			'Add to reading list',
+		);
+	});
 });
