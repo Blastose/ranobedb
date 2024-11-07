@@ -225,6 +225,11 @@ export const defaultUserListLabelsArray = [
 	'Dropped',
 ] as const;
 
+export const defaultUserListLabelsArrayAndRemove = [
+	...defaultUserListLabelsArray,
+	'Remove',
+] as const;
+
 export const defaultUserListLabelsMap = new Map<ReadingStatus, number>();
 export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) => {
 	defaultUserListLabelsMap.set(v, index + 1);

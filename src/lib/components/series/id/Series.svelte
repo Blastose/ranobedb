@@ -23,7 +23,7 @@
 	import StaffsSectionGroupedLang from '$lib/components/staff/StaffsSectionGroupedLang.svelte';
 	import SeriesModal from './SeriesModal.svelte';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
-	import type { userListSeriesSchema } from '$lib/server/zod/schema';
+	import type { userListBookBatchSchema, userListSeriesSchema } from '$lib/server/zod/schema';
 	import { buildRedirectUrl } from '$lib/utils/url';
 	import { page } from '$app/stores';
 	import Tags from '../Tags.svelte';
@@ -31,12 +31,16 @@
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 	import UserStats from '$lib/components/shared/UserStats.svelte';
 	import Rating from '$lib/components/shared/Rating.svelte';
+	import SeriesBatchBookModal from './SeriesBatchBookModal.svelte';
 
 	export let series: Series;
 	export let user: User | null;
 	export let revision: number | undefined;
 	export let userListSeriesForm: SuperValidated<Infer<typeof userListSeriesSchema>> | undefined =
 		undefined;
+	export let userListBookBatchForm:
+		| SuperValidated<Infer<typeof userListBookBatchSchema>>
+		| undefined = undefined;
 	export let allCustLabels: { id: number; label: string }[] | undefined = undefined;
 
 	$: child_series = groupBy(series.child_series, (item) => item.relation_type);
@@ -70,6 +74,10 @@
 	{#if userListSeriesForm}
 		{#if user}
 			<SeriesModal {series} {userListSeriesForm} allCustLabels={allCustLabels ?? []} />
+
+			{#if userListBookBatchForm && userListSeriesForm.data.labels.at(0)?.id}
+				<SeriesBatchBookModal {series} {userListBookBatchForm} />
+			{/if}
 		{:else}
 			<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}
 				>Add to reading list</a

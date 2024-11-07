@@ -373,6 +373,10 @@ input[type='number'].input.reset-padding {
 	border-radius: 1rem;
 }
 
+.link-box.round-full {
+	border-radius: 9999px;
+}
+
 .link-box:hover {
 	background-color: rgb(202, 202, 214);
 }

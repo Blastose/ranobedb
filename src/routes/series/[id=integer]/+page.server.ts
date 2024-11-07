@@ -8,7 +8,11 @@ import {
 	getUserSeriesLabelsForSeries,
 } from '$lib/server/db/user/series-list.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
-import { userListSeriesSchema, type UserListFormType } from '$lib/server/zod/schema.js';
+import {
+	userListBookBatchSchema,
+	userListSeriesSchema,
+	type UserListFormType,
+} from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
@@ -130,9 +134,20 @@ export const load = async ({ params, locals }) => {
 	const allCustLabels = user ? await getUserSeriesLabels(user.id, false) : [];
 	const userListSeriesForm = await getUserListSeriesForm();
 
+	const userListBookBatchForm = await superValidate(
+		{
+			book_ids: series.books.map((v) => v.id),
+		},
+		zod(userListBookBatchSchema),
+		{
+			errors: false,
+		},
+	);
+
 	return {
 		series,
 		userListSeriesForm,
+		userListBookBatchForm,
 		allCustLabels,
 	};
 };

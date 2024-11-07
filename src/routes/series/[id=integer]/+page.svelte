@@ -34,6 +34,7 @@
 		{series}
 		user={data.user}
 		userListSeriesForm={data.userListSeriesForm}
+		userListBookBatchForm={data.userListBookBatchForm}
 		allCustLabels={data.allCustLabels}
 	/>
 </DbRouteShell>
