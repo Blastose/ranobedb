@@ -12,6 +12,7 @@
 	import Progress from '$lib/components/layout/Progress.svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { updated } from '$app/stores';
+	import { createRelCalStore } from '$lib/stores/releaseCalendarViewStore';
 
 	beforeNavigate(({ willUnload, to }) => {
 		if ($updated && !willUnload && to?.url) {
@@ -55,6 +56,10 @@
 	const theme = createThemeStore();
 	$: theme.set(data.theme);
 	setContext('theme', theme);
+
+	const relCalView = createRelCalStore();
+	$: relCalView.set('compact');
+	setContext('relCal', relCalView);
 </script>
 
 <svelte:document on:keydown={handleKeyDown} />

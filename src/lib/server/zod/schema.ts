@@ -755,6 +755,7 @@ export const releaseFiltersSchema = z.object({
 	pl: z.enum(logicalOps).catch('and'),
 	limit: zQueryLimit,
 	inUpcoming: z.boolean().default(false),
+	onlyFirst: z.boolean().default(false),
 	l: z.array(z.enum(userListReleaseStatus)).max(15),
 	list: zUserList,
 });
@@ -765,40 +766,47 @@ export const releaseFiltersObjSchema = z.object({
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),
 	inUpcoming: z.boolean().default(false),
+	onlyFirst: z.boolean().default(false),
 	l: z.array(z.enum(userListReleaseStatus)).max(15),
 	list: zUserList,
 });
+
+const zYearMonth = z
+	.string()
+	.nullish()
+	.refine((v) => {
+		if (!v) {
+			return true;
+		}
+		const splits = v.split('-');
+		return splits.length === 2 && splits[0].length === 4 && splits[1].length === 2;
+	})
+	.transform((v) => {
+		if (v) {
+			const splits = v.split('-');
+			return [Number(splits[0]), Number(splits[1])];
+		}
+		const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
+		return [dateNumber.getYear(), dateNumber.getMonth()];
+	})
+	.catch(() => {
+		const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
+		return [dateNumber.getYear(), dateNumber.getMonth()];
+	});
+
+export const yearMonthSchema = z.object({ date: zYearMonth });
+
 export const releaseFiltersCalendarSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('and'),
+	onlyFirst: z.boolean().default(false),
 	inUpcoming: z.boolean().default(false),
 	l: z.array(z.enum(userListReleaseStatus)).max(15),
 	list: zUserList,
-	date: z
-		.string()
-		.nullish()
-		.refine((v) => {
-			if (!v) {
-				return true;
-			}
-			const splits = v.split('-');
-			return splits.length === 2 && splits[0].length === 4 && splits[1].length === 2;
-		})
-		.transform((v) => {
-			if (v) {
-				const splits = v.split('-');
-				return [Number(splits[0]), Number(splits[1])];
-			}
-			const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
-			return [dateNumber.getYear(), dateNumber.getMonth()];
-		})
-		.catch(() => {
-			const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
-			return [dateNumber.getYear(), dateNumber.getMonth()];
-		}),
+	date: zYearMonth,
 });
 export const releaseFiltersObjCalendarSchema = z.object({
 	...releaseFiltersCalendarSchema.shape,

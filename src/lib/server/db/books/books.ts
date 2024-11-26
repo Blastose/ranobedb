@@ -516,7 +516,6 @@ export class DBBooks {
 										'staff_alias.id',
 									)
 									.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
-									.where('staff.hidden', '=', false)
 									.whereRef('book_staff_alias_hist.eid', '=', 'book_edition_hist.eid')
 									.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
 									.select([

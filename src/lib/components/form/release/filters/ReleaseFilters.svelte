@@ -22,6 +22,7 @@
 	export let isUser: boolean;
 	export let isList: boolean;
 	export let allowPublisherFiltersLogic: boolean = true;
+	export let isCalendar: boolean = false;
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 
@@ -58,6 +59,13 @@
 					form={sForm}
 					field="inUpcoming"
 					label="Release in upcoming/previously released"
+				/>
+			{/if}
+			{#if isCalendar}
+				<CheckboxField
+					form={sForm}
+					field="onlyFirst"
+					label="Only show releases of the first book in a series"
 				/>
 			{/if}
 		{/if}

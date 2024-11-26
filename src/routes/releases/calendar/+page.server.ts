@@ -29,7 +29,7 @@ export const load = async ({ url, locals }) => {
 	const user = locals.user;
 
 	let query = dbReleases
-		.getReleases()
+		.getReleasesWithImage()
 		.$if(locals.user !== undefined, (qb) =>
 			qb.select((eb) =>
 				jsonObjectFrom(
@@ -138,6 +138,24 @@ export const load = async ({ url, locals }) => {
 				.where('user_list_release.user_id', '=', locals.user.id)
 				.where('user_list_release.release_status', 'in', form.data.l);
 		}
+	}
+	if (form.data.onlyFirst) {
+		query = query.where((eb) =>
+			eb(
+				'release.id',
+				'in',
+				eb
+					.selectFrom('release')
+					.select('release.id')
+					.innerJoin('release_book', 'release.id', 'release_book.release_id')
+					.innerJoin('book', 'book.id', 'release_book.book_id')
+					.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
+					.innerJoin('series', 'series.id', 'series_book.series_id')
+					.where('book.hidden', '=', false)
+					.where('series.hidden', '=', false)
+					.where('series_book.sort_order', '=', 1),
+			),
+		);
 	}
 
 	if (user && form.data.list === 'In my list') {
