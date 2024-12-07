@@ -14,7 +14,9 @@
 	import TextFieldLink from '../TextFieldLink.svelte';
 	import {
 		bookwalkerAuthorLink,
+		kakuyomuLink,
 		pixivLink,
+		syosetuLink,
 		twitterLink,
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
@@ -64,6 +66,22 @@
 			<div class="max-w-md">
 				<LinkInput form={sForm} field="website" label="Website" resetPadding={true} />
 			</div>
+			<TextFieldLink
+				form={sForm}
+				type="number"
+				field="syosetu_id"
+				label="Syosetu"
+				resetPadding={true}
+				linkBeforeAfter={syosetuLink}
+			/>
+			<TextFieldLink
+				form={sForm}
+				type="text"
+				field="kakuyomu_id"
+				label="Kakuyomu"
+				resetPadding={true}
+				linkBeforeAfter={kakuyomuLink}
+			/>
 			<TextFieldLink
 				form={sForm}
 				type="number"

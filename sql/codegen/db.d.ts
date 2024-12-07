@@ -389,8 +389,10 @@ export interface Staff {
   description: string;
   hidden: boolean;
   id: Generated<number>;
+  kakuyomu_id: string | null;
   locked: boolean;
   pixiv_id: number | null;
+  syosetu_id: number | null;
   twitter_id: string | null;
   website: string | null;
   wikidata_id: number | null;
@@ -416,7 +418,9 @@ export interface StaffHist {
   bookwalker_id: number | null;
   change_id: number;
   description: string;
+  kakuyomu_id: string | null;
   pixiv_id: number | null;
+  syosetu_id: number | null;
   twitter_id: string | null;
   website: string | null;
   wikidata_id: number | null;

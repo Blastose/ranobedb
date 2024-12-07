@@ -69,6 +69,8 @@ export class DBStaff {
 				'staff_hist.twitter_id',
 				'staff_hist.website',
 				'staff_hist.wikidata_id',
+				'staff_hist.syosetu_id',
+				'staff_hist.kakuyomu_id',
 			])
 			.select(['staff_alias_hist.name', 'staff_alias_hist.romaji'])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
@@ -147,6 +149,8 @@ export class DBStaff {
 				'staff_hist.twitter_id',
 				'staff_hist.website',
 				'staff_hist.wikidata_id',
+				'staff_hist.syosetu_id',
+				'staff_hist.kakuyomu_id',
 			])
 			.select(['staff_alias_hist.name', 'staff_alias_hist.romaji'])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])

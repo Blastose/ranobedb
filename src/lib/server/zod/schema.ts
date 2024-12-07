@@ -404,6 +404,8 @@ export const staffSchema = z.object({
 	pixiv_id: z.number().max(maxNumberValue).nullish(),
 	twitter_id: z.string().trim().max(2000).nullish(),
 	website: zLink([]),
+	syosetu_id: z.number().max(maxNumberValue).nullish(),
+	kakuyomu_id: z.string().trim().max(2000).nullish(),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
 
 	aliases: z

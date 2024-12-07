@@ -9,7 +9,9 @@
 	import Works from './Works.svelte';
 	import {
 		bookwalkerAuthorLink,
+		kakuyomuLink,
 		pixivLink,
+		syosetuLink,
 		twitterLink,
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
@@ -61,6 +63,12 @@
 			<div class="flex flex-wrap gap-x-4">
 				{#if staff.website}
 					<a href={staff.website} target="_blank" class="link">Website</a>
+				{/if}
+				{#if staff.syosetu_id}
+					<DbExtLinkShort fullLink={{ ...syosetuLink, value: staff.syosetu_id }} />
+				{/if}
+				{#if staff.kakuyomu_id}
+					<DbExtLinkShort fullLink={{ ...kakuyomuLink, value: staff.kakuyomu_id }} />
 				{/if}
 				{#if staff.bookwalker_id}
 					<DbExtLinkShort fullLink={{ ...bookwalkerAuthorLink, value: staff.bookwalker_id }} />
