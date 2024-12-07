@@ -61,6 +61,22 @@ export function getStaffDiffs(params: { prevStaffHistEdit: StaffEdit; staffHistE
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
+			name: 'Syosetu',
+			words1: prevStaffHistEdit.syosetu_id?.toString(),
+			words2: staffHistEdit.syosetu_id?.toString(),
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
+			name: 'Kakuyomu',
+			words1: prevStaffHistEdit.kakuyomu_id,
+			words2: staffHistEdit.kakuyomu_id,
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
 			name: 'Twitter',
 			words1: prevStaffHistEdit.twitter_id,
 			words2: staffHistEdit.twitter_id,

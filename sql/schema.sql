@@ -288,9 +288,11 @@ CREATE TABLE public.staff (
     bookwalker_id integer,
     wikidata_id integer,
     pixiv_id integer,
+    syosetu_id integer,
     hidden boolean NOT NULL,
     locked boolean NOT NULL,
     twitter_id text,
+    kakuyomu_id text,
     website text,
     description text NOT NULL
 );
@@ -300,7 +302,9 @@ CREATE TABLE public.staff_hist (
     bookwalker_id integer,
     wikidata_id integer,
     pixiv_id integer,
+    syosetu_id integer,
     twitter_id text,
+    kakuyomu_id text,
     website text,
     description text NOT NULL,
     FOREIGN KEY (change_id) REFERENCES public.change(id),

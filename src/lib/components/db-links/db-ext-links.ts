@@ -56,6 +56,18 @@ export const wikidataLink: LinkBeforeAfter = {
 	name: 'Wikidata',
 };
 
+export const syosetuLink: LinkBeforeAfter = {
+	before: 'https://mypage.syosetu.com/',
+	after: '/',
+	name: 'Syosetu',
+};
+
+export const kakuyomuLink: LinkBeforeAfter = {
+	before: 'https://kakuyomu.jp/users/',
+	after: '',
+	name: 'Kakuyomu',
+};
+
 export function buildLink(fullLink: FullLink): string {
 	const { before, after, value } = fullLink;
 	return `${before}${value}${after}`;
