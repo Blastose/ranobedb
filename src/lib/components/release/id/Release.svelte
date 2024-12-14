@@ -124,7 +124,7 @@
 	{/if}
 
 	<section class="flex flex-col gap-2">
-		<h2 class="text-lg font-bold">Books relations</h2>
+		<h2 class="text-lg font-bold">Book relations</h2>
 
 		{#if release.books.length > 0}
 			<BookImageContainer moreColumns={true}>
