@@ -12,7 +12,7 @@
 			href="https://discord.gg/ZeAnhGncFx"
 			class="link"
 			target="_blank">Discord server</a
-		> to obtain this permission.
+		> and ask in the #editing channel to obtain this permission.
 	</p>
 {:else}
 	<p>You may need to verify your account before you can access this page.</p>
