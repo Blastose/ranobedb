@@ -34,7 +34,7 @@ export function getPublisherDiffs(params: {
 	);
 	pushIfNotUndefined(
 		diffs,
-		getDiffChars({
+		getDiffWords({
 			name: 'Biography',
 			words1: prevPublisherHistEdit.description,
 			words2: publisherHistEdit.description,
