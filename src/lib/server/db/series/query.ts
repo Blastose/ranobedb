@@ -153,6 +153,8 @@ export async function getSeries(params: {
 				'cte_series.title_orig',
 				'cte_series.olang',
 				'cte_series.c_num_books',
+				'cte_series.c_start_date',
+				'cte_series.c_end_date',
 			]);
 	}
 
@@ -352,6 +354,34 @@ export async function getSeries(params: {
 		);
 	}
 
+	if (form.data.minVolumes) {
+		query = query.where('cte_series.c_num_books', '>=', form.data.minVolumes);
+	}
+	if (form.data.maxVolumes) {
+		query = query.where('cte_series.c_num_books', '<=', form.data.maxVolumes);
+	}
+
+	if (form.data.minStartDate) {
+		query = query.where(
+			'cte_series.c_start_date',
+			'>=',
+			dateStringToNumber(form.data.minStartDate),
+		);
+	}
+	if (form.data.maxStartDate) {
+		query = query.where(
+			'cte_series.c_start_date',
+			'<=',
+			dateStringToNumber(form.data.maxStartDate),
+		);
+	}
+	if (form.data.minEndDate) {
+		query = query.where('cte_series.c_end_date', '>=', dateStringToNumber(form.data.minEndDate));
+	}
+	if (form.data.maxEndDate) {
+		query = query.where('cte_series.c_end_date', '<=', dateStringToNumber(form.data.maxEndDate));
+	}
+
 	const {
 		result: series,
 		count,
@@ -372,4 +402,9 @@ export async function getSeries(params: {
 		genres: selectedGenresWithMode,
 		allCustLabels,
 	};
+}
+
+// TODO - NGL, I don't remember if I have another function for this, so just remove this if I do
+function dateStringToNumber(date: string) {
+	return Number(date.replaceAll('-', ''));
 }

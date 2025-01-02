@@ -698,6 +698,12 @@ export const bookFiltersObjSchema = z.object({
 });
 
 export const seriesFiltersSchema = z.object({
+	minVolumes: z.number().max(maxNumberValue).nullish(),
+	maxVolumes: z.number().max(maxNumberValue).nullish(),
+	minStartDate: zISODate.or(z.literal('')).nullish(),
+	maxStartDate: zISODate.or(z.literal('')).nullish(),
+	minEndDate: zISODate.or(z.literal('')).nullish(),
+	maxEndDate: zISODate.or(z.literal('')).nullish(),
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
@@ -732,6 +738,12 @@ const zTags = z
 	.catch([]);
 
 export const seriesFiltersObjSchema = z.object({
+	minVolumes: z.number().max(maxNumberValue).nullish(),
+	maxVolumes: z.number().max(maxNumberValue).nullish(),
+	minStartDate: zISODate.or(z.literal('')).nullish(),
+	maxStartDate: zISODate.or(z.literal('')).nullish(),
+	minEndDate: zISODate.or(z.literal('')).nullish(),
+	maxEndDate: zISODate.or(z.literal('')).nullish(),
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
