@@ -89,6 +89,8 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 			'series.anidb_id',
 			'series.start_date',
 			'series.end_date',
+			'series.c_start_date',
+			'series.c_end_date',
 			'series.web_novel',
 			'series.wikidata_id',
 			'series.anilist_id',
@@ -123,6 +125,8 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 			'series_hist.anidb_id',
 			'series_hist.start_date',
 			'series_hist.end_date',
+			'series_hist.c_start_date',
+			'series_hist.c_end_date',
 			'series_hist.web_novel',
 			'series_hist.wikidata_id',
 			'series_hist.anilist_id',
@@ -168,19 +172,30 @@ export class DBSeries {
 				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs)
 					.$if(typeof params?.q === 'string', (qb) =>
 						qb.where((eb) =>
-							eb(
-								'series.id',
-								'in',
-								eb
-									.selectFrom('series_title as st2')
-									.select('st2.series_id')
-									.where((eb) =>
-										eb.or([
-											eb(eb.val(params?.q), sql.raw('<%'), eb.ref('st2.title')).$castTo<boolean>(),
-											eb(eb.val(params?.q), sql.raw('<%'), eb.ref('st2.romaji')).$castTo<boolean>(),
-										]),
-									),
-							),
+							eb.or([
+								eb(
+									'series.id',
+									'in',
+									eb
+										.selectFrom('series_title as st2')
+										.select('st2.series_id')
+										.where((eb) =>
+											eb.or([
+												eb(
+													eb.val(params?.q),
+													sql.raw('<%'),
+													eb.ref('st2.title'),
+												).$castTo<boolean>(),
+												eb(
+													eb.val(params?.q),
+													sql.raw('<%'),
+													eb.ref('st2.romaji'),
+												).$castTo<boolean>(),
+											]),
+										),
+								),
+								eb('series.aliases', 'ilike', `%${params?.q}%`),
+							]),
 						),
 					)
 					.$if(Boolean(labels) && params?.listStatus === 'Not in my list', (qb) =>
@@ -305,6 +320,8 @@ export class DBSeries {
 				'cte_series.title_orig',
 				'cte_series.olang',
 				'cte_series.c_num_books',
+				'cte_series.c_start_date',
+				'cte_series.c_end_date',
 			]);
 	}
 
