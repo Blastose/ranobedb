@@ -17,6 +17,7 @@
 	import type { TagType } from '$lib/server/db/dbTypes';
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
 	import StaffPublisherFilters from '../../filters/StaffPublisherFilters.svelte';
+	import TextField from '../../TextField.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof seriesFiltersObjSchema>>;
 	export let genres: { id: number; name: string; ttype: TagType; mode: 'incl' | 'excl' | 'none' }[];
@@ -130,6 +131,59 @@
 						dropdownOptions={seriesStatusArray.map((v) => ({ display: v, value: v }))}
 					/>
 				</Keyed>
+			</div>
+
+			<div class="flex flex-wrap gap-4">
+				<div class="flex gap-2">
+					<TextField
+						label="Min. start date"
+						form={sForm}
+						field="minStartDate"
+						type="date"
+						resetPadding={true}
+					/>
+					<TextField
+						label="Max. start date"
+						form={sForm}
+						field="maxStartDate"
+						type="date"
+						resetPadding={true}
+					/>
+				</div>
+
+				<div class="flex gap-2">
+					<TextField
+						label="Min. end date"
+						form={sForm}
+						field="minEndDate"
+						type="date"
+						resetPadding={true}
+					/>
+					<TextField
+						label="Max. end date"
+						form={sForm}
+						field="maxEndDate"
+						type="date"
+						resetPadding={true}
+					/>
+				</div>
+			</div>
+
+			<div class="flex gap-2">
+				<TextField
+					label="Min. volumes"
+					form={sForm}
+					field="minVolumes"
+					type="number"
+					resetPadding={true}
+				/>
+				<TextField
+					label="Max. volumes"
+					form={sForm}
+					field="maxVolumes"
+					type="number"
+					resetPadding={true}
+				/>
 			</div>
 
 			<TagsFilters {genres} {filtersForm} />
