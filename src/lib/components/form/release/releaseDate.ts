@@ -113,3 +113,7 @@ export class DateNumber {
 		return `${year}-${monthFormatted}-${dayFormatted}`;
 	}
 }
+
+export function dateStringToNumber(date: string) {
+	return Number(date.replaceAll('-', ''));
+}

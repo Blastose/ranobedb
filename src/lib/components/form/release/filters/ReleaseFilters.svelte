@@ -16,6 +16,7 @@
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
 	import PublisherFilters from '../../filters/publisher/PublisherFilters.svelte';
 	import CheckboxField from '../../CheckboxField.svelte';
+	import TextField from '../../TextField.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof releaseFiltersObjSchema>>;
 	export let showSort: boolean = true;
@@ -106,6 +107,27 @@
 				/>
 			{/if}
 		</div>
+
+		{#if !isCalendar}
+			<div class="flex flex-wrap gap-4">
+				<div class="flex gap-2">
+					<TextField
+						label="Min. release date"
+						form={sForm}
+						field="minDate"
+						type="date"
+						resetPadding={true}
+					/>
+					<TextField
+						label="Max. release date"
+						form={sForm}
+						field="maxDate"
+						type="date"
+						resetPadding={true}
+					/>
+				</div>
+			</div>
+		{/if}
 
 		<div>
 			<PublisherFilters {filtersForm} />
