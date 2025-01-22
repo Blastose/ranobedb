@@ -772,6 +772,8 @@ export const seriesFiltersObjSchema = z.object({
 export const releaseFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	minDate: zISODate.or(z.literal('')).nullish(),
+	maxDate: zISODate.or(z.literal('')).nullish(),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('and'),
@@ -784,6 +786,8 @@ export const releaseFiltersSchema = z.object({
 export const releaseFiltersObjSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
+	minDate: zISODate.or(z.literal('')).nullish(),
+	maxDate: zISODate.or(z.literal('')).nullish(),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),

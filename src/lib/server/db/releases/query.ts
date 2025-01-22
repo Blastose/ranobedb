@@ -6,6 +6,7 @@ import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { orderNullsLast, paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { zod } from 'sveltekit-superforms/adapters';
+import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
 export async function getReleases(params: {
 	currentPage: number;
@@ -261,6 +262,13 @@ export async function getReleases(params: {
 					]),
 				]),
 			);
+	}
+
+	if (form.data.minDate) {
+		query = query.where('release.release_date', '>=', dateStringToNumber(form.data.minDate));
+	}
+	if (form.data.maxDate) {
+		query = query.where('release.release_date', '<=', dateStringToNumber(form.data.maxDate));
 	}
 
 	const {
