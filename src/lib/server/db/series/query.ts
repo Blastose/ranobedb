@@ -11,6 +11,7 @@ import type { User } from '$lib/server/lucia/lucia';
 import { zod } from 'sveltekit-superforms/adapters';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserSeriesLabels } from '../user/series-list';
+import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
 export async function getSeries(params: {
 	currentPage: number;
@@ -421,9 +422,4 @@ export async function getSeries(params: {
 		genres: selectedGenresWithMode,
 		allCustLabels,
 	};
-}
-
-// TODO - NGL, I don't remember if I have another function for this, so just remove this if I do
-function dateStringToNumber(date: string) {
-	return Number(date.replaceAll('-', ''));
 }

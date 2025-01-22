@@ -7,6 +7,7 @@ import type { User } from '$lib/server/lucia/lucia';
 import { zod } from 'sveltekit-superforms/adapters';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserBookLabels } from '../user/list';
+import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
 export async function getBooks(params: {
 	limit: number;
@@ -263,6 +264,13 @@ export async function getBooks(params: {
 					),
 			),
 		);
+	}
+
+	if (form.data.minDate) {
+		query = query.where('cte_book.c_release_date', '>=', dateStringToNumber(form.data.minDate));
+	}
+	if (form.data.maxDate) {
+		query = query.where('cte_book.c_release_date', '<=', dateStringToNumber(form.data.maxDate));
 	}
 
 	const {
