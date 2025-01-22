@@ -83,6 +83,17 @@
 			<Keyed>
 				<MultiSelectField
 					form={sForm}
+					field="rlExclude"
+					noneSelectedText="none"
+					allSelectedText="all"
+					labelText="Release language exclude"
+					dropdownOptions={languagesArray.map((v) => ({ display: languageNames[v], value: v }))}
+				/>
+			</Keyed>
+
+			<Keyed>
+				<MultiSelectField
+					form={sForm}
 					field="rf"
 					noneSelectedText="any"
 					allSelectedText="any"

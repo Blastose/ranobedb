@@ -31,6 +31,7 @@ export async function getBooks(params: {
 
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
+	const useReleaseLangExcludeFilters = form.data.rlExclude.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 	const useStaffFilters = form.data.staff.length > 0;
 	const usePublisherFilters = form.data.p.length > 0;
@@ -119,7 +120,13 @@ export async function getBooks(params: {
 		);
 	}
 
-	if (useReleaseLangFilters || useReleaseFormatFilters || useStaffFilters || usePublisherFilters) {
+	if (
+		useReleaseLangFilters ||
+		useReleaseLangExcludeFilters ||
+		useReleaseFormatFilters ||
+		useStaffFilters ||
+		usePublisherFilters
+	) {
 		query = query.withPlugin(new DeduplicateJoinsPlugin()).where((eb) =>
 			eb('cte_book.id', 'in', (eb) =>
 				eb
@@ -150,6 +157,23 @@ export async function getBooks(params: {
 									.having((eb) => eb.fn.count('release.lang').distinct(), '=', form.data.rl.length),
 							),
 					)
+					.$if(useReleaseLangExcludeFilters, (qb) => {
+						let ex_qb = qb
+							.innerJoin('release_book as rb_ex', 'rb_ex.book_id', 'book.id')
+							.innerJoin('release as r_ex', 'r_ex.id', 'rb_ex.release_id')
+							.groupBy('book.id');
+						for (const ex_lang of form.data.rlExclude) {
+							ex_qb = ex_qb.having(
+								(eb) =>
+									eb.fn
+										.count((eb2) => eb2.case().when('r_ex.lang', '=', ex_lang).then(1).end())
+										.distinct(),
+								'=',
+								0,
+							);
+						}
+						return ex_qb;
+					})
 					.$if(useReleaseFormatFilters, (qb) =>
 						qb
 							.innerJoin('release_book', (join) =>
