@@ -34,6 +34,7 @@ export async function getSeries(params: {
 		.where('cte_series.hidden', '=', false);
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
+	const useReleaseLangExcludeFilters = form.data.rlExclude.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 	const useStaffFilters = form.data.staff.length > 0;
 	const useTagsFilters = form.data.tagsInclude.length + form.data.tagsExclude.length > 0;
@@ -173,6 +174,7 @@ export async function getSeries(params: {
 
 	if (
 		useReleaseFormatFilters ||
+		useReleaseLangExcludeFilters ||
 		useReleaseLangFilters ||
 		useStaffFilters ||
 		useTagsFilters ||
@@ -209,6 +211,23 @@ export async function getSeries(params: {
 									.having((eb) => eb.fn.count('release.lang').distinct(), '=', form.data.rl.length),
 							),
 					)
+					.$if(useReleaseLangExcludeFilters, (qb) => {
+						let ex_qb = qb
+							.innerJoin('release_book as rb_ex', 'rb_ex.book_id', 'series_book.book_id')
+							.innerJoin('release as r_ex', 'r_ex.id', 'rb_ex.release_id')
+							.groupBy('series.id');
+						for (const ex_lang of form.data.rlExclude) {
+							ex_qb = ex_qb.having(
+								(eb) =>
+									eb.fn
+										.count((eb2) => eb2.case().when('r_ex.lang', '=', ex_lang).then(1).end())
+										.distinct(),
+								'=',
+								0,
+							);
+						}
+						return ex_qb;
+					})
 					.$if(useReleaseFormatFilters, (qb) =>
 						qb
 							.innerJoin('release_book', (join) =>
