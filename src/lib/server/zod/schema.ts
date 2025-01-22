@@ -637,6 +637,7 @@ const zUserList = z.enum(userListStatus).catch('Any');
 export const bookFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
+	rlExclude: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(booksSortArray).catch('Relevance desc'),
@@ -686,6 +687,7 @@ export const staffPublisherFilters = z.object({
 export const bookFiltersObjSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
+	rlExclude: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(booksSortArray).catch('Relevance desc'),
@@ -706,6 +708,7 @@ export const seriesFiltersSchema = z.object({
 	maxEndDate: zISODate.or(z.literal('')).nullish(),
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
+	rlExclude: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(seriesSortArray).catch('Relevance desc'),
@@ -746,6 +749,7 @@ export const seriesFiltersObjSchema = z.object({
 	maxEndDate: zISODate.or(z.literal('')).nullish(),
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
+	rlExclude: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
 	sort: z.enum(seriesSortArray).catch('Relevance desc'),
