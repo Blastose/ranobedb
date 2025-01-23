@@ -603,6 +603,13 @@ export class DBBooks {
 				'image.width',
 			])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'cte_book.image_id')
+						.limit(1),
+				).as('image_obj'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('book_title')
@@ -680,6 +687,13 @@ export class DBBooks {
 				'image.width',
 			])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'cte_book.image_id')
+						.limit(1),
+				).as('image_obj'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('book_title_hist')
