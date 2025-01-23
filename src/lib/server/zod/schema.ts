@@ -393,6 +393,25 @@ export const bookSchema = z.object({
 			},
 			{ message: "Cannot name other editions 'Original edition'" },
 		),
+	image: z
+		.instanceof(File, { message: 'Please upload a file.' })
+		.refine((f) => f.size < 10_000_000, 'Max 10 MB upload size.')
+		// .refine(async (f) => {
+		// 	console.log(f);
+		// 	console.log(f.bytes);
+		// 	const blob = await f.bytes();
+		// 	const { height, width } = imageSize(new Uint8Array(blob));
+		// 	if (!height || !width) {
+		// 		return false;
+		// 	}
+		// 	if (height > 10000 || width > 10000) {
+		// 		return false;
+		// 	}
+
+		// 	return true;
+		// }, 'Image dimensions must be less than 10000 x 10000')
+		.nullish(),
+	image_id_manual: z.string().max(20).optional(),
 	comment: zComment,
 });
 

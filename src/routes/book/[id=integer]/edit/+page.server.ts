@@ -1,11 +1,11 @@
 import { DBBookActions } from '$lib/server/db/books/actions.js';
 import { DBBooks } from '$lib/server/db/books/books';
 import { bookSchema, revisionSchema } from '$lib/server/zod/schema.js';
-import { error, fail, redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
-import { message, setError, superValidate } from 'sveltekit-superforms';
+import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
@@ -90,6 +90,10 @@ export const actions = {
 			await dbBookActions.editBook({ book: form.data, id }, locals.user);
 			success = true;
 		} catch (e) {
+			console.log(e);
+			if (e instanceof Error && e.message === 'Invalid image id') {
+				return setError(form, 'image_id_manual', 'Invalid image id');
+			}
 			if (e instanceof DatabaseError) {
 				if (
 					e.code === '23505' &&

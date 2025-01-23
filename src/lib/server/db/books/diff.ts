@@ -87,6 +87,14 @@ export function getBookDiffs(params: {
 	}
 	pushIfNotUndefined(
 		diffs,
+		getDiffWords({
+			words1: prevBookHistEdit.image_obj?.filename?.replace('.jpg', '')?.toString(),
+			words2: bookHistEdit.image_obj?.filename?.replace('.jpg', '')?.toString(),
+			name: 'Image',
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
 		getDiffLines({
 			lines1: generateBookStaffChangeStringFromStaffs(prevHistStaff, displayPrefs.names),
 			lines2: generateBookStaffChangeStringFromStaffs(currentHistStaff, displayPrefs.names),
