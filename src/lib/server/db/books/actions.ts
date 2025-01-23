@@ -112,7 +112,10 @@ export class DBBookActions {
 					.selectFrom('image')
 					.where('image.filename', '=', `${data.book.image_id_manual}.jpg`)
 					.select('image.id')
-					.executeTakeFirstOrThrow();
+					.executeTakeFirst();
+				if (!existing_image) {
+					throw new Error('Invalid image id');
+				}
 				image_id = existing_image.id;
 			}
 
@@ -277,7 +280,10 @@ export class DBBookActions {
 					.selectFrom('image')
 					.where('image.filename', '=', `${data.book.image_id_manual}.jpg`)
 					.select('image.id')
-					.executeTakeFirstOrThrow();
+					.executeTakeFirst();
+				if (!existing_image) {
+					throw new Error('Invalid image id');
+				}
 				image_id = existing_image.id;
 			}
 

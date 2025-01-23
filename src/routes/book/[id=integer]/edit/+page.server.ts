@@ -91,6 +91,9 @@ export const actions = {
 			success = true;
 		} catch (e) {
 			console.log(e);
+			if (e instanceof Error && e.message === 'Invalid image id') {
+				return setError(form, 'image_id_manual', 'Invalid image id');
+			}
 			if (e instanceof DatabaseError) {
 				if (
 					e.code === '23505' &&

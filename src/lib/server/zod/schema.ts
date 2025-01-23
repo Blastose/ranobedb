@@ -411,7 +411,7 @@ export const bookSchema = z.object({
 		// 	return true;
 		// }, 'Image dimensions must be less than 10000 x 10000')
 		.nullish(),
-	image_id_manual: z.string().min(16).max(20).optional(),
+	image_id_manual: z.string().max(20).optional(),
 	comment: zComment,
 });
 
