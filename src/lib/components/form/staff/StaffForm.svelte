@@ -14,6 +14,7 @@
 	import TextFieldLink from '../TextFieldLink.svelte';
 	import {
 		bookwalkerAuthorLink,
+		bskyLink,
 		kakuyomuLink,
 		pixivLink,
 		syosetuLink,
@@ -105,6 +106,14 @@
 				label="Twitter"
 				resetPadding={true}
 				linkBeforeAfter={twitterLink}
+			/>
+			<TextFieldLink
+				form={sForm}
+				type="text"
+				field="bsky_id"
+				label="Bluesky"
+				resetPadding={true}
+				linkBeforeAfter={bskyLink}
 			/>
 			<TextFieldLink
 				form={sForm}

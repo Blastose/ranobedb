@@ -154,7 +154,7 @@
 
 	<section>
 		<h2 class="font-bold text-lg">Links</h2>
-		{#if series.web_novel || series.bookwalker_id || series.anidb_id || series.wikidata_id}
+		{#if series.web_novel || series.bookwalker_id || series.anidb_id || series.wikidata_id || series.mal_id || series.anilist_id}
 			<div class="flex flex-wrap gap-x-4">
 				{#if series.web_novel}
 					<a href={series.web_novel} target="_blank" class="link">Web novel</a>

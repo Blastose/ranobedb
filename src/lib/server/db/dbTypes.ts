@@ -401,6 +401,7 @@ export interface Staff {
 	pixiv_id: number | null;
 	syosetu_id: number | null;
 	twitter_id: string | null;
+	bsky_id: string | null;
 	website: string | null;
 	wikidata_id: number | null;
 }
@@ -421,6 +422,7 @@ export interface StaffHist {
 	pixiv_id: number | null;
 	syosetu_id: number | null;
 	twitter_id: string | null;
+	bsky_id: string | null;
 	website: string | null;
 	wikidata_id: number | null;
 }

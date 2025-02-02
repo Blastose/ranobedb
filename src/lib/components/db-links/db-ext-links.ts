@@ -68,6 +68,12 @@ export const kakuyomuLink: LinkBeforeAfter = {
 	name: 'Kakuyomu',
 };
 
+export const bskyLink: LinkBeforeAfter = {
+	before: 'https://bsky.app/profile/',
+	after: '',
+	name: 'Bluesky',
+};
+
 export function buildLink(fullLink: FullLink): string {
 	const { before, after, value } = fullLink;
 	return `${before}${value}${after}`;

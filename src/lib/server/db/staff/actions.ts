@@ -75,6 +75,7 @@ export class DBStaffActions {
 					wikidata_id: data.staff.wikidata_id ?? null,
 					syosetu_id: data.staff.syosetu_id ?? null,
 					kakuyomu_id: data.staff.kakuyomu_id ?? null,
+					bsky_id: data.staff.bsky_id ?? null,
 				})
 				.where('staff.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -91,6 +92,7 @@ export class DBStaffActions {
 					wikidata_id: data.staff.wikidata_id,
 					syosetu_id: data.staff.syosetu_id,
 					kakuyomu_id: data.staff.kakuyomu_id,
+					bsky_id: data.staff.bsky_id,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -230,6 +232,7 @@ export class DBStaffActions {
 					wikidata_id: data.staff.wikidata_id,
 					syosetu_id: data.staff.syosetu_id,
 					kakuyomu_id: data.staff.kakuyomu_id,
+					bsky_id: data.staff.bsky_id,
 				})
 				.returning('staff.id')
 				.executeTakeFirstOrThrow();
@@ -258,6 +261,7 @@ export class DBStaffActions {
 					wikidata_id: data.staff.wikidata_id,
 					syosetu_id: data.staff.syosetu_id,
 					kakuyomu_id: data.staff.kakuyomu_id,
+					bsky_id: data.staff.bsky_id,
 				})
 				.executeTakeFirstOrThrow();
 

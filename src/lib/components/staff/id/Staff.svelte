@@ -9,6 +9,7 @@
 	import Works from './Works.svelte';
 	import {
 		bookwalkerAuthorLink,
+		bskyLink,
 		kakuyomuLink,
 		pixivLink,
 		syosetuLink,
@@ -59,7 +60,7 @@
 
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
-		{#if staff.website || staff.bookwalker_id || staff.twitter_id || staff.pixiv_id || staff.wikidata_id}
+		{#if staff.website || staff.bookwalker_id || staff.twitter_id || staff.pixiv_id || staff.wikidata_id || staff.syosetu_id || staff.kakuyomu_id || staff.bsky_id}
 			<div class="flex flex-wrap gap-x-4">
 				{#if staff.website}
 					<a href={staff.website} target="_blank" class="link">Website</a>
@@ -75,6 +76,9 @@
 				{/if}
 				{#if staff.twitter_id}
 					<DbExtLinkShort fullLink={{ ...twitterLink, value: staff.twitter_id }} />
+				{/if}
+				{#if staff.bsky_id}
+					<DbExtLinkShort fullLink={{ ...bskyLink, value: staff.bsky_id }} />
 				{/if}
 				{#if staff.pixiv_id}
 					<DbExtLinkShort fullLink={{ ...pixivLink, value: staff.pixiv_id }} />

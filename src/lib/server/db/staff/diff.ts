@@ -85,6 +85,14 @@ export function getStaffDiffs(params: { prevStaffHistEdit: StaffEdit; staffHistE
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
+			name: 'Bluesky',
+			words1: prevStaffHistEdit.bsky_id,
+			words2: staffHistEdit.bsky_id,
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
 			name: 'Pixiv',
 			words1: prevStaffHistEdit.pixiv_id?.toString(),
 			words2: staffHistEdit.pixiv_id?.toString(),
