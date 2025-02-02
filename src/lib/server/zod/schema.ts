@@ -425,6 +425,7 @@ export const staffSchema = z.object({
 	website: zLink([]),
 	syosetu_id: z.number().max(maxNumberValue).nullish(),
 	kakuyomu_id: z.string().trim().max(2000).nullish(),
+	bsky_id: z.string().trim().max(2000).nullish(),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
 
 	aliases: z
