@@ -14,6 +14,7 @@
 	import TextFieldLink from '../TextFieldLink.svelte';
 	import {
 		bookwalkerAuthorLink,
+		bookwalkerGlobalAuthorLink,
 		bskyLink,
 		kakuyomuLink,
 		pixivLink,
@@ -90,6 +91,14 @@
 				label="Bookwalker"
 				resetPadding={true}
 				linkBeforeAfter={bookwalkerAuthorLink}
+			/>
+			<TextFieldLink
+				form={sForm}
+				type="number"
+				field="bookwalker_gl_id"
+				label="Bookwalker Global"
+				resetPadding={true}
+				linkBeforeAfter={bookwalkerGlobalAuthorLink}
 			/>
 			<TextFieldLink
 				form={sForm}

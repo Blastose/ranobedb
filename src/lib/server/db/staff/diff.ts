@@ -53,6 +53,14 @@ export function getStaffDiffs(params: { prevStaffHistEdit: StaffEdit; staffHistE
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
+			name: 'Bookwalker Global',
+			words1: prevStaffHistEdit.bookwalker_gl_id?.toString(),
+			words2: staffHistEdit.bookwalker_gl_id?.toString(),
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
 			name: 'Wikidata',
 			words1: prevStaffHistEdit.wikidata_id?.toString(),
 			words2: staffHistEdit.wikidata_id?.toString(),

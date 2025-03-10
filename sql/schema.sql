@@ -286,6 +286,7 @@ CREATE TABLE public.book_edition_hist (
 CREATE TABLE public.staff (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     bookwalker_id integer,
+    bookwalker_gl_id integer,
     wikidata_id integer,
     pixiv_id integer,
     syosetu_id integer,
@@ -301,6 +302,7 @@ CREATE TABLE public.staff (
 CREATE TABLE public.staff_hist (
     change_id integer NOT NULL,
     bookwalker_id integer,
+    bookwalker_gl_id integer,
     wikidata_id integer,
     pixiv_id integer,
     syosetu_id integer,

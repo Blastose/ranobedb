@@ -38,6 +38,12 @@ export const bookwalkerAuthorLink: LinkBeforeAfter = {
 	name: 'Bookwalker',
 };
 
+export const bookwalkerGlobalAuthorLink: LinkBeforeAfter = {
+	before: 'https://global.bookwalker.jp/authors/',
+	after: '',
+	name: 'Bookwalker Global',
+};
+
 export const twitterLink: LinkBeforeAfter = {
 	before: 'https://twitter.com/',
 	after: '',
