@@ -1,6 +1,6 @@
 import { DateNumber, DateNumberGenerator } from '$lib/components/form/release/releaseDate';
 import {
-	booksSortArray,
+	booksUserListSortArray,
 	dbItemArray,
 	defaultUserListLabelsArrayAndRemove,
 	historyFilterChangeType,
@@ -663,7 +663,7 @@ export const bookFiltersSchema = z.object({
 	rfl: z.enum(logicalOps).catch('or'),
 	minDate: zISODate.or(z.literal('')).nullish(),
 	maxDate: zISODate.or(z.literal('')).nullish(),
-	sort: z.enum(booksSortArray).catch('Relevance desc'),
+	sort: z.enum(booksUserListSortArray).catch('Relevance desc'),
 	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 	sl: z.enum(logicalOps).catch('and'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
@@ -715,7 +715,7 @@ export const bookFiltersObjSchema = z.object({
 	rfl: z.enum(logicalOps).catch('or'),
 	minDate: zISODate.or(z.literal('')).nullish(),
 	maxDate: zISODate.or(z.literal('')).nullish(),
-	sort: z.enum(booksSortArray).catch('Relevance desc'),
+	sort: z.enum(booksUserListSortArray).catch('Relevance desc'),
 	staff: zStaff,
 	sl: z.enum(logicalOps).catch('and'),
 	p: zPublishers,

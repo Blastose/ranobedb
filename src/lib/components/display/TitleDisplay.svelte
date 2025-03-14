@@ -18,8 +18,10 @@
 			: getTitleDisplaySub({ obj, prefs: $displayPrefs.title_prefs });
 </script>
 
-{#if titleDisplay}
-	{titleDisplay}
-{:else if fallback}
-	{fallback}
-{/if}
+<span title={titleDisplay || fallback}>
+	{#if titleDisplay}
+		{titleDisplay}
+	{:else if fallback}
+		{fallback}
+	{/if}
+</span>

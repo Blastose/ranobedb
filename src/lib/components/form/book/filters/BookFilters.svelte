@@ -3,6 +3,7 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import {
 		booksSortArray,
+		booksUserListSortArray,
 		languageNames,
 		languagesArray,
 		logicalOps,
@@ -24,6 +25,8 @@
 		label: string;
 	}[] = [];
 	const sForm = superForm(filtersForm, { dataType: 'json' });
+
+	$: sortFiltersToUse = isList ? booksUserListSortArray : booksSortArray;
 </script>
 
 <FiltersWrapper>
@@ -117,7 +120,7 @@
 			<SelectField
 				form={sForm}
 				field="sort"
-				dropdownOptions={booksSortArray.map((v) => ({ display: v, value: v }))}
+				dropdownOptions={sortFiltersToUse.map((v) => ({ display: v, value: v }))}
 				selectedValue={filtersForm.data.sort}
 				label="Sort by"
 				resetPadding={true}

@@ -850,22 +850,29 @@ export class DBBooks {
 				).as('image'),
 			)
 			.$if(typeof userId === 'string', (qb) =>
-				qb.select((eb) =>
-					jsonObjectFrom(
-						eb
-							.selectFrom('user_list_book_label')
-							.innerJoin('user_list_label', (join) =>
-								join
-									.onRef('user_list_book_label.label_id', '=', 'user_list_label.id')
-									.onRef('user_list_book_label.user_id', '=', 'user_list_label.user_id')
-									.onRef('user_list_book_label.book_id', '=', 'cte_book.id'),
-							)
-							.select('user_list_label.label')
-							.where('user_list_label.user_id', '=', String(userId))
-							.where('user_list_label.id', '<=', 10)
-							.limit(1),
-					).as('label'),
-				),
+				qb
+					.select((eb) =>
+						jsonObjectFrom(
+							eb
+								.selectFrom('user_list_book_label')
+								.innerJoin('user_list_label', (join) =>
+									join
+										.onRef('user_list_book_label.label_id', '=', 'user_list_label.id')
+										.onRef('user_list_book_label.user_id', '=', 'user_list_label.user_id')
+										.onRef('user_list_book_label.book_id', '=', 'cte_book.id'),
+								)
+								.select('user_list_label.label')
+								.where('user_list_label.user_id', '=', String(userId))
+								.where('user_list_label.id', '<=', 10)
+								.limit(1),
+						).as('label'),
+					)
+					.innerJoin('user_list_book', (join) =>
+						join
+							.onRef('user_list_book.book_id', '=', 'cte_book.id')
+							.on('user_list_book.user_id', '=', String(userId)),
+					)
+					.select(['user_list_book.score', 'user_list_book.added', 'user_list_book.last_updated']),
 			);
 	}
 }

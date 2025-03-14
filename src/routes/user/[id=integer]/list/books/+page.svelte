@@ -60,7 +60,10 @@
 					}}
 					urlPrefix="/book/"
 				>
-					<BookImageBadge badges={[`${book.label?.label}`]} location="top-right" />
+					<BookImageBadge
+						badges={[`${book.label?.label}`, book.score ? `Score: ${book.score}` : '']}
+						location="top-right"
+					/>
 				</BookImage>
 			{/each}
 		</BookImageContainer>

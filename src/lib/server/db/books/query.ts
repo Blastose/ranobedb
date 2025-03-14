@@ -5,7 +5,7 @@ import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { zod } from 'sveltekit-superforms/adapters';
-import { paginationBuilderExecuteWithCount } from '../dbHelpers';
+import { orderNullsLast, paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserBookLabels } from '../user/list';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
@@ -81,6 +81,14 @@ export async function getBooks(params: {
 		query = query.orderBy('cte_book.c_release_date asc');
 	} else if (sort === 'Release date desc') {
 		query = query.orderBy('cte_book.c_release_date desc');
+	} else if (sort === 'Score asc' && listUser !== null) {
+		query = query.orderBy('score asc');
+	} else if (sort === 'Score desc' && listUser !== null) {
+		query = query.orderBy('score', orderNullsLast('desc'));
+	} else if (sort === 'Added asc' && listUser !== null) {
+		query = query.orderBy('added asc');
+	} else if (sort === 'Added desc' && listUser !== null) {
+		query = query.orderBy('added desc');
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query

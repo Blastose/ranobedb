@@ -296,6 +296,15 @@ export const booksSortArray = [
 	'Release date desc',
 ] as const;
 
+export const booksUserListSortArray = [
+	...booksSortArray,
+
+	'Score asc',
+	'Score desc',
+	'Added asc',
+	'Added desc',
+] as const;
+
 export const seriesSortArray = [
 	'Relevance desc',
 	'Relevance asc',
