@@ -9,8 +9,10 @@
 		: 'bottom-0 right-0'}"
 >
 	{#each badges as badge}
-		<div class="bg-black/90 dark-main-text w-fit text-sm sm:text-base rounded-full px-2">
-			<p>{badge}</p>
-		</div>
+		{#if badge !== ''}
+			<div class="bg-black/90 dark-main-text w-fit text-sm sm:text-base rounded-full px-2">
+				<p>{badge}</p>
+			</div>
+		{/if}
 	{/each}
 </div>

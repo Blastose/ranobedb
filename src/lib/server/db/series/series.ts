@@ -160,6 +160,7 @@ export class DBSeries {
 		listStatus?: UserListStatus;
 		userId?: string;
 		labelIds?: number[];
+		isList?: boolean;
 	}) {
 		let labels = undefined;
 		if (params?.labelIds && params?.labelIds.length > 0) {
@@ -308,6 +309,19 @@ export class DBSeries {
 							.limit(1),
 					).as('vols_read'),
 				]),
+			)
+			.$if(typeof userId === 'string' && Boolean(params?.isList), (qb) =>
+				qb
+					.innerJoin('user_list_series', (join) =>
+						join
+							.onRef('user_list_series.series_id', '=', 'cte_series.id')
+							.on('user_list_series.user_id', '=', String(userId)),
+					)
+					.select([
+						'user_list_series.score',
+						'user_list_series.added',
+						'user_list_series.last_updated',
+					]),
 			)
 			.select([
 				'cte_series.id',

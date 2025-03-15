@@ -5,7 +5,7 @@ import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { zod } from 'sveltekit-superforms/adapters';
-import { paginationBuilderExecuteWithCount } from '../dbHelpers';
+import { orderNullsLast, paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserBookLabels } from '../user/list';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
@@ -18,8 +18,9 @@ export async function getBooks(params: {
 	currentUser: User | null;
 	url: URL;
 	form: SuperValidated<Infer<typeof bookFiltersSchema>>;
+	isList?: boolean;
 }) {
-	const { currentPage, q, db, listUser, currentUser, url, form, limit } = params;
+	const { currentPage, q, db, listUser, currentUser, url, form, limit, isList } = params;
 
 	const dbBooks = DBBooks.fromDB(db, currentUser);
 
@@ -27,7 +28,7 @@ export async function getBooks(params: {
 	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
 	let query = dbBooks
-		.getBooks({ q, listStatus: form.data.list, userId: listUser?.id, labelIds: labels })
+		.getBooks({ q, listStatus: form.data.list, userId: listUser?.id, labelIds: labels, isList })
 		.where('cte_book.hidden', '=', false);
 
 	const useQuery = Boolean(q);
@@ -81,6 +82,14 @@ export async function getBooks(params: {
 		query = query.orderBy('cte_book.c_release_date asc');
 	} else if (sort === 'Release date desc') {
 		query = query.orderBy('cte_book.c_release_date desc');
+	} else if (sort === 'Score asc' && listUser !== null) {
+		query = query.orderBy('score asc');
+	} else if (sort === 'Score desc' && listUser !== null) {
+		query = query.orderBy('score', orderNullsLast('desc'));
+	} else if (sort === 'Added asc' && listUser !== null) {
+		query = query.orderBy('added asc');
+	} else if (sort === 'Added desc' && listUser !== null) {
+		query = query.orderBy('added desc');
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query

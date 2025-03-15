@@ -761,6 +761,7 @@ export class DBBooks {
 		listStatus?: UserListStatus;
 		userId?: string;
 		labelIds?: number[];
+		isList?: boolean;
 	}) {
 		let labels = undefined;
 		if (params?.labelIds && params?.labelIds.length > 0) {
@@ -866,6 +867,15 @@ export class DBBooks {
 							.limit(1),
 					).as('label'),
 				),
+			)
+			.$if(typeof userId === 'string' && Boolean(params?.isList), (qb) =>
+				qb
+					.innerJoin('user_list_book', (join) =>
+						join
+							.onRef('user_list_book.book_id', '=', 'cte_book.id')
+							.on('user_list_book.user_id', '=', String(userId)),
+					)
+					.select(['user_list_book.score', 'user_list_book.added', 'user_list_book.last_updated']),
 			);
 	}
 }

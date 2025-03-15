@@ -9,7 +9,7 @@ import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { zod } from 'sveltekit-superforms/adapters';
-import { paginationBuilderExecuteWithCount } from '../dbHelpers';
+import { orderNullsLast, paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserSeriesLabels } from '../user/series-list';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
@@ -22,8 +22,9 @@ export async function getSeries(params: {
 	currentUser: User | null;
 	url: URL;
 	form: SuperValidated<Infer<typeof seriesFiltersSchema>>;
+	isList?: boolean;
 }) {
-	const { currentPage, q, db, listUser, currentUser, url, form, limit } = params;
+	const { currentPage, q, db, listUser, currentUser, url, form, limit, isList } = params;
 
 	const dbSeries = DBSeries.fromDB(db, currentUser);
 
@@ -31,7 +32,7 @@ export async function getSeries(params: {
 	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
 	let query = dbSeries
-		.getSeries({ q, listStatus: form.data.list, userId: listUser?.id, labelIds: labels })
+		.getSeries({ q, listStatus: form.data.list, userId: listUser?.id, labelIds: labels, isList })
 		.where('cte_series.hidden', '=', false);
 	const useQuery = Boolean(q);
 	const useReleaseLangFilters = form.data.rl.length > 0;
@@ -126,6 +127,14 @@ export async function getSeries(params: {
 		query = query.orderBy('cte_series.c_num_books asc');
 	} else if (sort === 'Num. books desc') {
 		query = query.orderBy('cte_series.c_num_books desc');
+	} else if (sort === 'Score asc' && listUser !== null) {
+		query = query.orderBy('score asc');
+	} else if (sort === 'Score desc' && listUser !== null) {
+		query = query.orderBy('score', orderNullsLast('desc'));
+	} else if (sort === 'Added asc' && listUser !== null) {
+		query = query.orderBy('added asc');
+	} else if (sort === 'Added desc' && listUser !== null) {
+		query = query.orderBy('added desc');
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query

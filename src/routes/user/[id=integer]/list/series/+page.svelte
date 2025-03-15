@@ -64,7 +64,10 @@
 						}}
 						urlPrefix="/series/"
 					>
-						<BookImageBadge badges={[`${series.label?.label}`]} location="top-right" />
+						<BookImageBadge
+							badges={[`${series.label?.label}`, series.score ? `Score: ${series.score}` : '']}
+							location="top-right"
+						/>
 
 						<BookImageBadge
 							badges={[
