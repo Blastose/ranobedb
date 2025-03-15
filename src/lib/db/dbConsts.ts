@@ -298,7 +298,6 @@ export const booksSortArray = [
 
 export const booksUserListSortArray = [
 	...booksSortArray,
-
 	'Score asc',
 	'Score desc',
 	'Added asc',
@@ -316,6 +315,14 @@ export const seriesSortArray = [
 	'End date desc',
 	'Num. books asc',
 	'Num. books desc',
+] as const;
+
+export const seriesUserListSortArray = [
+	...seriesSortArray,
+	'Score asc',
+	'Score desc',
+	'Added asc',
+	'Added desc',
 ] as const;
 
 export const releaseSortArray = [

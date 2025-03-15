@@ -8,6 +8,7 @@
 		releaseFormatArray,
 		seriesSortArray,
 		seriesStatusArray,
+		seriesUserListSortArray,
 		userListStatus,
 	} from '$lib/db/dbConsts';
 	import Keyed from '../../Keyed.svelte';
@@ -28,6 +29,7 @@
 		label: string;
 	}[] = [];
 	const sForm = superForm(filtersForm, { dataType: 'json' });
+	$: sortFiltersToUse = isList ? seriesUserListSortArray : seriesSortArray;
 </script>
 
 <FiltersWrapper>
@@ -121,7 +123,7 @@
 			<SelectField
 				form={sForm}
 				field="sort"
-				dropdownOptions={seriesSortArray.map((v) => ({ display: v, value: v }))}
+				dropdownOptions={sortFiltersToUse.map((v) => ({ display: v, value: v }))}
 				selectedValue={filtersForm.data.sort}
 				label="Sort by"
 				resetPadding={true}

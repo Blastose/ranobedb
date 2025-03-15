@@ -761,6 +761,7 @@ export class DBBooks {
 		listStatus?: UserListStatus;
 		userId?: string;
 		labelIds?: number[];
+		isList?: boolean;
 	}) {
 		let labels = undefined;
 		if (params?.labelIds && params?.labelIds.length > 0) {
@@ -850,23 +851,25 @@ export class DBBooks {
 				).as('image'),
 			)
 			.$if(typeof userId === 'string', (qb) =>
+				qb.select((eb) =>
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_book_label')
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_book_label.label_id', '=', 'user_list_label.id')
+									.onRef('user_list_book_label.user_id', '=', 'user_list_label.user_id')
+									.onRef('user_list_book_label.book_id', '=', 'cte_book.id'),
+							)
+							.select('user_list_label.label')
+							.where('user_list_label.user_id', '=', String(userId))
+							.where('user_list_label.id', '<=', 10)
+							.limit(1),
+					).as('label'),
+				),
+			)
+			.$if(typeof userId === 'string' && Boolean(params?.isList), (qb) =>
 				qb
-					.select((eb) =>
-						jsonObjectFrom(
-							eb
-								.selectFrom('user_list_book_label')
-								.innerJoin('user_list_label', (join) =>
-									join
-										.onRef('user_list_book_label.label_id', '=', 'user_list_label.id')
-										.onRef('user_list_book_label.user_id', '=', 'user_list_label.user_id')
-										.onRef('user_list_book_label.book_id', '=', 'cte_book.id'),
-								)
-								.select('user_list_label.label')
-								.where('user_list_label.user_id', '=', String(userId))
-								.where('user_list_label.id', '<=', 10)
-								.limit(1),
-						).as('label'),
-					)
 					.innerJoin('user_list_book', (join) =>
 						join
 							.onRef('user_list_book.book_id', '=', 'cte_book.id')
