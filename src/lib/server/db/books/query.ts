@@ -107,8 +107,24 @@ export async function getBooks(params: {
 			.orderBy(`sim_score ${orderByDirection}`)
 			.orderBy(
 				(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
-			)
-			.groupBy([
+			);
+		if (isList) {
+			query = query.groupBy([
+				'cte_book.id',
+				'cte_book.image_id',
+				'cte_book.lang',
+				'cte_book.romaji',
+				'cte_book.romaji_orig',
+				'cte_book.title',
+				'cte_book.title_orig',
+				'cte_book.c_release_date',
+				'cte_book.olang',
+				'score',
+				'last_updated',
+				'added',
+			]);
+		} else {
+			query = query.groupBy([
 				'cte_book.id',
 				'cte_book.image_id',
 				'cte_book.lang',
@@ -119,6 +135,7 @@ export async function getBooks(params: {
 				'cte_book.c_release_date',
 				'cte_book.olang',
 			]);
+		}
 	}
 
 	if (

@@ -152,8 +152,28 @@ export async function getSeries(params: {
 			.orderBy(`sim_score ${orderByDirection}`)
 			.orderBy(
 				(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
-			)
-			.groupBy([
+			);
+
+		if (isList) {
+			query = query.groupBy([
+				'cte_series.id',
+				'cte_series.hidden',
+				'cte_series.locked',
+				'cte_series.lang',
+				'cte_series.romaji',
+				'cte_series.romaji_orig',
+				'cte_series.title',
+				'cte_series.title_orig',
+				'cte_series.olang',
+				'cte_series.c_num_books',
+				'cte_series.c_start_date',
+				'cte_series.c_end_date',
+				'score',
+				'last_updated',
+				'added',
+			]);
+		} else {
+			query = query.groupBy([
 				'cte_series.id',
 				'cte_series.hidden',
 				'cte_series.locked',
@@ -167,6 +187,7 @@ export async function getSeries(params: {
 				'cte_series.c_start_date',
 				'cte_series.c_end_date',
 			]);
+		}
 	}
 
 	if (
