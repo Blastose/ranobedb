@@ -875,7 +875,13 @@ export class DBBooks {
 							.onRef('user_list_book.book_id', '=', 'cte_book.id')
 							.on('user_list_book.user_id', '=', String(userId)),
 					)
-					.select(['user_list_book.score', 'user_list_book.added', 'user_list_book.last_updated']),
+					.select([
+						'user_list_book.score',
+						'user_list_book.added',
+						'user_list_book.last_updated',
+						'user_list_book.started',
+						'user_list_book.finished',
+					]),
 			);
 	}
 }
