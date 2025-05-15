@@ -251,7 +251,8 @@ export const load = async ({ url, locals }) => {
 	query = query
 		.clearOrderBy()
 		.orderBy('release_date asc')
-		.orderBy((eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`);
+		.orderBy((eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`)
+		.orderBy('format');
 
 	const releases = await query.execute();
 
