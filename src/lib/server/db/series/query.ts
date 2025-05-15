@@ -135,6 +135,18 @@ export async function getSeries(params: {
 		query = query.orderBy('added asc');
 	} else if (sort === 'Added desc' && listUser !== null) {
 		query = query.orderBy('added desc');
+	} else if (sort === 'Last updated asc' && listUser !== null) {
+		query = query.orderBy('last_updated asc');
+	} else if (sort === 'Last updated desc' && listUser !== null) {
+		query = query.orderBy('last_updated desc');
+	} else if (sort === 'Started asc' && listUser !== null) {
+		query = query.orderBy('started', orderNullsLast('asc'));
+	} else if (sort === 'Started desc' && listUser !== null) {
+		query = query.orderBy('started', orderNullsLast('desc'));
+	} else if (sort === 'Finished asc' && listUser !== null) {
+		query = query.orderBy('finished', orderNullsLast('asc'));
+	} else if (sort === 'Finished desc' && listUser !== null) {
+		query = query.orderBy('finished', orderNullsLast('desc'));
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query

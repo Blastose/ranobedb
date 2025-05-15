@@ -321,6 +321,8 @@ export class DBSeries {
 						'user_list_series.score',
 						'user_list_series.added',
 						'user_list_series.last_updated',
+						'user_list_series.started',
+						'user_list_series.finished',
 					]),
 			)
 			.select([
