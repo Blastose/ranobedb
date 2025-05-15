@@ -31,7 +31,13 @@
 <section class="flex flex-col gap-2">
 	<Tabs tabs={publisherTabs} currentTab={works.type} tabsIcons={publisherTabsIconsMap} />
 
-	<a class="link w-fit" href="/{works.type}?p={publisherId}">Filter results</a>
+	<div class="flex flex-col">
+		<a class="link w-fit" href="/{works.type}?p={publisherId}">Filter results</a>
+
+		{#if works.type === 'releases'}
+			<a class="link w-fit" href="/releases/calendar?p={publisherId}">View in Release calendar</a>
+		{/if}
+	</div>
 
 	<PaginationContainer
 		{currentPage}
