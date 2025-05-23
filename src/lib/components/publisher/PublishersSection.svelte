@@ -16,7 +16,6 @@
 
 	let groupedPublishersByLang = $derived(groupBy(publishers, (item) => item.lang));
 
-	// For TS, since Svelte 4 cannot have TS in markup
 	function getLanguageFromString(langCode: string) {
 		return languageNames[langCode as Language];
 	}
@@ -40,7 +39,7 @@
 										><NameDisplay obj={publisher} /></a
 									>
 									<span class="text-xs">{publisher.publisher_type}</span
-									>{#if index !== publishers.length - 1}<span>,</span>{/if}
+									>{#if index !== publishers.length - 1}<span>,{' '}</span>{/if}
 								</span>
 							{/each}
 						</p>

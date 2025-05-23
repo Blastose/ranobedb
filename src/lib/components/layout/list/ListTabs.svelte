@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cubicInOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import type { ListCounts } from '$lib/server/db/user/list';
 
 	interface Props {
@@ -29,7 +29,7 @@
 		},
 	] as const;
 
-	let currentPage = $derived(new URL($page.url));
+	let currentPage = $derived(new URL(page.url));
 	let currentTab = $derived(currentPage.pathname.split('/').at(-1) || '');
 
 	const [send, receive] = crossfade({

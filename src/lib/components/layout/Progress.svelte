@@ -1,7 +1,5 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
-	import { navigating } from '$app/stores';
+	import { navigating } from '$app/state';
 	import { fade } from 'svelte/transition';
 
 	let width = $state(0);
@@ -53,10 +51,10 @@
 		}, 500);
 	}
 
-	run(() => {
-		if ($navigating) {
+	$effect(() => {
+		if (navigating.to) {
 			setTimeoutProgress();
-		} else if (!$navigating) {
+		} else if (!navigating.to) {
 			progressDone();
 		}
 	});

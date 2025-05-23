@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Nullish } from '$lib/server/zod/schema';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	interface Props {
 		title: string;
@@ -27,7 +27,7 @@
 	{#if image}
 		<meta property="og:image" content={image} />
 	{/if}
-	<meta property="og:url" content={url || $page.url.toString()} />
+	<meta property="og:url" content={url || page.url.toString()} />
 	<meta property="og:description" content={description} />
 	<meta name="description" content={description} />
 	<meta property="og:site_name" content={site_name} />

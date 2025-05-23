@@ -5,7 +5,7 @@
 
 	import { crossfade } from 'svelte/transition';
 
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 
 	interface Props {
 		tabs: readonly T[];
@@ -16,7 +16,7 @@
 
 	let { tabs, tabsIcons, currentTab, tabParam = 'tab' }: Props = $props();
 
-	let currentPage = $derived(new URL($page.url));
+	let currentPage = $derived(new URL(page.url));
 
 	const [send, receive] = crossfade({
 		duration: 250,

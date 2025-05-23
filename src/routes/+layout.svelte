@@ -7,17 +7,17 @@
 	import { onNavigate } from '$app/navigation';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import { getFlash } from 'sveltekit-flash-message';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { getDisplayPrefsUser } from '$lib/display/prefs';
 	import Progress from '$lib/components/layout/Progress.svelte';
 	import { beforeNavigate } from '$app/navigation';
-	import { updated } from '$app/stores';
+	import { updated } from '$app/state';
 	import { createRelCalStore } from '$lib/stores/releaseCalendarViewStore';
 
 	beforeNavigate(({ willUnload, to }) => {
-		if ($updated && !willUnload && to?.url) {
+		if (updated.current && !willUnload && to?.url) {
 			location.href = to.url.href;
 		}
 	});

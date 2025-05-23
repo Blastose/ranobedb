@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Pagination from './Pagination.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Fly from '../layout/Fly.svelte';
 
 	interface Props {
@@ -25,12 +25,12 @@
 <div class="flex flex-col gap-4">
 	{#if showTopPages && results !== undefined}
 		<div class="flex flex-col gap-2">
-			<Pagination url={$page.url} {currentPage} {totalPages} {hideTotalPages} />
+			<Pagination url={page.url} {currentPage} {totalPages} {hideTotalPages} />
 			<p>{results} results</p>
 		</div>
 	{:else}
 		{#if showTopPages}
-			<Pagination url={$page.url} {currentPage} {totalPages} {hideTotalPages} />
+			<Pagination url={page.url} {currentPage} {totalPages} {hideTotalPages} />
 		{/if}
 
 		{#if results !== undefined}
@@ -38,7 +38,7 @@
 		{/if}
 	{/if}
 
-	<Fly key={$page.url.searchParams.toString()}>
+	<Fly key={page.url.searchParams.toString()}>
 		{#if results !== '0' && currentPage <= totalPages}
 			{@render children?.()}
 		{:else}
@@ -46,5 +46,5 @@
 		{/if}
 	</Fly>
 
-	<Pagination url={$page.url} {currentPage} {totalPages} {hideTotalPages} />
+	<Pagination url={page.url} {currentPage} {totalPages} {hideTotalPages} />
 </div>
