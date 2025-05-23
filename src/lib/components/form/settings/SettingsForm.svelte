@@ -1,6 +1,6 @@
 <script lang="ts">
 	import SidebarListItem from '$lib/components/layout/sidebar/SidebarListItem.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import UsernameForm from './UsernameForm.svelte';
 	import type {
 		changeEmailSchema,
@@ -41,25 +41,25 @@
 		<ul class="flex gap-2">
 			<SidebarListItem
 				active={view === 'account' || !view}
-				href="{$page.url.pathname}?view=account"
+				href="{page.url.pathname}?view=account"
 				text="Account"
 				icon="profile"
 			/>
 			<SidebarListItem
 				active={view === 'display'}
-				href="{$page.url.pathname}?view=display"
+				href="{page.url.pathname}?view=display"
 				text="Display"
 				icon="books"
 			/>
 			<SidebarListItem
 				active={view === 'list'}
-				href="{$page.url.pathname}?view=list"
+				href="{page.url.pathname}?view=list"
 				text="List"
 				icon="series"
 			/>
 			<SidebarListItem
 				active={view === 'email'}
-				href="{$page.url.pathname}?view=email"
+				href="{page.url.pathname}?view=email"
 				text="Email settings"
 				icon="email"
 			/>

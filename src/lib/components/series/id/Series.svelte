@@ -25,7 +25,7 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { userListBookBatchSchema, userListSeriesSchema } from '$lib/server/zod/schema';
 	import { buildRedirectUrl } from '$lib/utils/url';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Tags from '../Tags.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
@@ -87,7 +87,7 @@
 				<SeriesBatchBookModal {series} {userListBookBatchForm} />
 			{/if}
 		{:else}
-			<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}
+			<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl(page.url, '/login')}
 				>Add to reading list</a
 			>
 		{/if}

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { browser } from '$app/environment';
 	import DbItemShellUser from '$lib/components/layout/db/DBItemShellUser.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
@@ -163,7 +161,7 @@
 		};
 	});
 
-	run(() => {
+	$effect(() => {
 		if (browser && chartsLoaded) {
 			const darkColors = {
 				axisColor: '#ccc',

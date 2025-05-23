@@ -11,7 +11,7 @@
 	import BookImage from '../BookImage.svelte';
 	import BookCarousel from '../BookCarousel.svelte';
 	import { buildRedirectUrl } from '$lib/utils/url';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { getDisplayPrefsContext } from '$lib/display/prefs';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import PublishersSection from '$lib/components/publisher/PublishersSection.svelte';
@@ -93,7 +93,7 @@
 							<BookModal {userListForm} {book} allCustLabels={allCustLabels ?? []} />
 						</div>
 					{:else}
-						<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl($page.url, '/login')}
+						<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl(page.url, '/login')}
 							>Add to reading list</a
 						>
 					{/if}

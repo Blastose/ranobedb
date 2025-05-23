@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Collapsible from '$lib/components/display/Collapsible.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import Keyed from '../Keyed.svelte';
 	interface Props {
@@ -9,7 +9,7 @@
 
 	let { children }: Props = $props();
 
-	let filterInUse = $derived(Boolean($page.url.search.replace(/\?page=\d+/, '')));
+	let filterInUse = $derived(Boolean(page.url.search.replace(/\?page=\d+/, '')));
 </script>
 
 <Keyed>

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import AccessDenied from '$lib/components/forbidden/AccessDenied.svelte';
 	import DeletedItem from '$lib/components/forbidden/DeletedItem.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	let error = $derived($page.error);
-	let status = $derived($page.status);
+	let error = $derived(page.error);
+	let status = $derived(page.status);
 </script>
 
 {#if error}

@@ -2,7 +2,7 @@
 	import type { User } from '$lib/server/lucia/lucia';
 	import ProfileButton from '$lib/components/layout/profile/ProfileButton.svelte';
 	import RanobeDb from '../RanobeDB.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 	import SearchExpand from '$lib/components/layout/header/SearchExpand.svelte';
 	import Notification from './Notification.svelte';
@@ -29,7 +29,7 @@
 	}
 
 	let scrollY: number | undefined = $state();
-	let isOnBookRoute = $derived(disableHeaderOpacity($page.url.pathname));
+	let isOnBookRoute = $derived(disableHeaderOpacity(page.url.pathname));
 
 	const sidebarStore = getSidebarStoreContext();
 </script>

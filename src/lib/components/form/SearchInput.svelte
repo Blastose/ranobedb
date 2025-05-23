@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
 	export let ariaLabel: string;
@@ -12,7 +12,7 @@
 		type="text"
 		class="input search-input"
 		style="padding-left: 2.5rem !important;"
-		value={$page.url.searchParams.get('q')}
+		value={page.url.searchParams.get('q')}
 		placeholder={inputPlaceholder}
 		aria-label={ariaLabel}
 	/>
