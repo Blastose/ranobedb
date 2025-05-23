@@ -10,6 +10,10 @@
 	export let genres: { id: number; name: string; ttype: TagType; mode: 'incl' | 'excl' | 'none' }[];
 
 	const sForm = superForm(filtersForm, { dataType: 'json' });
+
+	function updateGenres() {
+		genres = genres;
+	}
 </script>
 
 <div class="flex flex-col gap-1">
@@ -24,7 +28,7 @@
 		{/each}
 
 		{#each genres as genre}
-			<TagFilter bind:genre removable={false} />
+			<TagFilter handleUpdate={updateGenres} {genre} removable={false} />
 		{/each}
 	</div>
 </div>

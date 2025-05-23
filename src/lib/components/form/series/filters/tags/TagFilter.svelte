@@ -4,6 +4,7 @@
 	export let genre: { id: number; name?: string | null; mode?: 'incl' | 'excl' | 'none' };
 	export let removable: boolean;
 	export let handleRemove: (() => void) | undefined = undefined;
+	export let handleUpdate: (() => void) | undefined = undefined;
 
 	function toggle() {
 		if (!removable) {
@@ -22,6 +23,9 @@
 			} else if (genre.mode === 'excl') {
 				genre.mode = 'incl';
 			}
+		}
+		if (handleUpdate) {
+			handleUpdate();
 		}
 	}
 </script>
