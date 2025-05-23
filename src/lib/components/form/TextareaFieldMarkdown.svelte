@@ -65,7 +65,7 @@
 			bind:value={$value}
 			{...$constraints}
 			{...$$restProps}
-		/>
+		></textarea>
 	{:else}
 		<div class="markdown-output">
 			<MarkdownToHtml markdown={$value?.toString() || 'Nothing to preview'} type="full" />

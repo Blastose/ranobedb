@@ -10,23 +10,32 @@
 	import type { Infer } from 'sveltekit-superforms/server';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 
-	export let release: BookOne['releases'][number];
-	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>>;
-	export let placement:
-		| 'top'
-		| 'top-start'
-		| 'top-end'
-		| 'right'
-		| 'right-start'
-		| 'right-end'
-		| 'bottom'
-		| 'bottom-start'
-		| 'bottom-end'
-		| 'left'
-		| 'left-start'
-		| 'left-end'
-		| undefined = 'bottom-end';
-	export let showStatus: boolean = false;
+	interface Props {
+		release: BookOne['releases'][number];
+		userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>>;
+		placement?:
+			| 'top'
+			| 'top-start'
+			| 'top-end'
+			| 'right'
+			| 'right-start'
+			| 'right-end'
+			| 'bottom'
+			| 'bottom-start'
+			| 'bottom-end'
+			| 'left'
+			| 'left-start'
+			| 'left-end'
+			| undefined;
+		showStatus?: boolean;
+	}
+
+	let {
+		release,
+		userListReleaseForm,
+		placement = 'bottom-end',
+		showStatus = false,
+	}: Props = $props();
 
 	const sForm = superForm(userListReleaseForm, {
 		dataType: 'json',
@@ -76,7 +85,7 @@
 </button>
 
 {#if $open}
-	<div use:melt={$overlay} class="fixed inset-0 z-40" />
+	<div use:melt={$overlay} class="fixed inset-0 z-40"></div>
 	<section class="menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
 		<form class="flex flex-col" action="/api/i/user/release/{release.id}" method="POST" use:enhance>
 			{#each userListReleaseStatus as status}
@@ -84,7 +93,7 @@
 					class="sidebar-item capitalize"
 					class:active={release.user_list_release?.release_status === status}
 					use:melt={$item}
-					on:click={() => {
+					onclick={() => {
 						if (release.user_list_release) {
 							$form.type = 'update';
 						} else {
@@ -98,7 +107,7 @@
 				<button
 					class="sidebar-item"
 					use:melt={$item}
-					on:click={() => {
+					onclick={() => {
 						$form.type = 'delete';
 					}}>Remove</button
 				>

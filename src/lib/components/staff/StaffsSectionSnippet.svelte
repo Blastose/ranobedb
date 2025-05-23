@@ -2,7 +2,11 @@
 	import type { BookOne } from '$lib/server/db/books/books';
 	import NameDisplay from '../display/NameDisplay.svelte';
 
-	export let staffs: BookOne['editions'][number]['staff'];
+	interface Props {
+		staffs: BookOne['editions'][number]['staff'];
+	}
+
+	let { staffs }: Props = $props();
 </script>
 
 <div class="flex flex-wrap gap-4">

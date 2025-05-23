@@ -9,9 +9,13 @@
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 	import Hr from '../Hr.svelte';
 
-	export let user: User | null;
-	export let isDrawer: boolean = false;
-	export let handleNavigation: (() => void) | undefined = undefined;
+	interface Props {
+		user: User | null;
+		isDrawer?: boolean;
+		handleNavigation?: (() => void) | undefined;
+	}
+
+	let { user, isDrawer = false, handleNavigation = undefined }: Props = $props();
 
 	function watchNavigation(node: HTMLElement) {
 		function handleAClick(e: Event) {
@@ -54,7 +58,7 @@
 				class="relative btn left-2 rounded-full inline-flex items-center justify-center w-8 h-8"
 				type="button"
 				aria-label="Close sidebar"
-				on:click={closeSidebar}><Icon name="close" /></button
+				onclick={closeSidebar}><Icon name="close" /></button
 			>
 		{/if}
 	</div>

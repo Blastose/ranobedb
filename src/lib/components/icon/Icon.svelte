@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	export type IconType = keyof typeof icons;
 	const icons = {
 		close: {
@@ -205,12 +205,15 @@
 </script>
 
 <script lang="ts">
-	export let name: IconType;
-	export let width: string = '24';
-	export let height: string = '24';
-	export let hidden: boolean = true;
-	let className: string = '';
-	export { className as class };
+	interface Props {
+		name: IconType;
+		width?: string;
+		height?: string;
+		hidden?: boolean;
+		class?: string;
+	}
+
+	let { name, width = '24', height = '24', hidden = true, class: className = '' }: Props = $props();
 
 	const icon = icons[name];
 </script>

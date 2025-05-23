@@ -7,13 +7,17 @@
 	import { staffTabs, staffTabsIconsMap } from '$lib/db/dbConsts';
 	import type { StaffWorks } from '$lib/server/db/staff/staff';
 
-	export let staffId: number;
-	export let works: StaffWorks;
-	export let results: string;
-	export let currentPage: number;
-	export let totalPages: number;
+	interface Props {
+		staffId: number;
+		works: StaffWorks;
+		results: string;
+		currentPage: number;
+		totalPages: number;
+	}
 
-	$: worksMain = works.type === 'books' ? works.books : works.series;
+	let { staffId, works, results, currentPage, totalPages }: Props = $props();
+
+	let worksMain = $derived(works.type === 'books' ? works.books : works.series);
 </script>
 
 <section class="flex flex-col gap-2">

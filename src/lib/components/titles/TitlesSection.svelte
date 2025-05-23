@@ -3,18 +3,24 @@
 	import Collapsible from '../display/Collapsible.svelte';
 	import LangChip from './LangChip.svelte';
 
-	export let titles: {
-		lang: Language;
-		romaji: string | null;
-		official: true;
-		title: string;
-	}[];
+	interface Props {
+		titles: {
+			lang: Language;
+			romaji: string | null;
+			official: true;
+			title: string;
+		}[];
+	}
+
+	let { titles }: Props = $props();
 </script>
 
 <section>
 	<Collapsible open={false}>
-		<svelte:fragment slot="summary"><h2 class="font-bold text-lg">Titles</h2></svelte:fragment>
-		<svelte:fragment slot="details">
+		{#snippet summary()}
+			<h2 class="font-bold text-lg">Titles</h2>
+		{/snippet}
+		{#snippet details()}
 			{#each titles as title}
 				<div class="grid grid-cols-[24px_1fr] gap-2">
 					<LangChip lang={title.lang} />
@@ -26,7 +32,7 @@
 						{/if}
 					</div>
 				</div>
-			{/each}</svelte:fragment
-		>
+			{/each}
+		{/snippet}
 	</Collapsible>
 </section>

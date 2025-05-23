@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	export type Rec = { hidden: boolean; locked: boolean; id: number };
 </script>
 
@@ -10,10 +10,14 @@
 	import { fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let item: T;
-	export let type: DbItem;
-	export let copyTo: CopyTo | undefined = undefined;
-	export let revision: number | undefined;
+	interface Props {
+		item: T;
+		type: DbItem;
+		copyTo?: CopyTo | undefined;
+		revision: number | undefined;
+	}
+
+	let { item, type, copyTo = undefined, revision }: Props = $props();
 
 	const {
 		elements: { trigger, menu, item: itm },

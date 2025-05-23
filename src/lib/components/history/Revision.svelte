@@ -5,11 +5,15 @@
 	import Hr from '../layout/Hr.svelte';
 	import DiffDisplay from './diff-display/DiffDisplay.svelte';
 
-	export let currentItemVisibility: { hidden: boolean; locked: boolean };
-	export let changes: { prevChange?: Change; change: Change; nextChange?: Change };
-	export let title: string;
-	export let buildBaseLink: () => string;
-	export let diffs: Diff[];
+	interface Props {
+		currentItemVisibility: { hidden: boolean; locked: boolean };
+		changes: { prevChange?: Change; change: Change; nextChange?: Change };
+		title: string;
+		buildBaseLink: () => string;
+		diffs: Diff[];
+	}
+
+	let { currentItemVisibility, changes, title, buildBaseLink, diffs }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-2">
@@ -39,7 +43,7 @@
 				>{'<-'} Previous revision</a
 			>
 		{:else}
-			<div />
+			<div></div>
 		{/if}
 		{#if changes.nextChange}
 			<a class="link" href="{buildBaseLink()}/revision/{changes.nextChange.revision}"

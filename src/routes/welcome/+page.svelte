@@ -2,7 +2,7 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Welcome" />

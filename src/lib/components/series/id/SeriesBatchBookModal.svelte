@@ -14,8 +14,12 @@
 	import type { Series } from '$lib/server/db/series/series';
 	import SelectField from '$lib/components/form/SelectField.svelte';
 
-	export let series: Series;
-	export let userListBookBatchForm: SuperValidated<Infer<typeof userListBookBatchSchema>>;
+	interface Props {
+		series: Series;
+		userListBookBatchForm: SuperValidated<Infer<typeof userListBookBatchSchema>>;
+	}
+
+	let { series, userListBookBatchForm }: Props = $props();
 
 	const readingStatuses = defaultUserListLabelsArrayAndRemove.map((v) => {
 		return { display: v, value: v };
@@ -75,7 +79,7 @@
 
 {#if $open}
 	<div use:melt={$portalled}>
-		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
+		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }}></div>
 		<div class="modal-content">
 			<div
 				transition:fly={{
@@ -117,21 +121,21 @@
 									<button
 										type="button"
 										class="sub-btn"
-										on:click={() => {
+										onclick={() => {
 											$form.book_ids = series.books.map((v) => v.id);
 										}}>Select all</button
 									>
 									<button
 										type="button"
 										class="sub-btn"
-										on:click={() => {
+										onclick={() => {
 											$form.book_ids = [];
 										}}>Clear selection</button
 									>
 									<button
 										type="button"
 										class="sub-btn"
-										on:click={() => {
+										onclick={() => {
 											// TODO Slow for large arrays
 											const newBookIds = [];
 											for (const book of series.books) {
@@ -150,7 +154,7 @@
 											class="book-select-item grid grid-cols-[48px_1fr] gap-2 p-2 rounded-md"
 											class:clicked={checked}
 											type="button"
-											on:click={() => {
+											onclick={() => {
 												console.log($form.book_ids);
 												$form.book_ids.indexOf(book.id) >= 0
 													? $form.book_ids.splice($form.book_ids.indexOf(book.id), 1)
@@ -213,7 +217,11 @@
 
 				{#if $openNested}
 					<div use:melt={$portalledNested}>
-						<div use:melt={$overlayNested} class="modal-bg" transition:fade={{ duration: 150 }} />
+						<div
+							use:melt={$overlayNested}
+							class="modal-bg"
+							transition:fade={{ duration: 150 }}
+						></div>
 						<div class="modal-content">
 							<div
 								class="modal-content-inner confirm-modal"
@@ -235,7 +243,7 @@
 									class="mt-6 flex justify-end gap-2"
 								>
 									<button type="button" use:melt={$closeNested} class="btn btn-pad">Cancel</button>
-									<button on:click={() => {}} type="submit" class="primary-btn">Confirm</button>
+									<button onclick={() => {}} type="submit" class="primary-btn">Confirm</button>
 								</form>
 
 								<button use:melt={$closeNested} aria-label="close" class="close-btn btn">

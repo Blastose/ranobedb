@@ -4,7 +4,7 @@
 	import ThemeSelect from '$lib/components/form/settings/ThemeSelect.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Settings" />

@@ -4,7 +4,11 @@
 	import { fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let release: BookOne['releases'][number];
+	interface Props {
+		release: BookOne['releases'][number];
+	}
+
+	let { release }: Props = $props();
 
 	function collectLinks(release: BookOne['releases'][number]): { url: string; display: string }[] {
 		const links: { url: string; display: string }[] = [];
@@ -45,7 +49,7 @@
 		positioning: { placement: 'left-start' },
 	});
 
-	$: links = collectLinks(release);
+	let links = $derived(collectLinks(release));
 </script>
 
 <button
@@ -64,7 +68,7 @@
 </button>
 
 {#if $open}
-	<div use:melt={$overlay} class="fixed inset-0 z-40" />
+	<div use:melt={$overlay} class="fixed inset-0 z-40"></div>
 	<section class="menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
 		{#each links as link}
 			<a use:melt={$item} class="sidebar-item" href={link.url} target="_blank">{link.display}</a>

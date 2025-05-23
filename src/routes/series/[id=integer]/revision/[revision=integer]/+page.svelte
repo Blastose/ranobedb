@@ -8,13 +8,13 @@
 	import Series from '$lib/components/series/id/Series.svelte';
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs.js';
 
-	export let data;
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
-	$: series = data.series;
-	$: title = getTitleDisplay({ obj: series, prefs: $displayPrefs.title_prefs });
-	$: firstBookInSeries = series.books.at(0);
-	$: imageUrl = buildImageUrl(firstBookInSeries?.image?.filename);
+	let series = $derived(data.series);
+	let title = $derived(getTitleDisplay({ obj: series, prefs: $displayPrefs.title_prefs }));
+	let firstBookInSeries = $derived(series.books.at(0));
+	let imageUrl = $derived(buildImageUrl(firstBookInSeries?.image?.filename));
 
 	function buildBaseLink() {
 		return `/series/${data.seriesId}`;
@@ -27,7 +27,7 @@
 
 <main class="container-rndb flex flex-col gap-6">
 	<RevisionContainer>
-		<svelte:fragment slot="revision">
+		{#snippet revision()}
 			<Revision
 				diffs={data.diffs}
 				changes={data.changes}
@@ -35,14 +35,14 @@
 				{buildBaseLink}
 				currentItemVisibility={data.currentItemVisibility}
 			/>
-		</svelte:fragment>
+		{/snippet}
 
-		<svelte:fragment slot="content">
+		{#snippet content()}
 			<Series
 				series={{ ...series, id: data.seriesId }}
 				user={data.user}
 				revision={data.revision.revision}
 			/>
-		</svelte:fragment>
+		{/snippet}
 	</RevisionContainer>
 </main>

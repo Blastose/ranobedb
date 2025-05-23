@@ -26,26 +26,41 @@
 	import UserStats from '$lib/components/shared/UserStats.svelte';
 	import Rating from '$lib/components/shared/Rating.svelte';
 
-	export let book: BookOne;
-	export let book_series: BookSeries | undefined;
-	export let revision: number | undefined;
-	export let user: User | null;
-	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>> | undefined = undefined;
-	export let allCustLabels: { id: number; label: string }[] | undefined = undefined;
-	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined =
-		undefined;
+	interface Props {
+		book: BookOne;
+		book_series: BookSeries | undefined;
+		revision: number | undefined;
+		user: User | null;
+		userListForm?: SuperValidated<Infer<typeof userListBookSchema>> | undefined;
+		allCustLabels?: { id: number; label: string }[] | undefined;
+		userListReleaseForm?: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
+	}
+
+	let {
+		book,
+		book_series,
+		revision,
+		user,
+		userListForm = undefined,
+		allCustLabels = undefined,
+		userListReleaseForm = undefined,
+	}: Props = $props();
 
 	const theme = getThemeContext();
-	$: imageUrl = buildImageUrl(book.image?.filename);
-	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
-	$: previousBook = book_series?.books[book_series?.books.findIndex((v) => v.id === book.id) - 1]; // We use [] brackets here because using -1 with .at() gets the last element of the array and we don't want that
-	$: nextBook = book_series?.books.at(book_series?.books.findIndex((v) => v.id === book.id) + 1);
+	let imageUrl = $derived(buildImageUrl(book.image?.filename));
+	let bgImageStyle = $derived(getBgImageStyle($theme, imageUrl));
+	let previousBook = $derived(
+		book_series?.books[book_series?.books.findIndex((v) => v.id === book.id) - 1],
+	); // We use [] brackets here because using -1 with .at() gets the last element of the array and we don't want that
+	let nextBook = $derived(
+		book_series?.books.at(book_series?.books.findIndex((v) => v.id === book.id) + 1),
+	);
 	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <div class="flex flex-col gap-4">
 	<div class="banner-img {revision ? 'h-[128px]' : 'h-[256px]'}" style={bgImageStyle}>
-		<div class="blur-image" />
+		<div class="blur-image"></div>
 	</div>
 
 	<div class="-mt-32 z-10 flex flex-col gap-4">
@@ -171,12 +186,12 @@
 					<h2 class="font-bold text-lg">Series</h2>
 					<div class="flex flex-col gap-2">
 						<BookCarousel>
-							<svelte:fragment slot="link">
+							{#snippet link()}
 								<a class="link w-fit font-bold" href="/series/{book_series.id}"
 									><TitleDisplay obj={book_series} /></a
 								>
-							</svelte:fragment>
-							<svelte:fragment slot="items">
+							{/snippet}
+							{#snippet items()}
 								{#each book_series.books as other_book (other_book.id)}
 									{@const isCurrent = other_book.id === book.id}
 									<div class="carousel-item">
@@ -193,7 +208,7 @@
 										</BookImage>
 									</div>
 								{/each}
-							</svelte:fragment>
+							{/snippet}
 						</BookCarousel>
 					</div>
 				</section>

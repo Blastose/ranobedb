@@ -11,15 +11,21 @@
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 	import { twitterLink, wikidataLink } from '$lib/components/db-links/db-ext-links';
 
-	export let publisher: Publisher;
-	export let revision: number | undefined;
-	export let works: PublisherWorks;
-	export let user: User | null;
-	export let results: string;
-	export let currentPage: number;
-	export let totalPages: number;
+	interface Props {
+		publisher: Publisher;
+		revision: number | undefined;
+		works: PublisherWorks;
+		user: User | null;
+		results: string;
+		currentPage: number;
+		totalPages: number;
+	}
 
-	$: child_publishers = groupBy(publisher.child_publishers, (item) => item.relation_type);
+	let { publisher, revision, works, user, results, currentPage, totalPages }: Props = $props();
+
+	let child_publishers = $derived(
+		groupBy(publisher.child_publishers, (item) => item.relation_type),
+	);
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>

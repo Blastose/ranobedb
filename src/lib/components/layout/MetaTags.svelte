@@ -2,12 +2,23 @@
 	import type { Nullish } from '$lib/server/zod/schema';
 	import { page } from '$app/stores';
 
-	export let title: string;
-	export let type: string = 'object';
-	export let image: Nullish<string> = undefined;
-	export let url: string | undefined = undefined;
-	export let description: string;
-	export let site_name: string;
+	interface Props {
+		title: string;
+		type?: string;
+		image?: Nullish<string>;
+		url?: string | undefined;
+		description: string;
+		site_name: string;
+	}
+
+	let {
+		title,
+		type = 'object',
+		image = undefined,
+		url = undefined,
+		description,
+		site_name,
+	}: Props = $props();
 </script>
 
 <svelte:head>

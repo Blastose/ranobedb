@@ -9,11 +9,15 @@
 	import { publisherTabs, publisherTabsIconsMap } from '$lib/db/dbConsts';
 	import type { PublisherWorks } from '$lib/server/db/publishers/publishers';
 
-	export let publisherId: number;
-	export let works: PublisherWorks;
-	export let results: string;
-	export let currentPage: number;
-	export let totalPages: number;
+	interface Props {
+		publisherId: number;
+		works: PublisherWorks;
+		results: string;
+		currentPage: number;
+		totalPages: number;
+	}
+
+	let { publisherId, works, results, currentPage, totalPages }: Props = $props();
 
 	function getWorksMain(worksObj: PublisherWorks) {
 		if (worksObj.type === 'books') {
@@ -25,7 +29,7 @@
 		}
 	}
 
-	$: worksMain = getWorksMain(works);
+	let worksMain = $derived(getWorksMain(works));
 </script>
 
 <section class="flex flex-col gap-2">

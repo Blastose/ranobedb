@@ -6,13 +6,13 @@
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
 	import { getThemeContext } from '$lib/stores/themeStore.js';
 
-	export let data;
-
-	$: staff = data.staff;
-	$: title = getNameDisplay({ obj: staff, prefs: $displayPrefs.names });
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 	const theme = getThemeContext();
+
+	let staff = $derived(data.staff);
+	let title = $derived(getNameDisplay({ obj: staff, prefs: $displayPrefs.names }));
 </script>
 
 <PageTitle {title} />

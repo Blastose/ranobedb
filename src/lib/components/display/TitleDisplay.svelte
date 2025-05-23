@@ -6,16 +6,21 @@
 		type TitleDisplayFull,
 	} from '$lib/display/prefs';
 
-	export let obj: TitleDisplayFull;
-	export let fallback: string | undefined = undefined;
-	export let type: 'main' | 'sub' = 'main';
+	interface Props {
+		obj: TitleDisplayFull;
+		fallback?: string | undefined;
+		type?: 'main' | 'sub';
+	}
+
+	let { obj, fallback = undefined, type = 'main' }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 
-	$: titleDisplay =
+	let titleDisplay = $derived(
 		type === 'main'
 			? getTitleDisplay({ obj, prefs: $displayPrefs.title_prefs })
-			: getTitleDisplaySub({ obj, prefs: $displayPrefs.title_prefs });
+			: getTitleDisplaySub({ obj, prefs: $displayPrefs.title_prefs }),
+	);
 </script>
 
 <span title={titleDisplay || fallback}>

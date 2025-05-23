@@ -8,7 +8,11 @@
 	import { quintOut } from 'svelte/easing';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
-	export let user: User | null;
+	interface Props {
+		user: User | null;
+	}
+
+	let { user }: Props = $props();
 	const customOpen = writable(false);
 
 	const {
@@ -38,7 +42,7 @@
 <div class="hidden items-center lg:flex pr-4">
 	<button
 		type="button"
-		on:click={openSidebar}
+		onclick={openSidebar}
 		class="btn rounded-full p-1"
 		aria-label="Open sidebar"
 	>
@@ -48,7 +52,7 @@
 
 <div use:melt={$portalled}>
 	{#if $customOpen}
-		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
+		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }}></div>
 		<div
 			use:melt={$content}
 			class="modal-drawer"

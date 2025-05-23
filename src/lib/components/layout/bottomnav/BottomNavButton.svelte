@@ -1,11 +1,16 @@
 <script lang="ts">
-	export let text: string;
-	export let href: string;
-	export let active = false;
+	interface Props {
+		text: string;
+		href: string;
+		active?: boolean;
+		children?: import('svelte').Snippet;
+	}
+
+	let { text, href, active = false, children }: Props = $props();
 </script>
 
 <a {href} class:active class="bottom-nav-button">
-	<slot />
+	{@render children?.()}
 	<span class="text-xs font-bold">{text}</span>
 </a>
 

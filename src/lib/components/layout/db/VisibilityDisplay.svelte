@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	export type Rec = { hidden: boolean; locked: boolean; id: number };
 	export type CopyTo = { to: Array<'book' | 'series' | 'release'>; langs?: Array<Language> };
 </script>
@@ -10,11 +10,15 @@
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import type { User } from '$lib/server/lucia/lucia';
 
-	export let item: T;
-	export let type: DbItem;
-	export let user: User | null;
-	export let copyTo: CopyTo | undefined = undefined;
-	export let revision: number | undefined;
+	interface Props {
+		item: T;
+		type: DbItem;
+		user: User | null;
+		copyTo?: CopyTo | undefined;
+		revision: number | undefined;
+	}
+
+	let { item, type, user, copyTo = undefined, revision }: Props = $props();
 
 	function addRevisionParams(url: URL) {
 		if (revision) {

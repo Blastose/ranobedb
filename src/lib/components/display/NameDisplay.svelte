@@ -6,16 +6,21 @@
 		type NameDisplay,
 	} from '$lib/display/prefs';
 
-	export let obj: NameDisplay;
-	export let fallback: string | undefined = undefined;
-	export let type: 'main' | 'sub' = 'main';
+	interface Props {
+		obj: NameDisplay;
+		fallback?: string | undefined;
+		type?: 'main' | 'sub';
+	}
+
+	let { obj, fallback = undefined, type = 'main' }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 
-	$: nameDisplay =
+	let nameDisplay = $derived(
 		type === 'main'
 			? getNameDisplay({ obj, prefs: $displayPrefs.names })
-			: getNameDisplaySub({ obj, prefs: $displayPrefs.names });
+			: getNameDisplaySub({ obj, prefs: $displayPrefs.names }),
+	);
 </script>
 
 {#if nameDisplay}

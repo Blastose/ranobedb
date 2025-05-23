@@ -9,9 +9,9 @@
 	import BookFilters from '$lib/components/form/book/filters/BookFilters.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: pageTitle = data.isMyList ? 'My list' : `${data.listUser.username}'s list`;
+	let pageTitle = $derived(data.isMyList ? 'My list' : `${data.listUser.username}'s list`);
 </script>
 
 <PageTitle title={pageTitle} />
@@ -25,27 +25,27 @@
 	results={data.count}
 	inputPlaceholder="Search by book title"
 >
-	<svelte:fragment slot="filters">
+	{#snippet filters()}
 		<BookFilters
 			filtersForm={data.filtersFormObj}
 			isUser={true}
 			allCustLabels={data.allCustLabels}
 			isList={true}
 		></BookFilters>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="under-heading"
-		><ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} /></svelte:fragment
-	>
+	{#snippet underHeading()}
+		<ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
+	{/snippet}
 
-	<svelte:fragment slot="info">
+	{#snippet info()}
 		<div class="flex flex-col gap-1">
 			<LabelContainer userLabels={data.userLabelCounts} activeLabels={data.labels} />
 			<LabelContainer userLabels={data.userCustLabelCounts} activeLabels={data.labels} />
 		</div>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="display">
+	{#snippet display()}
 		<BookImageContainer moreColumns={true}>
 			{#each data.books as book (book.id)}
 				<BookImage
@@ -67,5 +67,5 @@
 				</BookImage>
 			{/each}
 		</BookImageContainer>
-	</svelte:fragment>
+	{/snippet}
 </DBShell>

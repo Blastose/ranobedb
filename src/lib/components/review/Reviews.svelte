@@ -4,15 +4,29 @@
 	import ReviewContainer from './ReviewContainer.svelte';
 	import ReviewsList from './ReviewsList.svelte';
 
-	export let itemType: 'book' | 'series';
-	export let itemId: number;
-	export let currentPage: number;
-	export let totalPages: number;
-	export let results: string;
-	export let reviews: BookReview[];
-	export let userHasReview: boolean;
-	export let imageUrl: Nullish<string>;
-	export let reviewSubjectTitle: string;
+	interface Props {
+		itemType: 'book' | 'series';
+		itemId: number;
+		currentPage: number;
+		totalPages: number;
+		results: string;
+		reviews: BookReview[];
+		userHasReview: boolean;
+		imageUrl: Nullish<string>;
+		reviewSubjectTitle: string;
+	}
+
+	let {
+		itemType,
+		itemId,
+		currentPage,
+		totalPages,
+		results,
+		reviews,
+		userHasReview,
+		imageUrl,
+		reviewSubjectTitle,
+	}: Props = $props();
 </script>
 
 <ReviewContainer

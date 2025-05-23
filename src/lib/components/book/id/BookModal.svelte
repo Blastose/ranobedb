@@ -15,9 +15,13 @@
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
 
-	export let book: BookOne;
-	export let userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
-	export let allCustLabels: { id: number; label: string }[];
+	interface Props {
+		book: BookOne;
+		userListForm: SuperValidated<Infer<typeof userListBookSchema>>;
+		allCustLabels: { id: number; label: string }[];
+	}
+
+	let { book, userListForm, allCustLabels }: Props = $props();
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {
 		return { display: v, value: v };
@@ -66,8 +70,10 @@
 		states: { open: openNested },
 	} = createDialog({ forceVisible: true, preventScroll: false });
 
-	$: modalTitle = $form.type === 'add' ? 'Add book to reading list' : 'Update book in reading list';
-	$: modalSubmitText = $form.type === 'add' ? 'Add to reading list' : 'Update';
+	let modalTitle = $derived(
+		$form.type === 'add' ? 'Add book to reading list' : 'Update book in reading list',
+	);
+	let modalSubmitText = $derived($form.type === 'add' ? 'Add to reading list' : 'Update');
 </script>
 
 <div class="flex justify-center">
@@ -78,7 +84,7 @@
 
 {#if $open}
 	<div use:melt={$portalled}>
-		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
+		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }}></div>
 		<div class="modal-content">
 			<div
 				transition:fly={{
@@ -169,7 +175,11 @@
 
 				{#if $openNested}
 					<div use:melt={$portalledNested}>
-						<div use:melt={$overlayNested} class="modal-bg" transition:fade={{ duration: 150 }} />
+						<div
+							use:melt={$overlayNested}
+							class="modal-bg"
+							transition:fade={{ duration: 150 }}
+						></div>
 						<div class="modal-content">
 							<div
 								class="modal-content-inner confirm-modal"
@@ -196,7 +206,7 @@
 								>
 									<button type="button" use:melt={$closeNested} class="btn btn-pad">Cancel</button>
 									<button
-										on:click={() => {
+										onclick={() => {
 											$form.type = 'delete';
 										}}
 										type="submit"

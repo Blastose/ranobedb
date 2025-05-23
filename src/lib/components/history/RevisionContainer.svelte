@@ -1,13 +1,19 @@
 <script lang="ts">
 	import Hr from '../layout/Hr.svelte';
 
-	export let hideHr: boolean = false;
+	interface Props {
+		hideHr?: boolean;
+		revision?: import('svelte').Snippet;
+		content?: import('svelte').Snippet;
+	}
+
+	let { hideHr = false, revision, content }: Props = $props();
 </script>
 
-<slot name="revision" />
+{@render revision?.()}
 <div class="content-jump" id="content">
 	{#if !hideHr}
 		<Hr />
 	{/if}
 </div>
-<slot name="content" />
+{@render content?.()}

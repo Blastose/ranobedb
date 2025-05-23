@@ -4,10 +4,10 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: changes = data.changes;
-	$: title = `Edit history of ${data.routeUser.username}`;
+	let changes = $derived(data.changes);
+	let title = $derived(`Edit history of ${data.routeUser.username}`);
 </script>
 
 <PageTitle {title} />

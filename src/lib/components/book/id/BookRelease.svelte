@@ -9,12 +9,16 @@
 	import type { Infer } from 'sveltekit-superforms/server';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 
-	export let release: BookOne['releases'][number];
-	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
-	export let showLang: boolean = false;
-	export let showMenus: boolean = true;
+	interface Props {
+		release: BookOne['releases'][number];
+		userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
+		showLang?: boolean;
+		showMenus?: boolean;
+	}
 
-	$: releaseDate = new DateNumber(release.release_date).getDateFormatted();
+	let { release, userListReleaseForm, showLang = false, showMenus = true }: Props = $props();
+
+	let releaseDate = $derived(new DateNumber(release.release_date).getDateFormatted());
 
 	const size = '24';
 </script>

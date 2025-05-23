@@ -2,13 +2,18 @@
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import type { Nullish } from '$lib/server/zod/schema';
 
-	export let obj: {
-		image: Nullish<{
-			width: number;
-			height: number;
-			filename: string;
-		}>;
-	} | null;
+	interface Props {
+		obj: {
+			image: Nullish<{
+				width: number;
+				height: number;
+				filename: string;
+			}>;
+		} | null;
+		children?: import('svelte').Snippet;
+	}
+
+	let { obj, children }: Props = $props();
 </script>
 
 <div class="overflow-hidden rounded-md relative">
@@ -32,5 +37,5 @@
 			<p class="p-4">No cover</p>
 		</div>
 	{/if}
-	<slot />
+	{@render children?.()}
 </div>

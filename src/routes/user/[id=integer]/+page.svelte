@@ -4,7 +4,7 @@
 	import Charts from './Charts.svelte';
 	import { page } from '$app/stores';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title={data.listUser.username} />

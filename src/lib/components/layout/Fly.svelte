@@ -3,7 +3,12 @@
 	import { quintOut } from 'svelte/easing';
 	import { beforeNavigate } from '$app/navigation';
 
-	export let key: string;
+	interface Props {
+		key: string;
+		children?: import('svelte').Snippet;
+	}
+
+	let { key, children }: Props = $props();
 	key;
 
 	// beforeNavigate((beforeNavigate) => {
@@ -25,5 +30,5 @@
 <!-- </div> -->
 <!-- {/key} -->
 <!-- {:else} -->
-<slot />
+{@render children?.()}
 <!-- {/if} -->

@@ -1,10 +1,12 @@
 <script lang="ts">
 	import type { Diff } from '../utils';
 
-	export let changes: Diff;
-	export let type: 'old' | 'new';
+	interface Props {
+		changes: Diff;
+		type: 'old' | 'new'; // The odd formatting below for the spans are needed so it doesn't output any whitespace
+	}
 
-	// The odd formatting below for the spans are needed so it doesn't output any whitespace
+	let { changes, type }: Props = $props();
 </script>
 
 <div>

@@ -1,5 +1,10 @@
 <script lang="ts">
-	export let sectionHeading: string | null = null;
+	interface Props {
+		sectionHeading?: string | null;
+		children?: import('svelte').Snippet;
+	}
+
+	let { sectionHeading = null, children }: Props = $props();
 </script>
 
 <section class="sidebar-section">
@@ -7,7 +12,7 @@
 		<h2 class="sidebar-heading">{sectionHeading}</h2>
 	{/if}
 	<ul class="sidebar-section">
-		<slot />
+		{@render children?.()}
 	</ul>
 </section>
 

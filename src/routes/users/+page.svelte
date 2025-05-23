@@ -5,7 +5,7 @@
 	import DisplayBoxContainer from '$lib/components/layout/db/DisplayBoxContainer.svelte';
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Users" />
@@ -18,11 +18,11 @@
 	results={data.count}
 	inputPlaceholder="Search by username"
 >
-	<svelte:fragment slot="display">
+	{#snippet display()}
 		<DisplayBoxContainer>
 			{#each data.users as user (user.id_numeric)}
 				<LinkBox href="/user/{user.id_numeric}">{user.username}</LinkBox>
 			{/each}
 		</DisplayBoxContainer>
-	</svelte:fragment>
+	{/snippet}
 </DbShell>

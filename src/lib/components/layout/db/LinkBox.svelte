@@ -1,12 +1,17 @@
 <script lang="ts">
-	export let display: string | undefined = undefined;
-	export let wrap: boolean = false;
-	export let href: string;
+	interface Props {
+		display?: string | undefined;
+		wrap?: boolean;
+		href: string;
+		children?: import('svelte').Snippet;
+	}
+
+	let { display = undefined, wrap = false, href, children }: Props = $props();
 </script>
 
 <div class="link-box" class:round={true}>
 	<a class={wrap ? '' : 'single-line'} {href}
-		>{#if display}{display}{:else}<slot />{/if}</a
+		>{#if display}{display}{:else}{@render children?.()}{/if}</a
 	>
 </div>
 

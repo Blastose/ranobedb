@@ -6,7 +6,7 @@
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Books" />
@@ -18,16 +18,16 @@
 	results={data.count}
 	inputPlaceholder="Search by book title"
 >
-	<svelte:fragment slot="filters">
+	{#snippet filters()}
 		<BookFilters
 			filtersForm={data.filtersFormObj}
 			isUser={Boolean(data.user)}
 			isList={false}
 			allCustLabels={data.allCustLabels}
 		/>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="display">
+	{#snippet display()}
 		<BookImageContainer moreColumns={true}>
 			{#each data.books as book (book.id)}
 				<BookImage
@@ -48,5 +48,5 @@
 				</BookImage>
 			{/each}
 		</BookImageContainer>
-	</svelte:fragment>
+	{/snippet}
 </DBShell>

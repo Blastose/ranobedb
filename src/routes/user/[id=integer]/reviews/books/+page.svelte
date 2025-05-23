@@ -2,9 +2,9 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import ReviewsUser from '$lib/components/review/ReviewsUser.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: title = `${data.isMyList ? 'My' : `${data.listUser.username}'s`} book reviews`;
+	let title = $derived(`${data.isMyList ? 'My' : `${data.listUser.username}'s`} book reviews`);
 </script>
 
 <PageTitle {title}></PageTitle>

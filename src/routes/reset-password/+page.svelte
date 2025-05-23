@@ -3,7 +3,7 @@
 	import ResetPasswordForm from '$lib/components/form/auth/ResetPasswordForm.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Reset password" />

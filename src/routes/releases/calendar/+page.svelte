@@ -15,7 +15,7 @@
 	import { getRelCalStoreContext } from '$lib/stores/releaseCalendarViewStore';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs';
 
-	export let data;
+	let { data = $bindable() } = $props();
 
 	const pageTitle = 'Releases Calendar';
 
@@ -64,7 +64,7 @@
 
 		<button
 			class="w-fit sub-btn"
-			on:click={() => {
+			onclick={() => {
 				if ($relCalView === 'compact') {
 					relCalView.set('grid');
 				} else {

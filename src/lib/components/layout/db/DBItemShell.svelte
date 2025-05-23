@@ -6,13 +6,27 @@
 	import type { Nullish } from '$lib/server/zod/schema';
 	import VisibilityDisplayPerm from './VisibilityDisplayPerm.svelte';
 
-	export let dbItem: DbItem;
-	export let user: User | null;
-	export let name: string;
-	export let subName: Nullish<string>;
-	export let revision: number | undefined;
-	export let item: Rec;
-	export let copyTo: CopyTo | undefined = undefined;
+	interface Props {
+		dbItem: DbItem;
+		user: User | null;
+		name: string;
+		subName: Nullish<string>;
+		revision: number | undefined;
+		item: Rec;
+		copyTo?: CopyTo | undefined;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		dbItem,
+		user,
+		name,
+		subName,
+		revision,
+		item,
+		copyTo = undefined,
+		children,
+	}: Props = $props();
 </script>
 
 <section class="flex flex-col gap-2">
@@ -37,6 +51,6 @@
 	<VisibilityDisplayPerm {item} {user} />
 
 	<div class="mt-2 flex flex-col gap-2">
-		<slot />
+		{@render children?.()}
 	</div>
 </section>

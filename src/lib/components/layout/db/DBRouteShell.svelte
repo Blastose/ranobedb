@@ -1,8 +1,13 @@
 <script lang="ts">
 	import type { Theme } from '$lib/stores/themeStore';
 
-	export let bgImageStyle: string | null;
-	export let theme: Theme;
+	interface Props {
+		bgImageStyle: string | null;
+		theme: Theme;
+		children?: import('svelte').Snippet;
+	}
+
+	let { bgImageStyle, theme, children }: Props = $props();
 
 	function defaultBackgroundImage(theme: Theme) {
 		if (theme === 'dark') {
@@ -12,7 +17,7 @@
 		}
 	}
 
-	$: bgStyle = bgImageStyle || defaultBackgroundImage(theme);
+	let bgStyle = $derived(bgImageStyle || defaultBackgroundImage(theme));
 </script>
 
 <main class="container-rndb -mt-32 flex flex-col gap-4">
@@ -22,11 +27,11 @@
 		style:--grad-dark="rgba(115, 115, 156, 1)"
 		style:--grad-light="#b4afc7"
 	>
-		<div class="blur-image" />
+		<div class="blur-image"></div>
 	</div>
 
 	<div class="-mt-32 z-10">
-		<slot />
+		{@render children?.()}
 	</div>
 </main>
 

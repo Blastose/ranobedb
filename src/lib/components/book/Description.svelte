@@ -3,24 +3,27 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 
-	export let description: string;
+	let parentDescriptionElement: HTMLDivElement | undefined = $state();
+	let descriptionElement: HTMLParagraphElement | undefined = $state();
+	let descriptionElementClientHeight = $state(0);
+	let expandedDescription: boolean = $state(false);
 
-	let parentDescriptionElement: HTMLDivElement;
-	let descriptionElement: HTMLParagraphElement;
-	let descriptionElementClientHeight = 0;
-	let expandedDescription: boolean = false;
+	interface Props {
+		description: string;
+		maxHeight?: number;
+	}
 
-	export let maxHeight = 256;
+	let { description, maxHeight = $bindable(256) }: Props = $props();
 	let maxHeightNotExpanded = maxHeight;
-	let hydration = true;
+	let hydration = $state(true);
 
 	function resizeDescription() {
 		if (expandedDescription) {
-			maxHeight = descriptionElement.clientHeight;
+			maxHeight = descriptionElement!.clientHeight;
 		} else {
 			maxHeight = maxHeightNotExpanded;
 		}
-		descriptionElementClientHeight = descriptionElement.clientHeight;
+		descriptionElementClientHeight = descriptionElement!.clientHeight;
 	}
 
 	let timeout: ReturnType<typeof setTimeout>;
@@ -38,7 +41,7 @@
 	}
 </script>
 
-<svelte:window on:resize={handleWindowResize} />
+<svelte:window onresize={handleWindowResize} />
 
 <div class="description-container">
 	<div style:max-height="{maxHeight}px" bind:this={parentDescriptionElement} class="description">
@@ -53,7 +56,7 @@
 			transition:fade={{ duration: 150 }}
 			class="hide-text-gradient
       {expandedDescription ? 'mt-0' : '-mt-10'}"
-			on:click={() => {
+			onclick={() => {
 				expandedDescription = !expandedDescription;
 				resizeDescription();
 			}}

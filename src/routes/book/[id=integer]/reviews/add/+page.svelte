@@ -6,13 +6,13 @@
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs';
 	import { getBgImageStyle, getThemeContext } from '$lib/stores/themeStore';
 
-	export let data;
+	let { data } = $props();
 
 	const theme = getThemeContext();
 	const displayPrefs = getDisplayPrefsContext();
-	$: imageUrl = buildImageUrl(data.book.image?.filename);
-	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
-	$: title = getTitleDisplay({ obj: data.book, prefs: $displayPrefs.title_prefs });
+	let imageUrl = $derived(buildImageUrl(data.book.image?.filename));
+	let bgImageStyle = $derived(getBgImageStyle($theme, imageUrl));
+	let title = $derived(getTitleDisplay({ obj: data.book, prefs: $displayPrefs.title_prefs }));
 </script>
 
 <PageTitle title="Write a review for {title}" />

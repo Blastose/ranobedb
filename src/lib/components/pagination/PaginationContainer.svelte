@@ -3,11 +3,23 @@
 	import { page } from '$app/stores';
 	import Fly from '../layout/Fly.svelte';
 
-	export let currentPage: number;
-	export let totalPages: number;
-	export let showTopPages: boolean = true;
-	export let results: string | undefined;
-	export let hideTotalPages: boolean = totalPages > 5000;
+	interface Props {
+		currentPage: number;
+		totalPages: number;
+		showTopPages?: boolean;
+		results: string | undefined;
+		hideTotalPages?: boolean;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		currentPage,
+		totalPages,
+		showTopPages = true,
+		results,
+		hideTotalPages = totalPages > 5000,
+		children,
+	}: Props = $props();
 </script>
 
 <div class="flex flex-col gap-4">
@@ -28,7 +40,7 @@
 
 	<Fly key={$page.url.searchParams.toString()}>
 		{#if results !== '0' && currentPage <= totalPages}
-			<slot />
+			{@render children?.()}
 		{:else}
 			<p class="text-center sub-text">There are no results</p>
 		{/if}

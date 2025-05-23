@@ -150,7 +150,7 @@
 
 {#if $open}
 	<div use:melt={$portalled}>
-		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
+		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }}></div>
 		<div class="modal-content">
 			<div
 				class="modal-content-inner confirm-modal"

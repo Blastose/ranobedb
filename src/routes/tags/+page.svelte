@@ -4,7 +4,7 @@
 	import DisplayBoxContainer from '$lib/components/layout/db/DisplayBoxContainer.svelte';
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Tags" />
@@ -16,7 +16,7 @@
 	results={data.count}
 	inputPlaceholder="Search by tag name"
 >
-	<svelte:fragment slot="display">
+	{#snippet display()}
 		<div class="capitalize">
 			<DisplayBoxContainer>
 				{#each data.tags as tag}
@@ -24,5 +24,5 @@
 				{/each}
 			</DisplayBoxContainer>
 		</div>
-	</svelte:fragment>
+	{/snippet}
 </DbShell>

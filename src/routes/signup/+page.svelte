@@ -2,7 +2,7 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import SignupForm from '$lib/components/form/auth/SignupForm.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Sign up" />

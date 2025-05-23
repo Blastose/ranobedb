@@ -6,11 +6,15 @@
 	import type { Language } from '$lib/server/db/dbTypes';
 	import Collapsible from '../display/Collapsible.svelte';
 
-	export let publishers: BookOne['publishers'];
-	export let olang: Language;
-	export let onlyOpenOlang: boolean;
+	interface Props {
+		publishers: BookOne['publishers'];
+		olang: Language;
+		onlyOpenOlang: boolean;
+	}
 
-	$: groupedPublishersByLang = groupBy(publishers, (item) => item.lang);
+	let { publishers, olang, onlyOpenOlang }: Props = $props();
+
+	let groupedPublishersByLang = $derived(groupBy(publishers, (item) => item.lang));
 
 	// For TS, since Svelte 4 cannot have TS in markup
 	function getLanguageFromString(langCode: string) {
@@ -25,10 +29,10 @@
 		{#each sortByLangObjEntries(Object.entries(groupedPublishersByLang), olang) as [key, publishers]}
 			<section>
 				<Collapsible open={onlyOpenOlang ? key === olang : key === 'ja' || key === 'en'}>
-					<svelte:fragment slot="summary">
+					{#snippet summary()}
 						<h3 class="font-semibold">{getLanguageFromString(key)}</h3>
-					</svelte:fragment>
-					<svelte:fragment slot="details">
+					{/snippet}
+					{#snippet details()}
 						<p>
 							{#each publishers as publisher, index}
 								<span>
@@ -40,7 +44,7 @@
 								</span>
 							{/each}
 						</p>
-					</svelte:fragment>
+					{/snippet}
 				</Collapsible>
 			</section>
 		{:else}

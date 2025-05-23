@@ -1,22 +1,26 @@
 <script lang="ts">
 	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 
-	export let user_stats_score: {
-		gs: number;
-		count: string | number | bigint;
-	}[];
-	export let user_stats_label: {
-		label_id: number;
-		count: string | number | bigint;
-	}[];
-	export let rating: {
-		score: string | number;
-		count: string | number | bigint;
-	} | null;
-	export let type: 'book' | 'series';
+	interface Props {
+		user_stats_score: {
+			gs: number;
+			count: string | number | bigint;
+		}[];
+		user_stats_label: {
+			label_id: number;
+			count: string | number | bigint;
+		}[];
+		rating: {
+			score: string | number;
+			count: string | number | bigint;
+		} | null;
+		type: 'book' | 'series';
+	}
 
-	$: scoreCount = user_stats_score.reduce((a, c) => a + Number(c.count), 0);
-	$: listCounts = user_stats_label.reduce((a, c) => a + Number(c.count), 0);
+	let { user_stats_score, user_stats_label, rating, type }: Props = $props();
+
+	let scoreCount = $derived(user_stats_score.reduce((a, c) => a + Number(c.count), 0));
+	let listCounts = $derived(user_stats_label.reduce((a, c) => a + Number(c.count), 0));
 </script>
 
 <div class="grid grid-cols-1 @md:grid-cols-2 gap-y-4 gap-x-2">

@@ -8,11 +8,11 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs.js';
 
-	export let data;
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
-	$: book = data.book;
-	$: title = getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs });
+	let book = $derived(data.book);
+	let title = $derived(getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs }));
 
 	function buildBaseLink() {
 		return `/book/${data.bookId}`;
@@ -30,7 +30,7 @@
 
 <main class="container-rndb flex flex-col gap-6">
 	<RevisionContainer hideHr={true}>
-		<svelte:fragment slot="revision">
+		{#snippet revision()}
 			<Revision
 				changes={data.changes}
 				{title}
@@ -38,15 +38,17 @@
 				diffs={data.diffs}
 				currentItemVisibility={data.currentItemVisibility}
 			/>
-		</svelte:fragment>
+		{/snippet}
 
-		<div slot="content">
-			<Book
-				book={{ ...book, id: data.bookId }}
-				book_series={data.book_series}
-				user={data.user}
-				revision={data.revision.revision}
-			/>
-		</div>
+		{#snippet content()}
+			<div>
+				<Book
+					book={{ ...book, id: data.bookId }}
+					book_series={data.book_series}
+					user={data.user}
+					revision={data.revision.revision}
+				/>
+			</div>
+		{/snippet}
 	</RevisionContainer>
 </main>

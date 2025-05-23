@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { browser } from '$app/environment';
 	import DbItemShellUser from '$lib/components/layout/db/DBItemShellUser.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
@@ -33,21 +35,25 @@
 		Colors,
 	);
 
-	export let data: {
-		listUser: {
-			id_numeric: number;
-			id: string;
-			joined: Date;
-			role: 'user' | 'admin' | 'banned' | 'editor' | 'adder' | 'moderator';
-			username: string;
+	interface Props {
+		data: {
+			listUser: {
+				id_numeric: number;
+				id: string;
+				joined: Date;
+				role: 'user' | 'admin' | 'banned' | 'editor' | 'adder' | 'moderator';
+				username: string;
+			};
+			readPerMonth: {
+				date: string;
+				count: number;
+			}[];
+			labelCounts: UserLabel[];
+			seriesLabelCounts: UserLabel[];
 		};
-		readPerMonth: {
-			date: string;
-			count: number;
-		}[];
-		labelCounts: UserLabel[];
-		seriesLabelCounts: UserLabel[];
-	};
+	}
+
+	let { data }: Props = $props();
 
 	function createChart(node: HTMLCanvasElement | null) {
 		if (!node) {
@@ -134,14 +140,15 @@
 	}
 
 	const theme = getThemeContext();
-	let booksByStatusChart: HTMLCanvasElement | null = null;
-	let seriesByStatusChart: HTMLCanvasElement | null = null;
-	let booksPerMonthCanvas: HTMLCanvasElement | null = null;
-	let pastYearReadCountChart: Chart | undefined | null = null;
-	let labelChart: Chart<'doughnut', (string | number | bigint)[], string> | undefined | null = null;
+	let booksByStatusChart: HTMLCanvasElement | null = $state(null);
+	let seriesByStatusChart: HTMLCanvasElement | null = $state(null);
+	let booksPerMonthCanvas: HTMLCanvasElement | null = $state(null);
+	let pastYearReadCountChart: Chart | undefined | null = $state(null);
+	let labelChart: Chart<'doughnut', (string | number | bigint)[], string> | undefined | null =
+		$state(null);
 	let seriesLabelChart: Chart<'doughnut', (string | number | bigint)[], string> | undefined | null =
-		null;
-	let chartsLoaded = false;
+		$state(null);
+	let chartsLoaded = $state(false);
 
 	onMount(() => {
 		labelChart = createPieChart(booksByStatusChart, data.labelCounts);
@@ -156,7 +163,7 @@
 		};
 	});
 
-	$: {
+	run(() => {
 		if (browser && chartsLoaded) {
 			const darkColors = {
 				axisColor: '#ccc',
@@ -173,7 +180,7 @@
 				setBarChartColors(seriesLabelChart, lightColors);
 			}
 		}
-	}
+	});
 </script>
 
 <DbRouteShell theme={$theme} bgImageStyle={null}>

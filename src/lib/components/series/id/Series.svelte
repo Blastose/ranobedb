@@ -33,17 +33,25 @@
 	import Rating from '$lib/components/shared/Rating.svelte';
 	import SeriesBatchBookModal from './SeriesBatchBookModal.svelte';
 
-	export let series: Series;
-	export let user: User | null;
-	export let revision: number | undefined;
-	export let userListSeriesForm: SuperValidated<Infer<typeof userListSeriesSchema>> | undefined =
-		undefined;
-	export let userListBookBatchForm:
-		| SuperValidated<Infer<typeof userListBookBatchSchema>>
-		| undefined = undefined;
-	export let allCustLabels: { id: number; label: string }[] | undefined = undefined;
+	interface Props {
+		series: Series;
+		user: User | null;
+		revision: number | undefined;
+		userListSeriesForm?: SuperValidated<Infer<typeof userListSeriesSchema>> | undefined;
+		userListBookBatchForm?: SuperValidated<Infer<typeof userListBookBatchSchema>> | undefined;
+		allCustLabels?: { id: number; label: string }[] | undefined;
+	}
 
-	$: child_series = groupBy(series.child_series, (item) => item.relation_type);
+	let {
+		series,
+		user,
+		revision,
+		userListSeriesForm = undefined,
+		userListBookBatchForm = undefined,
+		allCustLabels = undefined,
+	}: Props = $props();
+
+	let child_series = $derived(groupBy(series.child_series, (item) => item.relation_type));
 	const displayPrefs = getDisplayPrefsContext();
 </script>
 
@@ -142,12 +150,12 @@
 	{#if series.aliases}
 		<section>
 			<Collapsible open={false}>
-				<svelte:fragment slot="summary">
+				{#snippet summary()}
 					<h2 class="font-bold text-lg">Aliases</h2>
-				</svelte:fragment>
-				<svelte:fragment slot="details">
+				{/snippet}
+				{#snippet details()}
 					<p>{series.aliases.split('\n').join(', ')}</p>
-				</svelte:fragment>
+				{/snippet}
 			</Collapsible>
 		</section>
 	{/if}

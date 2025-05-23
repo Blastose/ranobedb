@@ -79,7 +79,7 @@
 				<div
 					class="h-[1px] w-full rounded-full duration-75"
 					class:divider={dragging && currentHoverIndex === index}
-				/>
+				></div>
 				<div class="rounded-md grid grid-cols-[min-content_1fr_min-content] gap-2">
 					<div class="flex cursor-grab" aria-label="drag">
 						<span class="whitespace-nowrap">#{index + 1}</span>
@@ -143,7 +143,7 @@
 	<div
 		class="h-[1px] w-full rounded-full duration-75"
 		class:divider={dragging && currentHoverIndex === $values.length}
-	/>
+	></div>
 	{#if $errors}
 		<p class="error-text-color">{$errors}</p>
 	{/if}

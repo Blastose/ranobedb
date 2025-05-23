@@ -66,8 +66,8 @@
 
 {#if PUBLIC_CF_TURNSTILE_SITE_KEY !== '1x00000000000000000000AA'}
 	{#if loaded && mounted}
-		<div class="w-[300px] h-[65px]" use:turnstile />
+		<div class="w-[300px] h-[65px]" use:turnstile></div>
 	{:else}
-		<div class="w-[300px] h-[65px]" />
+		<div class="w-[300px] h-[65px]"></div>
 	{/if}
 {/if}

@@ -7,7 +7,11 @@
 	import SearchExpand from '$lib/components/layout/header/SearchExpand.svelte';
 	import Notification from './Notification.svelte';
 
-	export let user: User | null;
+	interface Props {
+		user: User | null;
+	}
+
+	let { user }: Props = $props();
 
 	function disableHeaderOpacity(pathname: string) {
 		if (
@@ -24,8 +28,8 @@
 		return false;
 	}
 
-	let scrollY: number | undefined;
-	$: isOnBookRoute = disableHeaderOpacity($page.url.pathname);
+	let scrollY: number | undefined = $state();
+	let isOnBookRoute = $derived(disableHeaderOpacity($page.url.pathname));
 
 	const sidebarStore = getSidebarStoreContext();
 </script>

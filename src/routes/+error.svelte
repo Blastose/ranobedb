@@ -4,8 +4,8 @@
 	import DeletedItem from '$lib/components/forbidden/DeletedItem.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	$: error = $page.error;
-	$: status = $page.status;
+	let error = $derived($page.error);
+	let status = $derived($page.status);
 </script>
 
 {#if error}

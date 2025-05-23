@@ -3,41 +3,62 @@
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 
-	export let name: string;
-	export let currentPage: number;
-	export let totalPages: number;
-	export let results: string;
-	export let inputPlaceholder: string;
-	export let customName: boolean = false;
+	interface Props {
+		name: string;
+		currentPage: number;
+		totalPages: number;
+		results: string;
+		inputPlaceholder: string;
+		customName?: boolean;
+		underHeading?: import('svelte').Snippet;
+		filters?: import('svelte').Snippet;
+		form?: import('svelte').Snippet;
+		info?: import('svelte').Snippet;
+		display?: import('svelte').Snippet;
+	}
 
-	$: heading = customName ? name : `Browse ${name}`;
+	let {
+		name,
+		currentPage,
+		totalPages,
+		results,
+		inputPlaceholder,
+		customName = false,
+		underHeading,
+		filters,
+		form,
+		info,
+		display,
+	}: Props = $props();
+
+	let heading = $derived(customName ? name : `Browse ${name}`);
 </script>
 
 <main class="container-rndb flex flex-col gap-4">
 	<div class="db-filters">
 		<h1 class="font-bold text-4xl">{heading}</h1>
 
-		<slot name="under-heading" />
+		{@render underHeading?.()}
 
 		<form method="get">
 			<div class="flex flex-col gap-2">
 				<SearchInput {inputPlaceholder} ariaLabel={inputPlaceholder} />
 
-				<slot name="filters" />
+				{@render filters?.()}
 
 				<div class="w-fit">
 					<SubmitButton text="Search" delayed={false} submitting={false} />
 				</div>
 			</div>
 
-			<slot name="form" />
+			{@render form?.()}
 		</form>
 
-		<slot name="info" />
+		{@render info?.()}
 	</div>
 
 	<PaginationContainer {results} {currentPage} {totalPages} showTopPages={true}>
-		<slot name="display" />
+		{@render display?.()}
 	</PaginationContainer>
 </main>
 

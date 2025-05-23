@@ -5,13 +5,17 @@
 	import { buildImageUrl } from '../book/book';
 	import Review from './Review.svelte';
 
-	export let heading: string;
-	export let currentPage: number;
-	export let totalPages: number;
-	export let results: string;
-	export let reviews: SeriesReviewWithSeriesObj[];
-	export let itemType: 'book' | 'series';
-	export let userIdNum: number;
+	interface Props {
+		heading: string;
+		currentPage: number;
+		totalPages: number;
+		results: string;
+		reviews: SeriesReviewWithSeriesObj[];
+		itemType: 'book' | 'series';
+		userIdNum: number;
+	}
+
+	let { heading, currentPage, totalPages, results, reviews, itemType, userIdNum }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>

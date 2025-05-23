@@ -1,11 +1,15 @@
 <script lang="ts">
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let hideTotalPages: boolean = false;
-	export let currentPage: number;
-	export let totalPages: number;
-	export let siblingCount: number = 1;
-	export let url: URL;
+	interface Props {
+		hideTotalPages?: boolean;
+		currentPage: number;
+		totalPages: number;
+		siblingCount?: number;
+		url: URL;
+	}
+
+	let { hideTotalPages = false, currentPage, totalPages, siblingCount = 1, url }: Props = $props();
 
 	function createPaginationUrl(page: number | undefined, url: URL) {
 		page = page ?? 0;
@@ -76,9 +80,9 @@
 		return currentPage === totalPages;
 	}
 
-	$: pageItems = getPageItems(currentPage, totalPages, siblingCount);
-	$: isPreviousDisabled = leftDisabled(currentPage);
-	$: isNextDisabled = rightDisabled(currentPage, totalPages) || totalPages === 0;
+	let pageItems = $derived(getPageItems(currentPage, totalPages, siblingCount));
+	let isPreviousDisabled = $derived(leftDisabled(currentPage));
+	let isNextDisabled = $derived(rightDisabled(currentPage, totalPages) || totalPages === 0);
 </script>
 
 {#if currentPage > 0}

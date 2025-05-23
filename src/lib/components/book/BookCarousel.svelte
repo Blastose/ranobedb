@@ -1,12 +1,21 @@
 <script lang="ts">
 	import Icon from '$lib/components/icon/Icon.svelte';
+	interface Props {
+		link?: import('svelte').Snippet;
+		items?: import('svelte').Snippet;
+	}
 
-	let width: number = 0;
-	let counter = 0;
-	let carouselContainer: HTMLDivElement;
-	$: numTracks = carouselContainer?.scrollWidth / width - 1;
+	let { link, items }: Props = $props();
 
-	function scrollTo(element: HTMLElement, to: number, duration: number) {
+	let width: number = $state(0);
+	let counter = $state(0);
+	let carouselContainer: HTMLDivElement | undefined = $state();
+	let numTracks = $derived(carouselContainer ? carouselContainer.scrollWidth / width - 1 : 1);
+
+	function scrollTo(element: HTMLElement | undefined, to: number, duration: number) {
+		if (!element) {
+			return;
+		}
 		const start = element.scrollLeft;
 		const change = to - start;
 		let currentTime = 0;
@@ -15,7 +24,9 @@
 		function animateScroll() {
 			currentTime += increment;
 			const val = easeOutQuint(currentTime, start, change, duration);
-			element.scrollLeft = val;
+			if (element) {
+				element.scrollLeft = val;
+			}
 			if (currentTime < duration) {
 				requestAnimationFrame(animateScroll);
 			}
@@ -46,11 +57,11 @@
 	let buttonDimensions = '28';
 </script>
 
-<svelte:window on:resize={onWindowResize} />
+<svelte:window onresize={onWindowResize} />
 
 <div class="flex flex-col gap-2">
 	<div class="flex justify-between items-center">
-		<slot name="link" />
+		{@render link?.()}
 
 		<div class="flex items-center">
 			<button
@@ -58,7 +69,7 @@
 				class="btn rounded-full"
 				disabled={counter <= 0}
 				aria-label="Previous"
-				on:click={() => {
+				onclick={() => {
 					scrollTo(carouselContainer, (counter - 1) * width, animationDuration);
 					counter--;
 				}}><Icon name="chevronLeft" height={buttonDimensions} width={buttonDimensions} /></button
@@ -68,9 +79,9 @@
 				class="btn rounded-full"
 				disabled={counter >= Math.ceil(numTracks)}
 				aria-label="Next"
-				on:click={() => {
+				onclick={() => {
 					if (counter === Math.floor(numTracks)) {
-						scrollTo(carouselContainer, carouselContainer.scrollWidth - width, animationDuration);
+						scrollTo(carouselContainer, carouselContainer!.scrollWidth - width, animationDuration);
 					} else {
 						scrollTo(carouselContainer, (counter + 1) * width, animationDuration);
 					}
@@ -82,8 +93,7 @@
 
 	<div class="grid overflow-x-hidden overflow-y-hidden" bind:clientWidth={width}>
 		<div class="carousel-container overflow-x-hidden" bind:this={carouselContainer}>
-			<slot name="items" />
+			{@render items?.()}
 		</div>
 	</div>
 </div>
- 

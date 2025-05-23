@@ -3,9 +3,9 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: staff = data.staff;
+	let staff = $derived(data.staff);
 </script>
 
 <PageTitle title="Add staff" />

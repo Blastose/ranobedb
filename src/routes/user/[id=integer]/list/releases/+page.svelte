@@ -10,9 +10,11 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: pageTitle = data.isMyList ? 'My collection' : `${data.listUser.username}'s collection`;
+	let pageTitle = $derived(
+		data.isMyList ? 'My collection' : `${data.listUser.username}'s collection`,
+	);
 
 	const size = '24';
 </script>
@@ -28,10 +30,10 @@
 	results={data.count}
 	inputPlaceholder="Search by release title"
 >
-	<svelte:fragment slot="under-heading"
-		><ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} /></svelte:fragment
-	>
-	<svelte:fragment slot="filters">
+	{#snippet underHeading()}
+		<ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
+	{/snippet}
+	{#snippet filters()}
 		<ReleaseFilters
 			filtersForm={data.filtersFormObj}
 			isUser={Boolean(data.user)}
@@ -39,9 +41,9 @@
 			showSort={false}
 			allowPublisherFiltersLogic={false}
 		/>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="display">
+	{#snippet display()}
 		<div class="flex flex-col gap-2">
 			{#each data.bookWithReleasesInList as book}
 				<div>
@@ -108,5 +110,5 @@
 				</div>
 			{/each}
 		</div>
-	</svelte:fragment>
+	{/snippet}
 </DbShell>

@@ -7,17 +7,17 @@
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs.js';
 	import { getBgImageStyle, getThemeContext } from '$lib/stores/themeStore.js';
 
-	export let data;
-	$: series = data.series;
+	let { data } = $props();
+	let series = $derived(data.series);
 
 	const theme = getThemeContext();
 
 	const displayPrefs = getDisplayPrefsContext();
-	$: title = getTitleDisplay({ obj: series, prefs: $displayPrefs.title_prefs });
+	let title = $derived(getTitleDisplay({ obj: series, prefs: $displayPrefs.title_prefs }));
 
-	$: firstBookInSeries = series.books.at(0);
-	$: imageUrl = buildImageUrl(firstBookInSeries?.image?.filename);
-	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
+	let firstBookInSeries = $derived(series.books.at(0));
+	let imageUrl = $derived(buildImageUrl(firstBookInSeries?.image?.filename));
+	let bgImageStyle = $derived(getBgImageStyle($theme, imageUrl));
 </script>
 
 <PageTitle {title} />

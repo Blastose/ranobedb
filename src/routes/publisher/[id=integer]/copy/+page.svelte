@@ -3,9 +3,9 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: publisher = data.publisher;
+	let publisher = $derived(data.publisher);
 </script>
 
 <PageTitle title="Add publisher" />

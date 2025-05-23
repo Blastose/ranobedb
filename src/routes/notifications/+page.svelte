@@ -5,7 +5,7 @@
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import { relativeTime } from '$lib/utils/relative-time';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Notifications" />
