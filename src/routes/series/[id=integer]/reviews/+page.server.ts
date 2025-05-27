@@ -50,7 +50,7 @@ export const load = async ({ params, locals, url }) => {
 					.where('cte_book.hidden', '=', false)
 					.whereRef('series_book.series_id', '=', 'cte_series.id')
 					.limit(1)
-					.orderBy('sort_order asc'),
+					.orderBy('sort_order', 'asc'),
 			).as('books'),
 		)
 		.executeTakeFirst();

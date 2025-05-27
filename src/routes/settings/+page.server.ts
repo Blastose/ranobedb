@@ -105,7 +105,7 @@ export const load = async ({ locals, url }) => {
 								'user_list_label.target',
 								'user_list_label.sort_order',
 							])
-							.orderBy('user_list_label.sort_order asc')
+							.orderBy('user_list_label.sort_order', 'asc')
 							.execute(),
 					},
 					zod(userListLabelsSchema),
@@ -628,7 +628,7 @@ export const actions = {
 						.selectFrom('user_list_label')
 						.where('user_list_label.user_id', '=', user.id)
 						.where('user_list_label.id', '>', 10)
-						.orderBy('id desc')
+						.orderBy('id', 'desc')
 						.select('id')
 						.executeTakeFirst();
 					const highestLabelId = (highestLabelInList?.id || 10) + 1;

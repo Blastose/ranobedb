@@ -97,7 +97,7 @@ export class DBStaff {
 		if (options.revision) {
 			query = query.where('change.revision', '=', options.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 		return query;
 	}
@@ -128,7 +128,8 @@ export class DBStaff {
 							'all_aliases.romaji',
 							'book.id as ref_book_id',
 						])
-						.orderBy(['all_aliases.id', 'book.hidden']),
+						.orderBy('all_aliases.id')
+						.orderBy('book.hidden'),
 				).as('aliases'),
 			)
 			.where('staff.id', '=', id);
@@ -176,7 +177,8 @@ export class DBStaff {
 							'all_aliases.romaji',
 							'book.id as ref_book_id',
 						])
-						.orderBy(['all_aliases.aid', 'book.hidden']),
+						.orderBy('all_aliases.aid')
+						.orderBy('book.hidden'),
 				).as('aliases'),
 			)
 			.where('change.item_id', '=', params.id)
@@ -184,7 +186,7 @@ export class DBStaff {
 		if (params.revision) {
 			query = query.where('change.revision', '=', params.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 		return query;
 	}
@@ -242,7 +244,8 @@ export class DBStaff {
 				'book_staff_alias.note',
 			])
 			.orderBy(
-				(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
+				(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+				(ob) => ob.collate('numeric').asc(),
 			);
 	}
 
@@ -304,7 +307,7 @@ export class DBStaff {
 						)
 						.where('book.hidden', '=', false)
 						.whereRef('sb2.book_id', '=', 'book.id')
-						.orderBy('sb2.sort_order asc')
+						.orderBy('sb2.sort_order', 'asc')
 						.limit(1),
 				).as('book'),
 			])
@@ -324,7 +327,8 @@ export class DBStaff {
 				'cte_series.title',
 			])
 			.orderBy(
-				(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+				(ob) => ob.collate('numeric').asc(),
 			);
 	}
 

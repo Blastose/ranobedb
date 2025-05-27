@@ -204,7 +204,7 @@ export class DBBooks {
 						.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
 						.whereRef('series_book.series_id', '=', 'cte_series.id')
 						.where('cte_book_2.hidden', '=', false)
-						.orderBy('series_book.sort_order asc'),
+						.orderBy('series_book.sort_order', 'asc'),
 				).as('books'),
 				jsonArrayFrom(
 					eb
@@ -212,7 +212,8 @@ export class DBBooks {
 						.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
 						.whereRef('series_tag.series_id', '=', 'cte_series.id')
 						.select(['tag.name', 'tag.ttype', 'tag.id'])
-						.orderBy(['tag.ttype', 'tag.name']),
+						.orderBy('tag.ttype')
+						.orderBy('tag.name'),
 				).as('tags'),
 			])
 			.select([
@@ -294,7 +295,7 @@ export class DBBooks {
 									.as('user_score'),
 							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
 						)
-						.orderBy('gs.gs desc')
+						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
 						.select((eb) => eb.fn.coalesce('user_score.cnt', eb.val('0')).as('count')),
 				).as('user_stats_score'),
@@ -372,7 +373,8 @@ export class DBBooks {
 						)
 						.whereRef('release_book.book_id', '=', 'cte_book.id')
 						.where('release.hidden', '=', false)
-						.orderBy(['release.release_date', 'release.format']),
+						.orderBy('release.release_date')
+						.orderBy('release.format'),
 				).as('releases'),
 				jsonArrayFrom(
 					eb
@@ -466,7 +468,7 @@ export class DBBooks {
 									.as('user_score'),
 							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
 						)
-						.orderBy('gs.gs desc')
+						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
 						.select((eb) => eb.fn.coalesce('user_score.cnt', eb.val('0')).as('count')),
 				).as('user_stats_score'),
@@ -547,7 +549,8 @@ export class DBBooks {
 						)
 						.where('release_book.book_id', '=', id)
 						.where('release.hidden', '=', false)
-						.orderBy(['release.release_date', 'release.format']),
+						.orderBy('release.release_date')
+						.orderBy('release.format'),
 				).as('releases'),
 				jsonArrayFrom(
 					eb
@@ -574,7 +577,7 @@ export class DBBooks {
 		if (revision) {
 			query = query.where('change.revision', '=', revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 		return query;
 	}
@@ -750,7 +753,7 @@ export class DBBooks {
 		if (params.revision) {
 			query = query.where('change.revision', '=', params.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 
 		return query;

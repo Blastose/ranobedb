@@ -103,7 +103,7 @@ export class DBReleases {
 						)
 						.where('cte_book.hidden', '=', false)
 						.where((eb) => eb.fn.coalesce('series.hidden', eb.lit(false)), '=', false)
-						.orderBy(['series_book.sort_order asc']),
+						.orderBy('series_book.sort_order', 'asc'),
 				).as('books'),
 				jsonObjectFrom(
 					eb
@@ -182,7 +182,7 @@ export class DBReleases {
 						)
 						.where('cte_book.hidden', '=', false)
 						.where((eb) => eb.fn.coalesce('series.hidden', eb.lit(false)), '=', false)
-						.orderBy(['series_book.sort_order asc']),
+						.orderBy('series_book.sort_order', 'asc'),
 				).as('books'),
 				jsonObjectFrom(
 					eb
@@ -197,7 +197,7 @@ export class DBReleases {
 		if (params.revision) {
 			query = query.where('change.revision', '=', params.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 
 		return query;
@@ -320,7 +320,7 @@ export class DBReleases {
 		if (params.revision) {
 			query = query.where('change.revision', '=', params.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 
 		return query;

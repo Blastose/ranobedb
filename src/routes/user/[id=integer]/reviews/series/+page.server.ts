@@ -22,7 +22,7 @@ export const load = async ({ params, locals, url }) => {
 	const dbReviews = DBReviews.fromDB(db, user);
 	const reviewsQuery = dbReviews
 		.getSeriesReviewsWithSeriesObj({ userId: listUser.id })
-		.orderBy('user_series_review.created desc');
+		.orderBy('user_series_review.created', 'desc');
 
 	const [reviews] = await Promise.all([
 		paginationBuilderExecuteWithCount(reviewsQuery, {

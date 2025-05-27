@@ -4,7 +4,7 @@ import { DBReleases } from './releases';
 import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool } from 'kysely';
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
-import { orderNullsLast, paginationBuilderExecuteWithCount } from '../dbHelpers';
+import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { zod } from 'sveltekit-superforms/adapters';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
@@ -49,20 +49,22 @@ export async function getReleases(params: {
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
 		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
+			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+			(ob) => ob.collate('numeric').asc(),
 		);
 	} else if (sort === 'Title desc') {
 		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric desc`,
+			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+			(ob) => ob.collate('numeric').desc(),
 		);
 	} else if (sort === 'Release date asc') {
-		query = query.orderBy('release.release_date asc');
+		query = query.orderBy('release.release_date', 'asc');
 	} else if (sort === 'Release date desc') {
-		query = query.orderBy('release.release_date desc');
+		query = query.orderBy('release.release_date', 'desc');
 	} else if (sort === 'Pages asc') {
 		query = query.orderBy('release.pages', 'asc');
 	} else if (sort === 'Pages desc') {
-		query = query.orderBy('release.pages', orderNullsLast('desc'));
+		query = query.orderBy('release.pages', (ob) => ob.desc().nullsLast());
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query
@@ -90,9 +92,10 @@ export async function getReleases(params: {
 				'>',
 				0.3,
 			)
-			.orderBy(`sim_score ${orderByDirection}`)
+			.orderBy('sim_score', orderByDirection)
 			.orderBy(
-				(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
+				(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+				(ob) => ob.collate('numeric').asc(),
 			);
 	}
 
@@ -101,7 +104,8 @@ export async function getReleases(params: {
 		(sort.startsWith('Relevance') && !useQuery)
 	) {
 		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
+			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+			(ob) => ob.collate('numeric').asc(),
 		);
 	}
 

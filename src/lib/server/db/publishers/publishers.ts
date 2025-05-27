@@ -80,7 +80,7 @@ export class DBPublishers {
 						])
 						.where('release_publisher.publisher_id', '=', params.id)
 						.where('release.hidden', '=', false)
-						.orderBy('release.release_date desc')
+						.orderBy('release.release_date', 'desc')
 						.orderBy('release.title')
 						.limit(100),
 				).as('releases'),
@@ -110,7 +110,7 @@ export class DBPublishers {
 		if (params.revision) {
 			query = query.where('change.revision', '=', params.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 
 		return query;
@@ -189,7 +189,7 @@ export class DBPublishers {
 		if (params.revision) {
 			query = query.where('change.revision', '=', params.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 
 		return query;
@@ -241,7 +241,8 @@ export class DBPublishers {
 				'cte_book.title_orig',
 			])
 			.orderBy(
-				(eb) => sql`${eb.fn.coalesce('cte_book.romaji', 'cte_book.title')} COLLATE numeric asc`,
+				(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+				(ob) => ob.collate('numeric').asc(),
 			);
 	}
 
@@ -306,7 +307,7 @@ export class DBPublishers {
 						)
 						.whereRef('sb2.book_id', '=', 'book.id')
 						.where('book.hidden', '=', false)
-						.orderBy('sb2.sort_order asc')
+						.orderBy('sb2.sort_order', 'asc')
 						.limit(1),
 				).as('book'),
 			])
@@ -334,7 +335,8 @@ export class DBPublishers {
 				'cte_series.title',
 			])
 			.orderBy(
-				(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+				(ob) => ob.collate('numeric').asc(),
 			);
 	}
 
@@ -360,9 +362,10 @@ export class DBPublishers {
 			.select('release_publisher.publisher_type')
 			.where('release.hidden', '=', false)
 			.where('publisher.id', '=', publisherId)
-			.orderBy('release.release_date desc')
+			.orderBy('release.release_date', 'desc')
 			.orderBy(
-				(eb) => sql`${eb.fn.coalesce('release.romaji', 'release.title')} COLLATE numeric asc`,
+				(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+				(ob) => ob.collate('numeric').asc(),
 			);
 	}
 

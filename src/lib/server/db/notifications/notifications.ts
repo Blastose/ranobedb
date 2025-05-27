@@ -55,7 +55,7 @@ export class Notifications {
 						.limit(1),
 				).as('image'),
 			)
-			.orderBy('notification.sent desc');
+			.orderBy('notification.sent', 'desc');
 	}
 }
 

@@ -63,7 +63,8 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 					.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
 					.whereRef('series_tag.series_id', '=', 'series.id')
 					.select(['tag.name', 'tag.ttype', 'tag.id'])
-					.orderBy(['tag.ttype', 'tag.name']),
+					.orderBy('tag.ttype')
+					.orderBy('tag.name'),
 			).as('tags'),
 		])
 		.selectAll('series')

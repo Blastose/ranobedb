@@ -9,7 +9,7 @@ import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { zod } from 'sveltekit-superforms/adapters';
-import { orderNullsLast, paginationBuilderExecuteWithCount } from '../dbHelpers';
+import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserSeriesLabels } from '../user/series-list';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
@@ -113,40 +113,42 @@ export async function getSeries(params: {
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
 		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+			(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+			(ob) => ob.collate('numeric').asc(),
 		);
 	} else if (sort === 'Title desc') {
 		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric desc`,
+			(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+			(ob) => ob.collate('numeric').desc(),
 		);
 	} else if (sort === 'Start date asc') {
-		query = query.orderBy('cte_series.start_date asc');
+		query = query.orderBy('cte_series.start_date', 'asc');
 	} else if (sort === 'Start date desc') {
-		query = query.orderBy('cte_series.start_date desc');
+		query = query.orderBy('cte_series.start_date', 'desc');
 	} else if (sort === 'Num. books asc') {
-		query = query.orderBy('cte_series.c_num_books asc');
+		query = query.orderBy('cte_series.c_num_books', 'asc');
 	} else if (sort === 'Num. books desc') {
-		query = query.orderBy('cte_series.c_num_books desc');
+		query = query.orderBy('cte_series.c_num_books', 'desc');
 	} else if (sort === 'Score asc' && listUser !== null) {
-		query = query.orderBy('score asc');
+		query = query.orderBy('score', 'asc');
 	} else if (sort === 'Score desc' && listUser !== null) {
-		query = query.orderBy('score', orderNullsLast('desc'));
+		query = query.orderBy('score', (ob) => ob.desc().nullsLast());
 	} else if (sort === 'Added asc' && listUser !== null) {
-		query = query.orderBy('added asc');
+		query = query.orderBy('added', 'asc');
 	} else if (sort === 'Added desc' && listUser !== null) {
-		query = query.orderBy('added desc');
+		query = query.orderBy('added', 'desc');
 	} else if (sort === 'Last updated asc' && listUser !== null) {
-		query = query.orderBy('last_updated asc');
+		query = query.orderBy('last_updated', 'asc');
 	} else if (sort === 'Last updated desc' && listUser !== null) {
-		query = query.orderBy('last_updated desc');
+		query = query.orderBy('last_updated', 'desc');
 	} else if (sort === 'Started asc' && listUser !== null) {
-		query = query.orderBy('started', orderNullsLast('asc'));
+		query = query.orderBy('started', (ob) => ob.asc().nullsLast());
 	} else if (sort === 'Started desc' && listUser !== null) {
-		query = query.orderBy('started', orderNullsLast('desc'));
+		query = query.orderBy('started', (ob) => ob.desc().nullsLast());
 	} else if (sort === 'Finished asc' && listUser !== null) {
-		query = query.orderBy('finished', orderNullsLast('asc'));
+		query = query.orderBy('finished', (ob) => ob.asc().nullsLast());
 	} else if (sort === 'Finished desc' && listUser !== null) {
-		query = query.orderBy('finished', orderNullsLast('desc'));
+		query = query.orderBy('finished', (ob) => ob.desc().nullsLast());
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query
@@ -161,9 +163,10 @@ export async function getSeries(params: {
 					)
 					.as('sim_score'),
 			)
-			.orderBy(`sim_score ${orderByDirection}`)
+			.orderBy('sim_score', orderByDirection)
 			.orderBy(
-				(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+				(ob) => ob.collate('numeric').asc(),
 			);
 
 		if (isList) {
@@ -207,7 +210,8 @@ export async function getSeries(params: {
 		(sort.startsWith('Relevance') && !useQuery)
 	) {
 		query = query.orderBy(
-			(eb) => sql`${eb.fn.coalesce('cte_series.romaji', 'cte_series.title')} COLLATE numeric asc`,
+			(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+			(ob) => ob.collate('numeric').asc(),
 		);
 	}
 

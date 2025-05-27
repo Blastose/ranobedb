@@ -21,7 +21,7 @@ async function get(params: { url: URL }) {
 		.select((eb) => eb.fn.count('tag.id').as('count'))
 		.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
 		.groupBy('tag.id')
-		.orderBy('count desc');
+		.orderBy('count', 'desc');
 	if (q) {
 		query = query.where((eb) =>
 			eb.or([

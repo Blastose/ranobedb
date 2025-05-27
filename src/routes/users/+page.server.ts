@@ -19,7 +19,7 @@ export const load = async ({ url }) => {
 		query = query.where('auth_user.username_lowercase', 'ilike', `%${q}%`);
 	}
 
-	query = query.orderBy('auth_user.id_numeric asc');
+	query = query.orderBy('auth_user.id_numeric', 'asc');
 
 	const {
 		result: users,

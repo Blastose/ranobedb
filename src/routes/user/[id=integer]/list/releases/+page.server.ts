@@ -76,7 +76,9 @@ export const load = async ({ params, locals, url }) => {
 								.where('user_list_release.user_id', '=', listUser.id),
 						).as('user_list_release'),
 					)
-					.orderBy(['release.lang', 'release.format', 'release.release_date']),
+					.orderBy('release.lang')
+					.orderBy('release.format')
+					.orderBy('release.release_date'),
 			).as('releases'),
 		])
 		.innerJoin('series_book', 'series_book.book_id', 'cte_book.id')
@@ -145,7 +147,8 @@ export const load = async ({ params, locals, url }) => {
 			),
 		)
 		.clearOrderBy()
-		.orderBy(['series_book.series_id', 'series_book.sort_order']);
+		.orderBy('series_book.series_id')
+		.orderBy('series_book.sort_order');
 
 	// TODO This could probably be better instead of two separate queries with repeated stuff
 	const countQuery = db

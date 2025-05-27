@@ -92,7 +92,3 @@ export function getCurrentVisibilityStatus<T extends { hidden: boolean; locked: 
 		locked: item.locked,
 	};
 }
-
-export function orderNullsLast(direction: 'asc' | 'desc') {
-	return sql`${sql.raw(direction)} nulls last`;
-}

@@ -256,7 +256,7 @@ export class DBSeries {
 						)
 						.whereRef('series_book.book_id', '=', 'book.id')
 						.where('book.hidden', '=', false)
-						.orderBy('series_book.sort_order asc')
+						.orderBy('series_book.sort_order', 'asc')
 						.limit(1),
 				).as('book'),
 			])
@@ -397,7 +397,7 @@ export class DBSeries {
 						.select(['cte_book.description', 'cte_book.description_ja'])
 						.where('cte_book.hidden', '=', false)
 						.whereRef('series_book.series_id', '=', 'cte_series.id')
-						.orderBy('sort_order asc')
+						.orderBy('sort_order', 'asc')
 						.limit(1),
 				).as('book_description'),
 				jsonArrayFrom(
@@ -445,7 +445,7 @@ export class DBSeries {
 						)
 						.where('cte_book.hidden', '=', false)
 						.whereRef('series_book.series_id', '=', 'cte_series.id')
-						.orderBy('sort_order asc'),
+						.orderBy('sort_order', 'asc'),
 				).as('books'),
 				jsonObjectFrom(
 					eb
@@ -484,7 +484,7 @@ export class DBSeries {
 									.as('user_score'),
 							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
 						)
-						.orderBy('gs.gs desc')
+						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
 						.select((eb) => eb.fn.coalesce('user_score.cnt', eb.val('0')).as('count')),
 				).as('user_stats_score'),
@@ -584,7 +584,8 @@ export class DBSeries {
 						.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
 						.where('series_tag.series_id', '=', id)
 						.select(['tag.name', 'tag.ttype', 'tag.id'])
-						.orderBy(['tag.ttype', 'tag.name']),
+						.orderBy('tag.ttype')
+						.orderBy('tag.name'),
 				).as('tags'),
 			])
 			.where('cte_series.id', '=', id);
@@ -610,7 +611,7 @@ export class DBSeries {
 									.where('c2.item_id', '=', params.id)
 									.where('c2.item_name', '=', 'series')
 									.select('revision')
-									.orderBy('revision desc')
+									.orderBy('revision', 'desc')
 									.limit(1),
 							),
 						),
@@ -628,7 +629,7 @@ export class DBSeries {
 							.$if(params.revision !== undefined, (qb) =>
 								qb.where('change.revision', '=', params.revision!),
 							)
-							.orderBy('change.revision desc')
+							.orderBy('change.revision', 'desc')
 							.select('change.id')
 							.limit(1),
 					),
@@ -664,7 +665,7 @@ export class DBSeries {
 												.where('c2.item_id', '=', params.id)
 												.where('c2.item_name', '=', 'series')
 												.select('revision')
-												.orderBy('revision desc')
+												.orderBy('revision', 'desc')
 												.limit(1),
 										),
 									),
@@ -707,7 +708,7 @@ export class DBSeries {
 						.select(['cte_book.description', 'cte_book.description_ja'])
 						.where('cte_book.hidden', '=', false)
 						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
-						.orderBy('sort_order asc')
+						.orderBy('sort_order', 'asc')
 						.limit(1),
 				).as('book_description'),
 				jsonArrayFrom(
@@ -737,7 +738,7 @@ export class DBSeries {
 						)
 						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
 						.where('cte_book.hidden', '=', false)
-						.orderBy('sort_order asc'),
+						.orderBy('sort_order', 'asc'),
 				).as('books'),
 				jsonObjectFrom(
 					eb
@@ -776,7 +777,7 @@ export class DBSeries {
 									.as('user_score'),
 							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
 						)
-						.orderBy('gs.gs desc')
+						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
 						.select((eb) => eb.fn.coalesce('user_score.cnt', eb.val('0')).as('count')),
 				).as('user_stats_score'),
@@ -880,7 +881,8 @@ export class DBSeries {
 						.innerJoin('series_tag_hist', 'series_tag_hist.tag_id', 'tag.id')
 						.whereRef('series_tag_hist.change_id', '=', 'cte_series.id')
 						.select(['tag.name', 'tag.ttype', 'tag.id'])
-						.orderBy(['tag.ttype', 'tag.name']),
+						.orderBy('tag.ttype')
+						.orderBy('tag.name'),
 				).as('tags'),
 			])
 			.where('change.item_id', '=', params.id)
@@ -889,7 +891,7 @@ export class DBSeries {
 		if (params.revision) {
 			query = query.where('change.revision', '=', params.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 		return query;
 	}
@@ -959,7 +961,7 @@ export class DBSeries {
 						])
 						.where('cte_book.hidden', '=', false)
 						.whereRef('series_book.series_id', '=', 'cte_series.id')
-						.orderBy('sort_order asc'),
+						.orderBy('sort_order', 'asc'),
 				).as('books'),
 				jsonArrayFrom(
 					eb
@@ -1020,7 +1022,7 @@ export class DBSeries {
 									.where('c2.item_id', '=', params.id)
 									.where('c2.item_name', '=', 'series')
 									.select('revision')
-									.orderBy('revision desc')
+									.orderBy('revision', 'desc')
 									.limit(1),
 							),
 						),
@@ -1038,7 +1040,7 @@ export class DBSeries {
 							.$if(params.revision !== undefined, (qb) =>
 								qb.where('change.revision', '=', params.revision!),
 							)
-							.orderBy('change.revision desc')
+							.orderBy('change.revision', 'desc')
 							.select('change.id')
 							.limit(1),
 					),
@@ -1074,7 +1076,7 @@ export class DBSeries {
 												.where('c2.item_id', '=', params.id)
 												.where('c2.item_name', '=', 'series')
 												.select('revision')
-												.orderBy('revision desc')
+												.orderBy('revision', 'desc')
 												.limit(1),
 										),
 									),
@@ -1127,7 +1129,7 @@ export class DBSeries {
 						])
 						.whereRef('series_book_hist.change_id', '=', 'cte_series.id')
 						.where('cte_book.hidden', '=', false)
-						.orderBy('sort_order asc'),
+						.orderBy('sort_order', 'asc'),
 				).as('books'),
 				jsonArrayFrom(
 					eb
@@ -1175,7 +1177,7 @@ export class DBSeries {
 		if (params.revision) {
 			query = query.where('change.revision', '=', params.revision);
 		} else {
-			query = query.orderBy('change.revision desc');
+			query = query.orderBy('change.revision', 'desc');
 		}
 		return query;
 	}

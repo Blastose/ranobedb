@@ -14,7 +14,7 @@ export function getUserBookLabels(userId: string, all: boolean) {
 		.select(['user_list_label.id', 'user_list_label.label'])
 		.$if(!all, (qb) => qb.where('user_list_label.id', '>', 10))
 		.where('user_list_label.target', 'in', ['book', 'both'])
-		.orderBy('user_list_label.sort_order asc')
+		.orderBy('user_list_label.sort_order', 'asc')
 		.execute();
 }
 
@@ -31,7 +31,7 @@ export function getUserBookLabelsForBook(userId: string, bookId: number) {
 		.where('user_list_book_label.user_id', '=', userId)
 		.where('user_list_label.id', '>', 10)
 		.where('user_list_label.target', 'in', ['book', 'both'])
-		.orderBy('user_list_label.sort_order asc')
+		.orderBy('user_list_label.sort_order', 'asc')
 		.execute();
 }
 
@@ -62,7 +62,7 @@ export function getUserLabelCounts(userId: string, min: number = 1, max: number 
 		.where((eb) => eb.or([eb('book.hidden', '=', false), eb('book.hidden', 'is', null)]))
 		.where('user_list_label.target', 'in', ['book', 'both'])
 		.groupBy(['user_list_label.label', 'user_list_label.id', 'user_list_label.sort_order'])
-		.orderBy('user_list_label.sort_order asc');
+		.orderBy('user_list_label.sort_order', 'asc');
 }
 export type UserLabel = InferResult<ReturnType<typeof getUserLabelCounts>>[number];
 
@@ -111,7 +111,7 @@ export function getUserListBookWithLabels(userId: string, bookId: number) {
 					.whereRef('user_list_book_label.book_id', '=', 'user_list_book.book_id')
 					.whereRef('user_list_book_label.user_id', '=', 'user_list_book.user_id')
 					.where('user_list_label.id', '<=', 10)
-					.orderBy('user_list_label.sort_order asc'),
+					.orderBy('user_list_label.sort_order', 'asc'),
 			).as('labels'),
 		])
 		.where('user_list_book.user_id', '=', userId)

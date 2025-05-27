@@ -165,7 +165,9 @@ export const load = async ({ params, locals, url }) => {
 	const queryOrdered = db
 		.with('query', () => query)
 		.selectFrom('query')
-		.orderBy(['query.release_date asc', 'query.id', 'query.format'])
+		.orderBy('query.release_date', 'asc')
+		.orderBy('query.id')
+		.orderBy('query.format')
 		.selectAll();
 
 	const releases = await queryOrdered.execute();

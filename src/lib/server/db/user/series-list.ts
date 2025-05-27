@@ -17,7 +17,7 @@ export function getUserSeriesLabels(userId: string, all: boolean) {
 		.select(['user_list_label.id', 'user_list_label.label'])
 		.$if(!all, (qb) => qb.where('user_list_label.id', '>', 10))
 		.where('user_list_label.target', 'in', ['series', 'both'])
-		.orderBy('user_list_label.sort_order asc')
+		.orderBy('user_list_label.sort_order', 'asc')
 		.execute();
 }
 
@@ -34,7 +34,7 @@ export function getUserSeriesLabelsForSeries(userId: string, seriesId: number) {
 		.where('user_list_series_label.user_id', '=', userId)
 		.where('user_list_label.id', '>', 10)
 		.where('user_list_label.target', 'in', ['series', 'both'])
-		.orderBy('user_list_label.sort_order asc')
+		.orderBy('user_list_label.sort_order', 'asc')
 		.execute();
 }
 
@@ -73,7 +73,7 @@ export function getUserSeriesListCounts(
 		.where((eb) => eb.or([eb('series.hidden', '=', false), eb('series.hidden', 'is', null)]))
 		.where('user_list_label.target', 'in', ['series', 'both'])
 		.groupBy(['user_list_label.label', 'user_list_label.id', 'user_list_label.sort_order'])
-		.orderBy('user_list_label.sort_order asc');
+		.orderBy('user_list_label.sort_order', 'asc');
 }
 
 export class DBSeriesListActions {

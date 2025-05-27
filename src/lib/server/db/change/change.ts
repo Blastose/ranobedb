@@ -82,7 +82,7 @@ export class DBChanges {
 				]),
 			)
 			.select(['auth_user.username', 'auth_user.id_numeric'])
-			.orderBy('change.id desc');
+			.orderBy('change.id', 'desc');
 
 		if (filters.items.length > 0) {
 			query = query.where(({ eb }) => {
@@ -127,7 +127,7 @@ export class DBChanges {
 			)
 			.selectAll('change')
 			.select(['auth_user.username', 'auth_user.id_numeric'])
-			.orderBy('change.revision desc');
+			.orderBy('change.revision', 'desc');
 	}
 
 	async itemHiddenError<T extends { hidden: boolean }>(params: {
@@ -141,7 +141,7 @@ export class DBChanges {
 		if (item.hidden) {
 			if (!user || (user && !hasVisibilityPerms(user))) {
 				const change = await this.getChanges(itemName, itemId)
-					.orderBy('change.revision desc')
+					.orderBy('change.revision', 'desc')
 					.executeTakeFirstOrThrow();
 				error(403, {
 					dbItemDeleted: {
@@ -173,7 +173,7 @@ export async function addChange(
 		.where('change.item_name', '=', changeItem.item_name)
 		.where('change.item_id', '=', changeItem.item_id)
 		.select('change.revision')
-		.orderBy('change.revision desc')
+		.orderBy('change.revision', 'desc')
 		.limit(1)
 		.executeTakeFirst();
 
