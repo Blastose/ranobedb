@@ -1,13 +1,17 @@
 <script lang="ts">
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let rating: {
-		score: string | number;
-		count: string | number | bigint;
-	} | null;
-	export let numReviews: number | undefined;
-	export let itemId: number;
-	export let itemType: 'book' | 'series';
+	interface Props {
+		rating: {
+			score: string | number;
+			count: string | number | bigint;
+		} | null;
+		numReviews: number | undefined;
+		itemId: number;
+		itemType: 'book' | 'series';
+	}
+
+	let { rating, numReviews, itemId, itemType }: Props = $props();
 </script>
 
 <section>

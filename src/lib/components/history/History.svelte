@@ -4,9 +4,13 @@
 	import { getDisplayPrefsContext } from '$lib/display/prefs';
 	import type { Change } from '$lib/server/db/change/change';
 
-	export let changes: Change[];
-	export let title: string | undefined = undefined;
-	export let showItemTitle: boolean;
+	interface Props {
+		changes: Change[];
+		title?: string | undefined;
+		showItemTitle: boolean;
+	}
+
+	let { changes, title = undefined, showItemTitle }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>

@@ -4,9 +4,9 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: changes = data.changes;
+	let changes = $derived(data.changes);
 	let title = 'Recent changes';
 </script>
 

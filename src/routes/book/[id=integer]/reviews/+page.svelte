@@ -5,13 +5,13 @@
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs';
 	import { getThemeContext } from '$lib/stores/themeStore';
 
-	export let data;
+	let { data } = $props();
 
 	const theme = getThemeContext();
 	const displayPrefs = getDisplayPrefsContext();
-	$: imageUrl = buildImageUrl(data.book.image?.filename);
-	$: book = data.book;
-	$: title = getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs });
+	let imageUrl = $derived(buildImageUrl(data.book.image?.filename));
+	let book = $derived(data.book);
+	let title = $derived(getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs }));
 </script>
 
 <PageTitle title="Reviews for {title}"></PageTitle>

@@ -9,11 +9,15 @@
 	import type { Infer } from 'sveltekit-superforms/server';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 
-	export let releases: BookOne['releases'];
-	export let olang: Language;
-	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
+	interface Props {
+		releases: BookOne['releases'];
+		olang: Language;
+		userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
+	}
 
-	$: groupedReleasesByLang = groupBy(releases, (item) => item.lang);
+	let { releases, olang, userListReleaseForm }: Props = $props();
+
+	let groupedReleasesByLang = $derived(groupBy(releases, (item) => item.lang));
 </script>
 
 <section>
@@ -22,10 +26,10 @@
 		{#each sortByLangObjEntries(Object.entries(groupedReleasesByLang), olang) as [key, releases]}
 			<section>
 				<Collapsible open={key === 'ja' || key === 'en'}>
-					<svelte:fragment slot="summary"
-						><h3 class="font-semibold">{getLanguageFromString(key)}</h3></svelte:fragment
-					>
-					<svelte:fragment slot="details">
+					{#snippet summary()}
+						<h3 class="font-semibold">{getLanguageFromString(key)}</h3>
+					{/snippet}
+					{#snippet details()}
 						<div class="flex flex-col">
 							{#each releases as release, index (release.id)}
 								<BookRelease {release} {userListReleaseForm} />
@@ -34,7 +38,7 @@
 								{/if}
 							{/each}
 						</div>
-					</svelte:fragment>
+					{/snippet}
 				</Collapsible>
 			</section>
 		{:else}

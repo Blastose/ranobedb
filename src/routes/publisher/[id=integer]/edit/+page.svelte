@@ -4,9 +4,9 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
 
-	export let data;
+	let { data } = $props();
 
-	$: publisher = data.publisher;
+	let publisher = $derived(data.publisher);
 
 	const diplayPrefs = getDisplayPrefsContext();
 </script>

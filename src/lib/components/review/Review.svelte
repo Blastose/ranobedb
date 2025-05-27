@@ -4,13 +4,23 @@
 	import type { BookReview } from '$lib/server/db/reviews/reviews';
 	import MarkdownToHtml from '../markdown/MarkdownToHtml.svelte';
 
-	export let review: BookReview;
-	export let itemType: 'book' | 'series';
-	export let singleReview: boolean = false;
-	export let itemTitle: string | undefined = undefined;
-	export let imageUrl: string | null = null;
+	interface Props {
+		review: BookReview;
+		itemType: 'book' | 'series';
+		singleReview?: boolean;
+		itemTitle?: string | undefined;
+		imageUrl?: string | null;
+	}
 
-	let showReview: boolean = false;
+	let {
+		review,
+		itemType,
+		singleReview = false,
+		itemTitle = undefined,
+		imageUrl = null,
+	}: Props = $props();
+
+	let showReview: boolean = $state(false);
 </script>
 
 <div class={imageUrl ? 'grid grid-cols-[64px_1fr] gap-x-4' : ''}>
@@ -54,7 +64,7 @@
 		{#if !singleReview}
 			{#if review.spoiler && !showReview}
 				<button
-					on:click={() => {
+					onclick={() => {
 						showReview = true;
 					}}>This review contains spoilers. Click to show.</button
 				>
@@ -63,7 +73,7 @@
 			{/if}
 		{:else if review.spoiler && !showReview}
 			<button
-				on:click={() => {
+				onclick={() => {
 					showReview = true;
 				}}>This review contains spoilers. Click to show.</button
 			>

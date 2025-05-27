@@ -1,9 +1,14 @@
 <script lang="ts">
 	import { superForm } from 'sveltekit-superforms';
 
-	export let text: string;
-	export let textLoading: string;
-	export let action: string;
+	interface Props {
+		text: string;
+		textLoading: string;
+		action: string;
+		children?: import('svelte').Snippet;
+	}
+
+	let { text, textLoading, action, children }: Props = $props();
 
 	const form = superForm({});
 	const { enhance, delayed, submitting, message } = form;
@@ -12,7 +17,7 @@
 <li>
 	<form method="post" {action} use:enhance>
 		<button type="submit" class="sidebar-item">
-			<slot />
+			{@render children?.()}
 			{#if !$delayed}{text}{:else}{textLoading}{/if}
 		</button>
 	</form>

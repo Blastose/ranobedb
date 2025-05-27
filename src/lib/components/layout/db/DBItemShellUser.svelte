@@ -2,7 +2,12 @@
 	// This is a copy of DBItemShell.svelte, but for users only, since it's hard to refactor it for users
 	import type { SafeUser } from '$lib/server/db/user/user';
 
-	export let user: SafeUser;
+	interface Props {
+		user: SafeUser;
+		children?: import('svelte').Snippet;
+	}
+
+	let { user, children }: Props = $props();
 </script>
 
 <section class="flex flex-col gap-2">
@@ -17,5 +22,5 @@
 		</div>
 	</section>
 
-	<slot />
+	{@render children?.()}
 </section>

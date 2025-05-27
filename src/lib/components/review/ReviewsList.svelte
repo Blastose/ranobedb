@@ -3,11 +3,15 @@
 	import type { BookReview } from '$lib/server/db/reviews/reviews';
 	import Review from './Review.svelte';
 
-	export let currentPage: number;
-	export let totalPages: number;
-	export let results: string;
-	export let reviews: BookReview[];
-	export let itemType: 'book' | 'series';
+	interface Props {
+		currentPage: number;
+		totalPages: number;
+		results: string;
+		reviews: BookReview[];
+		itemType: 'book' | 'series';
+	}
+
+	let { currentPage, totalPages, results, reviews, itemType }: Props = $props();
 </script>
 
 <PaginationContainer {currentPage} {totalPages} {results} showTopPages={false}>

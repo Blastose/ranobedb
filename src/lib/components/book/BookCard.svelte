@@ -4,7 +4,11 @@
 	import TitleDisplay from '../display/TitleDisplay.svelte';
 	import { getDisplayPrefsContext } from '$lib/display/prefs';
 
-	export let book: Book;
+	interface Props {
+		book: Book;
+	}
+
+	let { book }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>
@@ -23,7 +27,7 @@
 				/>
 			</a>
 		{:else}
-			<div />
+			<div></div>
 		{/if}
 		<h4 class="flex flex-col gap-2">
 			<a class="line-clamp-2 font-bold text-lg" href="/book/{book.id}"

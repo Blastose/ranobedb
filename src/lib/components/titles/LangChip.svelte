@@ -1,7 +1,11 @@
 <script lang="ts">
 	import type { Language } from '$lib/server/db/dbTypes';
 
-	export let lang: Language;
+	interface Props {
+		lang: Language;
+	}
+
+	let { lang }: Props = $props();
 </script>
 
 <div class="pt-[4px]">

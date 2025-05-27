@@ -19,13 +19,17 @@
 	} from '$lib/components/db-links/db-ext-links';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 
-	export let staff: Staff;
-	export let works: StaffWorks;
-	export let user: User | null;
-	export let revision: number | undefined;
-	export let results: string;
-	export let currentPage: number;
-	export let totalPages: number;
+	interface Props {
+		staff: Staff;
+		works: StaffWorks;
+		user: User | null;
+		revision: number | undefined;
+		results: string;
+		currentPage: number;
+		totalPages: number;
+	}
+
+	let { staff, works, user, revision, results, currentPage, totalPages }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>

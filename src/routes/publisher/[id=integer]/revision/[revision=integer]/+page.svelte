@@ -7,11 +7,11 @@
 	import Publisher from '$lib/components/publisher/id/Publisher.svelte';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
 
-	export let data;
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
-	$: publisher = data.publisher;
-	$: title = getNameDisplay({ obj: publisher, prefs: $displayPrefs.names });
+	let publisher = $derived(data.publisher);
+	let title = $derived(getNameDisplay({ obj: publisher, prefs: $displayPrefs.names }));
 
 	function buildBaseLink() {
 		return `/publisher/${data.publisherId}`;
@@ -24,7 +24,7 @@
 
 <main class="container-rndb flex flex-col gap-6">
 	<RevisionContainer>
-		<svelte:fragment slot="revision">
+		{#snippet revision()}
 			<Revision
 				changes={data.changes}
 				{title}
@@ -32,9 +32,9 @@
 				diffs={data.diffs}
 				currentItemVisibility={data.currentItemVisibility}
 			/>
-		</svelte:fragment>
+		{/snippet}
 
-		<svelte:fragment slot="content">
+		{#snippet content()}
 			<Publisher
 				publisher={{ ...publisher, id: data.publisherId }}
 				works={data.works}
@@ -44,6 +44,6 @@
 				results={data.count}
 				totalPages={data.totalPages}
 			/>
-		</svelte:fragment>
+		{/snippet}
 	</RevisionContainer>
 </main>

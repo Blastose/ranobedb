@@ -6,11 +6,11 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: pageTitle = data.isMyList
-		? 'My upcoming releases'
-		: `${data.listUser.username}'s upcoming releases`;
+	let pageTitle = $derived(
+		data.isMyList ? 'My upcoming releases' : `${data.listUser.username}'s upcoming releases`,
+	);
 </script>
 
 <PageTitle title={pageTitle} />

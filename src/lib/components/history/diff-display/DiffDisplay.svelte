@@ -2,7 +2,11 @@
 	import type { Diff } from '../utils';
 	import DiffSection from './DiffSection.svelte';
 
-	export let changes: Diff;
+	interface Props {
+		changes: Diff;
+	}
+
+	let { changes }: Props = $props();
 </script>
 
 <section>

@@ -1,6 +1,10 @@
 <script lang="ts">
-	export let badges: string[];
-	export let location: 'top-right' | 'bottom-right' = 'top-right';
+	interface Props {
+		badges: string[];
+		location?: 'top-right' | 'bottom-right';
+	}
+
+	let { badges, location = 'top-right' }: Props = $props();
 </script>
 
 <div

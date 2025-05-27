@@ -6,8 +6,13 @@
 	import Toaster from '$lib/components/toast/Toaster.svelte';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
-	export let user: User | null;
-	export let url: string;
+	interface Props {
+		user: User | null;
+		url: string;
+		children?: import('svelte').Snippet;
+	}
+
+	let { user, url, children }: Props = $props();
 
 	const sidebarStore = getSidebarStoreContext();
 </script>
@@ -24,7 +29,7 @@
 
 		<div class="main-wrapper">
 			<Fly key={url}>
-				<slot />
+				{@render children?.()}
 			</Fly>
 		</div>
 	</div>

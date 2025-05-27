@@ -4,9 +4,9 @@
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs.js';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: series = data.series;
+	let series = $derived(data.series);
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>

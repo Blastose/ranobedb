@@ -7,17 +7,17 @@
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
 	import { getBgImageStyle, getThemeContext } from '$lib/stores/themeStore.js';
 
-	export let data;
-
-	$: release = data.release;
-	$: title = getNameDisplay({ obj: release, prefs: $diplayPrefs.names });
+	let { data } = $props();
 
 	const theme = getThemeContext();
 	const diplayPrefs = getDisplayPrefsContext();
 
-	$: firstBookInReleases = release.books.at(0);
-	$: imageUrl = buildImageUrl(firstBookInReleases?.image?.filename);
-	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
+	let release = $derived(data.release);
+	let title = $derived(getNameDisplay({ obj: release, prefs: $diplayPrefs.names }));
+
+	let firstBookInReleases = $derived(release.books.at(0));
+	let imageUrl = $derived(buildImageUrl(firstBookInReleases?.image?.filename));
+	let bgImageStyle = $derived(getBgImageStyle($theme, imageUrl));
 </script>
 
 <PageTitle {title} />

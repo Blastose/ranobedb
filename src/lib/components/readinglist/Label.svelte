@@ -1,16 +1,20 @@
 <script lang="ts">
 	import type { UserLabel } from '$lib/server/db/user/list';
 
-	export let userLabel: UserLabel;
-	export let activeLabels: number[];
-	$: active = activeLabels.includes(userLabel.label_id);
+	interface Props {
+		userLabel: UserLabel;
+		activeLabels: number[];
+	}
+
+	let { userLabel, activeLabels }: Props = $props();
+	let active = $derived(activeLabels.includes(userLabel.label_id));
 </script>
 
 <div class="flex flex-col gap-1">
 	<a class="font-bold reading-label" class:active href="?l={userLabel.label_id}"
 		>{userLabel.label} ({userLabel.count})</a
 	>
-	<div class="box-underline" class:active />
+	<div class="box-underline" class:active></div>
 </div>
 
 <style>

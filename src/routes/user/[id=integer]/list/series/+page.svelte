@@ -10,9 +10,11 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import LabelContainer from '$lib/components/readinglist/LabelContainer.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: pageTitle = data.isMyList ? 'My series list' : `${data.listUser.username}'s series list`;
+	let pageTitle = $derived(
+		data.isMyList ? 'My series list' : `${data.listUser.username}'s series list`,
+	);
 </script>
 
 <PageTitle title={pageTitle} />
@@ -26,7 +28,7 @@
 	results={data.count}
 	inputPlaceholder="Search by series title"
 >
-	<svelte:fragment slot="filters">
+	{#snippet filters()}
 		<SeriesFilters
 			filtersForm={data.filtersFormObj}
 			genres={data.genres}
@@ -34,20 +36,20 @@
 			isUser={true}
 			allCustLabels={data.allCustLabels}
 		></SeriesFilters>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="under-heading"
-		><ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
-	</svelte:fragment>
+	{#snippet underHeading()}
+		<ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
+	{/snippet}
 
-	<svelte:fragment slot="info">
+	{#snippet info()}
 		<div class="flex flex-col gap-1">
 			<LabelContainer userLabels={data.userLabelCounts} activeLabels={data.labels} />
 			<LabelContainer userLabels={data.userCustLabelCounts} activeLabels={data.labels} />
 		</div>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="display">
+	{#snippet display()}
 		<BookImageContainer moreColumns={true}>
 			{#each data.user_list_series as series (series.id)}
 				{@const volumes_read = series.vols_read?.volumes_read ?? series.c_vols_read?.count}
@@ -83,5 +85,5 @@
 				{/if}
 			{/each}
 		</BookImageContainer>
-	</svelte:fragment>
+	{/snippet}
 </DbShell>

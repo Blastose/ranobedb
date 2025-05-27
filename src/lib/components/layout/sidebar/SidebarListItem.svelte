@@ -2,29 +2,33 @@
 	import SidebarItem from './SidebarItem.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let active: boolean;
-	export let href: string;
-	export let text: string;
-	export let icon:
-		| 'home'
-		| 'logout'
-		| 'profile'
-		| 'mylist'
-		| 'books'
-		| 'series'
-		| 'releases'
-		| 'people'
-		| 'publishers'
-		| 'add'
-		| 'login'
-		| 'signup'
-		| 'settings'
-		| 'history'
-		| 'email'
-		| 'about'
-		| 'calendar'
-		| 'tag'
-		| 'bell';
+	interface Props {
+		active: boolean;
+		href: string;
+		text: string;
+		icon:
+			| 'home'
+			| 'logout'
+			| 'profile'
+			| 'mylist'
+			| 'books'
+			| 'series'
+			| 'releases'
+			| 'people'
+			| 'publishers'
+			| 'add'
+			| 'login'
+			| 'signup'
+			| 'settings'
+			| 'history'
+			| 'email'
+			| 'about'
+			| 'calendar'
+			| 'tag'
+			| 'bell';
+	}
+
+	let { active, href, text, icon }: Props = $props();
 </script>
 
 <li>

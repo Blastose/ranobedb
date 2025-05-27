@@ -4,25 +4,30 @@
 	import TitleDisplay from '../display/TitleDisplay.svelte';
 	import Cover from '../image/Cover.svelte';
 
-	export let book: {
-		title: string;
-		title_orig?: string | null;
-		romaji?: string | null;
-		romaji_orig?: string | null;
-		lang?: Language;
-		id: number;
-		image: Nullish<{
-			width: number;
-			height: number;
-			filename: string;
-		}>;
-	};
-	export let urlPrefix: string;
+	interface Props {
+		book: {
+			title: string;
+			title_orig?: string | null;
+			romaji?: string | null;
+			romaji_orig?: string | null;
+			lang?: Language;
+			id: number;
+			image: Nullish<{
+				width: number;
+				height: number;
+				filename: string;
+			}>;
+		};
+		urlPrefix: string;
+		children?: import('svelte').Snippet;
+	}
+
+	let { book, urlPrefix, children }: Props = $props();
 </script>
 
 <a href="{urlPrefix}{book.id}" class="flex flex-col gap-1">
 	<Cover obj={book}>
-		<slot />
+		{@render children?.()}
 	</Cover>
 	<p class="line-clamp-2 text-sm sm:text-base">
 		<TitleDisplay

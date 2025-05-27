@@ -6,15 +6,19 @@
 	import BookImageBadge from '../book/BookImageBadge.svelte';
 	import { DateNumber } from '../form/release/releaseDate';
 
-	export let releases: ReleaseWithImage[];
-	export let heading: string;
+	interface Props {
+		releases: ReleaseWithImage[];
+		heading: string;
+	}
+
+	let { releases, heading }: Props = $props();
 </script>
 
 <BookCarousel>
-	<svelte:fragment slot="link">
+	{#snippet link()}
 		<h2 class="text-lg font-bold">{heading}</h2>
-	</svelte:fragment>
-	<svelte:fragment slot="items">
+	{/snippet}
+	{#snippet items()}
 		{#each releases as release (release.id)}
 			<div class="carousel-item">
 				<BookImage
@@ -37,5 +41,5 @@
 				</BookImage>
 			</div>
 		{/each}
-	</svelte:fragment>
+	{/snippet}
 </BookCarousel>

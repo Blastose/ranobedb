@@ -2,8 +2,12 @@
 	import type { UserLabel } from '$lib/server/db/user/list';
 	import Label from './Label.svelte';
 
-	export let userLabels: UserLabel[];
-	export let activeLabels: number[];
+	interface Props {
+		userLabels: UserLabel[];
+		activeLabels: number[];
+	}
+
+	let { userLabels, activeLabels }: Props = $props();
 </script>
 
 <nav class="grid">

@@ -2,9 +2,13 @@
 	import { groupBy } from '$lib/db/array';
 	import type { Series } from '$lib/server/db/series/series';
 
-	export let tags: Series['tags'];
+	interface Props {
+		tags: Series['tags'];
+	}
 
-	$: groupedTags = groupBy(tags, (v) => v.ttype);
+	let { tags }: Props = $props();
+
+	let groupedTags = $derived(groupBy(tags, (v) => v.ttype));
 </script>
 
 <div class="flex flex-wrap gap-x-6 gap-y-2">

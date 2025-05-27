@@ -7,7 +7,11 @@
 	import ProfileFormButton from './ProfileFormButton.svelte';
 	import Hr from '../Hr.svelte';
 
-	export let user: User | null;
+	interface Props {
+		user: User | null;
+	}
+
+	let { user }: Props = $props();
 
 	const {
 		elements: { trigger, menu, item, separator, arrow },

@@ -45,7 +45,7 @@
 				bind:value={$value}
 				{...$constraints}
 				{...$$restProps}
-			/>
+			></textarea>
 		{:else if type === 'number'}
 			<input
 				type="number"

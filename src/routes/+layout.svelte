@@ -1,21 +1,22 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
 	import '../app.css';
 	import Layout from '$lib/components/layout/Layout.svelte';
 	import { createThemeStore } from '$lib/stores/themeStore';
 	import { onNavigate } from '$app/navigation';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import { getFlash } from 'sveltekit-flash-message';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { getDisplayPrefsUser } from '$lib/display/prefs';
 	import Progress from '$lib/components/layout/Progress.svelte';
 	import { beforeNavigate } from '$app/navigation';
-	import { updated } from '$app/stores';
+	import { updated } from '$app/state';
 	import { createRelCalStore } from '$lib/stores/releaseCalendarViewStore';
 
 	beforeNavigate(({ willUnload, to }) => {
-		if ($updated && !willUnload && to?.url) {
+		if (updated.current && !willUnload && to?.url) {
 			location.href = to.url.href;
 		}
 	});
@@ -37,37 +38,47 @@
 		theme.toggle();
 	}
 
-	export let data;
+	let { data, children } = $props();
 
 	const flash = getFlash(page);
-	$: if ($flash) {
-		addToast({ data: { title: $flash.message, type: $flash.type } });
-		$flash = undefined;
-	}
+	run(() => {
+		if ($flash) {
+			addToast({ data: { title: $flash.message, type: $flash.type } });
+			$flash = undefined;
+		}
+	});
 
 	const displayPrefs = writable();
-	$: displayPrefs.set(getDisplayPrefsUser(data.user));
+	run(() => {
+		displayPrefs.set(getDisplayPrefsUser(data.user));
+	});
 	setContext('displayPrefs', displayPrefs);
 
 	const sidebarOpen = writable<'open' | 'closed'>();
-	$: sidebarOpen.set('open');
+	run(() => {
+		sidebarOpen.set('open');
+	});
 	setContext('sidebar', sidebarOpen);
 
 	const theme = createThemeStore();
-	$: theme.set(data.theme);
+	run(() => {
+		theme.set(data.theme);
+	});
 	setContext('theme', theme);
 
 	const relCalView = createRelCalStore();
-	$: relCalView.set('compact');
+	run(() => {
+		relCalView.set('compact');
+	});
 	setContext('relCal', relCalView);
 </script>
 
-<svelte:document on:keydown={handleKeyDown} />
+<svelte:document onkeydown={handleKeyDown} />
 
 <Progress />
 
 <Layout user={data.user} url={data.url}>
-	<slot />
+	{@render children?.()}
 </Layout>
 
 <style>

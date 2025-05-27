@@ -5,7 +5,7 @@
 	import { buildRevisionLink, dbItemMap, getHistoryEntryTitle } from '$lib/db/revision.js';
 	import { getDisplayPrefsContext } from '$lib/display/prefs.js';
 
-	export let data;
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>

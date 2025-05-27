@@ -3,8 +3,12 @@
 	import NoIndex from '../layout/NoIndex.svelte';
 	import MarkdownToHtml from '../markdown/MarkdownToHtml.svelte';
 
-	export let title: string;
-	export let reason: string;
+	interface Props {
+		title: string;
+		reason: string;
+	}
+
+	let { title, reason }: Props = $props();
 </script>
 
 <PageTitle {title} />

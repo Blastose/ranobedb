@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { navigating } from '$app/stores';
+	import { navigating } from '$app/state';
 	import { fade } from 'svelte/transition';
 
-	let width = 0;
+	let width = $state(0);
 	let progressTimeoutId: ReturnType<typeof setTimeout>;
 	let progressDoneTimeoutId: ReturnType<typeof setTimeout>;
 	let progressIntervalId: ReturnType<typeof setInterval>;
-	let progressRunning = false;
+	let progressRunning = $state(false);
 	let progressComplete = true;
 
 	function clearTimeoutsAndIntervals() {
@@ -51,13 +51,13 @@
 		}, 500);
 	}
 
-	$: {
-		if ($navigating) {
+	$effect(() => {
+		if (navigating.to) {
 			setTimeoutProgress();
-		} else if (!$navigating) {
+		} else if (!navigating.to) {
 			progressDone();
 		}
-	}
+	});
 </script>
 
 <!-- Debug -->

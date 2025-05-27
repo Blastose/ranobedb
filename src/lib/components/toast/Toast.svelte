@@ -6,11 +6,12 @@
 	import { onMount } from 'svelte';
 	import type { ToastData } from './toast';
 
-	export let elements: ToastsElements;
-	$: ({ content, title, description, close } = elements);
+	interface Props {
+		elements: ToastsElements;
+		toast: Toast<ToastData>;
+	}
 
-	export let toast: Toast<ToastData>;
-	$: ({ data, id, getPercentage } = toast);
+	let { elements, toast }: Props = $props();
 
 	const percentage = writable(0);
 	const {
@@ -31,6 +32,8 @@
 
 		return () => cancelAnimationFrame(frame);
 	});
+	let { content, title, description, close } = $derived(elements);
+	let { data, id, getPercentage } = $derived(toast);
 </script>
 
 <div
@@ -43,7 +46,7 @@
 		<div
 			class="toast-progress"
 			style={`transform: translateX(-${100 - (100 * ($percentage ?? 0)) / ($max ?? 1)}%)`}
-		/>
+		></div>
 	</div>
 
 	<div class="toast-content pt-6">

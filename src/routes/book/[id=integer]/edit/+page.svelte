@@ -4,11 +4,11 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs.js';
 
-	export let data;
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
-	$: book = data.book;
-	$: title = getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs });
+	let book = $derived(data.book);
+	let title = $derived(getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs }));
 </script>
 
 <PageTitle title="Editing {title}" />

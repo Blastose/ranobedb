@@ -1,23 +1,28 @@
 <script lang="ts">
 	import Collapsible from '$lib/components/display/Collapsible.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import Keyed from '../Keyed.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
 
-	$: filterInUse = Boolean($page.url.search.replace(/\?page=\d+/, ''));
+	let { children }: Props = $props();
+
+	let filterInUse = $derived(Boolean(page.url.search.replace(/\?page=\d+/, '')));
 </script>
 
 <Keyed>
 	<section>
 		<Collapsible open={false}>
-			<svelte:fragment slot="summary">
+			{#snippet summary()}
 				<h2 class="text-lg font-bold">
 					Filters{#if filterInUse}<Icon name="filterCheck" />{:else}<Icon name="filter" />{/if}
 				</h2>
-			</svelte:fragment>
-			<svelte:fragment slot="details">
-				<slot />
-			</svelte:fragment>
+			{/snippet}
+			{#snippet details()}
+				{@render children?.()}
+			{/snippet}
 		</Collapsible>
 	</section>
 </Keyed>

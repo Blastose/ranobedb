@@ -4,12 +4,12 @@
 	import ReviewOne from '$lib/components/review/ReviewOne.svelte';
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs';
 
-	export let data;
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
-	$: imageUrl = buildImageUrl(data.book.image?.filename);
-	$: book = data.book;
-	$: title = getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs });
+	let imageUrl = $derived(buildImageUrl(data.book.image?.filename));
+	let book = $derived(data.book);
+	let title = $derived(getTitleDisplay({ obj: book, prefs: $displayPrefs.title_prefs }));
 </script>
 
 <PageTitle title="Review for {title}"></PageTitle>

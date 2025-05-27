@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { cubicInOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import type { ListCounts } from '$lib/server/db/user/list';
 
-	export let userIdNum: number;
-	export let listCounts: ListCounts;
+	interface Props {
+		userIdNum: number;
+		listCounts: ListCounts;
+	}
+
+	let { userIdNum, listCounts }: Props = $props();
 
 	const tabs = [
 		{
@@ -25,8 +29,8 @@
 		},
 	] as const;
 
-	$: currentPage = new URL($page.url);
-	$: currentTab = currentPage.pathname.split('/').at(-1) || '';
+	let currentPage = $derived(new URL(page.url));
+	let currentTab = $derived(currentPage.pathname.split('/').at(-1) || '');
 
 	const [send, receive] = crossfade({
 		duration: 250,

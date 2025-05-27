@@ -3,9 +3,9 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: release = data.release;
+	let release = $derived(data.release);
 </script>
 
 <PageTitle title="Add release" />

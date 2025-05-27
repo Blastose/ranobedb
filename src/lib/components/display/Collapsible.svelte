@@ -1,10 +1,16 @@
 <script lang="ts">
-	export let open: boolean;
+	interface Props {
+		open: boolean;
+		summary?: import('svelte').Snippet;
+		details?: import('svelte').Snippet;
+	}
+
+	let { open, summary, details }: Props = $props();
 </script>
 
 <details {open}>
-	<summary class="cursor-pointer w-fit"><slot name="summary"></slot></summary>
-	<slot name="details"></slot>
+	<summary class="cursor-pointer w-fit">{@render summary?.()}</summary>
+	{@render details?.()}
 </details>
 
 <style>

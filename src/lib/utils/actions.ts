@@ -1,6 +1,6 @@
 import type { Action } from 'svelte/action';
 
-export const clickOutside: Action<Node, Node | undefined, { 'on:outclick': () => void }> = (
+export const clickOutside: Action<Node, Node | undefined, { onoutclick: () => void }> = (
 	node: Node,
 	toggleButton?: Node,
 ) => {

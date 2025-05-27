@@ -2,14 +2,20 @@
 	import type { Change } from '$lib/server/db/change/change';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
 
-	export let change: Change | undefined;
-	export let buildBaseLink: () => string;
-	export let isLatestRevision: boolean;
+	interface Props {
+		change: Change | undefined;
+		buildBaseLink: () => string;
+		isLatestRevision: boolean;
+	}
 
-	$: revisionEditText = isLatestRevision ? 'edit' : 'revert to';
-	$: revisionEditLink = isLatestRevision
-		? `${buildBaseLink()}/edit`
-		: `${buildBaseLink()}/edit?revision=${change?.revision}`;
+	let { change, buildBaseLink, isLatestRevision }: Props = $props();
+
+	let revisionEditText = $derived(isLatestRevision ? 'edit' : 'revert to');
+	let revisionEditLink = $derived(
+		isLatestRevision
+			? `${buildBaseLink()}/edit`
+			: `${buildBaseLink()}/edit?revision=${change?.revision}`,
+	);
 </script>
 
 {#if change}

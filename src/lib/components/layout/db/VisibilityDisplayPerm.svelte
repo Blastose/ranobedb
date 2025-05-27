@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = { hidden: boolean; locked: boolean };
 </script>
 
@@ -6,8 +6,12 @@
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import type { User } from '$lib/server/lucia/lucia';
 
-	export let item: T;
-	export let user: User | null;
+	interface Props {
+		item: T;
+		user: User | null;
+	}
+
+	let { item, user }: Props = $props();
 </script>
 
 {#if hasVisibilityPerms(user) && (item.locked || item.hidden)}

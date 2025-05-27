@@ -7,7 +7,7 @@
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Series" />
@@ -19,7 +19,7 @@
 	results={data.count}
 	inputPlaceholder="Search by series title"
 >
-	<svelte:fragment slot="filters">
+	{#snippet filters()}
 		<SeriesFilters
 			filtersForm={data.filtersFormObj}
 			genres={data.genres}
@@ -27,9 +27,9 @@
 			isList={false}
 			allCustLabels={data.allCustLabels}
 		/>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="display">
+	{#snippet display()}
 		<BookImageContainer moreColumns={true}>
 			{#each data.series as series (series.id)}
 				{#if series.book}
@@ -57,5 +57,5 @@
 				{/if}
 			{/each}
 		</BookImageContainer>
-	</svelte:fragment>
+	{/snippet}
 </DbShell>

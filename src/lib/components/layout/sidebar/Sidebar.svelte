@@ -1,6 +1,6 @@
 <script lang="ts">
 	import RanobeDb from '$lib/components/layout/RanobeDB.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import SidebarListItem from './SidebarListItem.svelte';
 	import SidebarSection from './SidebarSection.svelte';
 	import type { User } from '$lib/server/lucia/lucia';
@@ -9,9 +9,13 @@
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 	import Hr from '../Hr.svelte';
 
-	export let user: User | null;
-	export let isDrawer: boolean = false;
-	export let handleNavigation: (() => void) | undefined = undefined;
+	interface Props {
+		user: User | null;
+		isDrawer?: boolean;
+		handleNavigation?: (() => void) | undefined;
+	}
+
+	let { user, isDrawer = false, handleNavigation = undefined }: Props = $props();
 
 	function watchNavigation(node: HTMLElement) {
 		function handleAClick(e: Event) {
@@ -54,79 +58,74 @@
 				class="relative btn left-2 rounded-full inline-flex items-center justify-center w-8 h-8"
 				type="button"
 				aria-label="Close sidebar"
-				on:click={closeSidebar}><Icon name="close" /></button
+				onclick={closeSidebar}><Icon name="close" /></button
 			>
 		{/if}
 	</div>
 
 	<nav class="flex flex-col gap-4">
 		<SidebarSection>
-			<SidebarListItem active={$page.url.pathname === '/'} href="/" text="Home" icon="home" />
+			<SidebarListItem active={page.url.pathname === '/'} href="/" text="Home" icon="home" />
 		</SidebarSection>
 
 		<SidebarSection sectionHeading="Database">
 			<SidebarListItem
-				active={$page.url.pathname === '/books'}
+				active={page.url.pathname === '/books'}
 				href="/books"
 				text="Books"
 				icon="books"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/series'}
+				active={page.url.pathname === '/series'}
 				href="/series"
 				text="Series"
 				icon="series"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/releases'}
+				active={page.url.pathname === '/releases'}
 				href="/releases"
 				text="Releases"
 				icon="releases"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/releases/calendar'}
+				active={page.url.pathname === '/releases/calendar'}
 				href="/releases/calendar"
 				text="Releases Calendar"
 				icon="calendar"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/staff'}
+				active={page.url.pathname === '/staff'}
 				href="/staff"
 				text="Staff"
 				icon="people"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/publishers'}
+				active={page.url.pathname === '/publishers'}
 				href="/publishers"
 				text="Publishers"
 				icon="publishers"
 			/>
+			<SidebarListItem active={page.url.pathname === '/tags'} href="/tags" text="Tags" icon="tag" />
 			<SidebarListItem
-				active={$page.url.pathname === '/tags'}
-				href="/tags"
-				text="Tags"
-				icon="tag"
-			/>
-			<SidebarListItem
-				active={$page.url.pathname === '/users'}
+				active={page.url.pathname === '/users'}
 				href="/users"
 				text="Users"
 				icon="profile"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/history'}
+				active={page.url.pathname === '/history'}
 				href="/history"
 				text="Recent changes"
 				icon="history"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/add'}
+				active={page.url.pathname === '/add'}
 				href="/add"
 				text="Add to database"
 				icon="add"
 			/>
 			<SidebarListItem
-				active={$page.url.pathname === '/editing-guidelines'}
+				active={page.url.pathname === '/editing-guidelines'}
 				href="/editing-guidelines"
 				text="Editing guidelines"
 				icon="about"
@@ -136,25 +135,25 @@
 		{#if user}
 			<SidebarSection sectionHeading={user.username}>
 				<SidebarListItem
-					active={$page.url.pathname === `/user/${user.id_numeric}/list`}
+					active={page.url.pathname === `/user/${user.id_numeric}/list`}
 					href="/user/{user.id_numeric}/list"
 					text="My List"
 					icon="mylist"
 				/>
 				<SidebarListItem
-					active={$page.url.pathname === `/user/${user.id_numeric}/list/upcoming`}
+					active={page.url.pathname === `/user/${user.id_numeric}/list/upcoming`}
 					href="/user/{user.id_numeric}/list/upcoming"
 					text="Upcoming"
 					icon="calendar"
 				/>
 				<SidebarListItem
-					active={$page.url.pathname === `/user/${user.id_numeric}`}
+					active={page.url.pathname === `/user/${user.id_numeric}`}
 					href="/user/{user.id_numeric}"
 					text="Profile"
 					icon="profile"
 				/>
 				<SidebarListItem
-					active={$page.url.pathname === '/settings'}
+					active={page.url.pathname === '/settings'}
 					href="/settings"
 					text="Settings"
 					icon="settings"
@@ -166,19 +165,19 @@
 		{:else}
 			<SidebarSection sectionHeading="User">
 				<SidebarListItem
-					active={$page.url.pathname === '/login'}
+					active={page.url.pathname === '/login'}
 					href="/login"
 					text="Log in"
 					icon="login"
 				/>
 				<SidebarListItem
-					active={$page.url.pathname === '/signup'}
+					active={page.url.pathname === '/signup'}
 					href="/signup"
 					text="Sign up"
 					icon="signup"
 				/>
 				<SidebarListItem
-					active={$page.url.pathname === '/settings'}
+					active={page.url.pathname === '/settings'}
 					href="/settings"
 					text="Settings"
 					icon="settings"

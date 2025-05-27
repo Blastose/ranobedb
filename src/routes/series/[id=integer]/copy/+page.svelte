@@ -3,9 +3,9 @@
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 
-	export let data;
+	let { data } = $props();
 
-	$: series = data.series;
+	let series = $derived(data.series);
 </script>
 
 <PageTitle title="Add series" />

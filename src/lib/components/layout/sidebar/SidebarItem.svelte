@@ -1,12 +1,17 @@
 <script lang="ts">
-	export let active: boolean;
-	export let text: string;
-	export let href: string;
+	interface Props {
+		active: boolean;
+		text: string;
+		href: string;
+		children?: import('svelte').Snippet;
+	}
+
+	let { active, text, href, children }: Props = $props();
 </script>
 
 <a {href}>
 	<span class:active class="sidebar-item">
-		<slot />
+		{@render children?.()}
 		{text}
 	</span>
 </a>

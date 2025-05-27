@@ -5,11 +5,15 @@
 	import Collapsible from '../display/Collapsible.svelte';
 	import StaffsSectionSnippet from './StaffsSectionSnippet.svelte';
 
-	export let staffs: Series['staff'];
-	export let olang: Language;
-	export let onlyOlang: boolean;
+	interface Props {
+		staffs: Series['staff'];
+		olang: Language;
+		onlyOlang: boolean;
+	}
 
-	$: groupedStaffsByLang = groupBy(staffs, (item) => item.lang || olang);
+	let { staffs, olang, onlyOlang }: Props = $props();
+
+	let groupedStaffsByLang = $derived(groupBy(staffs, (item) => item.lang || olang));
 </script>
 
 <section>
@@ -20,13 +24,15 @@
 			<section>
 				<!-- TODO Let users select what should auto-collapse -->
 				<Collapsible open={onlyOlang ? key === olang : key === 'ja' || key === 'en'}>
-					<svelte:fragment slot="summary">
+					{#snippet summary()}
 						<h3>{getLanguageFromString(key)}</h3>
-					</svelte:fragment>
+					{/snippet}
 
-					<div class="pt-2" slot="details">
-						<StaffsSectionSnippet {staffs} />
-					</div>
+					{#snippet details()}
+						<div class="pt-2">
+							<StaffsSectionSnippet {staffs} />
+						</div>
+					{/snippet}
 				</Collapsible>
 			</section>
 		{/each}

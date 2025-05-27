@@ -22,9 +22,13 @@
 	import TextField from '$lib/components/form/TextField.svelte';
 	import CheckboxField from '$lib/components/form/CheckboxField.svelte';
 
-	export let series: Series;
-	export let userListSeriesForm: SuperValidated<Infer<typeof userListSeriesSchema>>;
-	export let allCustLabels: { id: number; label: string }[];
+	interface Props {
+		series: Series;
+		userListSeriesForm: SuperValidated<Infer<typeof userListSeriesSchema>>;
+		allCustLabels: { id: number; label: string }[];
+	}
+
+	let { series, userListSeriesForm, allCustLabels }: Props = $props();
 
 	const readingStatuses = defaultUserListLabelsArray.map((v) => {
 		return { display: v, value: v };
@@ -73,9 +77,10 @@
 		states: { open: openNested },
 	} = createDialog({ forceVisible: true, preventScroll: false });
 
-	$: modalTitle =
-		$form.type === 'add' ? 'Add series to reading list' : 'Update series in reading list';
-	$: modalSubmitText = $form.type === 'add' ? 'Add to reading list' : 'Update';
+	let modalTitle = $derived(
+		$form.type === 'add' ? 'Add series to reading list' : 'Update series in reading list',
+	);
+	let modalSubmitText = $derived($form.type === 'add' ? 'Add to reading list' : 'Update');
 </script>
 
 <div class="flex justify-center sm:justify-normal">
@@ -86,7 +91,7 @@
 
 {#if $open}
 	<div use:melt={$portalled}>
-		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }} />
+		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }}></div>
 		<div class="modal-content">
 			<div
 				transition:fly={{
@@ -252,7 +257,11 @@
 
 				{#if $openNested}
 					<div use:melt={$portalledNested}>
-						<div use:melt={$overlayNested} class="modal-bg" transition:fade={{ duration: 150 }} />
+						<div
+							use:melt={$overlayNested}
+							class="modal-bg"
+							transition:fade={{ duration: 150 }}
+						></div>
 						<div class="modal-content">
 							<div
 								class="modal-content-inner confirm-modal"
@@ -279,7 +288,7 @@
 								>
 									<button type="button" use:melt={$closeNested} class="btn btn-pad">Cancel</button>
 									<button
-										on:click={() => {
+										onclick={() => {
 											$form.type = 'delete';
 										}}
 										type="submit"

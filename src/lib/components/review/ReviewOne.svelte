@@ -4,12 +4,16 @@
 	import Review from './Review.svelte';
 	import ReviewContainer from './ReviewContainer.svelte';
 
-	export let itemType: 'book' | 'series';
-	export let itemId: number;
-	export let review: BookReview;
-	export let userHasReview: boolean;
-	export let imageUrl: Nullish<string>;
-	export let reviewSubjectTitle: string;
+	interface Props {
+		itemType: 'book' | 'series';
+		itemId: number;
+		review: BookReview;
+		userHasReview: boolean;
+		imageUrl: Nullish<string>;
+		reviewSubjectTitle: string;
+	}
+
+	let { itemType, itemId, review, userHasReview, imageUrl, reviewSubjectTitle }: Props = $props();
 </script>
 
 <ReviewContainer

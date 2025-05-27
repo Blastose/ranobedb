@@ -2,10 +2,13 @@
 	import Drawer from './drawer/Drawer.svelte';
 	import type { User } from '$lib/server/lucia/lucia';
 
-	export let user: User | null;
+	interface Props {
+		user: User | null;
+		hideTextWhenWidthSmall: boolean;
+		showOpenDrawerButton?: boolean;
+	}
 
-	export let hideTextWhenWidthSmall: boolean;
-	export let showOpenDrawerButton: boolean = false;
+	let { user, hideTextWhenWidthSmall, showOpenDrawerButton = false }: Props = $props();
 </script>
 
 <div class="flex items-center px-2">

@@ -4,16 +4,30 @@
 	import type { Nullish } from '$lib/server/zod/schema';
 	import { getBgImageStyle, getThemeContext } from '$lib/stores/themeStore';
 
-	export let itemType: 'book' | 'series';
-	export let itemId: number;
-	export let userHasReview: boolean;
-	export let imageUrl: Nullish<string>;
-	export let reviewSubjectTitle: string;
-	export let showWriteReviewLink: boolean;
-	export let singleReview: boolean;
+	interface Props {
+		itemType: 'book' | 'series';
+		itemId: number;
+		userHasReview: boolean;
+		imageUrl: Nullish<string>;
+		reviewSubjectTitle: string;
+		showWriteReviewLink: boolean;
+		singleReview: boolean;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		itemType,
+		itemId,
+		userHasReview,
+		imageUrl,
+		reviewSubjectTitle,
+		showWriteReviewLink,
+		singleReview,
+		children,
+	}: Props = $props();
 
 	const theme = getThemeContext();
-	$: bgImageStyle = getBgImageStyle($theme, imageUrl);
+	let bgImageStyle = $derived(getBgImageStyle($theme, imageUrl));
 </script>
 
 <DbRouteShell theme={$theme} {bgImageStyle}>
@@ -36,6 +50,6 @@
 			>
 		{/if}
 
-		<slot />
+		{@render children?.()}
 	</div>
 </DbRouteShell>

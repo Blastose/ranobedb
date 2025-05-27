@@ -8,7 +8,7 @@
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 	import { languageNames } from '$lib/db/dbConsts';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Releases" />
@@ -20,11 +20,11 @@
 	results={data.count}
 	inputPlaceholder="Search by release title"
 >
-	<svelte:fragment slot="filters">
+	{#snippet filters()}
 		<ReleaseFilters filtersForm={data.filtersFormObj} isUser={Boolean(data.user)} isList={false} />
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="display">
+	{#snippet display()}
 		<div class="grid grid-cols-1 @sm:grid-cols-2 gap-2">
 			{#each data.releases as release (release.id)}
 				{@const imageUrl = buildImageUrl(release.image?.filename)}
@@ -40,7 +40,7 @@
 								loading="lazy"
 							/>
 						{:else}
-							<div />
+							<div></div>
 						{/if}
 						<div class="flex flex-col justify-between">
 							<div>
@@ -59,7 +59,7 @@
 				</a>
 			{/each}
 		</div>
-	</svelte:fragment>
+	{/snippet}
 </DbShell>
 
 <style>

@@ -14,11 +14,14 @@
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 
-	export let release: Release;
-	export let revision: number | undefined;
-	export let user: User | null;
-	export let userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined =
-		undefined;
+	interface Props {
+		release: Release;
+		revision: number | undefined;
+		user: User | null;
+		userListReleaseForm?: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
+	}
+
+	let { release, revision, user, userListReleaseForm = undefined }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>

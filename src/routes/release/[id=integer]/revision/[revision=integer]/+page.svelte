@@ -8,13 +8,13 @@
 	import Release from '$lib/components/release/id/Release.svelte';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs.js';
 
-	export let data;
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
-	$: release = data.release;
-	$: title = getNameDisplay({ obj: release, prefs: $displayPrefs.names });
-	$: firstBookInReleases = release.books.at(0);
-	$: imageUrl = buildImageUrl(firstBookInReleases?.image?.filename);
+	let release = $derived(data.release);
+	let title = $derived(getNameDisplay({ obj: release, prefs: $displayPrefs.names }));
+	let firstBookInReleases = $derived(release.books.at(0));
+	let imageUrl = $derived(buildImageUrl(firstBookInReleases?.image?.filename));
 
 	function buildBaseLink() {
 		return `/release/${data.releaseId}`;
@@ -27,7 +27,7 @@
 
 <main class="container-rndb flex flex-col gap-6">
 	<RevisionContainer>
-		<svelte:fragment slot="revision">
+		{#snippet revision()}
 			<Revision
 				changes={data.changes}
 				{title}
@@ -35,14 +35,14 @@
 				diffs={data.diffs}
 				currentItemVisibility={data.currentItemVisibility}
 			/>
-		</svelte:fragment>
+		{/snippet}
 
-		<svelte:fragment slot="content">
+		{#snippet content()}
 			<Release
 				revision={data.revision.revision}
 				release={{ ...release, id: data.releaseId }}
 				user={data.user}
 			/>
-		</svelte:fragment>
+		{/snippet}
 	</RevisionContainer>
 </main>

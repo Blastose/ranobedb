@@ -15,8 +15,12 @@
 		'Dec.',
 	] as const;
 
-	export let vYear: number;
-	export let vMonth: number;
+	interface Props {
+		vYear: number;
+		vMonth: number;
+	}
+
+	let { vYear = $bindable(), vMonth = $bindable() }: Props = $props();
 </script>
 
 <div class="flex flex-col gap-1">

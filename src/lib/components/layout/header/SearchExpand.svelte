@@ -10,26 +10,26 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
 	let debounceTimer: ReturnType<typeof setTimeout>;
-	let loading = false;
-	let state: 'active' | 'not-active' = 'not-active';
+	let loading = $state(false);
+	let focus_state: 'active' | 'not-active' = $state('not-active');
 
 	const debounce = (callback: () => void) => {
 		clearTimeout(debounceTimer);
 		debounceTimer = setTimeout(callback, 550);
 	};
 
-	let inputElement: HTMLInputElement;
-	let items: Awaited<ReturnType<typeof search>> | undefined = undefined;
+	let inputElement: HTMLInputElement | undefined = $state();
+	let items: Awaited<ReturnType<typeof search>> | undefined = $state(undefined);
 
 	function handleInputChange() {
 		loading = true;
-		if (!inputElement.value) {
+		if (!inputElement?.value) {
 			items = undefined;
 			loading = false;
 		} else {
 			debounce(async () => {
-				if (inputElement.value) {
-					const res = await search(inputElement.value);
+				if (inputElement?.value) {
+					const res = await search(inputElement?.value);
 					items = res;
 					loading = false;
 				}
@@ -38,22 +38,24 @@
 	}
 
 	function clearInput() {
-		inputElement.value = '';
+		if (inputElement) {
+			inputElement.value = '';
+		}
 		items = undefined;
 		loading = false;
-		state = 'not-active';
+		focus_state = 'not-active';
 	}
 
 	onNavigate(() => {
-		state = 'not-active';
+		focus_state = 'not-active';
 	});
 </script>
 
 <div
 	class="search-input-container"
 	use:clickOutside
-	on:outclick={() => {
-		state = 'not-active';
+	onoutclick={() => {
+		focus_state = 'not-active';
 	}}
 >
 	<input
@@ -64,20 +66,20 @@
 		placeholder="Search"
 		autocomplete="off"
 		bind:this={inputElement}
-		on:input={handleInputChange}
-		on:focus={() => {
-			state = 'active';
+		oninput={handleInputChange}
+		onfocus={() => {
+			focus_state = 'active';
 		}}
 	/>
 	<div class="search-icon pointer-events-none">
 		<Icon name="search" />
 	</div>
 	{#if inputElement?.value}
-		<button class="absolute top-0 right-0 p-2" aria-label="Clear input" on:click={clearInput}>
+		<button class="absolute top-0 right-0 p-2" aria-label="Clear input" onclick={clearInput}>
 			<Icon name="close"></Icon>
 		</button>
 	{/if}
-	{#if state === 'active' && inputElement?.value}
+	{#if focus_state === 'active' && inputElement?.value}
 		<div class="results-display thin-scrollbar" transition:fly={{ duration: 150, y: -10 }}>
 			<div class="flex flex-col gap-4">
 				{#if !loading && items}

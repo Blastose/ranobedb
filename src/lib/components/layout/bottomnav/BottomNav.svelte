@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import BottomNavButton from './BottomNavButton.svelte';
 </script>
@@ -8,7 +8,7 @@
 	<nav class="h-full">
 		<ul class="nav-items">
 			<li>
-				<BottomNavButton href="/" text="Home" active={$page.url.pathname === '/'}>
+				<BottomNavButton href="/" text="Home" active={page.url.pathname === '/'}>
 					<Icon name="home" />
 				</BottomNavButton>
 			</li>
@@ -16,7 +16,7 @@
 				<BottomNavButton
 					href="/database"
 					text="Database"
-					active={$page.url.pathname === '/database'}
+					active={page.url.pathname === '/database'}
 				>
 					<Icon name="database" />
 				</BottomNavButton>
@@ -25,7 +25,7 @@
 				<BottomNavButton
 					href="/advanced-search"
 					text="Search"
-					active={$page.url.pathname === '/advanced-search'}
+					active={page.url.pathname === '/advanced-search'}
 				>
 					<Icon name="search" />
 				</BottomNavButton>
@@ -34,7 +34,7 @@
 				<BottomNavButton
 					href="/settings"
 					text="Settings"
-					active={$page.url.pathname === '/settings'}
+					active={page.url.pathname === '/settings'}
 				>
 					<Icon name="settings" />
 				</BottomNavButton>

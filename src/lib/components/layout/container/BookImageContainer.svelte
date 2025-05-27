@@ -1,10 +1,15 @@
 <script lang="ts">
-	export let moreColumns: boolean = false;
+	interface Props {
+		moreColumns?: boolean;
+		children?: import('svelte').Snippet;
+	}
+
+	let { moreColumns = false, children }: Props = $props();
 </script>
 
 <div class="books-container">
 	<div class="book-image-container" class:more-columns={moreColumns}>
-		<slot />
+		{@render children?.()}
 	</div>
 </div>
 

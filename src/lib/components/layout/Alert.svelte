@@ -2,9 +2,14 @@
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import type { ToastData } from '$lib/components/toast/toast';
 
-	export let type: ToastData['type'];
+	interface Props {
+		type: ToastData['type'];
+		children?: import('svelte').Snippet;
+	}
 
-	let open = true;
+	let { type, children }: Props = $props();
+
+	let open = $state(true);
 
 	function hideAlert() {
 		open = false;
@@ -13,10 +18,10 @@
 
 {#if open}
 	<div class="alert" class:success={type === 'success'} class:error={type === 'error'}>
-		<button type="button" class="close-button" on:click={hideAlert} aria-label="Hide alert"
+		<button type="button" class="close-button" onclick={hideAlert} aria-label="Hide alert"
 			><Icon name="close" /></button
 		>
-		<slot />
+		{@render children?.()}
 	</div>
 {/if}
 

@@ -2,7 +2,7 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import ForgotPasswordForm from '$lib/components/form/auth/ForgotPasswordForm.svelte';
 
-	export let data;
+	let { data } = $props();
 </script>
 
 <PageTitle title="Forgot password" />

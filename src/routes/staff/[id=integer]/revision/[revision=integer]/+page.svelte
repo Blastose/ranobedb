@@ -7,11 +7,11 @@
 	import MetaTags from '$lib/components/layout/MetaTags.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 
-	export let data;
+	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
-	$: staff = data.staff;
-	$: title = getNameDisplay({ obj: staff, prefs: $displayPrefs.names });
+	let staff = $derived(data.staff);
+	let title = $derived(getNameDisplay({ obj: staff, prefs: $displayPrefs.names }));
 
 	function buildBaseLink() {
 		return `/staff/${data.staffId}`;
@@ -24,7 +24,7 @@
 
 <main class="container-rndb flex flex-col gap-6">
 	<RevisionContainer>
-		<svelte:fragment slot="revision">
+		{#snippet revision()}
 			<Revision
 				changes={data.changes}
 				{title}
@@ -32,9 +32,9 @@
 				diffs={data.diffs}
 				currentItemVisibility={data.currentItemVisibility}
 			/>
-		</svelte:fragment>
+		{/snippet}
 
-		<svelte:fragment slot="content">
+		{#snippet content()}
 			<Staff
 				staff={{ ...staff, id: data.staffId }}
 				works={data.works}
@@ -44,6 +44,6 @@
 				currentPage={data.currentPage}
 				totalPages={data.totalPages}
 			/>
-		</svelte:fragment>
+		{/snippet}
 	</RevisionContainer>
 </main>

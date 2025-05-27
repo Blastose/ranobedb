@@ -5,7 +5,7 @@
 	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import DateInput from './DateInput.svelte';
 	import Cover from '$lib/components/image/Cover.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
@@ -15,7 +15,7 @@
 	import { getRelCalStoreContext } from '$lib/stores/releaseCalendarViewStore';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs';
 
-	export let data;
+	let { data = $bindable() } = $props();
 
 	const pageTitle = 'Releases Calendar';
 
@@ -36,9 +36,9 @@
 
 	<div class="flex justify-between">
 		<div>
-			<a class="link" href={buildLink(data.prevMonth, $page.url)}>{'<-'} Previous month</a>
+			<a class="link" href={buildLink(data.prevMonth, page.url)}>{'<-'} Previous month</a>
 		</div>
-		<div><a class="link" href={buildLink(data.nextMonth, $page.url)}>Next month {'->'}</a></div>
+		<div><a class="link" href={buildLink(data.nextMonth, page.url)}>Next month {'->'}</a></div>
 	</div>
 
 	<div class="flex flex-col gap-2">
@@ -64,7 +64,7 @@
 
 		<button
 			class="w-fit sub-btn"
-			on:click={() => {
+			onclick={() => {
 				if ($relCalView === 'compact') {
 					relCalView.set('grid');
 				} else {
