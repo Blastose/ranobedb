@@ -15,7 +15,7 @@
 		"test:e2e": "playwright test",
 		"test:integration": "vitest --config ./src/tests/integration/vitest.config.ts",
 		"test:unit": "vitest --config ./vite.config.ts",
-		"db-gen": "kysely-codegen --dialect postgres --schema public --include-pattern public.* --out-file ./sql/codegen/db.d.ts",
+		"db-gen": "kysely-codegen --dialect postgres --default-schema public --include-pattern public.* --out-file ./sql/codegen/db.d.ts",
 		"db-dump:test": "pg_dump -Fc -U postgres -d rndb-testing-02 -f db-seed_new.dump",
 		"db-seed": "pg_restore --clean --create -U postgres -d rndb-test-0.14 db-seed.dump",
 		"db-seed:test": "dropdb --force --if-exists -U postgres rndb-testing-02 && createdb -U postgres rndb-testing-02 && pg_restore -U postgres -d rndb-testing-02 db-seed.dump",

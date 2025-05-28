@@ -119,7 +119,7 @@
 					<span>
 						<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a>
 						<span class="text-xs">{publisher.publisher_type}</span
-						>{#if index !== release.publishers.length - 1}<span>,</span>{/if}
+						>{#if index !== release.publishers.length - 1}<span>, {' '}</span>{/if}
 					</span>
 				{/each}
 			</p>

@@ -16,7 +16,7 @@ export async function getBooks(params: {
 	db: Kysely<DB>;
 	listUser: Pick<User, 'id'> | null;
 	currentUser: User | null;
-	url: URL;
+	url: URL | URLSearchParams;
 	form: SuperValidated<Infer<typeof bookFiltersSchema>>;
 	isList?: boolean;
 }) {

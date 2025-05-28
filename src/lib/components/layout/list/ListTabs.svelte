@@ -15,12 +15,12 @@
 		{
 			type: 'Books',
 			key: 'book',
-			url: 'books',
+			url: 'books?booklist=1',
 		},
 		{
 			type: 'Series',
 			key: 'series',
-			url: 'series',
+			url: 'series?serieslist=1',
 		},
 		{
 			type: 'Releases',
@@ -30,7 +30,7 @@
 	] as const;
 
 	let currentPage = $derived(new URL(page.url));
-	let currentTab = $derived(currentPage.pathname.split('/').at(-1) || '');
+	let currentTab = $derived(currentPage.pathname.split('/').at(-1)?.split('?').at(0) || '');
 
 	const [send, receive] = crossfade({
 		duration: 250,
@@ -44,7 +44,7 @@
 	<div class="grid overflow-x-auto overflow-y-hidden whitespace-nowrap">
 		<nav class="flex gap-4">
 			{#each tabs as tab}
-				{@const active = tab.url === currentTab}
+				{@const active = tab.url.split('?').at(0) === currentTab}
 				<div class="flex flex-col gap-2">
 					<a
 						class="{active

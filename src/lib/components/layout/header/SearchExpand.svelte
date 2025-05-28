@@ -18,18 +18,18 @@
 		debounceTimer = setTimeout(callback, 550);
 	};
 
-	let inputElement: HTMLInputElement | undefined = $state();
+	let inputValue: string = $state('');
 	let items: Awaited<ReturnType<typeof search>> | undefined = $state(undefined);
 
 	function handleInputChange() {
 		loading = true;
-		if (!inputElement?.value) {
+		if (!inputValue) {
 			items = undefined;
 			loading = false;
 		} else {
 			debounce(async () => {
-				if (inputElement?.value) {
-					const res = await search(inputElement?.value);
+				if (inputValue) {
+					const res = await search(inputValue);
 					items = res;
 					loading = false;
 				}
@@ -38,9 +38,7 @@
 	}
 
 	function clearInput() {
-		if (inputElement) {
-			inputElement.value = '';
-		}
+		inputValue = '';
 		items = undefined;
 		loading = false;
 		focus_state = 'not-active';
@@ -65,7 +63,7 @@
 		aria-label={'Search'}
 		placeholder="Search"
 		autocomplete="off"
-		bind:this={inputElement}
+		bind:value={inputValue}
 		oninput={handleInputChange}
 		onfocus={() => {
 			focus_state = 'active';
@@ -74,12 +72,12 @@
 	<div class="search-icon pointer-events-none">
 		<Icon name="search" />
 	</div>
-	{#if inputElement?.value}
+	{#if inputValue}
 		<button class="absolute top-0 right-0 p-2" aria-label="Clear input" onclick={clearInput}>
 			<Icon name="close"></Icon>
 		</button>
 	{/if}
-	{#if focus_state === 'active' && inputElement?.value}
+	{#if focus_state === 'active' && inputValue}
 		<div class="results-display thin-scrollbar" transition:fly={{ duration: 150, y: -10 }}>
 			<div class="flex flex-col gap-4">
 				{#if !loading && items}
@@ -87,9 +85,7 @@
 						<div class="flex flex-col gap-2">
 							<div class="flex justify-between">
 								<p class="text-lg font-bold">Books ({items.books.count})</p>
-								<a href="/books?q={encodeURIComponent(inputElement?.value)}" class="link"
-									>View all</a
-								>
+								<a href="/books?q={encodeURIComponent(inputValue)}" class="link">View all</a>
 							</div>
 							{#each items.books.books as book}
 								{@const imageUrl = buildImageUrl(book.image?.filename)}
@@ -120,9 +116,7 @@
 						<div class="flex flex-col gap-2">
 							<div class="flex justify-between">
 								<p class="text-lg font-bold">Series ({items.series.count})</p>
-								<a href="/series?q={encodeURIComponent(inputElement?.value)}" class="link"
-									>View all</a
-								>
+								<a href="/series?q={encodeURIComponent(inputValue)}" class="link">View all</a>
 							</div>
 							{#each items.series.series as series}
 								{@const imageUrl = buildImageUrl(series.book?.image?.filename)}
@@ -153,9 +147,7 @@
 						<div class="flex flex-col gap-2">
 							<div class="flex justify-between">
 								<p class="text-lg font-bold">Publishers ({items.publishers.count})</p>
-								<a href="/publishers?q={encodeURIComponent(inputElement?.value)}" class="link"
-									>View all</a
-								>
+								<a href="/publishers?q={encodeURIComponent(inputValue)}" class="link">View all</a>
 							</div>
 							{#each items.publishers.publishers as publisher}
 								<a href="/publisher/{publisher.id}" class="results-item">
@@ -172,9 +164,7 @@
 						<div class="flex flex-col gap-2">
 							<div class="flex justify-between">
 								<p class="text-lg font-bold">Staff ({items.staff.count})</p>
-								<a href="/staff?q={encodeURIComponent(inputElement?.value)}" class="link"
-									>View all</a
-								>
+								<a href="/staff?q={encodeURIComponent(inputValue)}" class="link">View all</a>
 							</div>
 							{#each items.staff.staff as staff}
 								<a href="/staff/{staff.id}" class="results-item">
