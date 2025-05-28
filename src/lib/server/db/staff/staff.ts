@@ -81,7 +81,6 @@ export class DBStaff {
 					eb
 						.selectFrom('staff_alias_hist as all_aliases')
 						.whereRef('all_aliases.change_id', '=', 'staff_hist.change_id')
-						.where('all_aliases.main_alias', '=', false)
 						.select([
 							'all_aliases.change_id as staff_id',
 							'all_aliases.aid as id',
