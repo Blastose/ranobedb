@@ -1,6 +1,7 @@
 <script lang="ts">
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
+	import ListFilters from '$lib/components/form/book/ListFilters.svelte';
 	import SeriesFilters from '$lib/components/form/series/filters/SeriesFilters.svelte';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
@@ -43,6 +44,10 @@
 	{/snippet}
 
 	{#snippet info()}
+		{#if data.isMyList}
+			<ListFilters searchParams={data.urlSearchForm} filter_type="series" />
+		{/if}
+
 		<div class="flex flex-col gap-1">
 			<LabelContainer userLabels={data.userLabelCounts} activeLabels={data.labels} />
 			<LabelContainer userLabels={data.userCustLabelCounts} activeLabels={data.labels} />

@@ -882,6 +882,9 @@ export const qSchema = z.object({
 export const bookListSchema = z.object({
 	booklist: z.boolean().default(false),
 });
+export const seriesListSchema = z.object({
+	serieslist: z.boolean().default(false),
+});
 export const listFiltersSchema = z.object({
 	filters: z.string().min(1).max(maxTextLength),
 });

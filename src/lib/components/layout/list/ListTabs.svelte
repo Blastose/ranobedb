@@ -20,7 +20,7 @@
 		{
 			type: 'Series',
 			key: 'series',
-			url: 'series',
+			url: 'series?serieslist=1',
 		},
 		{
 			type: 'Releases',
