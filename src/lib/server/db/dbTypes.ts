@@ -301,6 +301,12 @@ export interface ReleasePublisherHist {
 	publisher_type: ReleasePublisherType;
 }
 
+export interface SavedFilter {
+	filters: string;
+	item_name: DbItem;
+	user_id: string;
+}
+
 export interface Series {
 	aliases: string;
 	anidb_id: number | null;
@@ -567,6 +573,7 @@ export interface DB {
 	release_hist: ReleaseHist;
 	release_publisher: ReleasePublisher;
 	release_publisher_hist: ReleasePublisherHist;
+	saved_filter: SavedFilter;
 	series: Series;
 	series_book: SeriesBook;
 	series_book_hist: SeriesBookHist;

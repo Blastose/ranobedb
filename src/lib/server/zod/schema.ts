@@ -879,5 +879,11 @@ export const pageSchema = z.object({
 export const qSchema = z.object({
 	q: z.string().max(maxTextLength).trim().nullish().catch(null),
 });
+export const bookListSchema = z.object({
+	booklist: z.boolean().default(false),
+});
+export const listFiltersSchema = z.object({
+	filters: z.string().min(1).max(maxTextLength),
+});
 
 export type Nullish<T> = T | null | undefined;

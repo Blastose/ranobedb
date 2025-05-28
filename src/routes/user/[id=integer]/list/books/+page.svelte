@@ -8,6 +8,7 @@
 	import LabelContainer from '$lib/components/readinglist/LabelContainer.svelte';
 	import BookFilters from '$lib/components/form/book/filters/BookFilters.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
+	import ListFilters from '$lib/components/form/book/ListFilters.svelte';
 
 	let { data } = $props();
 
@@ -39,6 +40,10 @@
 	{/snippet}
 
 	{#snippet info()}
+		{#if data.isMyList}
+			<ListFilters searchParams={data.urlSearchForm} filter_type="book" />
+		{/if}
+
 		<div class="flex flex-col gap-1">
 			<LabelContainer userLabels={data.userLabelCounts} activeLabels={data.labels} />
 			<LabelContainer userLabels={data.userCustLabelCounts} activeLabels={data.labels} />

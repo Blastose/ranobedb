@@ -4,5 +4,5 @@ export const load = async ({ params }) => {
 	const userIdNumeric = Number(params.id);
 
 	// TODO Let user set default list
-	redirect(303, `/user/${userIdNumeric}/list/books`);
+	redirect(303, `/user/${userIdNumeric}/list/books?booklist=1`);
 };
