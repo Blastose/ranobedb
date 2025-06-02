@@ -59,6 +59,7 @@ export const load = async ({ params, locals, url }) => {
 			'user_list_staff.staff_id',
 			'user_list_staff.show_upcoming',
 			'user_list_staff.notify_book',
+			'user_list_staff.only_first_book',
 		])
 		.executeTakeFirst();
 	let formType: UserListFormType;
@@ -111,6 +112,7 @@ export const load = async ({ params, locals, url }) => {
 			langs: userStaff?.langs.map((v) => v.lang),
 			show_upcoming: userStaff?.show_upcoming,
 			notify_book: userStaff?.notify_book,
+			only_first_book: userStaff?.only_first_book,
 			type: formType,
 		},
 		zod(userListStaffSchema),

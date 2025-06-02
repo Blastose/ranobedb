@@ -101,6 +101,7 @@ export const actions = {
 							oc.columns(['staff_id', 'user_id']).doUpdateSet({
 								notify_book: form.data.notify_book,
 								show_upcoming: form.data.show_upcoming,
+								only_first_book: form.data.only_first_book,
 							}),
 						)
 						.execute();
