@@ -214,6 +214,15 @@ export const userListSeriesSchema = z.object({
 	type: z.enum(userListFormTypes),
 });
 
+export const userListStaffSchema = z.object({
+	notify_book: z.boolean().default(true),
+	show_upcoming: z.boolean().default(true),
+	only_first_book: z.boolean().default(true),
+	langs: z.array(z.enum(languagesArray)),
+	formats: z.array(z.enum(releaseFormatArray)),
+	type: z.enum(userListFormTypes),
+});
+
 export const userListReleaseSchema = z.object({
 	release_id: z.number(),
 	release_status: z.enum(userListReleaseStatus),

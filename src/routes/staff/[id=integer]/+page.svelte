@@ -27,5 +27,6 @@
 		currentPage={data.currentPage}
 		totalPages={data.totalPages}
 		results={data.count}
+		userListStaffForm={data.userListStaffForm}
 	/>
 </DbRouteShell>

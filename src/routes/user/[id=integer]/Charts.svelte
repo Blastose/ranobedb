@@ -196,6 +196,7 @@
 			<div class="flex flex-col gap-2">
 				<div class="w-fit flex flex-wrap gap-4">
 					<LinkBox display="Reading list" href="/user/{data.listUser.id_numeric}/list" />
+					<LinkBox display="Followed staff" href="/user/{data.listUser.id_numeric}/list/staff" />
 					<LinkBox display="Edit history" href="/user/{data.listUser.id_numeric}/history" />
 					<LinkBox
 						display="Upcoming releases"

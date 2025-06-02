@@ -526,6 +526,27 @@ export interface UserListSettings {
   user_id: string;
 }
 
+export interface UserListStaff {
+  added: Generated<Timestamp>;
+  notify_book: boolean;
+  only_first_book: boolean;
+  show_upcoming: boolean;
+  staff_id: number;
+  user_id: string;
+}
+
+export interface UserListStaffFormat {
+  format: ReleaseFormat;
+  staff_id: number;
+  user_id: string;
+}
+
+export interface UserListStaffLang {
+  lang: Language;
+  staff_id: number;
+  user_id: string;
+}
+
 export interface UserSeriesReview {
   created: Generated<Timestamp>;
   id: Generated<number>;
@@ -592,5 +613,8 @@ export interface DB {
   user_list_series_label: UserListSeriesLabel;
   user_list_series_lang: UserListSeriesLang;
   user_list_settings: UserListSettings;
+  user_list_staff: UserListStaff;
+  user_list_staff_format: UserListStaffFormat;
+  user_list_staff_lang: UserListStaffLang;
   user_series_review: UserSeriesReview;
 }

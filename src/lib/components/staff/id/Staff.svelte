@@ -18,6 +18,9 @@
 		wikidataLink,
 	} from '$lib/components/db-links/db-ext-links';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
+	import FollowStaff from '$lib/components/form/staff/FollowStaff.svelte';
+	import type { Infer, SuperValidated } from 'sveltekit-superforms';
+	import type { userListStaffSchema } from '$lib/server/zod/schema';
 
 	interface Props {
 		staff: Staff;
@@ -27,9 +30,19 @@
 		results: string;
 		currentPage: number;
 		totalPages: number;
+		userListStaffForm: SuperValidated<Infer<typeof userListStaffSchema>> | undefined;
 	}
 
-	let { staff, works, user, revision, results, currentPage, totalPages }: Props = $props();
+	let {
+		staff,
+		works,
+		user,
+		revision,
+		results,
+		currentPage,
+		totalPages,
+		userListStaffForm = undefined,
+	}: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 </script>
@@ -42,6 +55,10 @@
 	{user}
 	item={staff}
 >
+	{#if user && userListStaffForm}
+		<FollowStaff {staff} {userListStaffForm}></FollowStaff>
+	{/if}
+
 	{#if staff.aliases.length > 0}
 		<section>
 			<h2 class="text-lg font-bold">Other names</h2>

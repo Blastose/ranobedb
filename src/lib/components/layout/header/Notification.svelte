@@ -108,9 +108,9 @@
 								</div>
 							{/if}
 							<div class="flex flex-col">
-								<div class="flex justify-between items-center">
-									<div class="font-semibold text-sm flex gap-2 items-center">
-										<p>{notification.notification_type}</p>
+								<div class="grid grid-cols-[1fr_64px] gap-2">
+									<div class="flex font-semibold text-sm gap-2 items-baseline">
+										<p class="w-fit">{notification.notification_type}</p>
 										{#if !notification.is_read}
 											<span
 												aria-label="Unread"
