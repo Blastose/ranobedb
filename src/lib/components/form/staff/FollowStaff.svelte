@@ -100,8 +100,7 @@
 						use:enhance
 					>
 						<div>
-							<p>Notify me when a new release is added</p>
-							<p>When:</p>
+							<p>Notify me when a new release is added when:</p>
 							<div class="flex flex-wrap gap-x-2">
 								<div class="max-w-fit">
 									<Keyed>
