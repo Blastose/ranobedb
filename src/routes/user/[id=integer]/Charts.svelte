@@ -83,7 +83,7 @@
 		return chart;
 	}
 
-	function createPieChart(node: HTMLCanvasElement | null, data: UserLabel[]) {
+	function createPieChart(node: HTMLCanvasElement | null, data: UserLabel[], label: string) {
 		if (!node) {
 			return null;
 		}
@@ -93,7 +93,7 @@
 				labels: data.map((v) => v.label),
 				datasets: [
 					{
-						label: 'Books read',
+						label: label,
 						data: data.map((v) => v.count),
 					},
 				],
@@ -149,8 +149,8 @@
 	let chartsLoaded = $state(false);
 
 	onMount(() => {
-		labelChart = createPieChart(booksByStatusChart, data.labelCounts);
-		seriesLabelChart = createPieChart(seriesByStatusChart, data.seriesLabelCounts);
+		labelChart = createPieChart(booksByStatusChart, data.labelCounts, 'Books read');
+		seriesLabelChart = createPieChart(seriesByStatusChart, data.seriesLabelCounts, 'Series read');
 		pastYearReadCountChart = createChart(booksPerMonthCanvas);
 		chartsLoaded = true;
 
