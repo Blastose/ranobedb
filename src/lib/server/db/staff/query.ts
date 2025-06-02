@@ -9,14 +9,22 @@ export async function getStaff(params: {
 	q: string | undefined | null;
 	db: Kysely<DB>;
 	currentUser: User | null;
+	listUser: Pick<User, 'id'> | null;
 	url: URL;
 	limit: number;
 }) {
-	const { currentPage, q, db, currentUser, limit } = params;
+	const { currentPage, q, db, currentUser, limit, listUser } = params;
 
 	const dbStaff = DBStaff.fromDB(db, currentUser);
 
 	let query = dbStaff.getStaff().where('staff.hidden', '=', false);
+
+	if (listUser) {
+		query = query
+			.innerJoin('user_list_staff', 'user_list_staff.staff_id', 'staff.id')
+			.where('user_list_staff.user_id', '=', listUser.id);
+	}
+
 	if (q) {
 		query = query
 			.innerJoin('staff_alias as sa2', 'sa2.staff_id', 'staff.id')
@@ -48,7 +56,7 @@ export async function getStaff(params: {
 				0.3,
 			)
 			.groupBy(['staff.id', 'staff_alias.name', 'staff_alias.romaji'])
-			.orderBy(`sim_score desc`);
+			.orderBy('sim_score', 'desc');
 	}
 
 	query = query.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'));

@@ -90,6 +90,13 @@ export async function getUserListCounts(params: { userId: string }) {
 				.where('user_list_release.user_id', '=', params.userId)
 				.select((eb) => eb.fn.count('user_list_release.release_id').as('release_count'))
 				.as('release'),
+			eb
+				.selectFrom('user_list_staff')
+				.innerJoin('staff', 'user_list_staff.staff_id', 'staff.id')
+				.where('staff.hidden', '=', false)
+				.where('user_list_staff.user_id', '=', params.userId)
+				.select((eb) => eb.fn.count('user_list_staff.staff_id').as('staff_count'))
+				.as('staff'),
 		])
 		.executeTakeFirstOrThrow();
 }

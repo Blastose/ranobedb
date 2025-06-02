@@ -27,6 +27,11 @@
 			key: 'release',
 			url: 'releases',
 		},
+		{
+			type: 'Staff',
+			key: 'staff',
+			url: 'staff',
+		},
 	] as const;
 
 	let currentPage = $derived(new URL(page.url));
