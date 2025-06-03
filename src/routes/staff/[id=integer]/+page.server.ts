@@ -2,7 +2,9 @@ import { getDisplayPrefsUser, getNameDisplay } from '$lib/display/prefs.js';
 import { DBChanges } from '$lib/server/db/change/change.js';
 import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
+import type { Language, ReleaseFormat } from '$lib/server/db/dbTypes.js';
 import { DBStaff, type StaffWorks } from '$lib/server/db/staff/staff';
+import { DBUsers } from '$lib/server/db/user/user';
 import {
 	pageSchema,
 	staffTabsSchema,
@@ -106,10 +108,16 @@ export const load = async ({ params, locals, url }) => {
 		};
 	}
 
+	const series_settings = locals.user?.id
+		? (await new DBUsers(db).getListPrefs(locals.user.id)).default_series_settings
+		: {
+				langs: [] as Language[],
+				formats: [] as ReleaseFormat[],
+			};
 	const userListStaffForm = await superValidate(
 		{
-			formats: userStaff?.formats.map((v) => v.format),
-			langs: userStaff?.langs.map((v) => v.lang),
+			formats: userStaff ? userStaff?.formats.map((v) => v.format) : series_settings.formats,
+			langs: userStaff ? userStaff?.langs.map((v) => v.lang) : series_settings.langs,
 			show_upcoming: userStaff?.show_upcoming,
 			notify_book: userStaff?.notify_book,
 			only_first_book: userStaff?.only_first_book,
