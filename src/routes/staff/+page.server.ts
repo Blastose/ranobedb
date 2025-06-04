@@ -10,7 +10,15 @@ export const load = async ({ url, locals }) => {
 	const qS = await superValidate(url, zod(qSchema));
 	const q = qS.data.q;
 
-	const res = await getStaff({ currentPage, db, q, url, currentUser: locals.user, limit: 40 });
+	const res = await getStaff({
+		currentPage,
+		db,
+		q,
+		url,
+		currentUser: locals.user,
+		listUser: null,
+		limit: 40,
+	});
 
 	return {
 		staff: res.staff,
