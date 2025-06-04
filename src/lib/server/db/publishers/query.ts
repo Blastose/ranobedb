@@ -19,6 +19,7 @@ export async function getPublishers(params: {
 	let query = dbPublishers
 		.getPublishers()
 		.clearSelect()
+		.where('publisher.hidden', '=', false)
 		.select(['publisher.id', 'publisher.name', 'publisher.romaji']);
 
 	if (q) {
