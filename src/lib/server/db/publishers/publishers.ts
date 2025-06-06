@@ -239,7 +239,9 @@ export class DBPublishers {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
+				'cte_book.c_release_date',
 			])
+			.orderBy('cte_book.c_release_date', 'desc')
 			.orderBy(
 				(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
 				(ob) => ob.collate('numeric').asc(),
@@ -333,7 +335,9 @@ export class DBPublishers {
 				'cte_series.romaji_orig',
 				'cte_series.title_orig',
 				'cte_series.title',
+				'cte_series.c_start_date',
 			])
+			.orderBy('cte_series.c_start_date', 'desc')
 			.orderBy(
 				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
 				(ob) => ob.collate('numeric').asc(),
