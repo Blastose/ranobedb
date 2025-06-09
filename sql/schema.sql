@@ -720,6 +720,15 @@ CREATE TABLE public.user_list_staff_format (
     PRIMARY KEY (user_id, staff_id, format)
 );
 
+CREATE TABLE public.user_list_publisher (
+    publisher_id integer NOT NULL,
+    added timestamptz NOT NULL DEFAULT NOW(),
+    user_id text NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
+    FOREIGN KEY (publisher_id) REFERENCES public.publisher(id),
+    PRIMARY KEY (user_id, publisher_id)
+);
+
 CREATE TABLE public.user_book_review (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     book_id integer NOT NULL,

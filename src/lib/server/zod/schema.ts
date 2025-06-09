@@ -223,6 +223,10 @@ export const userListStaffSchema = z.object({
 	type: z.enum(userListFormTypes),
 });
 
+export const userListPublisherSchema = z.object({
+	type: z.enum(userListFormTypes),
+});
+
 export const userListReleaseSchema = z.object({
 	release_id: z.number(),
 	release_status: z.enum(userListReleaseStatus),

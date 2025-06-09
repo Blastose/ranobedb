@@ -32,6 +32,11 @@
 			key: 'staff',
 			url: 'staff',
 		},
+		{
+			type: 'Publishers',
+			key: 'publishers',
+			url: 'publishers',
+		},
 	] as const;
 
 	let currentPage = $derived(new URL(page.url));

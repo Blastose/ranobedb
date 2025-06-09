@@ -18,6 +18,7 @@ export const load = async ({ url, locals }) => {
 		url,
 		currentUser: locals.user,
 		limit: 40,
+		listUser: null,
 	});
 
 	return {

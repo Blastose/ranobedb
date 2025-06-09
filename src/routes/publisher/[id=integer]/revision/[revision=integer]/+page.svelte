@@ -43,6 +43,7 @@
 				currentPage={data.currentPage}
 				results={data.count}
 				totalPages={data.totalPages}
+				userListPublisherForm={undefined}
 			/>
 		{/snippet}
 	</RevisionContainer>

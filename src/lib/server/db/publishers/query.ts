@@ -9,10 +9,11 @@ export async function getPublishers(params: {
 	q: string | undefined | null;
 	db: Kysely<DB>;
 	currentUser: User | null;
+	listUser: Pick<User, 'id'> | null;
 	url: URL;
 	limit: number;
 }) {
-	const { currentPage, q, db, currentUser, limit } = params;
+	const { currentPage, q, db, currentUser, limit, listUser } = params;
 
 	const dbPublishers = DBPublishers.fromDB(db, currentUser);
 
@@ -21,6 +22,12 @@ export async function getPublishers(params: {
 		.clearSelect()
 		.where('publisher.hidden', '=', false)
 		.select(['publisher.id', 'publisher.name', 'publisher.romaji']);
+
+	if (listUser) {
+		query = query
+			.innerJoin('user_list_publisher', 'user_list_publisher.publisher_id', 'publisher.id')
+			.where('user_list_publisher.user_id', '=', listUser.id);
+	}
 
 	if (q) {
 		query = query

@@ -480,6 +480,12 @@ export interface UserListLabel {
   user_id: string;
 }
 
+export interface UserListPublisher {
+  added: Generated<Timestamp>;
+  publisher_id: number;
+  user_id: string;
+}
+
 export interface UserListRelease {
   added: Generated<Timestamp>;
   release_id: number;
@@ -607,6 +613,7 @@ export interface DB {
   user_list_book: UserListBook;
   user_list_book_label: UserListBookLabel;
   user_list_label: UserListLabel;
+  user_list_publisher: UserListPublisher;
   user_list_release: UserListRelease;
   user_list_series: UserListSeries;
   user_list_series_format: UserListSeriesFormat;
