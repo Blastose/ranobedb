@@ -10,6 +10,9 @@
 	import Works from './Works.svelte';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 	import { twitterLink, wikidataLink } from '$lib/components/db-links/db-ext-links';
+	import type { Infer, SuperValidated } from 'sveltekit-superforms';
+	import type { userListPublisherSchema } from '$lib/server/zod/schema';
+	import FavoritePublisher from '$lib/components/form/publisher/FavoritePublisher.svelte';
 
 	interface Props {
 		publisher: Publisher;
@@ -19,9 +22,19 @@
 		results: string;
 		currentPage: number;
 		totalPages: number;
+		userListPublisherForm: SuperValidated<Infer<typeof userListPublisherSchema>> | undefined;
 	}
 
-	let { publisher, revision, works, user, results, currentPage, totalPages }: Props = $props();
+	let {
+		publisher,
+		revision,
+		works,
+		user,
+		results,
+		currentPage,
+		totalPages,
+		userListPublisherForm,
+	}: Props = $props();
 
 	let child_publishers = $derived(
 		groupBy(publisher.child_publishers, (item) => item.relation_type),
@@ -38,6 +51,10 @@
 	{user}
 	item={publisher}
 >
+	{#if user && userListPublisherForm}
+		<FavoritePublisher {publisher} {userListPublisherForm}></FavoritePublisher>
+	{/if}
+
 	<section>
 		<h2 class="text-lg font-bold">Biography</h2>
 		{#if publisher.description}
