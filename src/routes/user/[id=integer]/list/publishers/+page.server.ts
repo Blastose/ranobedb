@@ -5,13 +5,13 @@ import { DBUsers } from '$lib/server/db/user/user.js';
 import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
 	const userIdNumeric = Number(params.id);
-	const page = await superValidate(url, zod(pageSchema));
+	const page = await superValidate(url, zod4(pageSchema));
 	const currentPage = page.data.page;
-	const qS = await superValidate(url, zod(qSchema));
+	const qS = await superValidate(url, zod4(qSchema));
 	const q = qS.data.q;
 
 	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);

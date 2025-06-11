@@ -2,7 +2,7 @@ import { json, type RequestHandler } from '@sveltejs/kit';
 import { db } from '$lib/server/db/db';
 import { superValidate } from 'sveltekit-superforms';
 import { searchTagNameSchema } from '$lib/server/zod/schema';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { addCharacterBetweenString } from '$lib/db/match.js';
 
 async function getTagByName(name: string, all: boolean) {
@@ -17,7 +17,7 @@ async function getTagByName(name: string, all: boolean) {
 export type ApiTag = Awaited<ReturnType<typeof getTagByName>>;
 
 export const GET: RequestHandler = async ({ url }) => {
-	const form = await superValidate(url.searchParams, zod(searchTagNameSchema));
+	const form = await superValidate(url.searchParams, zod4(searchTagNameSchema));
 	if (!form.valid) {
 		return json([]);
 	}

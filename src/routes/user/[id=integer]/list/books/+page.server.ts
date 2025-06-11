@@ -12,13 +12,13 @@ import {
 } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ url, params, locals }) => {
 	const userIdNumeric = Number(params.id);
-	const page = await superValidate(url, zod(pageSchema));
-	const qS = await superValidate(url, zod(qSchema));
-	const book_list = await superValidate(url, zod(bookListSchema));
+	const page = await superValidate(url, zod4(pageSchema));
+	const qS = await superValidate(url, zod4(qSchema));
+	const book_list = await superValidate(url, zod4(bookListSchema));
 
 	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
 
@@ -41,16 +41,16 @@ export const load = async ({ url, params, locals }) => {
 			? new URLSearchParams(book_list_filter_user)
 			: url;
 
-	const listLabels = await superValidate(listFilters, zod(listLabelsSchema));
+	const listLabels = await superValidate(listFilters, zod4(listLabelsSchema));
 	const labels = listLabels.valid ? listLabels.data.l : [];
 
-	const form = await superValidate(listFilters, zod(bookFiltersSchema));
+	const form = await superValidate(listFilters, zod4(bookFiltersSchema));
 	form.data.list = 'In my list';
 
 	const userLabelCounts = await getUserLabelCounts(listUser.id).execute();
 	const userCustLabelCounts = await getUserLabelCounts(listUser.id, 11, 99).execute();
 
-	const urlSearchForm = await superValidate({ filters: url.search }, zod(listFiltersSchema));
+	const urlSearchForm = await superValidate({ filters: url.search }, zod4(listFiltersSchema));
 
 	const [res, listCounts] = await Promise.all([
 		getBooks({

@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db/db';
 import { listFiltersSchema, seriesListSchema } from '$lib/server/zod/schema.js';
 import { superValidate, fail, message } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const actions = {
 	default: async ({ request, locals }) => {
@@ -9,14 +9,14 @@ export const actions = {
 			return fail(401);
 		}
 
-		const form = await superValidate(request, zod(listFiltersSchema));
+		const form = await superValidate(request, zod4(listFiltersSchema));
 
 		if (!form.valid) {
 			return message(form, { type: 'error', text: 'An error has occurred' }, { status: 400 });
 		}
 
 		const searchParams = new URLSearchParams(form.data.filters);
-		const series_list = await superValidate(searchParams, zod(seriesListSchema));
+		const series_list = await superValidate(searchParams, zod4(seriesListSchema));
 
 		if (series_list.valid && series_list.data.serieslist) {
 			return message(form, { type: 'Success', text: 'Saved filters as default!' });

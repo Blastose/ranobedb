@@ -5,7 +5,7 @@ import { DBReleases } from '$lib/server/db/releases/releases.js';
 import { userListReleaseSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals }) => {
 	const id = Number(params.id);
@@ -27,7 +27,7 @@ export const load = async ({ params, locals }) => {
 		user: locals.user,
 	});
 
-	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
+	const userListReleaseForm = await superValidate(zod4(userListReleaseSchema));
 
 	return { release, userListReleaseForm: locals.user ? userListReleaseForm : undefined };
 };

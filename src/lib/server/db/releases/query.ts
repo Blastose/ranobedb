@@ -5,7 +5,7 @@ import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
 
 export async function getReleases(params: {
@@ -43,7 +43,7 @@ export async function getReleases(params: {
 
 	const formObj = await superValidate(
 		{ ...form.data, p: publishers },
-		zod(releaseFiltersObjSchema),
+		zod4(releaseFiltersObjSchema),
 	);
 
 	const sort = form.data.sort;

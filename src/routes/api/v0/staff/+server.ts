@@ -1,7 +1,7 @@
 import { db } from '$lib/server/db/db.js';
 import { pageSchema, qSchema, queryLimitSchema } from '$lib/server/zod/schema.js';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
@@ -9,11 +9,11 @@ import { getStaff } from '$lib/server/db/staff/query';
 
 async function get(params: { url: URL; locals: App.Locals }) {
 	const { url, locals } = params;
-	const page = await superValidate(url, zod(pageSchema));
+	const page = await superValidate(url, zod4(pageSchema));
 	const currentPage = page.data.page;
-	const qS = await superValidate(url, zod(qSchema));
+	const qS = await superValidate(url, zod4(qSchema));
 	const q = qS.data.q;
-	const limit = await superValidate(url, zod(queryLimitSchema));
+	const limit = await superValidate(url, zod4(queryLimitSchema));
 
 	const res = await getStaff({
 		currentPage,

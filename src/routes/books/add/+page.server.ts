@@ -3,7 +3,7 @@ import { bookSchema } from '$lib/server/zod/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { fail, message, setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasAddPerms } from '$lib/db/permissions';
 import { db } from '$lib/server/db/db.js';
@@ -39,7 +39,7 @@ export const load = async ({ locals, url }) => {
 			],
 			olang: 'ja',
 		},
-		zod(bookSchema),
+		zod4(bookSchema),
 		{ errors: false },
 	);
 
@@ -51,7 +51,7 @@ export const actions = {
 		const { request, locals, cookies } = event;
 		if (!locals.user) return fail(401);
 
-		const form = await superValidate(request, zod(bookSchema));
+		const form = await superValidate(request, zod4(bookSchema));
 		if (!hasAddPerms(locals.user)) {
 			return fail(403, { form });
 		}

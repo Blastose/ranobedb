@@ -4,7 +4,7 @@ import { DBBooks } from './books';
 import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool } from 'kysely';
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserBookLabels } from '../user/list';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
@@ -24,7 +24,7 @@ export async function getBooks(params: {
 
 	const dbBooks = DBBooks.fromDB(db, currentUser);
 
-	const listLabels = await superValidate(url, zod(listLabelsSchema));
+	const listLabels = await superValidate(url, zod4(listLabelsSchema));
 	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
 	let query = dbBooks
@@ -66,7 +66,7 @@ export async function getBooks(params: {
 
 	const formObj = await superValidate(
 		{ ...form.data, staff: staff_aliases, p: publishers },
-		zod(bookFiltersObjSchema),
+		zod4(bookFiltersObjSchema),
 	);
 
 	const sort = form.data.sort;

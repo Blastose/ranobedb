@@ -14,12 +14,12 @@ import {
 import { error } from '@sveltejs/kit';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
-	const page = await superValidate(url, zod(pageSchema));
+	const page = await superValidate(url, zod4(pageSchema));
 	const currentPage = page.data.page;
-	const svTab = await superValidate(url, zod(staffTabsSchema));
+	const svTab = await superValidate(url, zod4(staffTabsSchema));
 	const tab = svTab.data.tab;
 	const id = Number(params.id);
 
@@ -123,7 +123,7 @@ export const load = async ({ params, locals, url }) => {
 			only_first_book: userStaff?.only_first_book,
 			type: formType,
 		},
-		zod(userListStaffSchema),
+		zod4(userListStaffSchema),
 	);
 
 	return { staff, works, count, currentPage, totalPages, userListStaffForm };

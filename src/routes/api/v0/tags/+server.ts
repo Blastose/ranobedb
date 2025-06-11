@@ -3,14 +3,14 @@ import { db } from '$lib/server/db/db.js';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers';
 import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 
 async function get(params: { url: URL }) {
 	const { url } = params;
-	const page = await superValidate(url, zod(pageSchema));
-	const qS = await superValidate(url, zod(qSchema));
+	const page = await superValidate(url, zod4(pageSchema));
+	const qS = await superValidate(url, zod4(qSchema));
 
 	const currentPage = page.data.page;
 	const q = qS.data.q;

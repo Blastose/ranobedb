@@ -1,7 +1,7 @@
 import { fail } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { superValidate, message } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { userListBookSchema } from '$lib/server/zod/schema';
 import { defaultUserListLabelsMap } from '$lib/db/dbConsts';
 import { DBListActions } from '$lib/server/db/user/list';
@@ -15,7 +15,7 @@ export const actions = {
 		}
 
 		const user = locals.user;
-		const form = await superValidate(request, zod(userListBookSchema));
+		const form = await superValidate(request, zod4(userListBookSchema));
 
 		if (!form.valid) {
 			return message(form, { type: 'error', text: 'Invalid form entries' });

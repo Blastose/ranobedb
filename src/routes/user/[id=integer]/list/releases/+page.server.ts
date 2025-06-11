@@ -14,16 +14,16 @@ import { error } from '@sveltejs/kit';
 import type { Expression, SqlBool } from 'kysely';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
-	const page = await superValidate(url, zod(pageSchema));
-	const qS = await superValidate(url, zod(qSchema));
+	const page = await superValidate(url, zod4(pageSchema));
+	const qS = await superValidate(url, zod4(qSchema));
 
 	const currentPage = page.data.page;
 	const q = qS.data.q;
 	const user = locals.user;
-	const form = await superValidate(url, zod(releaseFiltersSchema));
+	const form = await superValidate(url, zod4(releaseFiltersSchema));
 	const [publishers] = await Promise.all([
 		await db
 			.selectFrom('publisher')
@@ -37,10 +37,10 @@ export const load = async ({ params, locals, url }) => {
 
 	const formObj = await superValidate(
 		{ ...form.data, p: publishers },
-		zod(releaseFiltersObjSchema),
+		zod4(releaseFiltersObjSchema),
 	);
 
-	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
+	const userListReleaseForm = await superValidate(zod4(userListReleaseSchema));
 	const userIdNumeric = Number(params.id);
 	const isMyList = user?.id_numeric === userIdNumeric;
 

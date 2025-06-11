@@ -3,7 +3,7 @@ import { db } from '$lib/server/db/db';
 import type { Expression, SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { searchNameSchema } from '$lib/server/zod/schema';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { addCharacterBetweenString } from '$lib/db/match.js';
 
 async function getStaffByName(name: string, nameAsNumber: number) {
@@ -27,7 +27,7 @@ async function getStaffByName(name: string, nameAsNumber: number) {
 export type ApiStaff = Awaited<ReturnType<typeof getStaffByName>>;
 
 export const GET: RequestHandler = async ({ url }) => {
-	const form = await superValidate(url.searchParams, zod(searchNameSchema));
+	const form = await superValidate(url.searchParams, zod4(searchNameSchema));
 	if (!form.valid) {
 		return json([]);
 	}

@@ -1,6 +1,6 @@
 import { revisionSchema, staffSchema } from '$lib/server/zod/schema.js';
 import { error, redirect } from '@sveltejs/kit';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { hasAddPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
 import { db } from '$lib/server/db/db.js';
@@ -18,7 +18,7 @@ export const load = async ({ params, locals, url }) => {
 	let staff;
 
 	const dbStaff = DBStaff.fromDB(db, locals.user);
-	const revision = await superValidate(url, zod(revisionSchema));
+	const revision = await superValidate(url, zod4(revisionSchema));
 	if (revision.valid && revision.data.revision) {
 		staff = await dbStaff
 			.getStaffHistOneEdit({
@@ -45,7 +45,7 @@ export const load = async ({ params, locals, url }) => {
 		error(403, { missingPerm: 'add' });
 	}
 
-	const form = await superValidate({ ...staff }, zod(staffSchema), {
+	const form = await superValidate({ ...staff }, zod4(staffSchema), {
 		errors: false,
 	});
 

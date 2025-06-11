@@ -4,7 +4,7 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { message, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { hasAddPerms } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { DBStaffActions } from '$lib/server/db/staff/actions.js';
@@ -30,7 +30,7 @@ export const load = async ({ locals, url }) => {
 				},
 			],
 		},
-		zod(staffSchema),
+		zod4(staffSchema),
 		{
 			errors: false,
 		},
@@ -44,7 +44,7 @@ export const actions = {
 		const { request, locals, cookies } = event;
 		if (!locals.user) return fail(401);
 
-		const form = await superValidate(request, zod(staffSchema));
+		const form = await superValidate(request, zod4(staffSchema));
 
 		if (!hasAddPerms(locals.user)) {
 			return fail(403, { form });

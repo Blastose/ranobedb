@@ -5,10 +5,10 @@ import { DBUsers } from '$lib/server/db/user/user.js';
 import { historyFiltersSchema, pageSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ url, params, locals }) => {
-	const page = await superValidate(url, zod(pageSchema));
+	const page = await superValidate(url, zod4(pageSchema));
 
 	const currentPage = page.data.page;
 	const userIdNumeric = Number(params.id);
@@ -19,7 +19,7 @@ export const load = async ({ url, params, locals }) => {
 		error(404);
 	}
 
-	const form = await superValidate(url, zod(historyFiltersSchema));
+	const form = await superValidate(url, zod4(historyFiltersSchema));
 
 	if (!form.valid) {
 		error(400);

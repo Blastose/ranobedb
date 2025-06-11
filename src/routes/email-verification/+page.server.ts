@@ -4,11 +4,11 @@ import { isLimited, verifyEmailLimiter } from '$lib/server/rate-limiter/rate-lim
 import { tokenSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async (event) => {
 	const { setHeaders, url } = event;
-	const urlToken = await superValidate(url, zod(tokenSchema));
+	const urlToken = await superValidate(url, zod4(tokenSchema));
 
 	if (!urlToken.valid || !urlToken.data.token) {
 		error(404);

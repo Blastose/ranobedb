@@ -3,7 +3,7 @@ import { db } from '$lib/server/db/db';
 import type { Expression, SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { searchNameSchema } from '$lib/server/zod/schema';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { withSeriesTitleCte } from '$lib/server/db/series/series';
 import type { User } from '$lib/server/lucia/lucia';
 import { addCharacterBetweenString } from '$lib/db/match.js';
@@ -43,7 +43,7 @@ async function getSeriesByTitle(title: string, titleAsNumber: number, user: User
 export type ApiSeries = Awaited<ReturnType<typeof getSeriesByTitle>>;
 
 export const GET: RequestHandler = async ({ url, locals }) => {
-	const form = await superValidate(url.searchParams, zod(searchNameSchema));
+	const form = await superValidate(url.searchParams, zod4(searchNameSchema));
 	if (!form.valid) {
 		return json([]);
 	}

@@ -17,7 +17,7 @@ import {
 	type Infer,
 	type SuperValidated,
 } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { db } from '$lib/server/db/db.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
@@ -71,25 +71,25 @@ export const load = async ({ locals, url }) => {
 		{
 			username: locals.user.username,
 		},
-		zod(usernameSchema),
+		zod4(usernameSchema),
 	);
-	const passwordForm = await superValidate(zod(passwordSchema));
+	const passwordForm = await superValidate(zod4(passwordSchema));
 	const changeEmailForm = await superValidate(
 		{ current_email: user.email },
-		zod(changeEmailSchema),
+		zod4(changeEmailSchema),
 		{ errors: false },
 	);
-	const verifyEmailForm = await superValidate(zod(verifyEmailSchema));
-	const sendEmailVerificationForm = await superValidate(zod(sendEmailVerificationSchema));
-	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod(displayPrefsSchema));
-	const settingsTabs = await superValidate(url, zod(settingsTabsSchema));
+	const verifyEmailForm = await superValidate(zod4(verifyEmailSchema));
+	const sendEmailVerificationForm = await superValidate(zod4(sendEmailVerificationSchema));
+	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod4(displayPrefsSchema));
+	const settingsTabs = await superValidate(url, zod4(settingsTabsSchema));
 	const userListSeriesSettingsForm =
 		settingsTabs.data.view === 'list'
 			? await superValidate(
 					(await dbUsers.getListPrefs(locals.user.id)).default_series_settings,
-					zod(userListSeriesSettingsSchema),
+					zod4(userListSeriesSettingsSchema),
 				)
-			: await superValidate(defaultUserListSeriesSettings, zod(userListSeriesSettingsSchema));
+			: await superValidate(defaultUserListSeriesSettings, zod4(userListSeriesSettingsSchema));
 	const listLabelsForm =
 		settingsTabs.data.view === 'list'
 			? await superValidate(
@@ -108,9 +108,9 @@ export const load = async ({ locals, url }) => {
 							.orderBy('user_list_label.sort_order', 'asc')
 							.execute(),
 					},
-					zod(userListLabelsSchema),
+					zod4(userListLabelsSchema),
 				)
-			: await superValidate({}, zod(userListLabelsSchema));
+			: await superValidate({}, zod4(userListLabelsSchema));
 
 	return {
 		type: 'user',
@@ -133,7 +133,7 @@ export const actions = {
 			return fail(401);
 		}
 
-		const usernameForm = await superValidate(request, zod(usernameSchema));
+		const usernameForm = await superValidate(request, zod4(usernameSchema));
 
 		if (!usernameForm.valid) {
 			return fail(400, { usernameForm });
@@ -197,7 +197,7 @@ export const actions = {
 			return fail(401);
 		}
 
-		const passwordForm = await superValidate(request, zod(passwordSchema));
+		const passwordForm = await superValidate(request, zod4(passwordSchema));
 		if (!passwordForm.valid) {
 			return fail(400, { passwordForm });
 		}
@@ -237,7 +237,7 @@ export const actions = {
 	displayprefs: async ({ request, locals }) => {
 		if (!locals.user) return fail(401);
 
-		const displayPrefsForm = await superValidate(request, zod(displayPrefsSchema));
+		const displayPrefsForm = await superValidate(request, zod4(displayPrefsSchema));
 		if (!displayPrefsForm.valid) {
 			return fail(400, { displayPrefsForm });
 		}
@@ -255,7 +255,7 @@ export const actions = {
 		if (!locals.user) return fail(401);
 		const userListSeriesSettingsForm = await superValidate(
 			request,
-			zod(userListSeriesSettingsSchema),
+			zod4(userListSeriesSettingsSchema),
 		);
 		if (!userListSeriesSettingsForm.valid) {
 			return fail(400, { userListSeriesSettingsForm });
@@ -279,7 +279,7 @@ export const actions = {
 		if (!locals.user) return fail(401);
 		const userListSeriesSettingsForm = await superValidate(
 			request,
-			zod(userListSeriesSettingsSchema),
+			zod4(userListSeriesSettingsSchema),
 		);
 		if (!userListSeriesSettingsForm.valid) {
 			return fail(400, { userListSeriesSettingsForm });
@@ -382,7 +382,7 @@ export const actions = {
 
 		const formData = await request.formData();
 
-		const form = await superValidate(formData, zod(sendEmailVerificationSchema));
+		const form = await superValidate(formData, zod4(sendEmailVerificationSchema));
 		if (!form.valid) {
 			return fail(400, { form });
 		}
@@ -436,7 +436,7 @@ export const actions = {
 			return fail(401);
 		}
 
-		const verifyEmailForm = await superValidate(request, zod(verifyEmailSchema));
+		const verifyEmailForm = await superValidate(request, zod4(verifyEmailSchema));
 		if (!verifyEmailForm.valid) {
 			return fail(400, { verifyEmailForm });
 		}
@@ -472,7 +472,7 @@ export const actions = {
 
 		const formData = await request.formData();
 
-		const changeEmailForm = await superValidate(formData, zod(changeEmailSchema));
+		const changeEmailForm = await superValidate(formData, zod4(changeEmailSchema));
 
 		const turnstileSuccess = await validateTurnstile({ request, body: formData });
 		if (!turnstileSuccess) {
@@ -559,7 +559,7 @@ export const actions = {
 
 		const formData = await request.formData();
 
-		const listLabelsForm = await superValidate(formData, zod(userListLabelsSchema));
+		const listLabelsForm = await superValidate(formData, zod4(userListLabelsSchema));
 
 		if (!listLabelsForm.valid) {
 			return message(

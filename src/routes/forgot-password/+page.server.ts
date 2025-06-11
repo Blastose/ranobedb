@@ -4,7 +4,7 @@ import { superValidate, message } from 'sveltekit-superforms';
 import { db } from '$lib/server/db/db.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { validateTurnstile } from '$lib/server/cf.js';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { createPasswordResetToken } from '$lib/server/password/password.js';
 import { ORIGIN } from '$env/static/private';
@@ -17,7 +17,7 @@ export const load = async ({ locals }) => {
 		redirect(302, '/');
 	}
 
-	const form = await superValidate(zod(forgotPasswordSchema));
+	const form = await superValidate(zod4(forgotPasswordSchema));
 
 	return { form };
 };
@@ -27,7 +27,7 @@ export const actions = {
 		const { request, cookies } = event;
 		const formData = await request.formData();
 
-		const form = await superValidate(formData, zod(forgotPasswordSchema));
+		const form = await superValidate(formData, zod4(forgotPasswordSchema));
 
 		const turnstileSuccess = await validateTurnstile({ request, body: formData });
 		if (!turnstileSuccess) {

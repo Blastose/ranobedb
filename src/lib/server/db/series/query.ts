@@ -8,7 +8,7 @@ import { DBSeries } from './series';
 import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool } from 'kysely';
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserSeriesLabels } from '../user/series-list';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
@@ -28,7 +28,7 @@ export async function getSeries(params: {
 
 	const dbSeries = DBSeries.fromDB(db, currentUser);
 
-	const listLabels = await superValidate(url, zod(listLabelsSchema));
+	const listLabels = await superValidate(url, zod4(listLabelsSchema));
 	const labels = listLabels.valid ? listLabels.data.l : undefined;
 
 	let query = dbSeries
@@ -107,7 +107,7 @@ export async function getSeries(params: {
 
 	const formObj = await superValidate(
 		{ ...form.data, tags: selectedTagsWithMode, staff: staff_aliases, p: publishers },
-		zod(seriesFiltersObjSchema),
+		zod4(seriesFiltersObjSchema),
 	);
 
 	const sort = form.data.sort;

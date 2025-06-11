@@ -2,7 +2,7 @@ import { publisherSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasAddPerms } from '$lib/db/permissions';
 import { DBPublisherActions } from '$lib/server/db/publishers/actions.js';
@@ -20,7 +20,7 @@ export const load = async ({ locals, url }) => {
 		error(403, { missingPerm: 'add' });
 	}
 
-	const form = await superValidate({}, zod(publisherSchema), { errors: false });
+	const form = await superValidate({}, zod4(publisherSchema), { errors: false });
 
 	return { form };
 };
@@ -30,7 +30,7 @@ export const actions = {
 		const { request, locals, cookies } = event;
 		if (!locals.user) return fail(401);
 
-		const form = await superValidate(request, zod(publisherSchema));
+		const form = await superValidate(request, zod4(publisherSchema));
 		if (!hasAddPerms(locals.user)) {
 			return fail(403, { form });
 		}
