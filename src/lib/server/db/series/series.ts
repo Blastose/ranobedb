@@ -942,6 +942,8 @@ export class DBSeries {
 				'cte_series.anilist_id',
 				'cte_series.mal_id',
 				'cte_series.olang',
+				'cte_series.c_start_date',
+				'cte_series.c_end_date',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -1108,6 +1110,8 @@ export class DBSeries {
 				'cte_series.anilist_id',
 				'cte_series.mal_id',
 				'cte_series.olang',
+				'cte_series.c_start_date',
+				'cte_series.c_end_date',
 				'change.ihid as hidden',
 				'change.ilock as locked',
 			])
