@@ -7,15 +7,15 @@ import { type Diff } from '$lib/components/history/utils.js';
 import { db } from '$lib/server/db/db.js';
 import { getDisplayPrefsUser } from '$lib/display/prefs.js';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { pageSchema, publisherTabsSchema } from '$lib/server/zod/schema.js';
 import { getPublisherDiffs } from '$lib/server/db/publishers/diff.js';
 
 export const load = async ({ params, locals, url }) => {
-	const page = await superValidate(url, zod(pageSchema));
+	const page = await superValidate(url, zod4(pageSchema));
 	const currentPage = page.data.page;
 	const id = params.id;
-	const svTab = await superValidate(url, zod(publisherTabsSchema));
+	const svTab = await superValidate(url, zod4(publisherTabsSchema));
 	const tab = svTab.data.tab;
 	const publisherId = Number(id);
 	const revision = Number(params.revision);

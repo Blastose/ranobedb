@@ -1,7 +1,7 @@
 import { bookSchema, revisionSchema } from '$lib/server/zod/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { hasAddPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { DBReleases } from '$lib/server/db/releases/releases.js';
@@ -17,7 +17,7 @@ export const load = async ({ params, locals, url }) => {
 	const releaseId = Number(id);
 	let release;
 	const dbReleases = DBReleases.fromDB(db, locals.user);
-	const revision = await superValidate(url, zod(revisionSchema));
+	const revision = await superValidate(url, zod4(revisionSchema));
 	if (revision.valid && revision.data.revision) {
 		release = await dbReleases
 			.getReleaseHistEdit({
@@ -63,7 +63,7 @@ export const load = async ({ params, locals, url }) => {
 				},
 			],
 		},
-		zod(bookSchema),
+		zod4(bookSchema),
 		{
 			errors: false,
 		},

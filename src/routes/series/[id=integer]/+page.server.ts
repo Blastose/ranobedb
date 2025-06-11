@@ -16,7 +16,7 @@ import {
 import { error } from '@sveltejs/kit';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals }) => {
 	const id = Number(params.id);
@@ -114,7 +114,7 @@ export const load = async ({ params, locals }) => {
 					score: userSeriesLabels.score,
 					selectedCustLabels: selectedCustLabels.map((v) => v.id),
 				},
-				zod(userListSeriesSchema),
+				zod4(userListSeriesSchema),
 				{
 					errors: false,
 				},
@@ -122,11 +122,11 @@ export const load = async ({ params, locals }) => {
 		}
 		if (user?.id) {
 			const series_settings = (await new DBUsers(db).getListPrefs(user.id)).default_series_settings;
-			return await superValidate(series_settings, zod(userListSeriesSchema), {
+			return await superValidate(series_settings, zod4(userListSeriesSchema), {
 				errors: false,
 			});
 		}
-		return await superValidate(zod(userListSeriesSchema), {
+		return await superValidate(zod4(userListSeriesSchema), {
 			errors: false,
 		});
 	}
@@ -138,7 +138,7 @@ export const load = async ({ params, locals }) => {
 		{
 			book_ids: series.books.map((v) => v.id),
 		},
-		zod(userListBookBatchSchema),
+		zod4(userListBookBatchSchema),
 		{
 			errors: false,
 		},

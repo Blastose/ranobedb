@@ -10,12 +10,12 @@ import {
 } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
-	const page = await superValidate(url, zod(pageSchema));
+	const page = await superValidate(url, zod4(pageSchema));
 	const currentPage = page.data.page;
-	const svTab = await superValidate(url, zod(publisherTabsSchema));
+	const svTab = await superValidate(url, zod4(publisherTabsSchema));
 
 	const tab = svTab.data.tab;
 	const id = Number(params.id);
@@ -60,7 +60,7 @@ export const load = async ({ params, locals, url }) => {
 		{
 			type: formType,
 		},
-		zod(userListPublisherSchema),
+		zod4(userListPublisherSchema),
 	);
 
 	return { publisher, works, count, currentPage, totalPages, userListPublisherForm };

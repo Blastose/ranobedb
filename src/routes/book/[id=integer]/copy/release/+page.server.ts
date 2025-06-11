@@ -2,7 +2,7 @@ import { DBBooks } from '$lib/server/db/books/books';
 import { languageSchema, releaseSchema, revisionSchema } from '$lib/server/zod/schema.js';
 import { error, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { db } from '$lib/server/db/db.js';
@@ -19,7 +19,7 @@ export const load = async ({ params, locals, url }) => {
 
 	const user = locals.user;
 	const dbBooks = DBBooks.fromDB(db, user);
-	const revision = await superValidate(url, zod(revisionSchema));
+	const revision = await superValidate(url, zod4(revisionSchema));
 	if (revision.valid && revision.data.revision) {
 		book = await dbBooks
 			.getBookHistEdit({ id: bookId, revision: revision.data.revision })
@@ -44,7 +44,7 @@ export const load = async ({ params, locals, url }) => {
 		error(403, { missingPerm: 'edit' });
 	}
 
-	const lang = await superValidate(url, zod(languageSchema));
+	const lang = await superValidate(url, zod4(languageSchema));
 	if (!lang.valid) {
 		error(400);
 	}
@@ -65,7 +65,7 @@ export const load = async ({ params, locals, url }) => {
 				},
 			],
 		},
-		zod(releaseSchema),
+		zod4(releaseSchema),
 		{
 			errors: false,
 		},

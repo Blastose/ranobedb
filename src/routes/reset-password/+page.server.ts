@@ -2,7 +2,7 @@ import { resetPasswordSchema, tokenSchema } from '$lib/server/zod/schema';
 import { error, fail } from '@sveltejs/kit';
 import { message, superValidate } from 'sveltekit-superforms';
 import { db } from '$lib/server/db/db.js';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { isLimited, resetPasswordLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
 import { Lucia } from '$lib/server/lucia/lucia.js';
@@ -11,7 +11,7 @@ import { encodeHexLowerCase } from '@oslojs/encoding';
 import { sha256 } from '@oslojs/crypto/sha2';
 
 export const load = async ({ setHeaders, url }) => {
-	const verificationToken = await superValidate(url, zod(tokenSchema));
+	const verificationToken = await superValidate(url, zod4(tokenSchema));
 	if (!verificationToken.valid || !verificationToken.data.token) {
 		error(400);
 	}
@@ -20,7 +20,7 @@ export const load = async ({ setHeaders, url }) => {
 		'Referrer-Policy': 'no-referrer',
 	});
 
-	const form = await superValidate(zod(resetPasswordSchema));
+	const form = await superValidate(zod4(resetPasswordSchema));
 
 	return { form };
 };
@@ -35,13 +35,13 @@ export const actions = {
 
 		const formData = await request.formData();
 
-		const form = await superValidate(formData, zod(resetPasswordSchema));
+		const form = await superValidate(formData, zod4(resetPasswordSchema));
 
 		if (!form.valid) {
 			return fail(400, { form });
 		}
 
-		const verificationToken = await superValidate(url, zod(tokenSchema));
+		const verificationToken = await superValidate(url, zod4(tokenSchema));
 		if (!verificationToken.valid || !verificationToken.data.token) {
 			return fail(400, { form });
 		}

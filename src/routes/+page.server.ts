@@ -3,7 +3,7 @@ import { db } from '$lib/server/db/db';
 import { DBReleases } from '$lib/server/db/releases/releases';
 import { historyFiltersSchema } from '$lib/server/zod/schema';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
@@ -16,7 +16,7 @@ function getNow() {
 export const load = async ({ locals }) => {
 	const now = getNow();
 
-	const form = await superValidate(zod(historyFiltersSchema));
+	const form = await superValidate(zod4(historyFiltersSchema));
 	const dbReleases = DBReleases.fromDB(db);
 	const dbChanges = new DBChanges(db);
 

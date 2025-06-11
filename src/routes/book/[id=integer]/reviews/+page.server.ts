@@ -8,10 +8,10 @@ import { pageSchema, userReviewSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
-	const page = await superValidate(url, zod(pageSchema));
+	const page = await superValidate(url, zod4(pageSchema));
 	const currentPage = page.data.page;
 	const id = params.id;
 	const bookId = Number(id);
@@ -71,7 +71,7 @@ export const load = async ({ params, locals, url }) => {
 		user,
 	});
 
-	const userReviewForm = await superValidate(zod(userReviewSchema));
+	const userReviewForm = await superValidate(zod4(userReviewSchema));
 	return {
 		book,
 		userReviewForm,

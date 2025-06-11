@@ -24,7 +24,7 @@ import {
 import { releaseFormatArray } from '$lib/db/dbConsts';
 import { publisherRelTypeArray } from '$lib/db/dbConsts';
 import { languagesArray } from '$lib/db/dbConsts';
-import { z } from 'zod';
+import { z } from 'zod/v4';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
@@ -35,7 +35,10 @@ const maxTextLength = 2000;
 const maxNumberValue = 2147483647;
 const USERNAME_REGEX = /^[a-zA-Z0-9_-]+$/;
 const zUsername = z
-	.string({ required_error: 'Username is required' })
+	.string({
+		error: (issue) =>
+			issue.input === undefined ? 'Username is required' : 'Username is not a string',
+	})
 	.regex(
 		USERNAME_REGEX,
 		'Username must only contain alphanumeric characters, dash (-), and underscore (_)',
@@ -43,40 +46,33 @@ const zUsername = z
 	.min(3, { message: 'Username must be between 3 and 20 characters' })
 	.max(20, { message: 'Username must be between 3 and 20 characters' });
 const zPasswordEntry = z
-	.string({ required_error: 'Password is required' })
+	.string({
+		error: (issue) =>
+			issue.input === undefined ? 'Password is required' : 'Password is not a string',
+	})
 	.max(255, { message: 'Password too long' });
 const zPasswordNew = z
-	.string({ required_error: 'Password is required' })
+	.string({
+		error: (issue) =>
+			issue.input === undefined ? 'Password is required' : 'Password is not a string',
+	})
 	.min(15, { message: 'Password must be between 15 and 255 characters' })
 	.max(255, { message: 'Password must be between 15 and 255 characters' });
 
-function isValidISO8601Date(dateString: string): boolean {
-	const isoDateRegex = /^\d{4,5}-\d{2}-\d{2}$/;
-	if (!isoDateRegex.test(dateString)) {
-		return false;
-	}
-
-	const [year, month, day] = dateString.split('-').map((v) => Number(v));
-	if (month < 1 || month > 12 || day < 1) {
-		return false;
-	}
-	const daysInMonth = new Date(year, month, 0).getDate();
-	return day <= daysInMonth;
-}
-export const zISODate = z
-	.string()
-	.refine((v) => isValidISO8601Date(v), { message: 'Date must be a valid ISO date' });
-
 export const loginSchema = z.object({
 	usernameemail: z
-		.string({ required_error: 'Username or email is required' })
+		.string({
+			error: (issue) =>
+				issue.input === undefined
+					? 'Username or email is required'
+					: 'Username or email is not a string',
+		})
 		.max(255, { message: 'Username or email too long' }),
 	password: zPasswordEntry,
 });
 
 export const forgotPasswordSchema = z.object({
 	email: z
-		.string({ required_error: 'Email is required' })
 		.email({ message: 'Invalid email address' })
 		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
 });
@@ -94,7 +90,6 @@ export const resetPasswordSchema = z
 export const signupSchema = z
 	.object({
 		email: z
-			.string({ required_error: 'Email is required' })
 			.email({ message: 'Invalid email address' })
 			.max(255, { message: 'Email must be less or equal to 255 characters' }),
 		username: zUsername,
@@ -102,7 +97,11 @@ export const signupSchema = z
 		confirm_password: zPasswordNew,
 		privacy_policy_cla: z
 			.literal(true, {
-				errorMap: () => ({ message: 'You must agree in order to create an account' }),
+				error: (issue) => {
+					if (issue.code === 'invalid_value') {
+						return 'You must agree in order to create an account';
+					}
+				},
 			})
 			.default(false as true),
 	})
@@ -121,11 +120,9 @@ export const sendEmailVerificationSchema = z.object({
 
 export const changeEmailSchema = z.object({
 	current_email: z
-		.string({ required_error: 'Email is required' })
 		.email({ message: 'Invalid email address' })
 		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
 	new_email: z
-		.string({ required_error: 'Email is required' })
 		.email({ message: 'Invalid email address' })
 		.max(255, { message: 'Email must be less or equal to 255 characters ' }),
 	password: zPasswordEntry,
@@ -151,8 +148,8 @@ export const userListBookSchema = z.object({
 	selectedCustLabels: z.array(z.number().min(11).max(maxNumberValue)).max(2000),
 	readingStatus: z.enum(defaultUserListLabelsArray),
 	score: z.number().min(1).max(10).nullish(),
-	started: zISODate.or(z.literal('')).nullish(),
-	finished: zISODate.or(z.literal('')).nullish(),
+	started: z.iso.date().or(z.literal('')).nullish(),
+	finished: z.iso.date().or(z.literal('')).nullish(),
 	notes: z
 		.string()
 		.trim()
@@ -204,8 +201,8 @@ export const userListSeriesSchema = z.object({
 	formats: z.array(z.enum(releaseFormatArray)),
 	readingStatus: z.enum(defaultUserListLabelsArray),
 	score: z.number().min(1).max(10).nullish(),
-	started: zISODate.or(z.literal('')).nullish(),
-	finished: zISODate.or(z.literal('')).nullish(),
+	started: z.iso.date().or(z.literal('')).nullish(),
+	finished: z.iso.date().or(z.literal('')).nullish(),
 	notes: z
 		.string()
 		.trim()
@@ -506,12 +503,25 @@ export const releaseSchema = z.object({
 	isbn13: z
 		.string()
 		.trim()
-		.min(13, { message: 'ISBN must be 13 characters' })
-		.max(13, { message: 'ISBN must be 13 characters' })
+		.transform((v) =>
+			v
+				.replaceAll(/\u200e/g, '')
+				.trim()
+				.replaceAll('-', ''),
+		)
+		// Note, this doesn't show the errors because it's in the `.pipe`,
+		// but zod doesn't let you do `.transform()` and then `.min()` and others
+		.pipe(
+			z
+				.string()
+				.min(13, { message: 'ISBN must be 13 characters' })
+				.max(13, { message: 'ISBN must be 13 characters' })
+				.regex(/[0-9]{13}/, { message: 'Invalid ISBN13 identifier' }),
+		)
 		.nullish()
 		.or(z.literal(''))
-		.transform((v) => (v === '' ? null : v)),
-
+		.transform((v) => (v === '' ? null : v))
+		.optional(),
 	amazon: zLink(['www.amazon.co.jp', 'www.amazon.com']),
 	bookwalker: zLink(['bookwalker.jp', 'global.bookwalker.jp']),
 	rakuten: zLink(['books.rakuten.co.jp']),
@@ -674,8 +684,8 @@ export const bookFiltersSchema = z.object({
 	rlExclude: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
-	minDate: zISODate.or(z.literal('')).nullish(),
-	maxDate: zISODate.or(z.literal('')).nullish(),
+	minDate: z.iso.date().or(z.literal('')).nullish(),
+	maxDate: z.iso.date().or(z.literal('')).nullish(),
 	sort: z.enum(booksUserListSortArray).catch('Relevance desc'),
 	staff: z.array(z.number().max(maxNumberValue)).catch([]),
 	sl: z.enum(logicalOps).catch('and'),
@@ -726,8 +736,8 @@ export const bookFiltersObjSchema = z.object({
 	rlExclude: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
 	rfl: z.enum(logicalOps).catch('or'),
-	minDate: zISODate.or(z.literal('')).nullish(),
-	maxDate: zISODate.or(z.literal('')).nullish(),
+	minDate: z.iso.date().or(z.literal('')).nullish(),
+	maxDate: z.iso.date().or(z.literal('')).nullish(),
 	sort: z.enum(booksUserListSortArray).catch('Relevance desc'),
 	staff: zStaff,
 	sl: z.enum(logicalOps).catch('and'),
@@ -740,10 +750,10 @@ export const bookFiltersObjSchema = z.object({
 export const seriesFiltersSchema = z.object({
 	minVolumes: z.number().max(maxNumberValue).nullish(),
 	maxVolumes: z.number().max(maxNumberValue).nullish(),
-	minStartDate: zISODate.or(z.literal('')).nullish(),
-	maxStartDate: zISODate.or(z.literal('')).nullish(),
-	minEndDate: zISODate.or(z.literal('')).nullish(),
-	maxEndDate: zISODate.or(z.literal('')).nullish(),
+	minStartDate: z.iso.date().or(z.literal('')).nullish(),
+	maxStartDate: z.iso.date().or(z.literal('')).nullish(),
+	minEndDate: z.iso.date().or(z.literal('')).nullish(),
+	maxEndDate: z.iso.date().or(z.literal('')).nullish(),
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
 	rlExclude: z.array(z.enum(languagesArray)).catch([]),
@@ -781,10 +791,10 @@ const zTags = z
 export const seriesFiltersObjSchema = z.object({
 	minVolumes: z.number().max(maxNumberValue).nullish(),
 	maxVolumes: z.number().max(maxNumberValue).nullish(),
-	minStartDate: zISODate.or(z.literal('')).nullish(),
-	maxStartDate: zISODate.or(z.literal('')).nullish(),
-	minEndDate: zISODate.or(z.literal('')).nullish(),
-	maxEndDate: zISODate.or(z.literal('')).nullish(),
+	minStartDate: z.iso.date().or(z.literal('')).nullish(),
+	maxStartDate: z.iso.date().or(z.literal('')).nullish(),
+	minEndDate: z.iso.date().or(z.literal('')).nullish(),
+	maxEndDate: z.iso.date().or(z.literal('')).nullish(),
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rll: z.enum(logicalOps).catch('or'),
 	rlExclude: z.array(z.enum(languagesArray)).catch([]),
@@ -806,8 +816,8 @@ export const seriesFiltersObjSchema = z.object({
 export const releaseFiltersSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
-	minDate: zISODate.or(z.literal('')).nullish(),
-	maxDate: zISODate.or(z.literal('')).nullish(),
+	minDate: z.iso.date().or(z.literal('')).nullish(),
+	maxDate: z.iso.date().or(z.literal('')).nullish(),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 	p: z.array(z.number().max(maxNumberValue)).catch([]),
 	pl: z.enum(logicalOps).catch('and'),
@@ -820,8 +830,8 @@ export const releaseFiltersSchema = z.object({
 export const releaseFiltersObjSchema = z.object({
 	rl: z.array(z.enum(languagesArray)).catch([]),
 	rf: z.array(z.enum(releaseFormatArray)).catch([]),
-	minDate: zISODate.or(z.literal('')).nullish(),
-	maxDate: zISODate.or(z.literal('')).nullish(),
+	minDate: z.iso.date().or(z.literal('')).nullish(),
+	maxDate: z.iso.date().or(z.literal('')).nullish(),
 	sort: z.enum(releaseSortArray).catch('Relevance desc'),
 	p: zPublishers,
 	pl: z.enum(logicalOps).catch('or'),

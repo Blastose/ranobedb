@@ -4,7 +4,7 @@ import { redirect } from '@sveltejs/kit';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { message, setError, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { db } from '$lib/server/db/db';
 import { validateTurnstile } from '$lib/server/cf.js';
 import { isLimited, signUpLimiter } from '$lib/server/rate-limiter/rate-limiter.js';
@@ -15,7 +15,7 @@ import { generateUserId, Lucia } from '$lib/server/lucia/lucia.js';
 export const load = async ({ locals }) => {
 	if (locals.user) redirect(302, '/');
 
-	const form = await superValidate(zod(signupSchema));
+	const form = await superValidate(zod4(signupSchema));
 
 	return { form };
 };
@@ -26,7 +26,7 @@ export const actions = {
 
 		const formData = await request.formData();
 
-		const form = await superValidate(formData, zod(signupSchema));
+		const form = await superValidate(formData, zod4(signupSchema));
 
 		const turnstileSuccess = await validateTurnstile({ request, body: formData });
 		if (!turnstileSuccess) {

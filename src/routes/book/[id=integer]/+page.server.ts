@@ -14,7 +14,7 @@ import {
 import { type ReadingStatus } from '$lib/server/db/dbTypes';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { db } from '$lib/server/db/db.js';
 import { getDisplayPrefsUser, getTitleDisplay } from '$lib/display/prefs.js';
 
@@ -69,11 +69,11 @@ export const load = async ({ params, locals }) => {
 			type: formType,
 			selectedCustLabels: selectedCustLabels.map((v) => v.id),
 		},
-		zod(userListBookSchema),
+		zod4(userListBookSchema),
 		{ errors: false },
 	);
 
-	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
+	const userListReleaseForm = await superValidate(zod4(userListReleaseSchema));
 
 	return {
 		book,

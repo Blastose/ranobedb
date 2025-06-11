@@ -2,7 +2,7 @@ import { seriesSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasAddPerms } from '$lib/db/permissions';
 import { DBSeriesActions } from '$lib/server/db/series/actions.js';
@@ -33,7 +33,7 @@ export const load = async ({ locals, url }) => {
 			],
 			olang: 'ja',
 		},
-		zod(seriesSchema),
+		zod4(seriesSchema),
 		{
 			errors: false,
 		},
@@ -47,7 +47,7 @@ export const actions = {
 		const { request, locals, cookies } = event;
 		if (!locals.user) return fail(401);
 
-		const form = await superValidate(request, zod(seriesSchema));
+		const form = await superValidate(request, zod4(seriesSchema));
 		if (!hasAddPerms(locals.user)) {
 			return fail(403, { form });
 		}

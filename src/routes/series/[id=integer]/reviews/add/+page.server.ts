@@ -9,7 +9,7 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
 	const id = params.id;
@@ -110,7 +110,7 @@ export const load = async ({ params, locals, url }) => {
 			volumes_read:
 				userListSeries?.volumes_read ?? (Number(userListSeries?.c_vols_read?.count) || undefined),
 		},
-		zod(userReviewSchema),
+		zod4(userReviewSchema),
 		{
 			errors: false,
 		},
@@ -124,7 +124,7 @@ export const actions = {
 		const id = Number(params.id);
 		if (!locals.user) return fail(401);
 
-		const form = await superValidate(request, zod(userReviewSchema));
+		const form = await superValidate(request, zod4(userReviewSchema));
 
 		let message;
 		if (!(form.data.type === 'delete')) {

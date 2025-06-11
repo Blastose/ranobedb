@@ -4,7 +4,7 @@ import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import pkg from 'pg';
 const { DatabaseError } = pkg;
 import { message, setError, superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { ChangePermissionError } from '$lib/server/db/errors/errors.js';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
@@ -25,7 +25,7 @@ export const load = async ({ params, locals, url }) => {
 	let series;
 
 	const dbSeries = DBSeries.fromDB(db, locals.user);
-	const revision = await superValidate(url, zod(revisionSchema));
+	const revision = await superValidate(url, zod4(revisionSchema));
 	if (revision.valid && revision.data.revision) {
 		series = await dbSeries
 			.getSeriesHistOneEdit({
@@ -56,7 +56,7 @@ export const load = async ({ params, locals, url }) => {
 		? revertedRevisionMarkdown('series', seriesId, revision.data.revision)
 		: undefined;
 
-	const form = await superValidate({ ...series, comment: prefilledComment }, zod(seriesSchema), {
+	const form = await superValidate({ ...series, comment: prefilledComment }, zod4(seriesSchema), {
 		errors: false,
 	});
 
@@ -69,7 +69,7 @@ export const actions = {
 		const id = Number(params.id);
 		if (!locals.user) return fail(401);
 
-		const form = await superValidate(request, zod(seriesSchema));
+		const form = await superValidate(request, zod4(seriesSchema));
 		if (!hasEditPerms(locals.user)) {
 			return fail(403, { form });
 		}

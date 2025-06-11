@@ -5,16 +5,16 @@ import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers.js';
 import { DBStaff } from '$lib/server/db/staff/staff.js';
 import { db } from '$lib/server/db/db.js';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { pageSchema, staffTabsSchema } from '$lib/server/zod/schema.js';
 import { type Diff } from '$lib/components/history/utils.js';
 import { getStaffDiffs } from '$lib/server/db/staff/diff.js';
 
 export const load = async ({ params, locals, url }) => {
-	const page = await superValidate(url, zod(pageSchema));
+	const page = await superValidate(url, zod4(pageSchema));
 	const currentPage = page.data.page;
 	const id = params.id;
-	const svTab = await superValidate(url, zod(staffTabsSchema));
+	const svTab = await superValidate(url, zod4(staffTabsSchema));
 	const tab = svTab.data.tab;
 	const staffId = Number(id);
 	const revision = Number(params.revision);

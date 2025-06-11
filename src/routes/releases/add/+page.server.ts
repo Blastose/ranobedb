@@ -2,7 +2,7 @@ import { releaseSchema } from '$lib/server/zod/schema.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { message, setError, superValidate } from 'sveltekit-superforms';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import pkg from 'pg';
 import { hasEditPerms } from '$lib/db/permissions';
 import { DBReleaseActions } from '$lib/server/db/releases/actions.js';
@@ -23,7 +23,7 @@ export const load = async ({ locals, url }) => {
 
 	const form = await superValidate(
 		{ lang: 'ja', format: 'digital', release_date: 99999999 },
-		zod(releaseSchema),
+		zod4(releaseSchema),
 		{
 			errors: false,
 		},
@@ -37,7 +37,7 @@ export const actions = {
 		const { request, locals, cookies } = event;
 		if (!locals.user) return fail(401);
 
-		const form = await superValidate(request, zod(releaseSchema));
+		const form = await superValidate(request, zod4(releaseSchema));
 		// Let users with edit perms add new releases
 		if (!hasEditPerms(locals.user)) {
 			return fail(403, { form });

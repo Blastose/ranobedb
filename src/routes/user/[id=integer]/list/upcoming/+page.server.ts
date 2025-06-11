@@ -15,13 +15,13 @@ import { error } from '@sveltejs/kit';
 import type { Expression, SqlBool } from 'kysely';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
 	const user = locals.user;
 	const userIdNumeric = Number(params.id);
 
-	const form = await superValidate(url, zod(releaseFiltersSchema));
+	const form = await superValidate(url, zod4(releaseFiltersSchema));
 	const useReleaseLangFilters = form.data.rl.length > 0;
 	const useReleaseFormatFilters = form.data.rf.length > 0;
 	const useReleasePublisherFilters = form.data.p.length > 0;
@@ -38,7 +38,7 @@ export const load = async ({ params, locals, url }) => {
 
 	const formObj = await superValidate(
 		{ ...form.data, p: publishers },
-		zod(releaseFiltersObjCalendarSchema),
+		zod4(releaseFiltersObjCalendarSchema),
 	);
 
 	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
@@ -179,7 +179,7 @@ export const load = async ({ params, locals, url }) => {
 		return `${month}|${year}`;
 	});
 
-	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
+	const userListReleaseForm = await superValidate(zod4(userListReleaseSchema));
 
 	const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
 	const currentYearMonth = `${dateNumber.getYear()}-${dateNumber.getMonth()}`;

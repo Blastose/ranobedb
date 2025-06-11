@@ -12,17 +12,17 @@ import {
 import { DeduplicateJoinsPlugin, sql, type Expression, type SqlBool } from 'kysely';
 import { jsonObjectFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import dayjs from 'dayjs';
 
 export const load = async ({ url, locals }) => {
-	const page = await superValidate(url, zod(pageSchema));
-	const qS = await superValidate(url, zod(qSchema));
+	const page = await superValidate(url, zod4(pageSchema));
+	const qS = await superValidate(url, zod4(qSchema));
 
 	const currentPage = page.data.page;
 	const q = qS.data.q;
 
-	const form = await superValidate(url, zod(releaseFiltersCalendarSchema));
+	const form = await superValidate(url, zod4(releaseFiltersCalendarSchema));
 
 	const dbReleases = DBReleases.fromDB(db, locals.user);
 
@@ -62,7 +62,7 @@ export const load = async ({ url, locals }) => {
 
 	const formObj = await superValidate(
 		{ ...form.data, p: publishers },
-		zod(releaseFiltersObjCalendarSchema),
+		zod4(releaseFiltersObjCalendarSchema),
 	);
 
 	if (
@@ -266,7 +266,7 @@ export const load = async ({ url, locals }) => {
 		return `${month}|${year}`;
 	});
 
-	const userListReleaseForm = await superValidate(zod(userListReleaseSchema));
+	const userListReleaseForm = await superValidate(zod4(userListReleaseSchema));
 
 	const d = dayjs(new Date(year, month - 1, 1));
 

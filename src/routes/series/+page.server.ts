@@ -2,16 +2,16 @@ import { db } from '$lib/server/db/db.js';
 import { getSeries } from '$lib/server/db/series/query.js';
 import { pageSchema, qSchema, seriesFiltersSchema } from '$lib/server/zod/schema.js';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ url, locals }) => {
-	const page = await superValidate(url, zod(pageSchema));
-	const qS = await superValidate(url, zod(qSchema));
+	const page = await superValidate(url, zod4(pageSchema));
+	const qS = await superValidate(url, zod4(qSchema));
 
 	const currentPage = page.data.page;
 	const q = qS.data.q;
 
-	const form = await superValidate(url, zod(seriesFiltersSchema));
+	const form = await superValidate(url, zod4(seriesFiltersSchema));
 
 	const res = await getSeries({
 		currentPage,

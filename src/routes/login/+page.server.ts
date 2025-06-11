@@ -1,7 +1,7 @@
 import { loginSchema, redirectSchema } from '$lib/server/zod/schema';
 import { fail, redirect } from '@sveltejs/kit';
 import { superValidate, message } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { buildUrlFromRedirect } from '$lib/utils/url.js';
 import { redirect as flashRedirect } from 'sveltekit-flash-message/server';
 import { db } from '$lib/server/db/db.js';
@@ -16,7 +16,7 @@ export const load = async ({ locals }) => {
 		redirect(302, '/');
 	}
 
-	const form = await superValidate(zod(loginSchema));
+	const form = await superValidate(zod4(loginSchema));
 
 	return { form };
 };
@@ -26,7 +26,7 @@ export const actions = {
 		const { request, cookies, url } = event;
 		const formData = await request.formData();
 
-		const form = await superValidate(formData, zod(loginSchema));
+		const form = await superValidate(formData, zod4(loginSchema));
 
 		const turnstileSuccess = await validateTurnstile({ request, body: formData });
 		if (!turnstileSuccess) {
@@ -68,7 +68,7 @@ export const actions = {
 		const session = await lucia.createSession(token, user.id);
 		lucia.setSessionTokenCookie(event, token, session.expiresAt);
 
-		const redirect = await superValidate(url, zod(redirectSchema));
+		const redirect = await superValidate(url, zod4(redirectSchema));
 		let redirectUrl = '/';
 		if (redirect.valid && redirect.data.redirect) {
 			redirectUrl = buildUrlFromRedirect(url, redirect.data.redirect);
