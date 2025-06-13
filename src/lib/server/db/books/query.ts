@@ -277,13 +277,11 @@ export async function getBooks(params: {
 					)
 					.$if(usePublisherFilters, (qb) =>
 						qb
-							.innerJoin('release_book', (join) =>
-								join.onRef('release_book.book_id', '=', 'book.id'),
+							.innerJoin('release_book as rb_p', (join) =>
+								join.onRef('rb_p.book_id', '=', 'book.id'),
 							)
-							.innerJoin('release', (join) =>
-								join.onRef('release.id', '=', 'release_book.release_id'),
-							)
-							.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
+							.innerJoin('release as r_p', (join) => join.onRef('r_p.id', '=', 'rb_p.release_id'))
+							.innerJoin('release_publisher', 'release_publisher.release_id', 'r_p.id')
 							.$if(form.data.pl === 'or', (qb2) =>
 								qb2.where((eb2) => {
 									const filters: Expression<SqlBool>[] = [];

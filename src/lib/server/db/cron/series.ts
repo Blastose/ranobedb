@@ -11,7 +11,11 @@ export async function updateSeriesStartEndDates() {
 				.innerJoin('book', 'book.id', 'series_book.book_id')
 				.where('book.hidden', '=', false)
 				.groupBy('series.id')
-				.select((eb) => ['series.id', eb.fn.min<number>('book.c_release_date').as('min_book_date')])
+				.select((eb) => [
+					'series.id',
+					eb.fn.min<number>('book.c_release_date').as('min_book_date'),
+					eb.fn.max<number>('book.c_release_date').as('latest_book_date'),
+				])
 				.select((eb) =>
 					eb
 						.case()
@@ -27,6 +31,7 @@ export async function updateSeriesStartEndDates() {
 		.set((eb) => ({
 			c_start_date: eb.ref('rel.min_book_date'),
 			c_end_date: eb.ref('rel.max_book_date'),
+			c_latest_release_date: eb.ref('rel.latest_book_date'),
 		}))
 		.whereRef('series.id', '=', 'rel.id')
 		.execute();

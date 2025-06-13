@@ -493,6 +493,7 @@ CREATE TABLE public.series (
     c_start_date integer NOT NULL,
     end_date integer NOT NULL,
     c_end_date integer NOT NULL,
+    c_latest_release_date integer NOT NULL,
     wikidata_id integer,
     c_num_books integer NOT NULL,
     olang public.language NOT NULL,

@@ -91,6 +91,7 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 			'series.end_date',
 			'series.c_start_date',
 			'series.c_end_date',
+			'series.c_latest_release_date',
 			'series.web_novel',
 			'series.wikidata_id',
 			'series.anilist_id',
@@ -127,6 +128,7 @@ export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
 			'series_hist.end_date',
 			'series_hist.c_start_date',
 			'series_hist.c_end_date',
+			'series_hist.c_latest_release_date',
 			'series_hist.web_novel',
 			'series_hist.wikidata_id',
 			'series_hist.anilist_id',
@@ -944,6 +946,7 @@ export class DBSeries {
 				'cte_series.olang',
 				'cte_series.c_start_date',
 				'cte_series.c_end_date',
+				'cte_series.c_latest_release_date',
 			])
 			.select((eb) => [
 				jsonArrayFrom(
@@ -1112,6 +1115,7 @@ export class DBSeries {
 				'cte_series.olang',
 				'cte_series.c_start_date',
 				'cte_series.c_end_date',
+				'cte_series.c_latest_release_date',
 				'change.ihid as hidden',
 				'change.ilock as locked',
 			])

@@ -181,6 +181,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			start_date: 20120101,
 			c_end_date: 99999999,
 			c_start_date: 20120101,
+			c_latest_release_date: 99999999,
 			olang: 'ja',
 			c_num_books: 0,
 		})
@@ -231,6 +232,7 @@ export async function initDatabase(db: Kysely<DB>) {
 			start_date: 20120101,
 			c_end_date: 99999999,
 			c_start_date: 20120101,
+			c_latest_release_date: 99999999,
 			olang: 'ja',
 			c_num_books: 0,
 		})

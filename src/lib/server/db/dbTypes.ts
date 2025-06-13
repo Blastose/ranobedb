@@ -315,6 +315,7 @@ export interface Series {
 	c_end_date: number;
 	c_num_books: number;
 	c_start_date: number;
+	c_latest_release_date: number;
 	description: string;
 	end_date: number;
 	hidden: boolean;
@@ -349,6 +350,7 @@ export interface SeriesHist {
 	bookwalker_id: number | null;
 	c_end_date: Generated<number>;
 	c_start_date: Generated<number>;
+	c_latest_release_date: Generated<number>;
 	change_id: number;
 	description: string;
 	end_date: number;

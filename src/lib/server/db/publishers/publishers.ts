@@ -335,9 +335,9 @@ export class DBPublishers {
 				'cte_series.romaji_orig',
 				'cte_series.title_orig',
 				'cte_series.title',
-				'cte_series.c_start_date',
+				'cte_series.c_latest_release_date',
 			])
-			.orderBy('cte_series.c_start_date', 'desc')
+			.orderBy('cte_series.c_latest_release_date', 'desc')
 			.orderBy(
 				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
 				(ob) => ob.collate('numeric').asc(),
