@@ -61,6 +61,9 @@ export function setupReleaseEditObjsForEqualityTest(
 
 function deleteKeysFromSeriesEdit(series: SeriesEdit) {
 	deleteObjKey(series, 'id');
+	deleteObjKey(series, 'c_start_date');
+	deleteObjKey(series, 'c_end_date');
+	deleteObjKey(series, 'c_latest_release_date');
 	deleteObjKeyInArray(series['books'], 'id');
 	deleteObjKeyInArray(series['child_series'], 'id');
 }

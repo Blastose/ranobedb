@@ -19,13 +19,13 @@ async function testSeries(params: {
 
 	const series = await dbSeries.getSeriesOneEdit(id).executeTakeFirstOrThrow();
 
-	const publisherHist = await dbSeries.getSeriesHistOneEdit({ id: id }).executeTakeFirstOrThrow();
+	const seriesHist = await dbSeries.getSeriesHistOneEdit({ id: id }).executeTakeFirstOrThrow();
 
 	await cb_series(series);
-	await cb_series(publisherHist);
+	await cb_series(seriesHist);
 
-	setupSeriesEditObjsForEqualityTest(series, publisherHist);
-	expect(series).toStrictEqual(publisherHist);
+	setupSeriesEditObjsForEqualityTest(series, seriesHist);
+	expect(series).toStrictEqual(seriesHist);
 }
 
 describe('series actions', () => {
