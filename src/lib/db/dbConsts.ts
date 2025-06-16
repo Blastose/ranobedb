@@ -223,6 +223,7 @@ export const defaultUserListLabelsArray = [
 	'Plan to read',
 	'Stalled',
 	'Dropped',
+	'Other',
 ] as const;
 
 export const defaultUserListLabelsArrayAndRemove = [
