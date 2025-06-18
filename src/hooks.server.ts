@@ -4,7 +4,7 @@ import { getMode } from '$lib/mode/mode';
 import schedule from 'node-schedule';
 import { sendRecentlyReleasedNotifications } from '$lib/server/db/cron/release';
 import { updateBookReleaseDate } from '$lib/server/db/cron/book';
-import { updateSeriesStartEndDates } from '$lib/server/db/cron/series';
+import { updateSeriesPopularity, updateSeriesStartEndDates } from '$lib/server/db/cron/series';
 import { Lucia } from '$lib/server/lucia/lucia';
 import { db } from '$lib/server/db/db';
 
@@ -12,6 +12,7 @@ schedule.scheduleJob('0 0 * * *', async function () {
 	await sendRecentlyReleasedNotifications();
 	await updateBookReleaseDate();
 	await updateSeriesStartEndDates();
+	await updateSeriesPopularity();
 });
 
 export const handle: Handle = async ({ event, resolve }) => {

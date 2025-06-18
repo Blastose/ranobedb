@@ -145,8 +145,6 @@
 
 	<TitlesSection titles={series.titles} />
 
-	<Tags tags={series.tags} />
-
 	{#if series.aliases}
 		<section>
 			<Collapsible open={false}>
@@ -159,6 +157,8 @@
 			</Collapsible>
 		</section>
 	{/if}
+
+	<Tags tags={series.tags} />
 
 	<section>
 		<h2 class="font-bold text-lg">Links</h2>

@@ -24,14 +24,12 @@
 			corrections to the database.
 		</p>
 
-		<p>We are currently in alpha, so expect bugs and missing features.</p>
-
 		<p>
 			If you are interested in helping out, please join our <a
 				href="https://discord.gg/ZeAnhGncFx"
 				class="link"
 				target="_blank">Discord server</a
-			>
+			>.
 		</p>
 	</div>
 

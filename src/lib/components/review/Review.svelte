@@ -40,7 +40,7 @@
 				<p>
 					By <a class="link" href="/user/{review.user_id}">{review.username}</a>
 				</p>
-				<time datetime="">{new Date(review.created).toLocaleDateString('sv')}</time>
+				<time>{review.created.toLocaleDateString('sv')}</time>
 			</div>
 		</div>
 
@@ -48,9 +48,9 @@
 			<div class="flex gap-2 items-center">
 				Score:
 				{#if review.score}
-					<div class="flex">
+					<div class="flex gap-1">
 						<Icon class="text-[#ffa844]" name="star" height="24" width="24" />
-						{review.score}/10
+						{review.score} / 10
 					</div>
 				{:else}
 					No score given
@@ -69,7 +69,7 @@
 					}}>This review contains spoilers. Click to show.</button
 				>
 			{:else}
-				<Description description={review.review_text} maxHeight={128} />
+				<Description description={review.review_text!} maxHeight={128} />
 			{/if}
 		{:else if review.spoiler && !showReview}
 			<button
@@ -79,7 +79,7 @@
 			>
 		{:else}
 			<div class="max-w-5xl">
-				<MarkdownToHtml markdown={review.review_text} type="full" />
+				<MarkdownToHtml markdown={review.review_text!} type="full" />
 			</div>
 		{/if}
 

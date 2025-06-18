@@ -316,6 +316,7 @@ export interface Series {
 	c_num_books: number;
 	c_start_date: number;
 	c_latest_release_date: number;
+	c_popularity: Generated<number>;
 	description: string;
 	end_date: number;
 	hidden: boolean;
@@ -351,6 +352,7 @@ export interface SeriesHist {
 	c_end_date: Generated<number>;
 	c_start_date: Generated<number>;
 	c_latest_release_date: Generated<number>;
+	c_popularity: Generated<number>;
 	change_id: number;
 	description: string;
 	end_date: number;
