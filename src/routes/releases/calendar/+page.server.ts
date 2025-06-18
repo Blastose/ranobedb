@@ -110,27 +110,33 @@ export const load = async ({ url, locals }) => {
 			});
 		}
 		if (useReleasePublisherFilters) {
-			query = query
-				.innerJoin('release_publisher', 'release_publisher.release_id', 'release.id')
-				.$if(form.data.pl === 'or', (qb2) =>
-					qb2.where((eb2) => {
-						const filters: Expression<SqlBool>[] = [];
-						for (const publisher_id of form.data.p) {
-							filters.push(eb2('release_publisher.publisher_id', '=', publisher_id));
-						}
-						return eb2.or(filters);
-					}),
-				)
-				.$if(form.data.pl === 'and', (qb2) =>
-					qb2
-						.where('release_publisher.publisher_id', 'in', form.data.p)
-						.groupBy('release.id')
-						.having(
-							(eb) => eb.fn.count('release_publisher.publisher_id').distinct(),
-							'=',
-							form.data.p.length,
+			query = query.where((eb) =>
+				eb('release.id', 'in', (eb) =>
+					eb
+						.selectFrom('release_publisher')
+						.select('release_publisher.release_id')
+						.whereRef('release_publisher.release_id', '=', 'release.id')
+						.$if(form.data.pl === 'or', (qb2) =>
+							qb2.where((eb2) => {
+								const filters: Expression<SqlBool>[] = [];
+								for (const publisher_id of form.data.p) {
+									filters.push(eb2('release_publisher.publisher_id', '=', publisher_id));
+								}
+								return eb2.or(filters);
+							}),
+						)
+						.$if(form.data.pl === 'and', (qb2) =>
+							qb2
+								.where('release_publisher.publisher_id', 'in', form.data.p)
+								.groupBy('release.id')
+								.having(
+									(eb) => eb.fn.count('release_publisher.publisher_id').distinct(),
+									'=',
+									form.data.p.length,
+								),
 						),
-				);
+				),
+			);
 		}
 		if (useReleaseLabelFilters && locals.user) {
 			query = query
