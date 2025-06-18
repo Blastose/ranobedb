@@ -36,3 +36,22 @@ export async function updateSeriesStartEndDates() {
 		.whereRef('series.id', '=', 'rel.id')
 		.execute();
 }
+
+export async function updateSeriesPopularity() {
+	console.log('Running update series popularity job');
+	await db
+		.with('rel', (db) =>
+			db
+				.selectFrom('series')
+				.innerJoin('user_list_series', 'user_list_series.series_id', 'series.id')
+				.groupBy('series.id')
+				.select((eb) => ['series.id', eb.fn.count<number>('series.id').as('pop')]),
+		)
+		.updateTable('series')
+		.from('rel')
+		.set((eb) => ({
+			c_popularity: eb.ref('rel.pop'),
+		}))
+		.whereRef('series.id', '=', 'rel.id')
+		.execute();
+}
