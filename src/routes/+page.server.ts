@@ -6,6 +6,9 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { DBReviews } from '$lib/server/db/reviews/reviews.js';
+import { DBSeries } from '$lib/server/db/series/series';
+
 dayjs.extend(customParseFormat);
 
 function getNow() {
@@ -43,12 +46,46 @@ export const load = async ({ locals }) => {
 		})
 		.limit(10)
 		.execute();
+	const bookReviewsPromise = DBReviews.fromDB(db)
+		.getBookReviewsWithBookObj({ excludeReviewText: true })
+		.limit(4)
+		.orderBy('user_book_review.last_updated', 'desc')
+		.execute();
+	const seriesReviewsPromise = DBReviews.fromDB(db)
+		.getSeriesReviewsWithSeriesObj({ excludeReviewText: true })
+		.limit(4)
+		.orderBy('user_series_review.last_updated', 'desc')
+		.execute();
+	const mostPopularSeriesPromise = DBSeries.fromDB(db)
+		.getSeries()
+		.clearOrderBy()
+		.where('c_popularity', '>', 25)
+		.orderBy('c_popularity', 'desc')
+		.limit(8)
+		.execute();
 
-	const [recentlyReleased, upcomingReleases, recentChanges] = await Promise.all([
+	const [
+		recentlyReleased,
+		upcomingReleases,
+		recentChanges,
+		bookReviews,
+		seriesReviews,
+		mostPopularSeries,
+	] = await Promise.all([
 		recentlyReleasedPromise,
 		upcomingReleasesPromise,
 		recentChangesPromise,
+		bookReviewsPromise,
+		seriesReviewsPromise,
+		mostPopularSeriesPromise,
 	]);
 
-	return { recentlyReleased, upcomingReleases, recentChanges };
+	return {
+		recentlyReleased,
+		upcomingReleases,
+		recentChanges,
+		bookReviews,
+		seriesReviews,
+		mostPopularSeries,
+	};
 };
