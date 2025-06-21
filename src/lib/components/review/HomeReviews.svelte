@@ -1,6 +1,7 @@
 <script lang="ts">
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import Cover from '$lib/components/image/Cover.svelte';
+	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs';
 	import type {
 		BookReviewWithBookObj,
 		SeriesReviewWithSeriesObj,
@@ -16,6 +17,7 @@
 	}
 
 	let { reviews }: Props = $props();
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <section class="flex flex-col gap-2">
@@ -26,7 +28,10 @@
 	<div class="grid grid-cols-1 @md:grid-cols-2 gap-4">
 		{#each reviews.reviews as review}
 			<div class="grid grid-cols-[64px_1fr] @md:grid-cols-[72px_1fr] gap-4">
-				<a href="/{reviews.type}/{review.item_id}">
+				<a
+					href="/{reviews.type}/{review.item_id}"
+					aria-label={getTitleDisplay({ obj: review.obj!, prefs: $displayPrefs.title_prefs })}
+				>
 					<Cover obj={review.obj!}></Cover>
 				</a>
 				<div>
