@@ -4,12 +4,17 @@
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#222222",
-	"theme_color": "#222222",
+	"theme_color": "rgb(32, 32, 32)",
 	"icons": [
 		{
-			"src": "/favicon.png",
+			"src": "/rndb_logo_192.png",
 			"type": "image/png",
-			"sizes": "any"
+			"sizes": "192x192"
+		},
+		{
+			"src": "/rndb_logo_512.png",
+			"type": "image/png",
+			"sizes": "512x512"
 		}
 	]
 }
