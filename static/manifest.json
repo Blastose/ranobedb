@@ -1,0 +1,20 @@
+{
+	"name": "RanobeDB",
+	"short_name": "RanobeDB",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#222222",
+	"theme_color": "rgb(32, 32, 32)",
+	"icons": [
+		{
+			"src": "/rndb_logo_192.png",
+			"type": "image/png",
+			"sizes": "192x192"
+		},
+		{
+			"src": "/rndb_logo_512.png",
+			"type": "image/png",
+			"sizes": "512x512"
+		}
+	]
+}

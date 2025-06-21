@@ -15,6 +15,9 @@
 	let { data } = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
+
+	let series_img_1 = $derived(data.mostPopularSeries.at(6));
+	let series_img_2 = $derived(data.mostPopularSeries.at(7));
 </script>
 
 <PageTitle title="Home" />
@@ -59,32 +62,36 @@
 
 		<div class="hidden @md:block">
 			<div class="grid @md:grid-cols-1 @lg:grid-cols-2 gap-1 items-center">
-				<a href="/series/{data.mostPopularSeries[6].id}"
-					><img
-						loading="lazy"
-						width={data.mostPopularSeries[6].book!.image!.width}
-						height={data.mostPopularSeries[6].book!.image!.height}
-						class="hidden @lg:block rounded-md rotate-[-3deg]"
-						src="{PUBLIC_IMAGE_URL}{data.mostPopularSeries[6].book!.image!.filename}"
-						alt="Cover image for {getTitleDisplay({
-							obj: data.mostPopularSeries[6],
-							prefs: $displayPrefs.title_prefs,
-						})}"
-					/>
-				</a>
-				<a href="/series/{data.mostPopularSeries[7].id}">
-					<img
-						loading="lazy"
-						width={data.mostPopularSeries[7].book!.image!.width}
-						height={data.mostPopularSeries[7].book!.image!.height}
-						class="rounded-md rotate-[3deg]"
-						src="{PUBLIC_IMAGE_URL}{data.mostPopularSeries[7].book!.image!.filename}"
-						alt="Cover image for {getTitleDisplay({
-							obj: data.mostPopularSeries[7],
-							prefs: $displayPrefs.title_prefs,
-						})}"
-					/>
-				</a>
+				{#if series_img_1}
+					<a href="/series/{series_img_1.id}"
+						><img
+							loading="lazy"
+							width={series_img_1.book?.image?.width}
+							height={series_img_1.book?.image?.height}
+							class="hidden @lg:block rounded-md rotate-[-3deg]"
+							src="{PUBLIC_IMAGE_URL}{series_img_1.book?.image?.filename}"
+							alt="Cover image for {getTitleDisplay({
+								obj: series_img_1,
+								prefs: $displayPrefs.title_prefs,
+							})}"
+						/>
+					</a>
+				{/if}
+				{#if series_img_2}
+					<a href="/series/{series_img_2.id}">
+						<img
+							loading="lazy"
+							width={series_img_2.book?.image?.width}
+							height={series_img_2.book?.image?.height}
+							class="rounded-md rotate-[3deg]"
+							src="{PUBLIC_IMAGE_URL}{series_img_2.book?.image?.filename}"
+							alt="Cover image for {getTitleDisplay({
+								obj: series_img_2,
+								prefs: $displayPrefs.title_prefs,
+							})}"
+						/>
+					</a>
+				{/if}
 			</div>
 		</div>
 	</div>
@@ -103,7 +110,7 @@
 							title: series.title,
 							romaji: series.romaji,
 							id: series.id,
-							image: series.book!.image,
+							image: series.book?.image,
 							lang: series.lang,
 							romaji_orig: series.romaji_orig,
 							title_orig: series.title_orig,

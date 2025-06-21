@@ -6,11 +6,13 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import Spoilers from '$lib/components/review/Spoilers.svelte';
+	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs.js';
 	import { relativeTime } from '$lib/utils/relative-time';
 
 	let { data } = $props();
 
 	let title = 'Reviews';
+	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <PageTitle {title} />
@@ -28,7 +30,10 @@
 		>
 			{#each data.reviews as review}
 				<div class="grid grid-cols-[64px_1fr] @md:grid-cols-[72px_1fr] gap-4">
-					<a href="/{review.item_type}/{review.item_id}">
+					<a
+						href="/{review.item_type}/{review.item_id}"
+						aria-label={getTitleDisplay({ obj: review.obj!, prefs: $displayPrefs.title_prefs })}
+					>
 						<Cover obj={review.obj!}></Cover>
 					</a>
 					<div>
