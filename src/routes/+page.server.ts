@@ -59,7 +59,6 @@ export const load = async ({ locals }) => {
 	const mostPopularSeriesPromise = DBSeries.fromDB(db)
 		.getSeries()
 		.clearOrderBy()
-		.where('c_popularity', '>', 25)
 		.orderBy('c_popularity', 'desc')
 		.limit(8)
 		.execute();

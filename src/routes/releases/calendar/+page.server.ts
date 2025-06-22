@@ -128,7 +128,7 @@ export const load = async ({ url, locals }) => {
 						.$if(form.data.pl === 'and', (qb2) =>
 							qb2
 								.where('release_publisher.publisher_id', 'in', form.data.p)
-								.groupBy('release.id')
+								.groupBy('release_publisher.release_id')
 								.having(
 									(eb) => eb.fn.count('release_publisher.publisher_id').distinct(),
 									'=',
