@@ -24,7 +24,7 @@
 				height={obj?.image?.height}
 				src="{PUBLIC_IMAGE_URL}{obj?.image?.filename}"
 				alt=""
-				class="rounded-md object-cover"
+				class="w-full rounded-md object-cover"
 				style="aspect-ratio: 0.70381231671554252199413489736072;"
 				loading="lazy"
 			/>

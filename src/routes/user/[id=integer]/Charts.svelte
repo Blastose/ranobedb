@@ -201,6 +201,7 @@
 						display="Upcoming releases"
 						href="/user/{data.listUser.id_numeric}/list/upcoming"
 					/>
+					<LinkBox display="Reading log" href="/user/{data.listUser.id_numeric}/reading-log" />
 				</div>
 				<div class="w-fit flex flex-wrap gap-4">
 					<LinkBox display="Book reviews" href="/user/{data.listUser.id_numeric}/reviews/books" />
