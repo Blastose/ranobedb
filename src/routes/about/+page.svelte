@@ -53,11 +53,10 @@
 		<section>
 			<h2>Licensing</h2>
 			<p>
-				All information on RanobeDB is available under the <a
+				RanobeDB is made available under the <a
 					href="https://opendatacommons.org/licenses/odbl/1-0/"
 					target="_blank">Open Database License</a
-				>
-				and its contents are licensed under the
+				>. Any rights in individual contents of the database are licensed under the
 				<a href="https://opendatacommons.org/licenses/dbcl/1-0/" target="_blank"
 					>Database Contents License</a
 				>.

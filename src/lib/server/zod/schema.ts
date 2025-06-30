@@ -884,6 +884,10 @@ export const releaseFiltersObjCalendarSchema = z.object({
 	p: zPublishers,
 });
 
+export const readingLogSchema = z.object({
+	date: zYearMonth,
+});
+
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });
 export const searchTagNameSchema = z.object({
 	name: z.string().max(maxTextLength).trim(),
