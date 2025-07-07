@@ -135,7 +135,8 @@
 		{#if user}
 			<SidebarSection sectionHeading={user.username}>
 				<SidebarListItem
-					active={page.url.pathname.includes(`/user/${user.id_numeric}/list`)}
+					active={page.url.pathname.includes(`/user/${user.id_numeric}/list`) &&
+						!page.url.pathname.includes('/list/upcoming')}
 					href="/user/{user.id_numeric}/list"
 					text="My List"
 					icon="mylist"
@@ -213,10 +214,13 @@
 			</div>
 			<div class="flex flex-wrap gap-4">
 				<a href="/api/docs/v0">API</a>
-				<a href="/about/terms-of-use">Terms of Use</a>
+				<a href="/database-dumps">Database dumps</a>
 			</div>
 			<div class="flex flex-wrap gap-4">
 				<a href="/about/privacy-policy">Privacy policy</a>
+			</div>
+			<div class="flex flex-wrap gap-4">
+				<a href="/about/terms-of-use">Terms of Use</a>
 			</div>
 		</div>
 	</nav>
