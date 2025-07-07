@@ -25,10 +25,10 @@ test.describe('edit series mod', () => {
 		await page.goto('/series/3/edit');
 
 		await page.getByLabel('Add book').click();
-		await page.getByLabel('Add book').fill('f');
+		await page.getByLabel('Add book').fill('Chivalry of');
 		await page.getByText('#16 Chivalry of a Failed Knight: Volume 2').click();
 		await page.getByLabel('Add series').click();
-		await page.getByLabel('Add series').fill('f');
+		await page.getByLabel('Add series').fill('Ascendance');
 		await page.getByText('#19 Ascendance of a Bookworm: Fanbook').click();
 		await page.getByLabel('Edit summary').fill('Add relations');
 		await page.getByRole('button', { name: 'Submit edit' }).click();

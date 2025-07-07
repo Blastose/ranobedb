@@ -11,20 +11,22 @@ async function getPublisherByName(name: string, nameAsNumber: number) {
 		.select(['publisher.name', 'publisher.id', 'publisher.romaji'])
 		.where(({ eb }) => {
 			const ors: Expression<SqlBool>[] = [];
-			eb.and([
-				eb(
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(name), eb.ref('publisher.name')]),
-						eb.fn('word_similarity', [eb.val(name), eb.ref('publisher.romaji')]),
+			ors.push(
+				eb.and([
+					eb(
+						eb.fn('greatest', [
+							eb.fn('word_similarity', [eb.val(name), eb.ref('publisher.name')]),
+							eb.fn('word_similarity', [eb.val(name), eb.ref('publisher.romaji')]),
+						]),
+						'>',
+						0.3,
+					),
+					eb.or([
+						eb(eb.val(name), sql.raw('<%'), eb.ref('publisher.name')).$castTo<boolean>(),
+						eb(eb.val(name), sql.raw('<%'), eb.ref('publisher.romaji')).$castTo<boolean>(),
 					]),
-					'>',
-					0.3,
-				),
-				eb.or([
-					eb(eb.val(name), sql.raw('<%'), eb.ref('publisher.name')).$castTo<boolean>(),
-					eb(eb.val(name), sql.raw('<%'), eb.ref('publisher.romaji')).$castTo<boolean>(),
 				]),
-			]);
+			);
 
 			if (!isNaN(nameAsNumber)) {
 				ors.push(eb('publisher.id', '=', nameAsNumber));
