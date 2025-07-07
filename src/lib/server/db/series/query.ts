@@ -184,6 +184,7 @@ export async function getSeries(params: {
 				'cte_series.c_num_books',
 				'cte_series.c_start_date',
 				'cte_series.c_end_date',
+				'cte_series.c_popularity',
 				'score',
 				'last_updated',
 				'added',
@@ -202,6 +203,7 @@ export async function getSeries(params: {
 				'cte_series.c_num_books',
 				'cte_series.c_start_date',
 				'cte_series.c_end_date',
+				'cte_series.c_popularity',
 			]);
 		}
 	}
