@@ -50,7 +50,7 @@
 				The search params used in the endpoints are similar to the ones used on the website. You can
 				visit a page and add some filters to see what the url search params should look like. For
 				example, <a
-					href="/books?q=seishun+buta+yarou&rl=en&rll=or&rf=print&rfl=or&sort=Relevance+desc&staff=195&sl=and&p=41&pl=or"
+					href="/api/v0/books?q=seishun+buta+yarou&rl=en&rll=or&rf=print&rfl=or&sort=Relevance+desc&staff=195&sl=and&p=41&pl=or"
 					><code
 						>/books?q=seishun+buta+yarou&rl=en&rll=or&rf=print&rfl=or&sort=Relevance+desc&staff=195&sl=and&p=41&pl=or</code
 					></a

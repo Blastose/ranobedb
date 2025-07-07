@@ -164,6 +164,7 @@ export async function getSeries(params: {
 					.as('sim_score'),
 			)
 			.orderBy('sim_score', orderByDirection)
+			.orderBy('c_popularity', 'desc')
 			.orderBy(
 				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
 				(ob) => ob.collate('numeric').asc(),
@@ -209,7 +210,7 @@ export async function getSeries(params: {
 		(sort !== 'Title asc' && sort !== 'Title desc') ||
 		(sort.startsWith('Relevance') && !useQuery)
 	) {
-		query = query.orderBy(
+		query = query.orderBy('c_popularity', 'desc').orderBy(
 			(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
 			(ob) => ob.collate('numeric').asc(),
 		);

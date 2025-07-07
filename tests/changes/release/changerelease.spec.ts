@@ -67,7 +67,7 @@ test.describe('add release mod', () => {
 		await page.locator('select').nth(3).selectOption('4');
 		await page.locator('select').nth(4).selectOption('8');
 		await page.getByLabel('Add book').click();
-		await page.getByLabel('Add book').fill('f');
+		await page.getByLabel('Add book').fill('Chivalry of a Failed Knight');
 		await page.getByText('#16 Chivalry of a Failed Knight: Volume 2').click();
 		await page.getByLabel('Type: completepartial').selectOption('partial');
 		await page.getByLabel('Add publisher').click();
