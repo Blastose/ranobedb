@@ -320,6 +320,8 @@ export const seriesSortArray = [
 	'Start date desc',
 	'End date asc',
 	'End date desc',
+	'Latest release asc',
+	'Latest release desc',
 	'Num. books asc',
 	'Num. books desc',
 ] as const;

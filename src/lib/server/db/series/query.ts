@@ -133,6 +133,10 @@ export async function getSeries(params: {
 		query = query.orderBy('score', 'asc');
 	} else if (sort === 'Score desc' && listUser !== null) {
 		query = query.orderBy('score', (ob) => ob.desc().nullsLast());
+	} else if (sort === 'Latest release asc' && listUser !== null) {
+		query = query.orderBy('c_latest_release_date', 'asc');
+	} else if (sort === 'Latest release desc' && listUser !== null) {
+		query = query.orderBy('c_latest_release_date', 'desc');
 	} else if (sort === 'Added asc' && listUser !== null) {
 		query = query.orderBy('added', 'asc');
 	} else if (sort === 'Added desc' && listUser !== null) {

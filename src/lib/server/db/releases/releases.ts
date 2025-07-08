@@ -32,6 +32,7 @@ export class DBReleases {
 						.selectAll('image')
 						.innerJoin('release_book', 'release.id', 'release_book.release_id')
 						.innerJoin('book', 'book.id', 'release_book.book_id')
+						.select('book.id')
 						.whereRef('image.id', '=', 'book.image_id')
 						.where('book.hidden', '=', false)
 						.limit(1),
