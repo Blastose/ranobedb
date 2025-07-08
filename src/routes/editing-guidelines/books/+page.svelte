@@ -35,7 +35,7 @@
 			<h2>Description</h2>
 			<p>
 				A short description of the book. Use descriptions provided by the English publisher if
-				available.
+				available. Otherwise, translations of the Japanese description are also allowed.
 			</p>
 		</section>
 

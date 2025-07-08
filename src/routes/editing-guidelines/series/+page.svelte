@@ -38,10 +38,12 @@
 		</section>
 
 		<section>
-			<h2>Description</h2>
+			<h2>Note</h2>
 			<p>
-				A short description of the series. Use descriptions provided by the English publisher if
-				available. This should correspond to the description of the first book in the series.
+				Any information that is useful. For example, for a cancelled series, where the series left
+				off in the web novel like in <a href="/series/13691/revision/4"
+					>https://ranobedb.org/series/13691/revision/4</a
+				>
 			</p>
 		</section>
 
