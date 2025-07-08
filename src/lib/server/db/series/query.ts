@@ -192,6 +192,8 @@ export async function getSeries(params: {
 					'score',
 					'last_updated',
 					'added',
+					'started',
+					'finished',
 				]);
 		} else {
 			query = query
