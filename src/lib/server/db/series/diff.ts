@@ -101,6 +101,14 @@ export function getSeriesDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
+			name: 'Website',
+			words1: prevSeriesHistEdit.website,
+			words2: seriesHistEdit.website,
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
 			name: 'Web novel',
 			words1: prevSeriesHistEdit.web_novel,
 			words2: seriesHistEdit.web_novel,

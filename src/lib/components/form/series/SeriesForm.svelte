@@ -116,6 +116,10 @@
 	</div>
 
 	<div class="max-w-md">
+		<LinkInput form={sForm} field="website" label="Website" resetPadding={true} placeholder="" />
+	</div>
+
+	<div class="max-w-md">
 		<LinkInput
 			form={sForm}
 			field="web_novel"

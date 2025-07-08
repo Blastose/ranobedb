@@ -503,7 +503,8 @@ CREATE TABLE public.series (
     hidden boolean NOT NULL,
     aliases text NOT NULL,
     description text NOT NULL,
-    web_novel text
+    web_novel text,
+    website text
 );
 
 CREATE TABLE public.series_hist (
@@ -524,6 +525,7 @@ CREATE TABLE public.series_hist (
     aliases text NOT NULL,
     description text NOT NULL,
     web_novel text,
+    website text,
     FOREIGN KEY (change_id) REFERENCES public.change(id),
     PRIMARY KEY (change_id)
 );

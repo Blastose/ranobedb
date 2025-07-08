@@ -59,6 +59,8 @@ const zPasswordNew = z
 	.min(15, { message: 'Password must be between 15 and 255 characters' })
 	.max(255, { message: 'Password must be between 15 and 255 characters' });
 
+const zUserScore = z.number().min(1).max(10).nullish();
+
 export const loginSchema = z.object({
 	usernameemail: z
 		.string({
@@ -147,7 +149,7 @@ export const userListBookSchema = z.object({
 	),
 	selectedCustLabels: z.array(z.number().min(11).max(maxNumberValue)).max(2000),
 	readingStatus: z.enum(defaultUserListLabelsArray),
-	score: z.number().min(1).max(10).nullish(),
+	score: zUserScore,
 	started: z.iso.date().or(z.literal('')).nullish(),
 	finished: z.iso.date().or(z.literal('')).nullish(),
 	notes: z
@@ -171,7 +173,7 @@ export const userReviewSchema = z.object({
 		.min(100, { message: 'Review must contain at least 100 characters' })
 		.max(10000),
 	spoiler: z.boolean().default(false),
-	score: z.number().min(1).max(10).nullish(),
+	score: zUserScore,
 	volumes_read: z.number().min(1).max(maxNumberValue).nullish(),
 	type: z.enum(userListFormTypes),
 });
@@ -200,7 +202,7 @@ export const userListSeriesSchema = z.object({
 	langs: z.array(z.enum(languagesArray)),
 	formats: z.array(z.enum(releaseFormatArray)),
 	readingStatus: z.enum(defaultUserListLabelsArray),
-	score: z.number().min(1).max(10).nullish(),
+	score: zUserScore,
 	started: z.iso.date().or(z.literal('')).nullish(),
 	finished: z.iso.date().or(z.literal('')).nullish(),
 	notes: z
@@ -578,6 +580,7 @@ export const seriesSchema = z.object({
 	c_end_date: zReleaseDate.nullish(),
 	c_latest_release_date: zReleaseDate.nullish(),
 	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com']),
+	website: zLink([]),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
 	mal_id: z.number().max(maxNumberValue).nullish(),
 	anilist_id: z.number().max(maxNumberValue).nullish(),
