@@ -73,7 +73,7 @@
 			<p>RanobeDB wouldn't be possible without any of the following:</p>
 			<ul>
 				<li>
-					<a href="https://vndb.org/" target="_blank">vndb</a> for inspiring and influencing this project
+					<a href="https://vndb.org/" target="_blank">VNDB</a> for inspiring and influencing this project
 				</li>
 				<li>
 					<a href="https://github.com/LNRelease/lnrelease.github.io" target="_blank">LNRelease</a> for

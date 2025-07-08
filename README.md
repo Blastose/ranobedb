@@ -65,7 +65,7 @@ For larger fixes or feature requests, please discuss it on our [Discord server](
 
 Thanks to:
 
-- [vndb](https://vndb.org/) for inspiring and influencing this project
+- [VNDB](https://vndb.org/) for inspiring and influencing this project
 - [LNRelease](https://github.com/LNRelease/lnrelease.github.io) for compiling a list of English light novels
 - [Ranobe Mori](https://ranobe-mori.net/) for compiling a list of Japanese light novels
 

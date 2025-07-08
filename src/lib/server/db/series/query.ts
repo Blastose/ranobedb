@@ -167,48 +167,54 @@ export async function getSeries(params: {
 					)
 					.as('sim_score'),
 			)
-			.orderBy('sim_score', orderByDirection)
-			.orderBy('c_popularity', 'desc')
-			.orderBy(
-				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
-				(ob) => ob.collate('numeric').asc(),
-			);
+			.orderBy('sim_score', orderByDirection);
 
 		if (isList) {
-			query = query.groupBy([
-				'cte_series.id',
-				'cte_series.hidden',
-				'cte_series.locked',
-				'cte_series.lang',
-				'cte_series.romaji',
-				'cte_series.romaji_orig',
-				'cte_series.title',
-				'cte_series.title_orig',
-				'cte_series.olang',
-				'cte_series.c_num_books',
-				'cte_series.c_start_date',
-				'cte_series.c_end_date',
-				'cte_series.c_popularity',
-				'score',
-				'last_updated',
-				'added',
-			]);
+			query = query
+				.orderBy(
+					(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+					(ob) => ob.collate('numeric').asc(),
+				)
+				.groupBy([
+					'cte_series.id',
+					'cte_series.hidden',
+					'cte_series.locked',
+					'cte_series.lang',
+					'cte_series.romaji',
+					'cte_series.romaji_orig',
+					'cte_series.title',
+					'cte_series.title_orig',
+					'cte_series.olang',
+					'cte_series.c_num_books',
+					'cte_series.c_start_date',
+					'cte_series.c_end_date',
+					'cte_series.c_popularity',
+					'score',
+					'last_updated',
+					'added',
+				]);
 		} else {
-			query = query.groupBy([
-				'cte_series.id',
-				'cte_series.hidden',
-				'cte_series.locked',
-				'cte_series.lang',
-				'cte_series.romaji',
-				'cte_series.romaji_orig',
-				'cte_series.title',
-				'cte_series.title_orig',
-				'cte_series.olang',
-				'cte_series.c_num_books',
-				'cte_series.c_start_date',
-				'cte_series.c_end_date',
-				'cte_series.c_popularity',
-			]);
+			query = query
+				.orderBy('c_popularity', 'desc')
+				.orderBy(
+					(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+					(ob) => ob.collate('numeric').asc(),
+				)
+				.groupBy([
+					'cte_series.id',
+					'cte_series.hidden',
+					'cte_series.locked',
+					'cte_series.lang',
+					'cte_series.romaji',
+					'cte_series.romaji_orig',
+					'cte_series.title',
+					'cte_series.title_orig',
+					'cte_series.olang',
+					'cte_series.c_num_books',
+					'cte_series.c_start_date',
+					'cte_series.c_end_date',
+					'cte_series.c_popularity',
+				]);
 		}
 	}
 
@@ -216,7 +222,10 @@ export async function getSeries(params: {
 		(sort !== 'Title asc' && sort !== 'Title desc') ||
 		(sort.startsWith('Relevance') && !useQuery)
 	) {
-		query = query.orderBy('c_popularity', 'desc').orderBy(
+		if (!isList) {
+			query = query.orderBy('c_popularity', 'desc');
+		}
+		query = query.orderBy(
 			(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
 			(ob) => ob.collate('numeric').asc(),
 		);
