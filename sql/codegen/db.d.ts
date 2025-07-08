@@ -319,6 +319,7 @@ export interface Series {
   publication_status: SeriesStatus;
   start_date: number;
   web_novel: string | null;
+  website: string | null;
   wikidata_id: number | null;
 }
 
@@ -353,6 +354,7 @@ export interface SeriesHist {
   publication_status: SeriesStatus;
   start_date: number;
   web_novel: string | null;
+  website: string | null;
   wikidata_id: number | null;
 }
 
