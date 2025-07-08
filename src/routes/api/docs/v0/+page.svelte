@@ -260,6 +260,12 @@
 							<span>pl</span>
 							<span>'and' | 'or' <span>Publisher logic</span></span>
 
+							<span>minDate</span>
+							<span>ISO date <span>E.g. 2025-01-01</span></span>
+
+							<span>maxDate</span>
+							<span>ISO date <span>E.g. 2025-01-01</span></span>
+
 							<span>sort</span>
 							<span>
 								'Relevance desc' | 'Relevance asc' | 'Title asc' | 'Title desc' | 'Release date asc'
@@ -267,12 +273,16 @@
 							>
 						</div>
 					</section>
+					<section>
+						<h5>Response</h5>
+						<pre>{data.releasesResponse}</pre>
+					</section>
 				</section>
 				<section>
 					<h4>GET /release/[id]</h4>
 					<section>
 						<h5>Response</h5>
-						<pre>{data.booksResponse}</pre>
+						<pre>{data.releaseResponse}</pre>
 					</section>
 				</section>
 			</section>
