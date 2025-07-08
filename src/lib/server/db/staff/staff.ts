@@ -190,9 +190,11 @@ export class DBStaff {
 		return query;
 	}
 
-	getBooksBelongingToStaff(staffId: number) {
+	getBooksBelongingToStaff(staffId: number, userId?: string | undefined) {
 		return DBBooks.fromDB(this.ranobeDB.db, this.ranobeDB.user)
-			.getBooks()
+			.getBooks({
+				userId: userId,
+			})
 			.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'cte_book.id')
 			.innerJoin('staff_alias', (join) =>
 				join
@@ -213,6 +215,24 @@ export class DBStaff {
 				'staff_alias.staff_id',
 				'book_staff_alias.note',
 			])
+			.$if(typeof userId === 'string', (qb) =>
+				qb.select((eb) =>
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_book_label')
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_book_label.label_id', '=', 'user_list_label.id')
+									.onRef('user_list_book_label.user_id', '=', 'user_list_label.user_id')
+									.onRef('user_list_book_label.book_id', '=', 'cte_book.id'),
+							)
+							.select('user_list_label.label')
+							.where('user_list_label.user_id', '=', String(userId))
+							.where('user_list_label.id', '<=', 10)
+							.limit(1),
+					).as('label'),
+				),
+			)
 			.select(({ fn, cast }) => [
 				fn
 					.agg<StaffRole[]>('array_agg', [cast('book_staff_alias.role_type', 'text')])
@@ -250,9 +270,9 @@ export class DBStaff {
 			);
 	}
 
-	getSeriesBelongingToStaff(staffId: number) {
+	getSeriesBelongingToStaff(staffId: number, userId?: string | undefined) {
 		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
-			.getSeries()
+			.getSeries({ userId })
 			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
 			.innerJoin('book', 'book.id', 'series_book.book_id')
 			.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'series_book.book_id')
@@ -275,6 +295,24 @@ export class DBStaff {
 				'cte_series.title_orig',
 				'cte_series.title',
 			])
+			.$if(typeof userId === 'string', (qb) =>
+				qb.select((eb) => [
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_series_label')
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_series_label.label_id', '=', 'user_list_label.id')
+									.onRef('user_list_series_label.user_id', '=', 'user_list_label.user_id')
+									.onRef('user_list_series_label.series_id', '=', 'cte_series.id'),
+							)
+							.select('user_list_label.label')
+							.where('user_list_label.user_id', '=', userId!)
+							.where('user_list_label.id', '<=', 10)
+							.limit(1),
+					).as('label'),
+				]),
+			)
 			.select(({ fn, cast }) => [
 				fn
 					.agg<StaffRole[]>('array_agg', [cast('book_staff_alias.role_type', 'text')])
@@ -339,13 +377,14 @@ export class DBStaff {
 		id: number;
 		currentPage: number;
 		tab: (typeof staffTabs)[number];
+		userId?: string | undefined;
 	}) {
 		const { id, currentPage, tab } = params;
 		let count;
 		let totalPages;
 		let works: StaffWorks;
 		if (tab === 'books') {
-			const booksQuery = this.getBooksBelongingToStaff(id);
+			const booksQuery = this.getBooksBelongingToStaff(id, params.userId);
 			const {
 				result: books,
 				count: countBooks,
@@ -361,7 +400,7 @@ export class DBStaff {
 				books,
 			};
 		} else {
-			const seriesQuery = this.getSeriesBelongingToStaff(id);
+			const seriesQuery = this.getSeriesBelongingToStaff(id, params.userId);
 			const {
 				result: series,
 				count: countSeries,

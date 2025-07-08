@@ -23,7 +23,12 @@ export const load = async ({ params, locals, url }) => {
 	const dbPublishers = DBPublishers.fromDB(db, locals.user);
 
 	const publisherPromise = dbPublishers.getPublisher(id).executeTakeFirst();
-	const worksPromise = dbPublishers.getWorksPaged({ id, currentPage, tab });
+	const worksPromise = dbPublishers.getWorksPaged({
+		id,
+		currentPage,
+		tab,
+		userId: locals.user?.id,
+	});
 
 	const [publisher, { count, totalPages, works }] = await Promise.all([
 		publisherPromise,

@@ -195,7 +195,7 @@ export class DBPublishers {
 		return query;
 	}
 
-	getBooksBelongingToPublisher(publisherId: number) {
+	getBooksBelongingToPublisher(publisherId: number, userId?: string | undefined) {
 		return DBBooks.fromDB(this.ranobeDB.db, this.ranobeDB.user)
 			.getBooks()
 			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
@@ -214,6 +214,24 @@ export class DBPublishers {
 				'cte_book.title',
 				'cte_book.title_orig',
 			])
+			.$if(typeof userId === 'string', (qb) =>
+				qb.select((eb) =>
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_book_label')
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_book_label.label_id', '=', 'user_list_label.id')
+									.onRef('user_list_book_label.user_id', '=', 'user_list_label.user_id')
+									.onRef('user_list_book_label.book_id', '=', 'cte_book.id'),
+							)
+							.select('user_list_label.label')
+							.where('user_list_label.user_id', '=', String(userId))
+							.where('user_list_label.id', '<=', 10)
+							.limit(1),
+					).as('label'),
+				),
+			)
 			.select(({ fn, cast }) => [
 				fn
 					.agg<ReleasePublisherType[]>('array_agg', [
@@ -260,7 +278,7 @@ export class DBPublishers {
 			.groupBy('book.id');
 	}
 
-	getSeriesBelongingToPublisher(publisherId: number) {
+	getSeriesBelongingToPublisher(publisherId: number, userId?: string | undefined) {
 		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
 			.getSeries()
 			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
@@ -284,6 +302,24 @@ export class DBPublishers {
 				'cte_series.title_orig',
 				'cte_series.title',
 			])
+			.$if(typeof userId === 'string', (qb) =>
+				qb.select((eb) => [
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_series_label')
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_series_label.label_id', '=', 'user_list_label.id')
+									.onRef('user_list_series_label.user_id', '=', 'user_list_label.user_id')
+									.onRef('user_list_series_label.series_id', '=', 'cte_series.id'),
+							)
+							.select('user_list_label.label')
+							.where('user_list_label.user_id', '=', userId!)
+							.where('user_list_label.id', '<=', 10)
+							.limit(1),
+					).as('label'),
+				]),
+			)
 			.select(({ fn, cast }) => [
 				fn
 					.agg<ReleasePublisherType[]>('array_agg', [
@@ -377,13 +413,14 @@ export class DBPublishers {
 		id: number;
 		currentPage: number;
 		tab: (typeof publisherTabs)[number];
+		userId?: string | undefined;
 	}) {
 		const { id, currentPage, tab } = params;
 		let works: PublisherWorks;
 		let count;
 		let totalPages;
 		if (tab === 'books') {
-			const booksQuery = this.getBooksBelongingToPublisher(id);
+			const booksQuery = this.getBooksBelongingToPublisher(id, params.userId);
 			const {
 				result: books,
 				count: countBooks,
@@ -403,7 +440,7 @@ export class DBPublishers {
 				books,
 			};
 		} else if (tab === 'series') {
-			const seriesQuery = this.getSeriesBelongingToPublisher(id);
+			const seriesQuery = this.getSeriesBelongingToPublisher(id, params.userId);
 			const {
 				result: series,
 				count: countSeries,

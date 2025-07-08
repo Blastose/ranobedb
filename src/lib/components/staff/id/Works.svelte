@@ -35,7 +35,7 @@
 				<BookImageContainer moreColumns={true}>
 					{#each works.books as book (book.id)}
 						<BookImage {book} urlPrefix="/book/">
-							<BookImageBadge badges={book.role_types} />
+							<BookImageBadge badges={[book.label?.label ?? '', ...book.role_types]} />
 						</BookImage>
 					{/each}
 				</BookImageContainer>
@@ -52,7 +52,7 @@
 							}}
 							urlPrefix="/series/"
 						>
-							<BookImageBadge badges={series.role_types} />
+							<BookImageBadge badges={[series.label?.label ?? '', ...series.role_types]} />
 							{#if series.volumes}
 								<BookImageBadge
 									badges={[`${series.volumes.count} vols.`]}

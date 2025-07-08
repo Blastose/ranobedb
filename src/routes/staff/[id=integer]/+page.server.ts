@@ -71,42 +71,12 @@ export const load = async ({ params, locals, url }) => {
 		formType = 'add';
 	}
 
-	let works: StaffWorks;
-	let count;
-	let totalPages;
-	if (tab === 'books') {
-		const booksQuery = dbStaff.getBooksBelongingToStaff(id);
-		const {
-			result: books,
-			count: countBooks,
-			totalPages: totalPagesBooks,
-		} = await paginationBuilderExecuteWithCount(booksQuery, {
-			limit: 24,
-			page: currentPage,
-		});
-		count = countBooks;
-		totalPages = totalPagesBooks;
-		works = {
-			type: tab,
-			books,
-		};
-	} else {
-		const seriesQuery = dbStaff.getSeriesBelongingToStaff(id);
-		const {
-			result: series,
-			count: countSeries,
-			totalPages: totalPagesSeries,
-		} = await paginationBuilderExecuteWithCount(seriesQuery, {
-			limit: 24,
-			page: currentPage,
-		});
-		count = countSeries;
-		totalPages = totalPagesSeries;
-		works = {
-			type: tab,
-			series,
-		};
-	}
+	const { count, totalPages, works } = await dbStaff.getWorksPaged({
+		id: id,
+		currentPage,
+		tab,
+		userId: locals.user?.id,
+	});
 
 	const series_settings = locals.user?.id
 		? (await new DBUsers(db).getListPrefs(locals.user.id)).default_series_settings
