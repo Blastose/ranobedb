@@ -240,8 +240,9 @@ export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) =
 export const defaultUserListSeriesSettings = {
 	formats: [],
 	langs: ['en'],
-	notify_book: false,
+	notify_book: true,
 	readingStatus: 'Reading',
+	notify_when_released: false,
 	show_upcoming: true,
 } satisfies UserListSeriesSettings;
 

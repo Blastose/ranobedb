@@ -512,6 +512,7 @@ export interface UserListSeries {
 	last_updated: Timestamp;
 	notes: string;
 	notify_book: boolean;
+	notify_when_released: boolean;
 	score: number | null;
 	series_id: number;
 	show_upcoming: boolean;

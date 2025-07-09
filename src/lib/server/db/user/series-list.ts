@@ -132,6 +132,7 @@ export class DBSeriesListActions {
 		formats: ReleaseFormat[];
 		show_upcoming: boolean;
 		notify_book: boolean;
+		notify_when_released: boolean;
 		selectedCustLabels: number[];
 		volumes_read: Nullish<number>;
 		trx?: Transaction<DB>;
@@ -142,6 +143,7 @@ export class DBSeriesListActions {
 				.values({
 					show_upcoming: params.show_upcoming,
 					notify_book: params.show_upcoming && params.notify_book,
+					notify_when_released: params.show_upcoming && params.notify_when_released,
 					series_id: params.series_id,
 					user_id: params.user_id,
 					volumes_read: params.volumes_read,
@@ -196,6 +198,7 @@ export class DBSeriesListActions {
 		langs: Language[];
 		show_upcoming: boolean;
 		notify_book: boolean;
+		notify_when_released: boolean;
 		volumes_read: Nullish<number>;
 		formats: ReleaseFormat[];
 	}) {
@@ -216,6 +219,7 @@ export class DBSeriesListActions {
 				.set({
 					show_upcoming: params.show_upcoming,
 					notify_book: params.show_upcoming && params.notify_book,
+					notify_when_released: params.show_upcoming && params.notify_when_released,
 					volumes_read: params.volumes_read,
 					last_updated: new Date(),
 					notes: params.notes ?? '',

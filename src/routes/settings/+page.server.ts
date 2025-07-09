@@ -302,6 +302,7 @@ export const actions = {
 				.set({
 					show_upcoming: data.show_upcoming,
 					notify_book: data.show_upcoming && data.notify_book,
+					notify_when_released: data.show_upcoming && data.notify_when_released,
 				})
 				.where('user_list_series.user_id', '=', user.id)
 				.execute();
