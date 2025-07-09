@@ -179,7 +179,8 @@ export const userReviewSchema = z.object({
 });
 
 export const userListSeriesSettingsSchema = z.object({
-	notify_book: z.boolean().default(false),
+	notify_book: z.boolean().default(true),
+	notify_when_released: z.boolean().default(false),
 	show_upcoming: z.boolean().default(true),
 	langs: z.array(z.enum(languagesArray)),
 	formats: z.array(z.enum(releaseFormatArray)),
@@ -194,7 +195,8 @@ export const userListSeriesSchema = z.object({
 			label: z.string().max(2000),
 		}),
 	),
-	notify_book: z.boolean().default(false),
+	notify_book: z.boolean().default(true),
+	notify_when_released: z.boolean().default(false),
 	show_upcoming: z.boolean().default(true),
 	volumes_read: z.number().min(0).max(maxNumberValue).nullish(),
 	// remove_all: z.boolean().default(false),

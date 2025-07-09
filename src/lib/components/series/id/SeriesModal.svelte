@@ -195,6 +195,11 @@
 									field="notify_book"
 									label="Also notify me when a new release is added"
 								/>
+								<CheckboxField
+									form={sForm}
+									field="notify_when_released"
+									label="Also notify me when a release has been released"
+								/>
 
 								<p>When:</p>
 								<div class="flex flex-wrap gap-x-2">

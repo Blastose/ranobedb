@@ -43,6 +43,7 @@ export const actions = {
 					finished: form.data.finished || null,
 					score: form.data.score,
 					notify_book: form.data.notify_book,
+					notify_when_released: form.data.notify_when_released,
 				});
 				messageText = 'Added series to list!';
 			} else if (form.data.type === 'update') {
@@ -61,6 +62,7 @@ export const actions = {
 					finished: form.data.finished || null,
 					score: form.data.score,
 					notify_book: form.data.notify_book,
+					notify_when_released: form.data.notify_when_released,
 				});
 				messageText = 'Updated series successfully!';
 			} else if (form.data.type === 'delete') {

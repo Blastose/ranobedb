@@ -211,6 +211,8 @@ export class DBListActions {
 					langs: default_series_settings.langs,
 					show_upcoming: default_series_settings.show_upcoming,
 					notify_book: default_series_settings.show_upcoming && default_series_settings.notify_book,
+					notify_when_released:
+						default_series_settings.show_upcoming && default_series_settings.notify_when_released,
 					volumes_read: null,
 					selectedCustLabels: [],
 					notes: '',

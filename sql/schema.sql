@@ -666,6 +666,7 @@ CREATE TABLE public.user_list_series (
     finished date,
     notes text NOT NULL,
     notify_book boolean NOT NULL,
+    notify_when_released boolean NOT NULL,
     show_upcoming boolean NOT NULL,
     user_id text NOT NULL,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
@@ -766,7 +767,7 @@ CREATE TABLE public.user_series_review (
 
 CREATE TABLE public.user_list_settings (
     user_id text NOT NULL,
-    default_series_settings JSONB NOT NULL DEFAULT '{"formats": [], "langs": ["en"], "notify_book": true, "readingStatus": "Reading", "show_upcoming": true}'::jsonb,
+    default_series_settings JSONB NOT NULL DEFAULT '{"formats": [], "langs": ["en"], "notify_book": true, "notify_when_released": false, "readingStatus": "Reading", "show_upcoming": true}'::jsonb,
     default_book_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
     default_release_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),

@@ -15,6 +15,7 @@ import type {
 	ReleasePublisher,
 	ReleasePublisherHist,
 } from '$lib/server/db/dbTypes';
+import { getTodayAsDateNumber } from '$lib/components/form/release/releaseDate';
 
 async function sendSeriesNotifications(params: {
 	trx: Transaction<DB>;
@@ -38,6 +39,7 @@ async function sendSeriesNotifications(params: {
 				.where('release.hidden', '=', false)
 				.where('book.hidden', '=', false)
 				.where('series.hidden', '=', false)
+				.where('release.release_date', '>=', getTodayAsDateNumber())
 				.where('user_list_series.show_upcoming', '=', true)
 				.where('user_list_series.notify_book', '=', true)
 				.where((eb) =>
@@ -168,6 +170,7 @@ async function sendStaffNotifications(params: {
 				.where('release.hidden', '=', false)
 				.where('book.hidden', '=', false)
 				.where('staff.hidden', '=', false)
+				.where('release.release_date', '>=', getTodayAsDateNumber())
 				.where('user_list_staff.notify_book', '=', true)
 				.where((eb) =>
 					// Don't send notification if it already exists from the series notification
