@@ -53,7 +53,6 @@ export async function search(term: string) {
 		staffPromise.json(),
 		releasesPromise ? releasesPromise.json() : null,
 	]);
-	console.log(releases);
 	return { books, series, publishers, staff, releases };
 }
 
