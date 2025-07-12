@@ -143,6 +143,37 @@
 							{/each}
 						</div>
 					{/if}
+					{#if items.releases && items.releases.releases.length === 1}
+						<div class="flex flex-col gap-2">
+							<div class="flex justify-between">
+								<p class="text-lg font-bold">Releases ({items.releases.count})</p>
+								<a href="/releases?q={encodeURIComponent(inputValue)}" class="link">View all</a>
+							</div>
+							{#each items.releases.releases as release}
+								{@const imageUrl = buildImageUrl(release.image?.filename)}
+								<a href="/release/{release.id}" class="results-item">
+									{#if release.image}
+										{#key release.image.id}
+											<img
+												width={release.image.width}
+												height={release.image.height}
+												class="max-w-[48px] sm:max-w-[56px] h-fit rounded-md shadow-sm"
+												src={imageUrl}
+												alt=""
+												loading="lazy"
+											/>
+										{/key}
+									{/if}
+									<div class="flex flex-col text-sm sm:text-base">
+										<p class="font-bold line-clamp-2">
+											<NameDisplay obj={release} />
+										</p>
+										<p>{new DateNumber(release.release_date).getDateFormatted()}</p>
+									</div>
+								</a>
+							{/each}
+						</div>
+					{/if}
 					{#if items.publishers.publishers.length > 0}
 						<div class="flex flex-col gap-2">
 							<div class="flex justify-between">
@@ -177,7 +208,7 @@
 							{/each}
 						</div>
 					{/if}
-					{#if items.books.books.length + items.series.series.length + items.publishers.publishers.length + items.staff.staff.length === 0}
+					{#if items.books.books.length + items.series.series.length + items.publishers.publishers.length + items.staff.staff.length + (items.releases?.releases.length || 0) === 0}
 						<p>No results found</p>
 					{/if}
 				{:else}

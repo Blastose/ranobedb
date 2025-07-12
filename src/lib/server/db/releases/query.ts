@@ -76,22 +76,35 @@ export async function getReleases(params: {
 					])
 					.as('sim_score'),
 			)
-			.where((eb) =>
-				eb.or([
-					eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
-				]),
-			)
-			.where(
-				(eb) =>
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
-						eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
-					]),
+			.where((eb) => {
+				const ors: Expression<SqlBool>[] = [];
+				ors.push(
+					...[
+						eb.and([
+							eb.or([
+								eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
+								eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
+							]),
 
-				'>',
-				0.3,
-			)
+							eb(
+								(eb) =>
+									eb.fn('greatest', [
+										eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
+										eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+									]),
+
+								'>',
+								0.3,
+							),
+						]),
+					],
+				);
+				if (q?.startsWith('978') || (q?.startsWith('979') && !isNaN(Number(q)))) {
+					ors.push(eb('release.isbn13', '=', q.trim().replaceAll('-', '')));
+				}
+				return eb.or(ors);
+			})
+
 			.orderBy('sim_score', orderByDirection)
 			.orderBy(
 				(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
@@ -118,22 +131,34 @@ export async function getReleases(params: {
 		useReleaseLabelFilters
 	) {
 		if (useQuery && !sort.startsWith('Relevance')) {
-			query = query
-				.where((eb) =>
-					eb.or([
-						eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
-						eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
-					]),
-				)
-				.where(
-					(eb) =>
-						eb.fn('greatest', [
-							eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
-							eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+			query = query.where((eb) => {
+				const ors: Expression<SqlBool>[] = [];
+				ors.push(
+					...[
+						eb.and([
+							eb.or([
+								eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
+								eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
+							]),
+
+							eb(
+								(eb) =>
+									eb.fn('greatest', [
+										eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
+										eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+									]),
+
+								'>',
+								0.3,
+							),
 						]),
-					'>',
-					0.3,
+					],
 				);
+				if (q?.startsWith('978') || (q?.startsWith('979') && !isNaN(Number(q)))) {
+					ors.push(eb('release.isbn13', '=', q.trim().replaceAll('-', '')));
+				}
+				return eb.or(ors);
+			});
 		}
 		if (useReleaseLangFilters) {
 			query = query.where((eb) => {
