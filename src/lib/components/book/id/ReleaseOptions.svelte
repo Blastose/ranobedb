@@ -47,7 +47,6 @@
 					type: form.message?.type || 'error',
 				},
 			});
-			console.log(release);
 		},
 	});
 
