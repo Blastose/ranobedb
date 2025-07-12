@@ -78,7 +78,7 @@
 				field="rll"
 				dropdownOptions={logicalOps.map((v) => ({ display: v, value: v }))}
 				selectedValue={filtersForm.data.rll}
-				label="Release langauge filter logic"
+				label="Release language filter logic"
 				resetPadding={true}
 				showRequiredSymbolIfRequired={false}
 				fit={true}
