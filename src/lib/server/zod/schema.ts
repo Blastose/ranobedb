@@ -581,7 +581,7 @@ export const seriesSchema = z.object({
 	c_start_date: zReleaseDate.nullish(),
 	c_end_date: zReleaseDate.nullish(),
 	c_latest_release_date: zReleaseDate.nullish(),
-	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com']),
+	web_novel: zLink(['kakuyomu.jp', 'ncode.syosetu.com', 'www.alphapolis.co.jp']),
 	website: zLink([]),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
 	mal_id: z.number().max(maxNumberValue).nullish(),
