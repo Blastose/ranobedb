@@ -9,6 +9,7 @@
 	import ListTabs from '$lib/components/layout/list/ListTabs.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import LangChip from '$lib/components/titles/LangChip.svelte';
 
 	let { data } = $props();
 
@@ -77,10 +78,10 @@
 								<div class="flex justify-between text-sm sm:text-base">
 									<div
 										class="grid gap-x-2 {data.userListReleaseForm
-											? 'grid-cols-[18px_24px_102px_1fr]'
-											: 'grid-cols-[18px_24px_72px_1fr]'}"
+											? 'grid-cols-[24px_24px_102px_1fr]'
+											: 'grid-cols-[24px_24px_72px_1fr]'}"
 									>
-										<p>{release.lang}</p>
+										<LangChip lang={release.lang} />
 										<div title={release.format}>
 											{#if release.format === 'print'}
 												<Icon name="bookW" height={size} width={size} />
