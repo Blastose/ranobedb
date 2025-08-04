@@ -130,12 +130,8 @@ export function getUserListBookWithLabels(userId: string, bookId: number) {
 		])
 		.where('user_list_book.user_id', '=', userId)
 		.where('user_list_book.book_id', '=', bookId)
-		.select([
-			'user_list_book.started',
-			'user_list_book.finished',
-			'user_list_book.notes',
-			'user_list_book.score',
-		]);
+		.select(['user_list_book.started', 'user_list_book.finished', 'user_list_book.notes'])
+		.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score'));
 }
 
 export type UserListBookWithLabels = InferResult<

@@ -32,7 +32,8 @@ export const load = async ({ params, locals, url }) => {
 	let query = DBBooks.fromDB(db)
 		.getBooks()
 		.innerJoin('user_list_book', 'user_list_book.book_id', 'cte_book.id')
-		.select(['user_list_book.finished', 'user_list_book.score'])
+		.select(['user_list_book.finished'])
+		.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score'))
 		.where('user_list_book.user_id', '=', listUser.id)
 		.orderBy('user_list_book.finished', 'desc')
 		.orderBy('user_list_book.last_updated', 'desc');

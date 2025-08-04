@@ -10,6 +10,7 @@ test.describe('add/edit/remove books from reading list', () => {
 		await page.getByLabel('Started').fill('2020-11-12');
 		await page.getByLabel('Finished', { exact: true }).fill('2020-12-12');
 		await page.getByLabel('Reading status').selectOption('Finished');
+		await page.getByLabel('Score').fill('4.6');
 		await page.getByRole('dialog').getByRole('button', { name: 'Add' }).click();
 		await page.goto('/');
 		await page.goto('/book/1');
@@ -19,6 +20,7 @@ test.describe('add/edit/remove books from reading list', () => {
 		await page.getByLabel('Started').fill('');
 		await page.getByLabel('Finished', { exact: true }).fill('2020-12-31');
 		await page.getByLabel('Reading status').selectOption('Plan to read');
+		await page.getByLabel('Score').fill('10');
 		await page.getByRole('dialog').getByRole('button', { name: 'Update' }).click();
 		await page.goto('/');
 		await page.goto('/book/1');

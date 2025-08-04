@@ -59,7 +59,7 @@ const zPasswordNew = z
 	.min(15, { message: 'Password must be between 15 and 255 characters' })
 	.max(255, { message: 'Password must be between 15 and 255 characters' });
 
-const zUserScore = z.number().min(1).max(10).nullish();
+const zUserScore = z.coerce.number().min(1).max(10).multipleOf(0.1).nullish();
 
 export const loginSchema = z.object({
 	usernameemail: z
@@ -886,6 +886,7 @@ export const releaseFiltersCalendarSchema = z.object({
 });
 export const releaseFiltersObjCalendarSchema = z.object({
 	...releaseFiltersCalendarSchema.shape,
+	date: z.array(z.number()),
 	p: zPublishers,
 });
 

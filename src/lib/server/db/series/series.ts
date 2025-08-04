@@ -324,12 +324,12 @@ export class DBSeries {
 							.on('user_list_series.user_id', '=', String(userId)),
 					)
 					.select([
-						'user_list_series.score',
 						'user_list_series.added',
 						'user_list_series.last_updated',
 						'user_list_series.started',
 						'user_list_series.finished',
-					]),
+					])
+					.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score')),
 			)
 			.select([
 				'cte_series.id',
@@ -457,7 +457,7 @@ export class DBSeries {
 				jsonObjectFrom(
 					eb
 						.selectFrom('user_list_series')
-						.select((eb) => eb.fn.avg('user_list_series.score').as('score'))
+						.select((eb) => eb(eb.fn.avg('user_list_series.score'), '/', 10).as('score'))
 						.select((eb) => eb.fn.count('user_list_series.series_id').as('count'))
 						.whereRef('user_list_series.series_id', '=', 'cte_series.id')
 						.where('user_list_series.score', 'is not', null)
@@ -489,7 +489,12 @@ export class DBSeries {
 									.where('user_list_series.score', 'is not', null)
 									.groupBy('user_list_series.score')
 									.as('user_score'),
-							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
+							(join) =>
+								join.onRef(
+									(eb) => eb.fn('round', [eb(eb.cast('user_score.score', 'decimal'), '/', 10)]),
+									'=',
+									'gs.gs',
+								),
 						)
 						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
@@ -751,7 +756,7 @@ export class DBSeries {
 				jsonObjectFrom(
 					eb
 						.selectFrom('user_list_series')
-						.select((eb) => eb.fn.avg('user_list_series.score').as('score'))
+						.select((eb) => eb(eb.fn.avg('user_list_series.score'), '/', 10).as('score'))
 						.select((eb) => eb.fn.count('user_list_series.series_id').as('count'))
 						.whereRef('user_list_series.series_id', '=', 'cte_series.id')
 						.where('user_list_series.score', 'is not', null)
@@ -783,7 +788,12 @@ export class DBSeries {
 									.where('user_list_series.score', 'is not', null)
 									.groupBy('user_list_series.score')
 									.as('user_score'),
-							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
+							(join) =>
+								join.onRef(
+									(eb) => eb.fn('round', [eb(eb.cast('user_score.score', 'decimal'), '/', 10)]),
+									'=',
+									'gs.gs',
+								),
 						)
 						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')

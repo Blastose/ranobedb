@@ -234,12 +234,14 @@
 		{/if}
 	</section>
 
-	<UserStats
-		rating={series.rating}
-		type="series"
-		user_stats_score={series.user_stats_score}
-		user_stats_label={series.user_stats_label}
-	/>
+	{#if revision === undefined}
+		<UserStats
+			rating={series.rating}
+			type="series"
+			user_stats_score={series.user_stats_score}
+			user_stats_label={series.user_stats_label}
+		/>
+	{/if}
 </DBItemShell>
 
 <style>
