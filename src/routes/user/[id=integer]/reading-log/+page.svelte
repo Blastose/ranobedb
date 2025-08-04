@@ -101,7 +101,9 @@
 							</div>
 							{#if book.score}
 								<p class="flex items-center gap-1 text-sm sub-text-alt">
-									<Icon class="text-[#ffa844]" name="star" height="18" width="18" />{book.score} / 10
+									<Icon class="text-[#ffa844]" name="star" height="18" width="18" />{Number(
+										book.score,
+									)} / 10
 								</p>
 							{/if}
 							<p class="flex items-center gap-1 text-sm sub-text-alt">

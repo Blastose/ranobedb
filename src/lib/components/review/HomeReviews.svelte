@@ -44,7 +44,9 @@
 					<div class="flex gap-2 items-center text-sm">
 						{#if review.score}
 							<p class="flex items-center gap-1">
-								<Icon class="text-[#ffa844]" name="star" height="18" width="18" />{review.score} / 10
+								<Icon class="text-[#ffa844]" name="star" height="18" width="18" />{Number(
+									review.score,
+								)} / 10
 							</p>
 							•
 						{/if}

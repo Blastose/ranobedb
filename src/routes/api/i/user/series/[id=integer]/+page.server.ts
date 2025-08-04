@@ -41,7 +41,7 @@ export const actions = {
 					notes: form.data.notes ?? '',
 					started: form.data.started || null,
 					finished: form.data.finished || null,
-					score: form.data.score,
+					score: form.data.score ? form.data.score * 10 : form.data.score,
 					notify_book: form.data.notify_book,
 					notify_when_released: form.data.notify_when_released,
 				});
@@ -60,7 +60,7 @@ export const actions = {
 					notes: form.data.notes ?? '',
 					started: form.data.started || null,
 					finished: form.data.finished || null,
-					score: form.data.score,
+					score: form.data.score ? form.data.score * 10 : form.data.score,
 					notify_book: form.data.notify_book,
 					notify_when_released: form.data.notify_when_released,
 				});

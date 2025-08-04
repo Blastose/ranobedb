@@ -63,7 +63,8 @@ export const load = async ({ params, locals, url }) => {
 				.selectFrom('user_list_series')
 				.where('user_list_series.series_id', '=', seriesId)
 				.where('user_list_series.user_id', '=', user.id)
-				.select(['user_list_series.score', 'user_list_series.volumes_read'])
+				.select(['user_list_series.volumes_read'])
+				.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score'))
 				.select((eb) =>
 					jsonObjectFrom(
 						eb
@@ -101,12 +102,14 @@ export const load = async ({ params, locals, url }) => {
 		user,
 	});
 
+	const reviewScore = Number(review?.score || userListSeries?.score);
 	const userReviewForm = await superValidate(
 		{
 			review_text: review?.review_text,
 			spoiler: review?.spoiler,
 			type: review ? 'update' : 'add',
-			score: review?.score ?? userListSeries?.score,
+			// Note: Even though the zod schema uses coerce, it doesn't correctly convert the string score to a number for unknown reasons
+			score: reviewScore !== 0 ? reviewScore : null,
 			volumes_read:
 				userListSeries?.volumes_read ?? (Number(userListSeries?.c_vols_read?.count) || undefined),
 		},
@@ -146,13 +149,13 @@ export const actions = {
 					spoiler: form.data.spoiler,
 					user_id: locals.user.id,
 					volumes_read: form.data.volumes_read,
-					score: form.data.score,
+					score: form.data.score ? form.data.score * 10 : form.data.score,
 				})
 				.onConflict((oc) =>
 					oc.columns(['series_id', 'user_id']).doUpdateSet({
 						review_text: form.data.review_text,
 						spoiler: form.data.spoiler,
-						score: form.data.score,
+						score: form.data.score ? form.data.score * 10 : form.data.score,
 						volumes_read: form.data.volumes_read,
 						last_updated: new Date(),
 					}),

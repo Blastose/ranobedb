@@ -70,10 +70,10 @@
 		"simple-markdown": "^0.7.3",
 		"svelte-sequential-preprocessor": "^2.0.2",
 		"sveltekit-flash-message": "^2.4.6",
-		"sveltekit-superforms": "^2.26.1",
+		"sveltekit-superforms": "^2.27.1",
 		"tailwindcss": "^3.4.16",
 		"xss": "^1.0.15",
-		"zod": "^3.25.56"
+		"zod": "=4.0.10"
 	},
 	"type": "module"
 }

@@ -261,7 +261,7 @@ export class DBBooks {
 				jsonObjectFrom(
 					eb
 						.selectFrom('user_list_book')
-						.select((eb) => eb.fn.avg('user_list_book.score').as('score'))
+						.select((eb) => eb(eb.fn.avg('user_list_book.score'), '/', 10).as('score'))
 						.select((eb) => eb.fn.count('user_list_book.book_id').as('count'))
 						.whereRef('user_list_book.book_id', '=', 'cte_book.id')
 						.where('user_list_book.score', 'is not', null)
@@ -293,7 +293,12 @@ export class DBBooks {
 									.where('user_list_book.score', 'is not', null)
 									.groupBy('user_list_book.score')
 									.as('user_score'),
-							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
+							(join) =>
+								join.onRef(
+									(eb) => eb.fn('round', [eb(eb.cast('user_score.score', 'decimal'), '/', 10)]),
+									'=',
+									'gs.gs',
+								),
 						)
 						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
@@ -434,7 +439,7 @@ export class DBBooks {
 				jsonObjectFrom(
 					eb
 						.selectFrom('user_list_book')
-						.select((eb) => eb.fn.avg('user_list_book.score').as('score'))
+						.select((eb) => eb(eb.fn.avg('user_list_book.score'), '/', 10).as('score'))
 						.select((eb) => eb.fn.count('user_list_book.book_id').as('count'))
 						.whereRef('user_list_book.book_id', '=', 'cte_book.id')
 						.where('user_list_book.score', 'is not', null)
@@ -466,7 +471,12 @@ export class DBBooks {
 									.where('user_list_book.score', 'is not', null)
 									.groupBy('user_list_book.score')
 									.as('user_score'),
-							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
+							(join) =>
+								join.onRef(
+									(eb) => eb.fn('round', [eb(eb.cast('user_score.score', 'decimal'), '/', 10)]),
+									'=',
+									'gs.gs',
+								),
 						)
 						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
@@ -879,12 +889,12 @@ export class DBBooks {
 							.on('user_list_book.user_id', '=', String(userId)),
 					)
 					.select([
-						'user_list_book.score',
 						'user_list_book.added',
 						'user_list_book.last_updated',
 						'user_list_book.started',
 						'user_list_book.finished',
-					]),
+					])
+					.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score')),
 			);
 	}
 }

@@ -76,11 +76,11 @@ export const load = async ({ params, locals }) => {
 			'user_list_series.notify_book',
 			'user_list_series.notify_when_released',
 			'user_list_series.volumes_read',
-			'user_list_series.score',
 			'user_list_series.started',
 			'user_list_series.finished',
 			'user_list_series.notes',
 		])
+		.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score'))
 		.executeTakeFirst();
 
 	let formType: UserListFormType;

@@ -66,7 +66,7 @@
 					urlPrefix="/book/"
 				>
 					<BookImageBadge
-						badges={[`${book.label?.label}`, book.score ? `Score: ${book.score}` : '']}
+						badges={[`${book.label?.label}`, book.score ? `Score: ${Number(book.score)}` : '']}
 						location="top-right"
 					/>
 				</BookImage>

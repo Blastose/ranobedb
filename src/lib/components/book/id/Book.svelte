@@ -215,12 +215,14 @@
 			{/key}
 		{/if}
 
-		<UserStats
-			rating={book.rating}
-			type="book"
-			user_stats_score={book.user_stats_score}
-			user_stats_label={book.user_stats_label}
-		/>
+		{#if revision === undefined}
+			<UserStats
+				rating={book.rating}
+				type="book"
+				user_stats_score={book.user_stats_score}
+				user_stats_label={book.user_stats_label}
+			/>
+		{/if}
 	</div>
 </div>
 

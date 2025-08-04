@@ -41,6 +41,20 @@ test.describe('book reviews', () => {
 		await expect(page.getByText('Lorem ipsum dolor')).toBeVisible();
 
 		await page.getByText('Edit your review').click();
+		await page.getByLabel('Score').fill('5.6');
+		await page.getByLabel('This review contains unmarked spoilers').uncheck();
+		await page.locator('main').locator('button[type="submit"]').click();
+		await expect(page.locator('.toast-container').last()).toHaveText(
+			'Successfully edited your review!',
+		);
+
+		await expect(page).toHaveURL('/book/1/reviews');
+		await page.getByText('View in full view').click();
+		await expect(page).toHaveURL(new RegExp('.*\\/review\\/book\\/\\d+'));
+		await expect(page.getByText('Score: 5.6')).toBeVisible();
+		await expect(page.getByText('Lorem ipsum dolor')).toBeVisible();
+
+		await page.getByText('Edit your review').click();
 		await expect(page).toHaveURL('/book/1/reviews/add');
 		await page.getByRole('button', { name: 'Delete review' }).click();
 		await page.getByRole('button', { name: 'Delete', exact: true }).click();
@@ -88,6 +102,20 @@ test.describe('series reviews', () => {
 		await page.getByText('View in full view').click();
 		await expect(page).toHaveURL(new RegExp('.*\\/review\\/series\\/\\d+'));
 		await expect(page.getByText('Score: No score given')).toBeVisible();
+		await expect(page.getByText('Lorem ipsum dolor')).toBeVisible();
+
+		await page.getByText('Edit your review').click();
+		await page.getByLabel('Score').fill('4.7');
+		await page.getByLabel('This review contains unmarked spoilers').uncheck();
+		await page.locator('main').locator('button[type="submit"]').click();
+		await expect(page.locator('.toast-container').last()).toHaveText(
+			'Successfully edited your review!',
+		);
+
+		await expect(page).toHaveURL('/series/1/reviews');
+		await page.getByText('View in full view').click();
+		await expect(page).toHaveURL(new RegExp('.*\\/review\\/series\\/\\d+'));
+		await expect(page.getByText('Score: 4.7')).toBeVisible();
 		await expect(page.getByText('Lorem ipsum dolor')).toBeVisible();
 
 		await page.getByText('Edit your review').click();

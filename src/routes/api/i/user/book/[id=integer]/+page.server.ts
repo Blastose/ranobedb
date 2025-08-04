@@ -30,7 +30,7 @@ export const actions = {
 			labelIds,
 			readingStatusId,
 			selectedCustLabels: form.data.selectedCustLabels,
-			score: form.data.score,
+			score: form.data.score ? form.data.score * 10 : form.data.score,
 			started: form.data.started || null,
 			finished: form.data.finished || null,
 			notes: form.data.notes,

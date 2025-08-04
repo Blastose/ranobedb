@@ -50,7 +50,7 @@
 				{#if review.score}
 					<div class="flex gap-1">
 						<Icon class="text-[#ffa844]" name="star" height="24" width="24" />
-						{review.score} / 10
+						{Number(review.score)} / 10
 					</div>
 				{:else}
 					No score given

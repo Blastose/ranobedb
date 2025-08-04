@@ -627,7 +627,10 @@ CREATE TABLE public.user_list_book (
     added timestamptz NOT NULL DEFAULT NOW(),
     last_updated timestamptz NOT NULL,
     book_id integer NOT NULL,
-    score integer,
+    score integer CHECK (
+        score IS NULL
+        OR score BETWEEN 10 AND 100
+    ),
     started date,
     finished date,
     user_id text NOT NULL,
@@ -661,7 +664,10 @@ CREATE TABLE public.user_list_series (
     last_updated timestamptz NOT NULL,
     series_id integer NOT NULL,
     volumes_read integer,
-    score integer,
+    score integer CHECK (
+        score IS NULL
+        OR score BETWEEN 10 AND 100
+    ),
     started date,
     finished date,
     notes text NOT NULL,
@@ -744,7 +750,10 @@ CREATE TABLE public.user_book_review (
     spoiler boolean NOT NULL,
     user_id text NOT NULL,
     review_text text NOT NULL,
-    score integer,
+    score integer CHECK (
+        score IS NULL
+        OR score BETWEEN 10 AND 100
+    ),
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
     FOREIGN KEY (book_id) REFERENCES public.book(id),
     UNIQUE (user_id, book_id)
@@ -758,7 +767,10 @@ CREATE TABLE public.user_series_review (
     spoiler boolean NOT NULL,
     user_id text NOT NULL,
     review_text text NOT NULL,
-    score integer,
+    score integer CHECK (
+        score IS NULL
+        OR score BETWEEN 10 AND 100
+    ),
     volumes_read integer,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
     FOREIGN KEY (series_id) REFERENCES public.series(id),

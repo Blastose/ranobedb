@@ -44,12 +44,12 @@ export class DBReviews {
 				'user_book_review.last_updated',
 				'user_book_review.created',
 				'user_book_review.spoiler',
-				'user_book_review.score',
 				'auth_user.username',
 				'auth_user.id_numeric as user_id',
 				'auth_user.id as user_id_string',
 				'user_book_review.book_id as item_id',
 			])
+			.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score'))
 			.$if(!excludeReviewText, (qb) => qb.select('user_book_review.review_text'))
 			.select((eb) => eb.val<number | null>(null).as('volumes_read'));
 
@@ -82,13 +82,13 @@ export class DBReviews {
 				'user_series_review.last_updated',
 				'user_series_review.created',
 				'user_series_review.spoiler',
-				'user_series_review.score',
 				'user_series_review.volumes_read',
 				'auth_user.username',
 				'auth_user.id_numeric as user_id',
 				'auth_user.id as user_id_string',
 				'user_series_review.series_id as item_id',
 			])
+			.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score'))
 			.$if(!excludeReviewText, (qb) => qb.select('user_series_review.review_text'));
 
 		if (userId) {
@@ -190,12 +190,14 @@ export class DBReviews {
 				'user_book_review.last_updated',
 				'user_book_review.created',
 				'user_book_review.spoiler',
-				'user_book_review.score',
 				'auth_user.username',
 				'auth_user.id_numeric as user_id',
 				'auth_user.id as user_id_string',
 				'user_book_review.book_id as item_id',
 			])
+			.select((eb) =>
+				eb(eb.cast<string>('user_book_review.score', 'decimal'), '/', '10').as('score'),
+			)
 			// .select((eb) => eb.cast(eb.val<number | null>(null), 'integer').as('volumes_read'))
 			.select((eb) => eb.val<'book' | 'series'>('book').as('item_type'))
 			.select((eb) =>
@@ -234,13 +236,15 @@ export class DBReviews {
 						'user_series_review.last_updated',
 						'user_series_review.created',
 						'user_series_review.spoiler',
-						'user_series_review.score',
 						// 'user_series_review.volumes_read',
 						'auth_user.username',
 						'auth_user.id_numeric as user_id',
 						'auth_user.id as user_id_string',
 						'user_series_review.series_id as item_id',
 					])
+					.select((eb) =>
+						eb(eb.cast<string>('user_series_review.score', 'decimal'), '/', '10').as('score'),
+					)
 					.select((eb) => eb.val<'series' | 'series'>('series').as('item_type'))
 					.select((eb) =>
 						jsonObjectFrom(
