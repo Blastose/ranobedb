@@ -25,7 +25,7 @@
 		"@playwright/test": "^1.52.0",
 		"@sveltejs/adapter-auto": "^6.0.1",
 		"@sveltejs/adapter-node": "^5.2.12",
-		"@sveltejs/kit": "^2.21.3",
+		"@sveltejs/kit": "^2.27.0",
 		"@sveltejs/vite-plugin-svelte": "^5.1.0",
 		"@types/node-schedule": "^2.1.7",
 		"@types/pg": "^8.15.2",

@@ -16,17 +16,13 @@
 				<BottomNavButton
 					href="/database"
 					text="Database"
-					active={page.url.pathname === '/database'}
+					active={page.url.pathname === '/database-dumps'}
 				>
 					<Icon name="database" />
 				</BottomNavButton>
 			</li>
 			<li>
-				<BottomNavButton
-					href="/advanced-search"
-					text="Search"
-					active={page.url.pathname === '/advanced-search'}
-				>
+				<BottomNavButton href="/advanced-search" text="Search" active={page.url.pathname === '/'}>
 					<Icon name="search" />
 				</BottomNavButton>
 			</li>
