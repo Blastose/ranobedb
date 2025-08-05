@@ -482,19 +482,23 @@ export class DBSeries {
 						.leftJoin(
 							(eb) =>
 								eb
-									.selectFrom('user_list_series')
-									.select('user_list_series.score')
-									.select((eb) => eb.fn.count('user_list_series.score').as('cnt'))
-									.whereRef('user_list_series.series_id', '=', 'cte_series.id')
-									.where('user_list_series.score', 'is not', null)
-									.groupBy('user_list_series.score')
+									.selectFrom((eb) =>
+										eb
+											.selectFrom('user_list_series')
+											.select((eb) =>
+												eb
+													.fn('round', [eb(eb.cast('user_list_series.score', 'decimal'), '/', 10)])
+													.as('score'),
+											)
+											.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+											.where('user_list_series.score', 'is not', null)
+											.as('scores_rounded'),
+									)
+									.select('scores_rounded.score')
+									.select((eb) => eb.fn.count('scores_rounded.score').as('cnt'))
+									.groupBy('scores_rounded.score')
 									.as('user_score'),
-							(join) =>
-								join.onRef(
-									(eb) => eb.fn('round', [eb(eb.cast('user_score.score', 'decimal'), '/', 10)]),
-									'=',
-									'gs.gs',
-								),
+							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
 						)
 						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
@@ -781,19 +785,23 @@ export class DBSeries {
 						.leftJoin(
 							(eb) =>
 								eb
-									.selectFrom('user_list_series')
-									.select('user_list_series.score')
-									.select((eb) => eb.fn.count('user_list_series.score').as('cnt'))
-									.whereRef('user_list_series.series_id', '=', 'cte_series.id')
-									.where('user_list_series.score', 'is not', null)
-									.groupBy('user_list_series.score')
+									.selectFrom((eb) =>
+										eb
+											.selectFrom('user_list_series')
+											.select((eb) =>
+												eb
+													.fn('round', [eb(eb.cast('user_list_series.score', 'decimal'), '/', 10)])
+													.as('score'),
+											)
+											.whereRef('user_list_series.series_id', '=', 'cte_series.id')
+											.where('user_list_series.score', 'is not', null)
+											.as('scores_rounded'),
+									)
+									.select('scores_rounded.score')
+									.select((eb) => eb.fn.count('scores_rounded.score').as('cnt'))
+									.groupBy('scores_rounded.score')
 									.as('user_score'),
-							(join) =>
-								join.onRef(
-									(eb) => eb.fn('round', [eb(eb.cast('user_score.score', 'decimal'), '/', 10)]),
-									'=',
-									'gs.gs',
-								),
+							(join) => join.onRef('user_score.score', '=', 'gs.gs'),
 						)
 						.orderBy('gs.gs', 'desc')
 						.select('gs.gs')
