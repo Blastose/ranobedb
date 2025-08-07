@@ -251,6 +251,9 @@ export const load = async () => {
         title: string;
         image_id: number | null;
         c_release_date: number;
+        c_release_dates: {
+            [K in Language]?: number;
+        };
         title_orig: string | null;
         romaji_orig: string | null;
         image: {

@@ -229,6 +229,7 @@ CREATE TABLE public.book (
     hidden boolean NOT NULL,
     description_ja text NOT NULL,
     description text NOT NULL,
+    c_release_dates JSONB NOT NULL DEFAULT '{}'::jsonb,
     FOREIGN KEY (image_id) REFERENCES public.image(id)
 );
 
@@ -240,6 +241,7 @@ CREATE TABLE public.book_hist (
     olang public.language NOT NULL,
     description_ja text NOT NULL,
     description text NOT NULL,
+    c_release_dates JSONB NOT NULL DEFAULT '{}'::jsonb,
     FOREIGN KEY (image_id) REFERENCES public.image(id),
     FOREIGN KEY (change_id) REFERENCES public.change(id),
     PRIMARY KEY (change_id)
