@@ -100,6 +100,7 @@ export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
 			'book_hist.description_ja',
 			'book_hist.image_id',
 			'book_hist.c_release_date',
+			'book_hist.c_release_dates',
 			'book_hist.olang',
 		])
 		.select(['book_title_hist.lang', 'book_title_hist.romaji', 'book_title_hist.title'])

@@ -92,6 +92,9 @@ export interface Book {
 	locked: boolean;
 	release_date: number;
 	c_release_date: number;
+	c_release_dates: Generated<{
+		[K in Language]?: number;
+	}>;
 }
 
 export interface BookEdition {
@@ -116,6 +119,9 @@ export interface BookHist {
 	olang: Language;
 	release_date: number;
 	c_release_date: Generated<number>;
+	c_release_dates: Generated<{
+		[K in Language]?: number;
+	}>;
 }
 
 export interface BookStaffAlias {

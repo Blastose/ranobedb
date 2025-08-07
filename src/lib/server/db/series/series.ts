@@ -420,6 +420,7 @@ export class DBSeries {
 							'cte_book.image_id',
 							'cte_book.lang',
 							'cte_book.c_release_date',
+							'cte_book.c_release_dates',
 							'series_book.sort_order',
 							'series_book.book_type',
 						])
@@ -741,6 +742,7 @@ export class DBSeries {
 							'cte_book.image_id',
 							'cte_book.lang',
 							'cte_book.c_release_date',
+							'cte_book.c_release_dates',
 							'series_book_hist.book_type',
 							'series_book_hist.sort_order',
 						])
