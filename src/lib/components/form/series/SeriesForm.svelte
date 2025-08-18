@@ -125,7 +125,7 @@
 			field="web_novel"
 			label="Web novel"
 			resetPadding={true}
-			placeholder="Syosetu or Kakuyomu links"
+			placeholder="Syosetu, Kakuyomu, Alphapolis, or Pixiv links"
 		/>
 	</div>
 
