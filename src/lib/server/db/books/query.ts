@@ -137,6 +137,8 @@ export async function getBooks(params: {
 				'score',
 				'last_updated',
 				'added',
+				'started',
+				'finished',
 			]);
 		} else {
 			query = query.groupBy([
