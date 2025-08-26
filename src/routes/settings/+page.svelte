@@ -22,6 +22,8 @@
 			sendEmailVerificationForm={data.sendEmailVerificationForm}
 			displayPrefsForm={data.displayPrefsForm}
 			userListSeriesSettingsForm={data.userListSeriesSettingsForm}
+			profilePictureForm={data.profilePictureForm}
+			removeProfilePictureForm={data.removeProfilePictureForm}
 			listLabelsForm={data.listLabelsForm}
 			view={data.view}
 			email_verified={data.email_verified}

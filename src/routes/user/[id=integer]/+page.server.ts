@@ -16,6 +16,13 @@ export const load = async ({ params, locals }) => {
 		error(404);
 	}
 
+	const profile_image = await db
+		.selectFrom('auth_user')
+		.leftJoin('profile_image', 'profile_image.id', 'auth_user.profile_image_id')
+		.where('auth_user.id', '=', listUser.id)
+		.select('profile_image.filename')
+		.executeTakeFirstOrThrow();
+
 	let isCurrentUser = false;
 	if (user?.id_numeric === listUser.id_numeric) {
 		isCurrentUser = true;
@@ -58,6 +65,7 @@ export const load = async ({ params, locals }) => {
 
 	return {
 		listUser,
+		profile_image,
 		isCurrentUser,
 		readPerMonth,
 		labelCounts,

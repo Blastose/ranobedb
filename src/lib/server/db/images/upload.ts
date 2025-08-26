@@ -1,6 +1,6 @@
 import { customAlphabet } from 'nanoid';
 import sharp from 'sharp';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import {
 	CF_ACCESS_KEY_ID,
 	CF_ACCOUNT_ID,
@@ -8,6 +8,7 @@ import {
 	CF_SECRET_ACCESS_KEY,
 } from '$env/static/private';
 import imageSize from 'image-size';
+import { avatarUrlPrefix } from '$lib/db/dbConsts';
 
 export function generateNanoid() {
 	const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -40,6 +41,27 @@ export async function saveImageToR2(filename: string, body: Buffer) {
 			Body: body,
 			ContentType: 'image/jpeg',
 			CacheControl: 'public, max-age=604800, immutable',
+		}),
+	);
+}
+
+export async function saveProfileImageToR2(filename: string, body: Buffer) {
+	await s3.send(
+		new PutObjectCommand({
+			Bucket: CF_BUCKET_NAME,
+			Key: avatarUrlPrefix + '/' + filename,
+			Body: body,
+			ContentType: 'image/jpeg',
+			CacheControl: 'public, max-age=604800, immutable',
+		}),
+	);
+}
+
+export async function removeProfileImagesFromUser(filename: string) {
+	await s3.send(
+		new DeleteObjectCommand({
+			Bucket: CF_BUCKET_NAME,
+			Key: avatarUrlPrefix + '/' + filename,
 		}),
 	);
 }

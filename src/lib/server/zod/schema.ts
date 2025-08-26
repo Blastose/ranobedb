@@ -130,6 +130,30 @@ export const changeEmailSchema = z.object({
 	password: zPasswordEntry,
 });
 
+export const profilePictureSchema = z.object({
+	current_filename: z.string().max(255).nullish(),
+	image: z
+		.instanceof(File, { message: 'Please upload a file.' })
+		.refine((f) => f.size < 3_000_000, 'Max 3 MB upload size.'),
+	// .refine(async (f) => {
+	// 	console.log(f);
+	// 	console.log(f.bytes);
+	// 	const blob = await f.bytes();
+	// 	const { height, width } = imageSize(new Uint8Array(blob));
+	// 	if (!height || !width) {
+	// 		return false;
+	// 	}
+	// 	if (height > 10000 || width > 10000) {
+	// 		return false;
+	// 	}
+
+	// 	return true;
+	// }, 'Image dimensions must be less than 10000 x 10000')
+});
+export const removeProfilePictureSchema = z.object({
+	current_filename: z.string().max(255).nullish(),
+});
+
 export const usernameSchema = z.object({ username: zUsername, password: zPasswordEntry });
 export const passwordSchema = z.object({
 	currentPassword: zPasswordEntry,

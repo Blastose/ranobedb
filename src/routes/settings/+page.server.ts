@@ -2,6 +2,8 @@ import {
 	changeEmailSchema,
 	displayPrefsSchema,
 	passwordSchema,
+	profilePictureSchema,
+	removeProfilePictureSchema,
 	sendEmailVerificationSchema,
 	settingsTabsSchema,
 	userListLabelsSchema,
@@ -37,6 +39,13 @@ import { arrayDiff, arrayIntersection } from '$lib/db/array.js';
 import { sql } from 'kysely';
 import { Lucia } from '$lib/server/lucia/lucia.js';
 import { verifyPasswordHash } from '$lib/server/password/hash.js';
+import imageSize from 'image-size';
+import sharp from 'sharp';
+import {
+	generateNanoid,
+	removeProfileImagesFromUser,
+	saveProfileImageToR2,
+} from '$lib/server/db/images/upload.js';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -51,6 +60,8 @@ type SettingsWithUser = {
 	sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
+	profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
+	removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
 	userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
 	listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 	view: SettingsTab;
@@ -82,6 +93,14 @@ export const load = async ({ locals, url }) => {
 	const verifyEmailForm = await superValidate(zod4(verifyEmailSchema));
 	const sendEmailVerificationForm = await superValidate(zod4(sendEmailVerificationSchema));
 	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod4(displayPrefsSchema));
+	const profilePictureForm = await superValidate(
+		{ current_filename: locals.user.profile_image_filename },
+		zod4(profilePictureSchema),
+	);
+	const removeProfilePictureForm = await superValidate(
+		{ current_filename: locals.user.profile_image_filename },
+		zod4(removeProfilePictureSchema),
+	);
 	const settingsTabs = await superValidate(url, zod4(settingsTabsSchema));
 	const userListSeriesSettingsForm =
 		settingsTabs.data.view === 'list'
@@ -122,6 +141,8 @@ export const load = async ({ locals, url }) => {
 		sendEmailVerificationForm,
 		displayPrefsForm,
 		userListSeriesSettingsForm,
+		profilePictureForm,
+		removeProfilePictureForm,
 		listLabelsForm,
 		view: settingsTabs.data.view,
 	} satisfies SettingsLoad;
@@ -686,6 +707,132 @@ export const actions = {
 
 		return message(listLabelsForm, {
 			text: 'Saved custom labels successfully!',
+			type: 'success',
+		});
+	},
+
+	profilepicture: async (event) => {
+		const { locals, request } = event;
+		const user = locals.user;
+		if (!user) {
+			return fail(401);
+		}
+
+		const formData = await request.formData();
+
+		const profilePictureForm = await superValidate(formData, zod4(profilePictureSchema));
+
+		if (!profilePictureForm.valid) {
+			return message(
+				profilePictureForm,
+				{ type: 'error', text: 'Image is too large.' },
+				{ status: 400 },
+			);
+		}
+
+		const image = profilePictureForm.data.image;
+
+		const img_buff = new Uint8Array(await image?.arrayBuffer());
+		let { height, width } = imageSize(img_buff);
+		if (!height || !width || height > 50000 || width > 50000) {
+			return message(
+				profilePictureForm,
+				{ type: 'error', text: 'Invalid image dimensions.' },
+				{ status: 400 },
+			);
+		}
+		const resized_img_buff = await sharp(img_buff).resize(220).jpeg({ mozjpeg: true }).toBuffer();
+		({ height, width } = imageSize(resized_img_buff));
+		if (!height || !width || height > 500) {
+			return message(
+				profilePictureForm,
+				{ type: 'error', text: 'Invalid image dimensions.' },
+				{ status: 400 },
+			);
+		}
+
+		await db.transaction().execute(async (trx) => {
+			const user_profile_image_id = await trx
+				.selectFrom('auth_user')
+				.leftJoin('profile_image', 'profile_image.id', 'auth_user.profile_image_id')
+				.select(['auth_user.profile_image_id', 'profile_image.filename'])
+				.where('auth_user.id', '=', user.id)
+				.executeTakeFirstOrThrow();
+			if (user_profile_image_id.profile_image_id) {
+				await trx
+					.updateTable('auth_user')
+					.set({ profile_image_id: null })
+					.where('auth_user.id', '=', user.id)
+					.execute();
+				await trx
+					.deleteFrom('profile_image')
+					.where('profile_image.id', '=', user_profile_image_id.profile_image_id)
+					.execute();
+				if (user_profile_image_id.filename) {
+					await removeProfileImagesFromUser(user_profile_image_id.filename);
+				}
+			}
+			const inserted_image = await trx
+				.insertInto('profile_image')
+				.values({
+					filename: generateNanoid() + '.jpg',
+					height: height,
+					spoiler: true,
+					width: width,
+				})
+				.returning(['profile_image.id', 'profile_image.filename'])
+				.executeTakeFirstOrThrow();
+			await trx
+				.updateTable('auth_user')
+				.set({ profile_image_id: inserted_image.id })
+				.where('auth_user.id', '=', user.id)
+				.execute();
+			await saveProfileImageToR2(inserted_image.filename, resized_img_buff);
+		});
+
+		return message(profilePictureForm, {
+			text: 'Uploaded profile picture successfully!',
+			type: 'success',
+		});
+	},
+
+	removeprofilepicture: async (event) => {
+		const { locals, request } = event;
+		const user = locals.user;
+		if (!user) {
+			return fail(401);
+		}
+		const formData = await request.formData();
+		const removeProfilePictureForm = await superValidate(
+			formData,
+			zod4(removeProfilePictureSchema),
+		);
+
+		await db.transaction().execute(async (trx) => {
+			const user_profile_image_id = await trx
+				.selectFrom('auth_user')
+				.leftJoin('profile_image', 'profile_image.id', 'auth_user.profile_image_id')
+				.select(['auth_user.profile_image_id', 'profile_image.filename'])
+				.where('auth_user.id', '=', user.id)
+				.executeTakeFirstOrThrow();
+			if (user_profile_image_id.profile_image_id) {
+				await trx
+					.updateTable('auth_user')
+					.set({ profile_image_id: null })
+					.where('auth_user.id', '=', user.id)
+					.execute();
+				await trx
+					.deleteFrom('profile_image')
+					.where('profile_image.id', '=', user_profile_image_id.profile_image_id)
+					.execute();
+				if (user_profile_image_id.filename) {
+					await removeProfileImagesFromUser(user_profile_image_id.filename);
+				}
+			}
+		});
+
+		return message(removeProfilePictureForm, {
+			text: 'Removed profile picture successfully!',
 			type: 'success',
 		});
 	},

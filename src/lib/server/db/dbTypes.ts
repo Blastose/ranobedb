@@ -69,6 +69,7 @@ export interface AuthUser {
 	id: string;
 	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;
+	profile_image_id: number | null;
 	role: Generated<UserRole>;
 	display_prefs: Generated<Json<DisplayPrefs>>;
 	username: string;
@@ -189,6 +190,14 @@ export interface Image {
 	height: number;
 	id: Generated<number>;
 	nsfw: boolean;
+	spoiler: boolean;
+	width: number;
+}
+
+export interface ProfileImage {
+	filename: string;
+	height: number;
+	id: Generated<number>;
 	spoiler: boolean;
 	width: number;
 }
@@ -601,6 +610,7 @@ export interface DB {
 	email_verification_code: EmailVerificationCode;
 	email_verification_token: EmailVerificationToken;
 	image: Image;
+	profile_image: ProfileImage;
 	notification: Notification;
 	password_reset_token: PasswordResetToken;
 	publisher: Publisher;

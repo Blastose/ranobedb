@@ -62,6 +62,7 @@ export interface AuthUser {
   id: string;
   id_numeric: Generated<number>;
   joined: Generated<Timestamp>;
+  profile_image_id: number | null;
   role: Generated<UserRole>;
   username: string;
   username_lowercase: string;
@@ -199,6 +200,14 @@ export interface PasswordResetToken {
   id: Generated<number>;
   token_hash: string;
   user_id: string;
+}
+
+export interface ProfileImage {
+  filename: string;
+  height: number;
+  id: Generated<number>;
+  spoiler: boolean;
+  width: number;
 }
 
 export interface Publisher {
@@ -592,6 +601,7 @@ export interface DB {
   image: Image;
   notification: Notification;
   password_reset_token: PasswordResetToken;
+  profile_image: ProfileImage;
   publisher: Publisher;
   publisher_hist: PublisherHist;
   publisher_relation: PublisherRelation;

@@ -6,6 +6,7 @@
 	import ProfileItem from './ProfileItem.svelte';
 	import ProfileFormButton from './ProfileFormButton.svelte';
 	import Hr from '../Hr.svelte';
+	import { buildAvatarImageUrl } from '$lib/components/book/book';
 
 	interface Props {
 		user: User | null;
@@ -31,7 +32,13 @@
 	class:logged-in={user}
 >
 	{#if user}
-		{user.username.at(0)}
+		{#if user.profile_image_filename}
+			{#key user.profile_image_filename}
+				<img src={buildAvatarImageUrl(user.profile_image_filename)} alt="" />
+			{/key}
+		{:else}
+			{user.username.at(0)}
+		{/if}
 	{:else}
 		<Icon name="profile" />
 	{/if}
@@ -42,7 +49,13 @@
 		{#if user}
 			<a use:melt={$item} href="/user/{user.id_numeric}" class="flex px-2 items-center">
 				<div class="profile-button" class:logged-in={user}>
-					{user.username.at(0)}
+					{#if user.profile_image_filename}
+						{#key user.profile_image_filename}
+							<img src={buildAvatarImageUrl(user.profile_image_filename)} alt="" />
+						{/key}
+					{:else}
+						{user.username.at(0)}
+					{/if}
 				</div>
 				<h2 class="font-semibold text-lg p-2">{user.username}</h2>
 			</a>
@@ -104,7 +117,7 @@
 {/if}
 
 <style>
-	.profile-button {
+	:global(.profile-button) {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -116,11 +129,19 @@
 		font-size: 1.125rem;
 		line-height: 1.75rem;
 		font-weight: 700;
+		overflow: hidden;
 	}
 
 	.profile-button.logged-in {
 		background-color: var(--primary-500);
 		color: var(--text-dark);
+	}
+
+	:global(.profile-button.profile-button:has(img)) {
+		background-color: white;
+	}
+	:global(.profile-button.profile-button.logged-in:has(img)) {
+		background-color: white;
 	}
 
 	.profile-menu {
