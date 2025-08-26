@@ -6,6 +6,8 @@
 		changeEmailSchema,
 		displayPrefsSchema,
 		passwordSchema,
+		profilePictureSchema,
+		removeProfilePictureSchema,
 		sendEmailVerificationSchema,
 		userListLabelsSchema,
 		userListSeriesSettingsSchema,
@@ -22,6 +24,8 @@
 	import type { SettingsTab } from '$lib/db/dbConsts';
 	import SeriesListSettingsForm from './list/SeriesListSettingsForm.svelte';
 	import ListLabelsForm from './list/ListLabelsForm.svelte';
+	import ProfilePictureForm from './picture/ProfilePictureForm.svelte';
+	import RemoveProfilePictureForm from './picture/RemoveProfilePictureForm.svelte';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
@@ -31,6 +35,8 @@
 	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	export let displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
 	export let userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
+	export let profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
+	export let removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
 	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 
 	export let view: SettingsTab;
@@ -62,6 +68,12 @@
 				href="{page.url.pathname}?view=email"
 				text="Email settings"
 				icon="email"
+			/>
+			<SidebarListItem
+				active={view === 'picture'}
+				href="{page.url.pathname}?view=picture"
+				text="Profile picture"
+				icon="imageFrame"
 			/>
 		</ul>
 	</div>
@@ -104,24 +116,23 @@
 			</section>
 		</div>
 	{:else if view === 'email'}
-		{#if false}
-			<p>
-				You cannot verify or change your email at this time. This feature will be added in the
-				future.
-			</p>
-		{:else}
-			<h2 class="font-bold text-2xl">Email settings</h2>
-			<div class="flex flex-col gap-4 max-w-lg">
-				<section>
-					<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />
-				</section>
+		<h2 class="font-bold text-2xl">Email settings</h2>
+		<div class="flex flex-col gap-4 max-w-lg">
+			<section>
+				<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />
+			</section>
 
-				<Hr />
+			<Hr />
 
-				<section>
-					<ChangeEmailForm {changeEmailForm} {email_verified} />
-				</section>
-			</div>
-		{/if}
+			<section>
+				<ChangeEmailForm {changeEmailForm} {email_verified} />
+			</section>
+		</div>
+	{:else if view === 'picture'}
+		<h2 class="font-bold text-2xl">Profile picture</h2>
+		<div class="flex flex-col gap-4 max-w-lg">
+			<ProfilePictureForm {profilePictureForm} />
+			<RemoveProfilePictureForm {removeProfilePictureForm} />
+		</div>
 	{/if}
 </div>

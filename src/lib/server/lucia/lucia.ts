@@ -68,6 +68,7 @@ export class Lucia {
 		const auth_session_res = await this.db
 			.selectFrom('auth_session')
 			.innerJoin('auth_user', 'auth_user.id', 'auth_session.user_id')
+			.leftJoin('profile_image', 'auth_user.profile_image_id', 'profile_image.id')
 			.select([
 				'auth_session.id',
 				'auth_session.user_id',
@@ -76,6 +77,7 @@ export class Lucia {
 				'auth_user.username',
 				'auth_user.role',
 				'auth_user.id_numeric as user_id_numeric',
+				'profile_image.filename as profile_image_filename',
 			])
 			.where('auth_session.id', '=', sessionId)
 			.executeTakeFirst();
@@ -93,6 +95,7 @@ export class Lucia {
 			id_numeric: auth_session_res.user_id_numeric,
 			role: auth_session_res.role,
 			username: auth_session_res.username,
+			profile_image_filename: auth_session_res.profile_image_filename,
 		};
 		if (Date.now() >= session.expiresAt.getTime()) {
 			await this.invalidateSession(session.id);
@@ -152,4 +155,5 @@ export interface User {
 	id_numeric: number;
 	role: UserRole;
 	display_prefs: DisplayPrefs;
+	profile_image_filename?: string | null;
 }

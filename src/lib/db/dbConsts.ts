@@ -280,7 +280,7 @@ export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconT
 	series: 'bookshelf',
 	releases: 'file',
 };
-export const settingsTabs = ['account', 'display', 'list', 'email'] as const;
+export const settingsTabs = ['account', 'display', 'list', 'email', 'picture'] as const;
 export type SettingsTab = (typeof settingsTabs)[number];
 
 export const historyFilterChangeType = ['all', 'edit', 'add'] as const;
@@ -351,3 +351,5 @@ export const releaseSortArray = [
 	'Pages asc',
 	'Pages desc',
 ] as const;
+
+export const avatarUrlPrefix = 'avatar';

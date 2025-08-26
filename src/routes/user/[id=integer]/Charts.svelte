@@ -42,6 +42,9 @@
 				role: 'user' | 'admin' | 'banned' | 'editor' | 'adder' | 'moderator';
 				username: string;
 			};
+			profile_image: {
+				filename: string | null;
+			};
 			readPerMonth: {
 				date: string;
 				count: number;
@@ -182,7 +185,7 @@
 </script>
 
 <DbRouteShell theme={$theme} bgImageStyle={null}>
-	<DbItemShellUser user={data.listUser}>
+	<DbItemShellUser user={data.listUser} profile_image={data.profile_image}>
 		<main class="flex flex-col gap-4">
 			<dl>
 				<div>

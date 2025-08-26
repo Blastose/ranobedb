@@ -137,7 +137,9 @@ CREATE TABLE public.auth_user (
     id text NOT NULL PRIMARY KEY,
     username text NOT NULL UNIQUE,
     username_lowercase text NOT NULL UNIQUE,
-    display_prefs JSONB NOT NULL default '{"names": "romaji","title_prefs": [ { "lang": "en", "romaji": false }, { "lang": "ja", "romaji": true } ],"descriptions": "en"}'::jsonb
+    display_prefs JSONB NOT NULL default '{"names": "romaji","title_prefs": [ { "lang": "en", "romaji": false }, { "lang": "ja", "romaji": true } ],"descriptions": "en"}'::jsonb,
+    profile_image_id integer,
+    FOREIGN KEY (profile_image_id) REFERENCES public.profile_image(id)
 );
 
 CREATE TABLE public.auth_user_credentials (
@@ -215,6 +217,14 @@ CREATE TABLE public.image (
     height integer NOT NULL,
     spoiler boolean NOT NULL,
     nsfw boolean NOT NULL,
+    filename text NOT NULL
+);
+
+CREATE TABLE public.profile_image (
+    id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    width integer NOT NULL,
+    height integer NOT NULL,
+    spoiler boolean NOT NULL,
     filename text NOT NULL
 );
 
