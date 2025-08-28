@@ -23,25 +23,40 @@
 />
 
 <main class="container-rndb flex flex-col gap-12">
-	<Header {data} />
+	{#if !data.user || data.homeDisplaySettings?.header}
+		<Header {data} />
+		<Hr />
+	{/if}
 
-	<Hr />
+	{#if !data.user || data.homeDisplaySettings?.popular_series}
+		<PopularSeries {data} />
+	{/if}
 
-	<PopularSeries {data} />
+	{#if !data.user || data.homeDisplaySettings?.reviews}
+		<Reviews {data} />
+	{/if}
 
-	<Reviews {data} />
+	{#if !data.user || data.homeDisplaySettings?.upcoming_releases}
+		<section>
+			<ReleaseBookImageCarousel releases={data.upcomingReleases} heading="Upcoming releases" />
+		</section>
+	{/if}
 
-	<section>
-		<ReleaseBookImageCarousel releases={data.upcomingReleases} heading="Upcoming releases" />
-	</section>
+	{#if !data.user || data.homeDisplaySettings?.recently_released}
+		<section>
+			<ReleaseBookImageCarousel releases={data.recentlyReleased} heading="Recently released" />
+		</section>
+	{/if}
 
-	<section>
-		<ReleaseBookImageCarousel releases={data.recentlyReleased} heading="Recently released" />
-	</section>
+	{#if !data.user || data.homeDisplaySettings?.seasonal_anime}
+		<SeasonalAnime {data} />
+	{/if}
 
-	<SeasonalAnime {data} />
+	{#if !data.user || data.homeDisplaySettings?.annoucements}
+		<Annoucements />
+	{/if}
 
-	<Annoucements />
-
-	<RecentChanges {data} />
+	{#if !data.user || data.homeDisplaySettings?.recent_changes}
+		<RecentChanges {data} />
+	{/if}
 </main>

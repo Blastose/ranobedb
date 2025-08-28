@@ -6,6 +6,7 @@ import {
 	removeProfilePictureSchema,
 	sendEmailVerificationSchema,
 	settingsTabsSchema,
+	homeDisplaySettingsSchema,
 	userListLabelsSchema,
 	userListSeriesSettingsSchema,
 	usernameSchema,
@@ -63,6 +64,7 @@ type SettingsWithUser = {
 	profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
 	removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
 	userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
+	homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
 	listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 	view: SettingsTab;
 };
@@ -100,6 +102,16 @@ export const load = async ({ locals, url }) => {
 	const removeProfilePictureForm = await superValidate(
 		{ current_filename: locals.user.profile_image_filename },
 		zod4(removeProfilePictureSchema),
+	);
+	const homeDisplaySettingsForm = await superValidate(
+		(
+			await db
+				.selectFrom('auth_user')
+				.where('auth_user.id', '=', locals.user.id)
+				.select('auth_user.home_display_settings')
+				.executeTakeFirstOrThrow()
+		).home_display_settings,
+		zod4(homeDisplaySettingsSchema),
 	);
 	const settingsTabs = await superValidate(url, zod4(settingsTabsSchema));
 	const userListSeriesSettingsForm =
@@ -143,6 +155,7 @@ export const load = async ({ locals, url }) => {
 		userListSeriesSettingsForm,
 		profilePictureForm,
 		removeProfilePictureForm,
+		homeDisplaySettingsForm,
 		listLabelsForm,
 		view: settingsTabs.data.view,
 	} satisfies SettingsLoad;
@@ -833,6 +846,36 @@ export const actions = {
 
 		return message(removeProfilePictureForm, {
 			text: 'Removed profile picture successfully!',
+			type: 'success',
+		});
+	},
+
+	homedisplaysettings: async (event) => {
+		const { locals, request } = event;
+		const user = locals.user;
+		if (!user) {
+			return fail(401);
+		}
+
+		const formData = await request.formData();
+
+		const homeDisplaySettingsForm = await superValidate(formData, zod4(homeDisplaySettingsSchema));
+
+		if (!homeDisplaySettingsForm.valid) {
+			return message(
+				homeDisplaySettingsForm,
+				{ type: 'error', text: 'Invalid options' },
+				{ status: 400 },
+			);
+		}
+		await db
+			.updateTable('auth_user')
+			.set('home_display_settings', JSON.stringify(homeDisplaySettingsForm.data))
+			.where('auth_user.id', '=', user.id)
+			.execute();
+
+		return message(homeDisplaySettingsForm, {
+			text: 'Updated home display preferences successfully!',
 			type: 'success',
 		});
 	},

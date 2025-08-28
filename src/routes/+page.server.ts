@@ -23,6 +23,17 @@ export const load = async ({ locals }) => {
 	const dbReleases = DBReleases.fromDB(db);
 	const dbChanges = new DBChanges(db);
 
+	let homeDisplaySettings = null;
+	if (locals.user) {
+		homeDisplaySettings = (
+			await db
+				.selectFrom('auth_user')
+				.select('auth_user.home_display_settings')
+				.where('auth_user.id', '=', locals.user.id)
+				.executeTakeFirstOrThrow()
+		).home_display_settings;
+	}
+
 	const recentlyReleasedPromise = dbReleases
 		.getReleasesWithImage()
 		.where('release.release_date', '<', now)
@@ -148,5 +159,6 @@ export const load = async ({ locals }) => {
 		seriesReviews,
 		mostPopularSeries,
 		seasonalAnime,
+		homeDisplaySettings,
 	};
 };

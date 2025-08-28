@@ -15,7 +15,11 @@ import {
 	staffRolesArray,
 } from '$lib/db/dbConsts';
 import { languagesArray } from '$lib/db/dbConsts';
-import type { DisplayPrefs, UserListSeriesSettings } from '$lib/server/zod/schema';
+import type {
+	DisplayPrefs,
+	HomeDisplaySettings,
+	UserListSeriesSettings,
+} from '$lib/server/zod/schema';
 import type { ColumnType } from 'kysely';
 
 export type DbItem = (typeof dbItemArray)[number];
@@ -72,6 +76,7 @@ export interface AuthUser {
 	profile_image_id: number | null;
 	role: Generated<UserRole>;
 	display_prefs: Generated<Json<DisplayPrefs>>;
+	home_display_settings: Generated<Json<HomeDisplaySettings>>;
 	username: string;
 	username_lowercase: string;
 }

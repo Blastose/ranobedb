@@ -24,6 +24,7 @@
 			userListSeriesSettingsForm={data.userListSeriesSettingsForm}
 			profilePictureForm={data.profilePictureForm}
 			removeProfilePictureForm={data.removeProfilePictureForm}
+			homeDisplaySettingsForm={data.homeDisplaySettingsForm}
 			listLabelsForm={data.listLabelsForm}
 			view={data.view}
 			email_verified={data.email_verified}
