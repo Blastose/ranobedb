@@ -53,7 +53,7 @@
 	{/if}
 
 	{#if !data.user || data.homeDisplaySettings?.annoucements}
-		<Annoucements />
+		<!-- <Annoucements /> -->
 	{/if}
 
 	{#if !data.user || data.homeDisplaySettings?.recent_changes}

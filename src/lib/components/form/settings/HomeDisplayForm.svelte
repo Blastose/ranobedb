@@ -57,12 +57,12 @@
 			field="seasonal_anime"
 			showRequiredSymbolIfRequired={false}
 		/>
-		<CheckboxField
+		<!-- <CheckboxField
 			form={sForm}
 			label="Show annoucements"
 			field="annoucements"
 			showRequiredSymbolIfRequired={false}
-		/>
+		/> -->
 		<CheckboxField
 			form={sForm}
 			label="Show recent changes"
