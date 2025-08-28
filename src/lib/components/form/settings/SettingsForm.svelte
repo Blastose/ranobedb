@@ -5,6 +5,7 @@
 	import type {
 		changeEmailSchema,
 		displayPrefsSchema,
+		homeDisplaySettingsSchema,
 		passwordSchema,
 		profilePictureSchema,
 		removeProfilePictureSchema,
@@ -26,6 +27,7 @@
 	import ListLabelsForm from './list/ListLabelsForm.svelte';
 	import ProfilePictureForm from './picture/ProfilePictureForm.svelte';
 	import RemoveProfilePictureForm from './picture/RemoveProfilePictureForm.svelte';
+	import HomeDisplayForm from './HomeDisplayForm.svelte';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
@@ -37,6 +39,7 @@
 	export let userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
 	export let profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
 	export let removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
+	export let homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
 	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 
 	export let view: SettingsTab;
@@ -102,6 +105,10 @@
 
 			<section>
 				<DisplayPrefsForm {displayPrefsForm} />
+			</section>
+
+			<section>
+				<HomeDisplayForm {homeDisplaySettingsForm} />
 			</section>
 		</div>
 	{:else if view === 'list'}

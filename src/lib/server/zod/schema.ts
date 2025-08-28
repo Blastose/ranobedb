@@ -688,6 +688,18 @@ export const userListLabelsSchema = z.object({
 		.max(50),
 });
 
+export const homeDisplaySettingsSchema = z.object({
+	header: z.boolean().default(true),
+	popular_series: z.boolean().default(true),
+	reviews: z.boolean().default(true),
+	upcoming_releases: z.boolean().default(true),
+	recently_released: z.boolean().default(true),
+	seasonal_anime: z.boolean().default(true),
+	annoucements: z.boolean().default(true),
+	recent_changes: z.boolean().default(true),
+});
+export type HomeDisplaySettings = z.infer<typeof homeDisplaySettingsSchema>;
+
 // Url searchparams schemas
 export const historyFiltersSchema = z.object({
 	items: z
