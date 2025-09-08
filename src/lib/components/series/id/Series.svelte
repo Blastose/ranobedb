@@ -200,11 +200,15 @@
 				{#each Object.entries(child_series) as [key, series]}
 					<div class="flex flex-col">
 						<h3 class="font-semibold capitalize">{key}:</h3>
-						{#each series as serie (serie.id)}
-							<a class="link" href="/series/{serie.id}"
-								>{getTitleDisplay({ obj: serie, prefs: $displayPrefs.title_prefs })}</a
-							>
-						{/each}
+						<ul>
+							{#each series as serie (serie.id)}
+								<li>
+									<a class="link" href="/series/{serie.id}"
+										>{getTitleDisplay({ obj: serie, prefs: $displayPrefs.title_prefs })}</a
+									>
+								</li>
+							{/each}
+						</ul>
 					</div>
 				{/each}
 			</div>
@@ -252,5 +256,11 @@
 
 	dt {
 		font-weight: 700;
+	}
+
+	ul > li {
+		list-style: disc;
+		list-style-position: inside;
+		margin-left: 12px;
 	}
 </style>
