@@ -5,6 +5,7 @@ import type {
 	PublisherRelType,
 	ReleasePublisherType,
 	ReleaseType,
+	SeriesBookType,
 	SeriesRelType,
 	StaffRole,
 } from '$lib/server/db/dbTypes';
@@ -17,16 +18,16 @@ export function generateLink(href: string, content: string) {
 }
 
 function generateSeriesBookChangeString(
-	book: TitleDisplay & { sort_order: number; id: number },
+	book: TitleDisplay & { sort_order: number; id: number; book_type: SeriesBookType },
 	prefs: DisplayPrefs['title_prefs'],
 ) {
 	return `${generateLink(
 		`/book/${book.id}`,
 		getTitleDisplay({ obj: book, prefs }),
-	)} ${` [#${book.sort_order}]`}`;
+	)} ${`[#${book.sort_order}]`} [${book.book_type}]`;
 }
 export function generateSeriesBookChangeStringFromBooks(
-	books: (TitleDisplay & { sort_order: number; id: number })[],
+	books: (TitleDisplay & { sort_order: number; id: number; book_type: SeriesBookType })[],
 	prefs: DisplayPrefs['title_prefs'],
 ) {
 	let str = '';
