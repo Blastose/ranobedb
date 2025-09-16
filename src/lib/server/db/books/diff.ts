@@ -1,8 +1,8 @@
 import {
 	generateBookEditionChangeStringFromEditions,
 	generateBookStaffChangeStringFromStaffs,
-	generateBookTitleChangeStringFromBooks,
 	getDiffLines,
+	getDiffTitle,
 	getDiffWords,
 	pushIfNotUndefined,
 	type BookStaff,
@@ -21,10 +21,10 @@ export function getBookDiffs(params: {
 
 	pushIfNotUndefined(
 		diffs,
-		getDiffLines({
-			lines1: generateBookTitleChangeStringFromBooks(prevBookHistEdit['titles']),
-			lines2: generateBookTitleChangeStringFromBooks(bookHistEdit['titles']),
+		getDiffTitle({
 			name: 'Title(s)',
+			title1: prevBookHistEdit['titles'],
+			title2: bookHistEdit['titles'],
 		}),
 	);
 	pushIfNotUndefined(

@@ -1,10 +1,10 @@
 import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
-	generateBookTitleChangeStringFromBooks,
 	generateSeriesBookChangeStringFromBooks,
 	generateSeriesRelationChangeStringFromSeries,
 	generateSeriesTagChangeStringFromSeries,
 	getDiffLines,
+	getDiffTitle,
 	getDiffWords,
 	pushIfNotUndefined,
 	type Diff,
@@ -22,10 +22,10 @@ export function getSeriesDiffs(params: {
 
 	pushIfNotUndefined(
 		diffs,
-		getDiffLines({
+		getDiffTitle({
 			name: 'Title(s)',
-			lines1: generateBookTitleChangeStringFromBooks(prevSeriesHistEdit['titles']),
-			lines2: generateBookTitleChangeStringFromBooks(seriesHistEdit['titles']),
+			title1: prevSeriesHistEdit['titles'],
+			title2: seriesHistEdit['titles'],
 		}),
 	);
 	pushIfNotUndefined(

@@ -1,4 +1,5 @@
 import { ORIGIN } from '$env/static/private';
+import { languagesArray } from '$lib/db/dbConsts';
 import { getNameDisplay, getTitleDisplay, type TitleDisplay } from '$lib/display/prefs';
 import type {
 	Language,
@@ -84,7 +85,30 @@ export function generateReleasePublisherChangeStringFromPublishers(
 	}
 	return str.trim();
 }
-
+export function generateBookTitleChangeStringTitle(book?: {
+	lang: Language;
+	title: string;
+	romaji: string | null;
+	official: boolean;
+}) {
+	if (!book) {
+		return '';
+	}
+	let str = `[${book.lang}] ${book.title}`;
+	return str;
+}
+export function generateBookTitleChangeStringRomaji(book?: {
+	lang: Language;
+	title: string;
+	romaji: string | null;
+	official: boolean;
+}) {
+	if (!book || !book.romaji) {
+		return '';
+	}
+	let str = `[${book.lang} Romaji] ${book.romaji}`;
+	return str;
+}
 function generateBookTitleChangeString(book: {
 	lang: Language;
 	title: string;
@@ -235,12 +259,22 @@ export function generateBookStaffChangeStringFromStaffs(
 	return str.trim();
 }
 
-export type Diff = {
+export type Diff =
+	| {
+			name: string;
+			changes: Change[];
+			type: 'line' | 'word' | 'char';
+			textType: 'text' | 'html';
+	  }
+	| DiffTitles;
+
+type DiffTitles = {
 	name: string;
-	changes: Change[];
-	type: 'line' | 'word' | 'char';
-	textType: 'text' | 'html';
+	changes: Change[][];
+	type: 'title';
+	textType: 'text';
 };
+
 export function getDiffLines(params: {
 	lines1: string;
 	lines2: string;
@@ -310,7 +344,51 @@ export function getDiffChars(params: {
 	}
 	return undefined;
 }
-
+export function getDiffTitle(params: {
+	title1: { title: string; romaji: string | null; lang: Language; official: boolean }[];
+	title2: { title: string; romaji: string | null; lang: Language; official: boolean }[];
+	name: string;
+}): Diff | undefined {
+	const changes: Change[][] = [];
+	// TODO - This iterates over all languages and finds the matching lang for each title which could be slow,
+	// so this is a potential speed up if the speed ever becomes an issue
+	for (const i of languagesArray) {
+		const title1 = params.title1.find((v) => v.lang === i);
+		const title2 = params.title2.find((v) => v.lang === i);
+		if (!title1 && !title2) {
+			continue;
+		}
+		const diffsTitle = diffChars(
+			generateBookTitleChangeStringTitle(title1),
+			generateBookTitleChangeStringTitle(title2),
+		);
+		const diffsRomaji = diffChars(
+			generateBookTitleChangeStringRomaji(title1),
+			generateBookTitleChangeStringRomaji(title2),
+		);
+		for (const diff of diffsTitle) {
+			if (diff.removed || diff.added) {
+				changes.push(diffsTitle);
+				break;
+			}
+		}
+		for (const diff of diffsRomaji) {
+			if (diff.removed || diff.added) {
+				changes.push(diffsRomaji);
+				break;
+			}
+		}
+	}
+	if (changes.length > 0) {
+		return {
+			changes: changes,
+			name: 'Title(s)',
+			textType: 'text',
+			type: 'title',
+		};
+	}
+	return undefined;
+}
 export function pushIfNotUndefined<T>(array: T[], item: T | undefined) {
 	if (item) {
 		array.push(item);
