@@ -8,6 +8,7 @@
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import { onMount } from 'svelte';
 
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let loading = $state(false);
@@ -46,6 +47,25 @@
 
 	onNavigate(() => {
 		focus_state = 'not-active';
+	});
+
+	onMount(() => {
+		const searchOnLoad = () => {
+			console.log('Loaded');
+			const q = document.querySelector<HTMLInputElement>(
+				'div.search-input-container > input.search-input',
+			);
+			console.log(q?.value);
+			if (q?.value) {
+				focus_state = 'active';
+				handleInputChange();
+			}
+		};
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', searchOnLoad);
+		} else {
+			searchOnLoad();
+		}
 	});
 </script>
 
