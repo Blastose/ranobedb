@@ -51,12 +51,10 @@
 
 	onMount(() => {
 		const searchOnLoad = () => {
-			console.log('Loaded');
 			const q = document.querySelector<HTMLInputElement>(
 				'div.search-input-container > input.search-input',
 			);
-			console.log(q?.value);
-			if (q?.value) {
+			if (q?.value || q === document.activeElement) {
 				focus_state = 'active';
 				handleInputChange();
 			}
