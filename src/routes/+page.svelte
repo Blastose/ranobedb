@@ -1,22 +1,22 @@
 <script lang="ts">
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import MetaTags from '$lib/components/layout/MetaTags.svelte';
-	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import ReleaseBookImageCarousel from '$lib/components/release/ReleaseBookImageCarousel.svelte';
 	import Header from '$lib/components/home/Header.svelte';
 	import PopularSeries from '$lib/components/home/PopularSeries.svelte';
 	import Reviews from '$lib/components/home/Reviews.svelte';
 	import RecentChanges from '$lib/components/home/RecentChanges.svelte';
-	import Annoucements from '$lib/components/home/Annoucements.svelte';
 	import SeasonalAnime from '$lib/components/home/SeasonalAnime.svelte';
 
 	let { data } = $props();
+
+	const pageTitle = 'RanobeDB - Light Novel Database';
 </script>
 
-<PageTitle title="Home" />
+<svelte:head><title>{pageTitle}</title></svelte:head>
 
 <MetaTags
-	title="RanobeDB"
+	title={pageTitle}
 	description="Welcome to RanobeDB! We are a light novel database and our mission is to provide a comprehensive database of Japanese light novels and any official translations. This website is an open, editable database and you can contribute new information or corrections to the database."
 	site_name="RanobeDB"
 	type="website"
