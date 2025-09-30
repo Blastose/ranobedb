@@ -8,7 +8,7 @@
 
 <BookCarousel>
 	{#snippet link()}
-		<h2 class="text-lg font-bold">Summer 2025 Anime</h2>
+		<h2 class="text-lg font-bold">Fall 2025 Anime</h2>
 	{/snippet}
 	{#snippet items()}
 		{#each data.seasonalAnime as series (series.id)}

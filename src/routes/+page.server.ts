@@ -85,29 +85,23 @@ export const load = async ({ locals }) => {
 	// 		const ors = [];
 
 	// 		const urls = [
-	// 			'https://bookwalker.jp/debf032b73-6ede-45da-a604-7792ba676600/',
-	// 			'https://bookwalker.jp/de5cad13f2-a7bb-4211-8b7b-fe8d01bb9991/',
-	// 			'https://bookwalker.jp/dea75e1f00-b31e-46c7-9bcd-123b2f7b7018/',
-	// 			'https://bookwalker.jp/de05db36f3-b6d7-4632-b83a-11542dd98a28/',
-	// 			'https://bookwalker.jp/dea6ff0695-e8bf-4cc8-b241-6a0ea32d4952/',
-	// 			'https://bookwalker.jp/de6d30b6df-7e2e-4986-9a3d-461829f580e7/',
-	// 			'https://bookwalker.jp/de3d391183-200b-40e3-8c63-a90fbb74bc6b/',
-	// 			'https://bookwalker.jp/de6f768c21-7497-486a-8bfb-ac779604717c/',
-	// 			'https://bookwalker.jp/def66802f4-8f16-44ae-9124-1686d794acc6/',
-	// 			'https://bookwalker.jp/de2d7d1e65-89e3-4118-a509-d40c66a004ae/',
-	// 			'https://bookwalker.jp/de1c76c224-bb0f-44db-90f5-6d244e7efa05/',
-	// 			'https://bookwalker.jp/de2450bba4-bee3-4db6-95db-e668c4c76fdd/',
-	// 			'https://bookwalker.jp/deb86bccd2-2d3a-4f56-babb-8fd3f52163ef/',
-	// 			'https://bookwalker.jp/deb469b977-355b-447b-bf35-08acbf01bd95/',
-	// 			'https://bookwalker.jp/de30fcbc31-edf3-4044-8445-25d443fa97cb/',
-	// 			'https://bookwalker.jp/de7d57c88b-e6c0-471c-a317-165852c17779/',
-	// 			'https://bookwalker.jp/de0ce8833f-4d38-4bea-a303-b6a708ab6a12/',
-	// 			'https://bookwalker.jp/de615eff11-7fd1-4666-a336-4824b110bf76/',
-	// 			'https://bookwalker.jp/de074d9622-d32c-455b-9c0a-176d0db8ede2/',
-	// 			'https://bookwalker.jp/de2dde5186-204f-4eae-9b46-bdc12469db7b/',
-	// 			'https://bookwalker.jp/de115fa317-f217-41d0-b487-a746a7be90ab/',
-	// 			'https://bookwalker.jp/dec60300cf-07f5-424d-bdb4-504448b61bab/',
-	// 			'https://bookwalker.jp/de4aff1097-a3ce-4ea6-ab9c-1c499d303d57/',
+	// 			'https://bookwalker.jp/de7e8bf962-530c-4c07-b176-bab41feec227/',
+	// 			'https://bookwalker.jp/dee13bc2f9-37ea-4f4e-87dc-1ed558ea4e70/',
+	// 			'https://bookwalker.jp/de7bc1cebe-26e6-4f3e-a599-b8e2830469a7/',
+	// 			'https://bookwalker.jp/de821a05d6-60fb-49d5-bd7d-acc892cd4e37/',
+	// 			'https://bookwalker.jp/def805dd43-931d-44e0-b375-bff8f553db62/',
+	// 			'https://bookwalker.jp/de4449e121-04f2-4f08-86e4-8bfe3c1f4f8c/',
+	// 			'https://bookwalker.jp/de1cf40bc6-4a0c-4cae-9342-e09d9875c715/',
+	// 			'https://bookwalker.jp/deb64a5640-00b4-413f-bb41-48ef97070a0d/',
+	// 			'https://bookwalker.jp/de6980edc5-c9b5-438a-9ff2-e25b3060fe20/',
+	// 			'https://bookwalker.jp/de87f7709c-b023-4736-bf40-fe244d429455/',
+	// 			'https://bookwalker.jp/de44871fab-d479-43fd-a094-8e4fb869d0fb/',
+	// 			'https://bookwalker.jp/de1578fab1-58f9-4ce4-9739-c3a31b649dd1/',
+	// 			'https://bookwalker.jp/de30fac261-7a87-4544-94b0-d0d3bea40a4a/',
+	// 			'https://bookwalker.jp/defa4e3cf5-b2eb-439f-b397-cb162fdd1b2c/',
+	// 			'https://bookwalker.jp/deed251b9c-a82d-49db-b4d6-86bfc03dbddd/',
+	// 			'https://bookwalker.jp/de2677b62b-31fd-4736-a607-041b9afb9d11/',
+	// 			'https://bookwalker.jp/de9cea619b-1234-47ac-8c6f-c7e1cb98ca11/',
 	// 		];
 
 	// 		for (const u of urls) {
@@ -117,7 +111,8 @@ export const load = async ({ locals }) => {
 	// 		return eb.or(ors);
 	// 	})
 	// 	.execute();
-	// console.log(airing_series);
+	// console.log(airing_series.map((v) => v.id));
+	// console.log(airing_series.length);
 	const seasonalAnimePromise = DBSeries.fromDB(db)
 		.getSeries()
 		.clearOrderBy()
@@ -126,8 +121,8 @@ export const load = async ({ locals }) => {
 			'cte_series.id',
 			'in',
 			[
-				1199, 2753, 2993, 3486, 8965, 9640, 10349, 10567, 10778, 11094, 11560, 11957, 12295, 15134,
-				15835, 18477, 18785,
+				886, 4452, 5308, 6266, 6456, 7433, 7895, 8341, 8357, 8466, 9367, 9635, 11934, 12201, 12375,
+				14746,
 			],
 		)
 		.limit(16)

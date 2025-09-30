@@ -20,6 +20,7 @@
 	description="Welcome to RanobeDB! We are a light novel database and our mission is to provide a comprehensive database of Japanese light novels and any official translations. This website is an open, editable database and you can contribute new information or corrections to the database."
 	site_name="RanobeDB"
 	type="website"
+	image="/rndb_logo_512.png"
 />
 
 <main class="container-rndb flex flex-col gap-12">
