@@ -1,5 +1,6 @@
 <script lang="ts">
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import NameDisplayBoth from '$lib/components/display/NameDisplayBoth.svelte';
 	import { staffRolesArray } from '$lib/db/dbConsts';
 	import type { bookSchema } from '$lib/server/zod/schema';
 	import type { ApiStaff } from '../../../../routes/api/i/staff/+server';
@@ -40,7 +41,10 @@
 		<div class="flex flex-col gap-2 flex-wrap">
 			<a class="link w-fit" target="_blank" rel="noreferrer" href="/staff/{staff.staff_id}"
 				><span class="text-sm">#{staff.staff_id}:</span>
-				<NameDisplay obj={{ name: staff.name ?? '', romaji: staff.romaji ?? '' }} /></a
+				<NameDisplayBoth
+					obj={{ name: staff.name ?? '', romaji: staff.romaji ?? '' }}
+					size="small"
+				/></a
 			>
 			<label class="flex gap-2 items-center"
 				><span>Role: </span>
@@ -75,6 +79,7 @@
 		title="Add staff"
 		selectedItems={[]}
 		filterDuplicateIds={false}
+		displayBothNames={true}
 	/>
 	{#if $errors}
 		<p class="error-text-color">{$errors}</p>

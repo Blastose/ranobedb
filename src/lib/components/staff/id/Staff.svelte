@@ -5,7 +5,6 @@
 	import type { Staff, StaffWorks } from '$lib/server/db/staff/staff';
 	import type { User } from '$lib/server/lucia/lucia';
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import Works from './Works.svelte';
 	import {
 		bookwalkerAuthorLink,
@@ -21,6 +20,7 @@
 	import FollowStaff from '$lib/components/form/staff/FollowStaff.svelte';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { userListStaffSchema } from '$lib/server/zod/schema';
+	import NameDisplayBoth from '$lib/components/display/NameDisplayBoth.svelte';
 
 	interface Props {
 		staff: Staff;
@@ -45,6 +45,8 @@
 	}: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
+
+	const aliases = $derived(staff.aliases.filter((v) => v.main_alias === false));
 </script>
 
 <DBItemShell
@@ -59,12 +61,12 @@
 		<FollowStaff {staff} {userListStaffForm}></FollowStaff>
 	{/if}
 
-	{#if staff.aliases.length > 0}
+	{#if aliases.length > 0}
 		<section>
 			<h2 class="text-lg font-bold">Other names</h2>
 
-			{#each staff.aliases.filter((v) => v.main_alias === false) as alias (alias.id)}
-				<p><NameDisplay obj={alias} /></p>
+			{#each aliases as alias (alias.id)}
+				<p><NameDisplayBoth obj={alias} /></p>
 			{:else}
 				<p>No other names</p>
 			{/each}

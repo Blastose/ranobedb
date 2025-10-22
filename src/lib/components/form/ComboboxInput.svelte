@@ -5,10 +5,11 @@
 </script>
 
 <script lang="ts" generics="T extends Rec">
-	import NameDisplay from '../display/NameDisplay.svelte';
 	import { createCombobox, melt } from '@melt-ui/svelte';
 	import { fly } from 'svelte/transition';
 	import Icon from '../icon/Icon.svelte';
+	import NameDisplay from '../display/NameDisplay.svelte';
+	import NameDisplayBoth from '../display/NameDisplayBoth.svelte';
 
 	export let title: string;
 	export let handleAdd: (item: T) => void;
@@ -17,6 +18,7 @@
 	export let filterDuplicateIds: boolean;
 	export let capitalize: boolean = false;
 	export let small: boolean = false;
+	export let displayBothNames: boolean = false;
 
 	const {
 		elements: { menu, input, option, label },
@@ -119,7 +121,9 @@
 						<div class="">
 							<p>
 								<span class="text-xs opacity-75">#{item.id}</span>
-								<NameDisplay obj={item} />
+								{#if displayBothNames}<NameDisplayBoth obj={item} />{:else}<NameDisplay
+										obj={item}
+									/>{/if}
 							</p>
 						</div>
 					</li>
