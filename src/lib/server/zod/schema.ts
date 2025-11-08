@@ -551,7 +551,12 @@ export const releaseSchema = z.object({
 		.transform((v) => (v === '' ? null : v))
 		.optional(),
 	amazon: zLink(['www.amazon.co.jp', 'www.amazon.com']),
-	bookwalker: zLink(['bookwalker.jp', 'global.bookwalker.jp']),
+	bookwalker: zLink([
+		'bookwalker.jp',
+		'global.bookwalker.jp',
+		'www.bookwalker.com.tw',
+		'bookwalker.in.th',
+	]),
 	rakuten: zLink(['books.rakuten.co.jp']),
 	website: zLink([]),
 
