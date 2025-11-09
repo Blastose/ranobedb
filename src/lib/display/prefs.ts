@@ -86,7 +86,12 @@ export function getReleaseTitleDisplaySub(params: {
 	if (!langPref) {
 		return getNameDisplaySub({ obj: params.obj, prefs: params.prefs.names });
 	}
-	return getNameDisplaySub({ obj: params.obj, prefs: langPref.romaji ? 'romaji' : 'native' });
+
+	if (langPref.romaji) {
+		return params.obj.title;
+	} else {
+		return params.obj.romaji ?? '';
+	}
 }
 
 export type TitleDisplay = {
