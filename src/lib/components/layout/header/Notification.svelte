@@ -95,13 +95,15 @@
 							on:m-pointermove={(e) => e.preventDefault()}
 						>
 							{#if notification.image}
-								<img
-									src="https://images.ranobedb.org/{notification.image.filename}"
-									alt=""
-									width="240"
-									height="343"
-									class="rounded-lg w-[48px]"
-								/>
+								{#key notification.image.filename}
+									<img
+										src="https://images.ranobedb.org/{notification.image.filename}"
+										alt=""
+										width="240"
+										height="343"
+										class="rounded-lg w-[48px]"
+									/>
+								{/key}
 							{:else}
 								<div class="flex items-center justify-center">
 									<Icon name="book" width="24" height="24" />

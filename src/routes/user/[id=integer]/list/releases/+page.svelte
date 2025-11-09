@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import ReleaseOptions from '$lib/components/book/id/ReleaseOptions.svelte';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
@@ -101,7 +101,7 @@
 											<p>{release.user_list_release?.release_status}</p>
 										{/if}
 										<a class="link line-clamp-2" href="/release/{release.id}"
-											><NameDisplay obj={release} /></a
+											><ReleaseTitleDisplay obj={release} /></a
 										>
 									</div>
 								</div>
