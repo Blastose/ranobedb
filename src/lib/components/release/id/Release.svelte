@@ -6,7 +6,11 @@
 	import { languageNames } from '$lib/db/dbConsts';
 	import type { Release } from '$lib/server/db/releases/releases';
 	import type { User } from '$lib/server/lucia/lucia';
-	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
+	import {
+		getDisplayPrefsContext,
+		getReleaseTitleDisplay,
+		getReleaseTitleDisplaySub,
+	} from '$lib/display/prefs';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import ReleaseOptions from '$lib/components/book/id/ReleaseOptions.svelte';
@@ -29,8 +33,8 @@
 <DBItemShell
 	dbItem="release"
 	{revision}
-	name={getNameDisplay({ obj: release, prefs: $displayPrefs.names })}
-	subName={getNameDisplaySub({ obj: release, prefs: $displayPrefs.names })}
+	name={getReleaseTitleDisplay({ obj: release, prefs: $displayPrefs })}
+	subName={getReleaseTitleDisplaySub({ obj: release, prefs: $displayPrefs })}
 	{user}
 	item={release}
 	copyTo={{ to: ['book'] }}

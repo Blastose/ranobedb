@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
@@ -85,7 +85,7 @@
 					{#each works.releases as release (release.id)}
 						<p>
 							<a class="link" href="/release/{release.id}"
-								>{new DateNumber(release.release_date).getDateFormatted()} - <NameDisplay
+								>{new DateNumber(release.release_date).getDateFormatted()} - <ReleaseTitleDisplay
 									obj={release}
 								/> - {release.publisher_type}</a
 							>

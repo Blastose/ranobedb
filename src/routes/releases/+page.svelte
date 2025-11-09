@@ -1,11 +1,10 @@
 <script lang="ts">
 	import { buildImageUrl } from '$lib/components/book/book';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
 	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
-	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 	import { languageNames } from '$lib/db/dbConsts';
 
 	let { data } = $props();
@@ -44,7 +43,7 @@
 						{/if}
 						<div class="flex flex-col justify-between">
 							<div>
-								<p class="font-bold"><NameDisplay obj={release} /></p>
+								<p class="font-bold"><ReleaseTitleDisplay obj={release} /></p>
 								<p>{languageNames[release.lang]}</p>
 							</div>
 							<div class="flex justify-between">

@@ -671,7 +671,7 @@ export const displayPrefsSchema = z.object({
 	title_prefs: z
 		.array(zLanguagePrio)
 		.min(1, { message: 'You can need to have min 1 language ' })
-		.max(4, { message: 'You can only have max 4 languages' }),
+		.max(10, { message: 'You can only have max 10 languages' }),
 	names: z.enum(['romaji', 'native'] as const),
 	descriptions: z.enum(['en', 'ja'] as const),
 });

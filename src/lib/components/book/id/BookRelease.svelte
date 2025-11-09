@@ -1,5 +1,5 @@
 <script lang="ts">
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import type { BookOne } from '$lib/server/db/books/books';
@@ -40,7 +40,7 @@
 			{#if showLang}
 				<p class="whitespace-nowrap">{release.lang}</p>
 			{/if}
-			<a class="link" href="/release/{release.id}"><NameDisplay obj={release} /></a>
+			<a class="link" href="/release/{release.id}"><ReleaseTitleDisplay obj={release} /></a>
 		</div>
 
 		{#if showMenus}
