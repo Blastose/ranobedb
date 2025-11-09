@@ -26,7 +26,7 @@ export const load = async ({ params, locals, url }) => {
 	const release = await dbReleases
 		.getRelease(releaseId)
 		.clearSelect()
-		.select(['release.title', 'release.romaji'])
+		.select(['release.title', 'release.romaji', 'release.lang'])
 		.executeTakeFirstOrThrow();
 	if (!release) {
 		error(404);

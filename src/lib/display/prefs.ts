@@ -12,9 +12,10 @@ export function getDisplayPrefsUser(user: User | null) {
 	return user?.display_prefs ?? defaultDisplayPrefs;
 }
 
-type ReleaseTitle = {
+export type ReleaseTitle = {
 	title: string;
 	romaji?: Nullish<string>;
+	lang: Language;
 };
 type Name = {
 	name: string;
@@ -54,6 +55,38 @@ export function getNameDisplaySub(params: {
 		return params.obj.romaji ?? '';
 	}
 	return '';
+}
+
+export function getReleaseTitleDisplay(params: {
+	obj: ReleaseTitle;
+	prefs: Pick<DisplayPrefs, 'title_prefs' | 'names'>;
+}) {
+	// Can display title or romaji
+	// If lang in prefs, use whatever that wants
+	// else if lang not in prefs, default to the name one
+	const title_prefs = params.prefs.title_prefs;
+	const langPref = title_prefs.find((v) => v.lang === params.obj.lang);
+	if (!langPref) {
+		return getNameDisplay({ obj: params.obj, prefs: params.prefs.names });
+	}
+	return getTitleDisplay({
+		obj: {
+			...params.obj,
+			romaji: params.obj.romaji ?? null,
+		},
+		prefs: title_prefs,
+	});
+}
+export function getReleaseTitleDisplaySub(params: {
+	obj: ReleaseTitle;
+	prefs: Pick<DisplayPrefs, 'title_prefs' | 'names'>;
+}) {
+	const title_prefs = params.prefs.title_prefs;
+	const langPref = title_prefs.find((v) => v.lang === params.obj.lang);
+	if (!langPref) {
+		return getNameDisplaySub({ obj: params.obj, prefs: params.prefs.names });
+	}
+	return getNameDisplaySub({ obj: params.obj, prefs: langPref.romaji ? 'romaji' : 'native' });
 }
 
 export type TitleDisplay = {

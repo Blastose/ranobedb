@@ -11,7 +11,7 @@
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
 	import { getRelCalStoreContext } from '$lib/stores/releaseCalendarViewStore';
 	import { getDisplayPrefsContext, getNameDisplay } from '$lib/display/prefs';
 
@@ -112,7 +112,7 @@
 									title={getNameDisplay({ obj: release, prefs: $displayPrefs.names })}
 									class="line-clamp-2"
 								>
-									<NameDisplay obj={release} />
+									<ReleaseTitleDisplay obj={release} />
 								</p>
 							</a>
 						{/each}

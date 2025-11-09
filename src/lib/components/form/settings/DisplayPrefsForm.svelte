@@ -22,7 +22,7 @@
 	</div>
 
 	<div>
-		<h3 class="text-lg font-bold">Release titles, staff and publisher names</h3>
+		<h3 class="text-lg font-bold">Staff and publisher names</h3>
 		<SelectField
 			form={sForm}
 			dropdownOptions={[

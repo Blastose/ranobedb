@@ -1,4 +1,4 @@
-import { getNameDisplay, getTitleDisplay } from '$lib/display/prefs';
+import { getNameDisplay, getReleaseTitleDisplay, getTitleDisplay } from '$lib/display/prefs';
 import type { Change } from '$lib/server/db/change/change';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
 import type { DbItem } from '../server/db/dbTypes';
@@ -50,7 +50,7 @@ export function getHistoryEntryTitle(change: Change, displayPrefs: DisplayPrefs)
 		}
 	} else if (change.item_name === 'release') {
 		if (change.release) {
-			return getNameDisplay({ obj: change.release, prefs: displayPrefs.names });
+			return getReleaseTitleDisplay({ obj: change.release, prefs: displayPrefs });
 		}
 	} else if (change.item_name === 'publisher') {
 		if (change.publisher) {
