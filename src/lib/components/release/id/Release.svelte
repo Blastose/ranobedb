@@ -115,6 +115,27 @@
 		{/if}
 	</section>
 
+	{#if release.isbn13}
+		<section>
+			<h2 class="text-lg font-bold">ISBN lookup</h2>
+			<div class="flex flex-wrap gap-x-4">
+				{#if release.lang === 'ja'}
+					<a
+						href="https://ja.wikipedia.org/wiki/%E7%89%B9%E5%88%A5:%E6%96%87%E7%8C%AE%E8%B3%87%E6%96%99?isbn={release.isbn13}"
+						target="_blank"
+						class="link">Wikipedia book sources</a
+					>
+				{:else}
+					<a
+						href="https://en.wikipedia.org/wiki/Special:BookSources?isbn={release.isbn13}"
+						target="_blank"
+						class="link">Wikipedia book sources</a
+					>
+				{/if}
+			</div>
+		</section>
+	{/if}
+
 	{#if release.publishers.length > 0}
 		<section>
 			<h2 class="text-lg font-bold">Publishers</h2>
