@@ -27,16 +27,16 @@
 			</p>
 
 			<div class="pt-4 flex gap-2 sub-text-alt">
-				<a href="/books" class="primary-btn">Browse books</a>
+				<a href="/series" class="primary-btn">Browse series</a>
 				<a href="/about" class="tet-btn">Learn more</a>
 			</div>
 
 			<div class="pt-4 flex gap-x-6 gap-y-2 flex-wrap sub-text-alt">
 				<div class="flex gap-1 text-sm items-center">
-					<Icon name="book" /> 45K+ Total books
+					<Icon name="book" /> 51+ Total books
 				</div>
 				<div class="flex gap-1 text-sm items-center">
-					<Icon name="bookshelf" /> 17K+ Book series
+					<Icon name="bookshelf" /> 20K+ Book series
 				</div>
 			</div>
 		</div>
