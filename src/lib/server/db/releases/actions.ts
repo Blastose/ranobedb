@@ -7,7 +7,7 @@ import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
 import { arrayDiff, arrayIntersection } from '$lib/db/array';
-import type { Insertable, Kysely, Transaction } from 'kysely';
+import { sql, type Insertable, type Kysely, type Transaction } from 'kysely';
 import type {
 	DB,
 	ReleaseBook,
@@ -95,7 +95,14 @@ async function sendSeriesNotifications(params: {
 					'release.id as release_id',
 					'auth_user.display_prefs',
 					'image.filename',
-				]),
+				])
+				.select(
+					sql<boolean>`
+					coalesce((regexp_match(
+						"auth_user"."display_prefs"::text,
+						concat('"lang": "', "release"."lang", '", "romaji": (true|false)}')
+					))[1], 'true')::boolean`.as('lang_pref_romaji'),
+				),
 		)
 		.insertInto('notification')
 		.columns([
@@ -109,40 +116,37 @@ async function sendSeriesNotifications(params: {
 			'item_name',
 		])
 		.expression((eb) =>
-			eb
-				.selectFrom('release_to_add')
-				.select((eb) => [
-					eb.lit(false).as('hidden'),
-					eb.lit(false).as('is_read'),
-					eb
-						.fn('concat', [
-							eb.cast(
-								eb
-									.case()
-									.when(eb.ref('display_prefs', '->>').key('names'), '=', 'native')
-									.then(eb.ref('title'))
-									.when(eb.ref('display_prefs', '->>').key('names'), '=', 'romaji')
-									.then(eb.fn.coalesce('romaji', 'title'))
-									.end(),
-								'text',
-							),
-							eb.cast(eb.val(' ('), 'text'),
-							eb.ref('format'),
-							eb.cast(eb.val(') '), 'text'),
-							eb.cast(eb.val('has been added to the database.'), 'text'),
-						])
-						.as('message'),
-					eb.val('New related release added').as('notification_type'),
-					'release_to_add.user_id',
-					eb
-						.fn('concat', [
-							eb.cast(eb.val('/release/'), 'text'),
-							eb.cast('release_to_add.release_id', 'text'),
-						])
-						.as('url'),
-					eb.ref('release_to_add.release_id').as('item_id'),
-					eb.val('release').as('item_name'),
-				]),
+			eb.selectFrom('release_to_add').select((eb) => [
+				eb.lit(false).as('hidden'),
+				eb.lit(false).as('is_read'),
+				eb
+					.fn('concat', [
+						eb.cast(
+							eb
+								.case()
+								.when(eb.cast(eb.ref('lang_pref_romaji'), 'boolean'), '=', false)
+								.then(eb.ref('title'))
+								.else(eb.fn.coalesce('romaji', 'title'))
+								.end(),
+							'text',
+						),
+						eb.cast(eb.val(' ('), 'text'),
+						eb.ref('format'),
+						eb.cast(eb.val(') '), 'text'),
+						eb.cast(eb.val('has been added to the database.'), 'text'),
+					])
+					.as('message'),
+				eb.val('New related release added').as('notification_type'),
+				'release_to_add.user_id',
+				eb
+					.fn('concat', [
+						eb.cast(eb.val('/release/'), 'text'),
+						eb.cast('release_to_add.release_id', 'text'),
+					])
+					.as('url'),
+				eb.ref('release_to_add.release_id').as('item_id'),
+				eb.val('release').as('item_name'),
+			]),
 		)
 		.execute();
 }
@@ -260,7 +264,14 @@ async function sendStaffNotifications(params: {
 					'image.filename',
 					'staff_alias.name as staff_name',
 					'staff_alias.romaji as staff_romaji',
-				]),
+				])
+				.select(
+					sql<boolean>`
+					coalesce((regexp_match(
+						"auth_user"."display_prefs"::text,
+						concat('"lang": "', "release"."lang", '", "romaji": (true|false)}')
+					))[1], 'true')::boolean`.as('lang_pref_romaji'),
+				),
 		)
 		.insertInto('notification')
 		.columns([
@@ -274,55 +285,52 @@ async function sendStaffNotifications(params: {
 			'item_name',
 		])
 		.expression((eb) =>
-			eb
-				.selectFrom('release_to_add')
-				.select((eb) => [
-					eb.lit(false).as('hidden'),
-					eb.lit(false).as('is_read'),
-					eb
-						.fn('concat', [
-							eb.cast(
-								eb
-									.case()
-									.when(eb.ref('display_prefs', '->>').key('names'), '=', 'native')
-									.then(eb.ref('title'))
-									.when(eb.ref('display_prefs', '->>').key('names'), '=', 'romaji')
-									.then(eb.fn.coalesce('romaji', 'title'))
-									.end(),
-								'text',
-							),
-							eb.cast(eb.val(' ('), 'text'),
-							eb.ref('format'),
-							eb.cast(eb.val(') '), 'text'),
-							eb.cast(eb.val('has been added to the database.'), 'text'),
-						])
-						.as('message'),
-					eb
-						.fn('concat', [
-							eb.cast(eb.val('New release by '), 'text'),
-							eb.cast(
-								eb
-									.case()
-									.when(eb.ref('display_prefs', '->>').key('names'), '=', 'native')
-									.then(eb.ref('staff_name'))
-									.when(eb.ref('display_prefs', '->>').key('names'), '=', 'romaji')
-									.then(eb.fn.coalesce('staff_romaji', 'staff_name'))
-									.end(),
-								'text',
-							),
-							eb.cast(eb.val(' added'), 'text'),
-						])
-						.as('notification_type'),
-					'release_to_add.user_id',
-					eb
-						.fn('concat', [
-							eb.cast(eb.val('/release/'), 'text'),
-							eb.cast('release_to_add.release_id', 'text'),
-						])
-						.as('url'),
-					eb.ref('release_to_add.release_id').as('item_id'),
-					eb.val('release').as('item_name'),
-				]),
+			eb.selectFrom('release_to_add').select((eb) => [
+				eb.lit(false).as('hidden'),
+				eb.lit(false).as('is_read'),
+				eb
+					.fn('concat', [
+						eb.cast(
+							eb
+								.case()
+								.when(eb.cast(eb.ref('lang_pref_romaji'), 'boolean'), '=', false)
+								.then(eb.ref('title'))
+								.else(eb.fn.coalesce('romaji', 'title'))
+								.end(),
+							'text',
+						),
+						eb.cast(eb.val(' ('), 'text'),
+						eb.ref('format'),
+						eb.cast(eb.val(') '), 'text'),
+						eb.cast(eb.val('has been added to the database.'), 'text'),
+					])
+					.as('message'),
+				eb
+					.fn('concat', [
+						eb.cast(eb.val('New release by '), 'text'),
+						eb.cast(
+							eb
+								.case()
+								.when(eb.ref('display_prefs', '->>').key('names'), '=', 'native')
+								.then(eb.ref('staff_name'))
+								.when(eb.ref('display_prefs', '->>').key('names'), '=', 'romaji')
+								.then(eb.fn.coalesce('staff_romaji', 'staff_name'))
+								.end(),
+							'text',
+						),
+						eb.cast(eb.val(' added'), 'text'),
+					])
+					.as('notification_type'),
+				'release_to_add.user_id',
+				eb
+					.fn('concat', [
+						eb.cast(eb.val('/release/'), 'text'),
+						eb.cast('release_to_add.release_id', 'text'),
+					])
+					.as('url'),
+				eb.ref('release_to_add.release_id').as('item_id'),
+				eb.val('release').as('item_name'),
+			]),
 		)
 		.execute();
 }
