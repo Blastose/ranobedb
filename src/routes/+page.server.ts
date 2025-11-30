@@ -20,7 +20,7 @@ export const load = async ({ locals }) => {
 	const now = getNow();
 
 	const form = await superValidate(zod4(historyFiltersSchema));
-	const dbReleases = DBReleases.fromDB(db);
+	const dbReleases = DBReleases.fromDB(db, locals.user);
 	const dbChanges = new DBChanges(db);
 
 	let homeDisplaySettings = null;
@@ -57,17 +57,17 @@ export const load = async ({ locals }) => {
 		})
 		.limit(10)
 		.execute();
-	const bookReviewsPromise = DBReviews.fromDB(db)
+	const bookReviewsPromise = DBReviews.fromDB(db, locals.user)
 		.getBookReviewsWithBookObj({ excludeReviewText: true })
 		.limit(4)
 		.orderBy('user_book_review.last_updated', 'desc')
 		.execute();
-	const seriesReviewsPromise = DBReviews.fromDB(db)
+	const seriesReviewsPromise = DBReviews.fromDB(db, locals.user)
 		.getSeriesReviewsWithSeriesObj({ excludeReviewText: true })
 		.limit(4)
 		.orderBy('user_series_review.last_updated', 'desc')
 		.execute();
-	const mostPopularSeriesPromise = DBSeries.fromDB(db)
+	const mostPopularSeriesPromise = DBSeries.fromDB(db, locals.user)
 		.getSeries()
 		.clearOrderBy()
 		.orderBy('c_popularity', 'desc')
@@ -113,7 +113,7 @@ export const load = async ({ locals }) => {
 	// 	.execute();
 	// console.log(airing_series.map((v) => v.id));
 	// console.log(airing_series.length);
-	const seasonalAnimePromise = DBSeries.fromDB(db)
+	const seasonalAnimePromise = DBSeries.fromDB(db, locals.user)
 		.getSeries()
 		.clearOrderBy()
 		.orderBy('c_popularity', 'desc')
