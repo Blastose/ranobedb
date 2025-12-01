@@ -325,6 +325,7 @@ export interface SavedFilter {
 	filters: string;
 	item_name: DbItem;
 	user_id: string;
+	is_list: boolean;
 }
 
 export interface Series {
