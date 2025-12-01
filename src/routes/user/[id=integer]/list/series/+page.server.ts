@@ -35,6 +35,7 @@ export const load = async ({ params, locals, url }) => {
 		.select('saved_filter.filters')
 		.where('saved_filter.user_id', '=', listUser.id)
 		.where('saved_filter.item_name', '=', 'series')
+		.where('saved_filter.is_list', '=', true)
 		.executeTakeFirst();
 
 	const series_list_filter_user = userListFilters?.filters;
@@ -51,7 +52,10 @@ export const load = async ({ params, locals, url }) => {
 	const userLabelCounts = await getUserSeriesListCounts(db, listUser.id).execute();
 	const userCustLabelCounts = await getUserSeriesListCounts(db, listUser.id, 11, 99).execute();
 
-	const urlSearchForm = await superValidate({ filters: url.search }, zod4(listFiltersSchema));
+	const urlSearchForm = await superValidate(
+		{ filters: url.search, target: 'series', is_list: true },
+		zod4(listFiltersSchema),
+	);
 
 	const [res, listCounts] = await Promise.all([
 		getSeries({

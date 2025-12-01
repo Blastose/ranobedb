@@ -1,5 +1,5 @@
 import { db } from '$lib/server/db/db';
-import { listFiltersSchema, seriesListSchema } from '$lib/server/zod/schema.js';
+import { bookListSchema, listFiltersSchema } from '$lib/server/zod/schema.js';
 import { superValidate, fail, message } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
@@ -16,12 +16,13 @@ export const actions = {
 		}
 
 		const searchParams = new URLSearchParams(form.data.filters);
-		const series_list = await superValidate(searchParams, zod4(seriesListSchema));
+		const book_list = await superValidate(searchParams, zod4(bookListSchema));
 
-		if (series_list.valid && series_list.data.serieslist) {
+		if (book_list.valid && book_list.data.booklist) {
 			return message(form, { type: 'Success', text: 'Saved filters as default!' });
 		}
 
+		searchParams.delete('booklist');
 		searchParams.delete('serieslist');
 		searchParams.delete('page');
 		searchParams.delete('q');
@@ -29,13 +30,14 @@ export const actions = {
 		await db
 			.insertInto('saved_filter')
 			.values({
-				filters: form.data.filters,
-				item_name: 'series',
+				filters: searchParams.toString(),
+				item_name: form.data.target,
 				user_id: locals.user.id,
+				is_list: form.data.is_list,
 			})
 			.onConflict((oc) =>
-				oc.columns(['user_id', 'item_name']).doUpdateSet({
-					filters: form.data.filters,
+				oc.columns(['user_id', 'item_name', 'is_list']).doUpdateSet({
+					filters: searchParams.toString(),
 				}),
 			)
 			.execute();
