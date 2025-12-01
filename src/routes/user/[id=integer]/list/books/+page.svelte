@@ -41,7 +41,7 @@
 
 	{#snippet info()}
 		{#if data.isMyList}
-			<ListFilters searchParams={data.urlSearchForm} filter_type="book" />
+			<ListFilters searchParams={data.urlSearchForm} />
 		{/if}
 
 		<div class="flex flex-col gap-1">

@@ -962,6 +962,8 @@ export const seriesListSchema = z.object({
 });
 export const listFiltersSchema = z.object({
 	filters: z.string().min(1).max(maxTextLength),
+	target: z.enum(dbItemArray),
+	is_list: z.boolean(),
 });
 
 export type Nullish<T> = T | null | undefined;

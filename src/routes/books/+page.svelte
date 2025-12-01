@@ -5,6 +5,7 @@
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
+	import ListFilters from '$lib/components/form/book/ListFilters.svelte';
 
 	let { data } = $props();
 </script>
@@ -25,6 +26,12 @@
 			isList={false}
 			allCustLabels={data.allCustLabels}
 		/>
+	{/snippet}
+
+	{#snippet info()}
+		{#if data.user}
+			<ListFilters searchParams={data.urlSearchForm} />
+		{/if}
 	{/snippet}
 
 	{#snippet display()}

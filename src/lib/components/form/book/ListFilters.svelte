@@ -7,6 +7,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import { tick } from 'svelte';
 	import type { listFiltersSchema } from '$lib/server/zod/schema';
+	import HiddenInput from '../HiddenInput.svelte';
 
 	const {
 		elements: { trigger, overlay, content, title, close, portalled, description },
@@ -16,7 +17,6 @@
 		preventScroll: false,
 	});
 
-	export let filter_type: 'book' | 'series';
 	export let searchParams: SuperValidated<Infer<typeof listFiltersSchema>>;
 
 	const sForm = superForm(searchParams, {
@@ -66,12 +66,14 @@
 					If you have just changed the filters, make sure to click the filter button before saving.
 				</p>
 				<form
-					action="/api/i/user/{filter_type}/list"
+					action="/api/i/user/filters"
 					method="post"
 					use:enhance
 					class="mt-6 flex justify-end gap-2"
 				>
-					<input type="hidden" value={searchParams.data.filters} name="filters" />
+					<HiddenInput name="filters" value={searchParams.data.filters} />
+					<HiddenInput name="target" value={searchParams.data.target} />
+					<HiddenInput name="is_list" value={searchParams.data.is_list} />
 					<button type="button" use:melt={$close} class="btn btn-pad">Cancel</button>
 					<SubmitButton delayed={$delayed} submitting={$submitting} text="Save" wFull={false} />
 				</form>

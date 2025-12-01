@@ -1,6 +1,7 @@
 <script lang="ts">
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
+	import ListFilters from '$lib/components/form/book/ListFilters.svelte';
 	import SeriesFilters from '$lib/components/form/series/filters/SeriesFilters.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import BookImageContainer from '$lib/components/layout/container/BookImageContainer.svelte';
@@ -27,6 +28,12 @@
 			isList={false}
 			allCustLabels={data.allCustLabels}
 		/>
+	{/snippet}
+
+	{#snippet info()}
+		{#if data.user}
+			<ListFilters searchParams={data.urlSearchForm} />
+		{/if}
 	{/snippet}
 
 	{#snippet display()}

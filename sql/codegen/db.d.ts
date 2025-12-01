@@ -307,6 +307,7 @@ export interface ReleasePublisherHist {
 
 export interface SavedFilter {
   filters: string;
+  is_list: boolean;
   item_name: DbItem;
   user_id: string;
 }
