@@ -99,37 +99,6 @@
 		<div class="results-display thin-scrollbar" transition:fly={{ duration: 150, y: -10 }}>
 			<div class="flex flex-col gap-4">
 				{#if !loading && items}
-					{#if items.books.books.length > 0}
-						<div class="flex flex-col gap-2">
-							<div class="flex justify-between">
-								<p class="text-lg font-bold">Books ({items.books.count})</p>
-								<a href="/books?q={encodeURIComponent(inputValue)}" class="link">View all</a>
-							</div>
-							{#each items.books.books as book}
-								{@const imageUrl = buildImageUrl(book.image?.filename)}
-								<a href="/book/{book.id}" class="results-item">
-									{#if book.image}
-										{#key book.image.id}
-											<img
-												width={book.image.width}
-												height={book.image.height}
-												class="max-w-[48px] sm:max-w-[56px] h-fit rounded-md shadow-sm"
-												src={imageUrl}
-												alt=""
-												loading="lazy"
-											/>
-										{/key}
-									{/if}
-									<div class="flex flex-col text-sm sm:text-base">
-										<p class="font-bold line-clamp-2">
-											<TitleDisplay obj={book} />
-										</p>
-										<p>{new DateNumber(book.c_release_date).getDateFormatted()}</p>
-									</div>
-								</a>
-							{/each}
-						</div>
-					{/if}
 					{#if items.series.series.length > 0}
 						<div class="flex flex-col gap-2">
 							<div class="flex justify-between">
@@ -156,6 +125,37 @@
 											<TitleDisplay obj={series} />
 										</p>
 										<p>{series.c_num_books} books</p>
+									</div>
+								</a>
+							{/each}
+						</div>
+					{/if}
+					{#if items.books.books.length > 0}
+						<div class="flex flex-col gap-2">
+							<div class="flex justify-between">
+								<p class="text-lg font-bold">Books ({items.books.count})</p>
+								<a href="/books?q={encodeURIComponent(inputValue)}" class="link">View all</a>
+							</div>
+							{#each items.books.books as book}
+								{@const imageUrl = buildImageUrl(book.image?.filename)}
+								<a href="/book/{book.id}" class="results-item">
+									{#if book.image}
+										{#key book.image.id}
+											<img
+												width={book.image.width}
+												height={book.image.height}
+												class="max-w-[48px] sm:max-w-[56px] h-fit rounded-md shadow-sm"
+												src={imageUrl}
+												alt=""
+												loading="lazy"
+											/>
+										{/key}
+									{/if}
+									<div class="flex flex-col text-sm sm:text-base">
+										<p class="font-bold line-clamp-2">
+											<TitleDisplay obj={book} />
+										</p>
+										<p>{new DateNumber(book.c_release_date).getDateFormatted()}</p>
 									</div>
 								</a>
 							{/each}

@@ -33,7 +33,7 @@
 
 			<div class="pt-4 flex gap-x-6 gap-y-2 flex-wrap sub-text-alt">
 				<div class="flex gap-1 text-sm items-center">
-					<Icon name="book" /> 51+ Total books
+					<Icon name="book" /> 51K+ Total books
 				</div>
 				<div class="flex gap-1 text-sm items-center">
 					<Icon name="bookshelf" /> 20K+ Book series
