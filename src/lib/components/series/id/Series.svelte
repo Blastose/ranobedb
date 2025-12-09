@@ -95,19 +95,22 @@
 
 	{#if series.book_description && (series.book_description?.description?.length > 0 || series.book_description?.description_ja?.length > 0)}
 		{#key series.id}
-			{#if $displayPrefs.descriptions === 'en'}
-				<Description
-					description={series.book_description?.description ||
-						series.book_description?.description_ja}
-					maxHeight={100}
-				/>
-			{:else if $displayPrefs.descriptions === 'ja'}
-				<Description
-					description={series.book_description?.description_ja ||
-						series.book_description?.description}
-					maxHeight={100}
-				/>
-			{/if}
+			<section>
+				<h2 class="font-bold text-lg">Description</h2>
+				{#if $displayPrefs.descriptions === 'en'}
+					<Description
+						description={series.book_description?.description ||
+							series.book_description?.description_ja}
+						maxHeight={100}
+					/>
+				{:else if $displayPrefs.descriptions === 'ja'}
+					<Description
+						description={series.book_description?.description_ja ||
+							series.book_description?.description}
+						maxHeight={100}
+					/>
+				{/if}
+			</section>
 		{/key}
 	{/if}
 
