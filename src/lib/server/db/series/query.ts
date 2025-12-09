@@ -5,13 +5,14 @@ import {
 } from '$lib/server/zod/schema';
 import { superValidate, type Infer, type SuperValidated } from 'sveltekit-superforms';
 import { DBSeries } from './series';
-import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool } from 'kysely';
+import { DeduplicateJoinsPlugin, type Expression, type Kysely, type SqlBool } from 'kysely';
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserSeriesLabels } from '../user/series-list';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
+import { escapeRegex } from '$lib/db/match';
 
 export async function getSeries(params: {
 	currentPage: number;
@@ -158,13 +159,25 @@ export async function getSeries(params: {
 		query = query
 			.innerJoin('series_title', 'series_title.series_id', 'cte_series.id')
 			.select((eb) =>
-				eb.fn
-					.max(
-						eb.fn('greatest', [
-							eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
-							eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
+				eb
+					.case()
+					.when(
+						eb.fn('regexp_like', [
+							'cte_series.aliases',
+							eb.val(`^${escapeRegex(q)}$`),
+							eb.val('im'),
 						]),
 					)
+					.then(1)
+					.else(
+						eb.fn.max(
+							eb.fn('greatest', [
+								eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
+								eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
+							]),
+						),
+					)
+					.end()
 					.as('sim_score'),
 			)
 			.orderBy('sim_score', orderByDirection);
@@ -189,6 +202,7 @@ export async function getSeries(params: {
 					'cte_series.c_start_date',
 					'cte_series.c_end_date',
 					'cte_series.c_popularity',
+					'cte_series.aliases',
 					'score',
 					'last_updated',
 					'added',
@@ -216,6 +230,7 @@ export async function getSeries(params: {
 					'cte_series.c_start_date',
 					'cte_series.c_end_date',
 					'cte_series.c_popularity',
+					'cte_series.aliases',
 				]);
 		}
 	}
