@@ -10,7 +10,12 @@
 
 <div class="pt-[4px]">
 	<p class="sub-text">
-		{lang}
+		{#if lang === 'zh-Hans'}
+			{'zhs'}
+		{:else if lang === 'zh-Hant'}
+			{'zht'}
+		{:else}{lang}
+		{/if}
 	</p>
 </div>
 
