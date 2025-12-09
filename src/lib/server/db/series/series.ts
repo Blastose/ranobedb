@@ -1,11 +1,19 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
-import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely, sql } from 'kysely';
+import {
+	type InferResult,
+	type ExpressionBuilder,
+	expressionBuilder,
+	Kysely,
+	sql,
+	type SqlBool,
+} from 'kysely';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
 import { defaultLangPrio, type UserListStatus } from '$lib/db/dbConsts';
 import { withBookTitleCte } from '../books/books';
 import type { User } from '$lib/server/lucia/lucia';
+import { escapeRegex } from '$lib/db/match';
 
 function titleCaseBuilder(
 	eb: ExpressionBuilder<DB, 'series_title' | 'series'>,
@@ -201,7 +209,11 @@ export class DBSeries {
 											]),
 										),
 								),
-								eb('series.aliases', 'ilike', `%${params?.q}%`),
+								eb.fn<SqlBool>('regexp_like', [
+									'series.aliases',
+									eb.val(`^${escapeRegex(params?.q)}$`),
+									eb.val('im'),
+								]),
 							]),
 						),
 					)
@@ -389,6 +401,8 @@ export class DBSeries {
 				'cte_series.anidb_id',
 				'cte_series.start_date',
 				'cte_series.end_date',
+				'cte_series.c_start_date',
+				'cte_series.c_end_date',
 				'cte_series.web_novel',
 				'cte_series.website',
 				'cte_series.wikidata_id',
@@ -709,6 +723,8 @@ export class DBSeries {
 				'cte_series.anidb_id',
 				'cte_series.start_date',
 				'cte_series.end_date',
+				'cte_series.c_start_date',
+				'cte_series.c_end_date',
 				'cte_series.web_novel',
 				'cte_series.website',
 				'cte_series.wikidata_id',

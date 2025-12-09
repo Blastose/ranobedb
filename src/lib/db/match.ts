@@ -1,7 +1,17 @@
 import type { Nullish } from '$lib/server/zod/schema';
 
-function escapeLike(str: string) {
+export function escapeLike(str: Nullish<string>) {
+	if (!str) {
+		return '';
+	}
 	return str.replace(/[_%\\]/g, '\\$&');
+}
+
+export function escapeRegex(str: Nullish<string>) {
+	if (!str) {
+		return '';
+	}
+	return str.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
 export function addCharacterBetweenString(str: Nullish<string>, char: string) {
