@@ -2,6 +2,7 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { groupBy, sortByLangObjEntries } from '$lib/db/array';
 	import { languageNames } from '$lib/db/dbConsts';
+	import { getDisplayPrefsContext } from '$lib/display/prefs';
 	import type { BookOne } from '$lib/server/db/books/books';
 	import type { Language } from '$lib/server/db/dbTypes';
 	import Collapsible from '../display/Collapsible.svelte';
@@ -16,6 +17,8 @@
 
 	let groupedPublishersByLang = $derived(groupBy(publishers, (item) => item.lang));
 
+	const displayPrefs = getDisplayPrefsContext();
+
 	function getLanguageFromString(langCode: string) {
 		return languageNames[langCode as Language];
 	}
@@ -27,7 +30,13 @@
 	<div class="flex flex-col gap-x-4 gap-y-1">
 		{#each sortByLangObjEntries(Object.entries(groupedPublishersByLang), olang) as [key, publishers]}
 			<section>
-				<Collapsible open={onlyOpenOlang ? key === olang : key === 'ja' || key === 'en'}>
+				<Collapsible
+					open={onlyOpenOlang
+						? key === olang
+						: key === 'ja' ||
+							key === 'en' ||
+							Boolean($displayPrefs.title_prefs.find((v) => v.lang === key))}
+				>
 					{#snippet summary()}
 						<h3 class="font-semibold">{getLanguageFromString(key)}</h3>
 					{/snippet}

@@ -8,6 +8,7 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import type { Infer } from 'sveltekit-superforms/server';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
+	import { getDisplayPrefsContext } from '$lib/display/prefs';
 
 	interface Props {
 		releases: BookOne['releases'];
@@ -17,6 +18,8 @@
 
 	let { releases, olang, userListReleaseForm }: Props = $props();
 
+	const displayPrefs = getDisplayPrefsContext();
+
 	let groupedReleasesByLang = $derived(groupBy(releases, (item) => item.lang));
 </script>
 
@@ -25,7 +28,11 @@
 	<div class="flex flex-col gap-1">
 		{#each sortByLangObjEntries(Object.entries(groupedReleasesByLang), olang) as [key, releases]}
 			<section>
-				<Collapsible open={key === 'ja' || key === 'en'}>
+				<Collapsible
+					open={key === 'ja' ||
+						key === 'en' ||
+						Boolean($displayPrefs.title_prefs.find((v) => v.lang === key))}
+				>
 					{#snippet summary()}
 						<h3 class="font-semibold">{getLanguageFromString(key)}</h3>
 					{/snippet}
