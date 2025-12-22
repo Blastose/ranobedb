@@ -1,4 +1,5 @@
 import { db } from '$lib/server/db/db';
+import { sql } from 'kysely';
 
 export async function updateSeriesStartEndDates() {
 	// Run after updateBookReleaseDate()
@@ -54,4 +55,46 @@ export async function updateSeriesPopularity() {
 		}))
 		.whereRef('series.id', '=', 'rel.id')
 		.execute();
+}
+
+export async function updateSeriesAverage() {
+	console.log('Running update series average job');
+	await db.transaction().execute(async (trx) => {
+		await trx.updateTable('series').set({ c_average: 0 }).execute();
+		await trx
+			.with('stats', (db) =>
+				db
+					.selectFrom('user_list_series')
+					.select((eb) => [
+						eb.fn.avg<number>('user_list_series.score').as('avg_glob'),
+						eb.lit<number>(15).as('min_votes_threshold'),
+					]),
+			)
+			.with('series_scores', (db) =>
+				db
+					.selectFrom('user_list_series')
+					.groupBy('user_list_series.series_id')
+					.select((eb) => [
+						'user_list_series.series_id',
+						eb.fn.avg<number>('user_list_series.score').as('avg_score'),
+						eb.fn.count<number>('user_list_series.score').as('vote_count'),
+					]),
+			)
+			.with('combined', (db) => db.selectFrom('series_scores').crossJoin('stats').selectAll())
+			.with('rel', (db) =>
+				db.selectFrom('combined').select([
+					sql<number>`
+					coalesce(((((combined.vote_count / (combined.vote_count + combined.min_votes_threshold)::float) * combined.avg_score) + ((combined.min_votes_threshold / (combined.vote_count + combined.min_votes_threshold)::float) * combined.avg_glob)) * 100)::integer, 0)
+					`.as('bayesian_avg'),
+					'combined.series_id',
+				]),
+			)
+			.updateTable('series')
+			.from('rel')
+			.set((eb) => ({
+				c_average: eb.ref('rel.bayesian_avg'),
+			}))
+			.whereRef('series.id', '=', 'rel.series_id')
+			.execute();
+	});
 }

@@ -317,6 +317,7 @@ export interface Series {
   anidb_id: number | null;
   anilist_id: number | null;
   bookwalker_id: number | null;
+  c_average: Generated<number>;
   c_end_date: number;
   c_latest_release_date: number;
   c_num_books: number;
@@ -355,6 +356,7 @@ export interface SeriesHist {
   anidb_id: number | null;
   anilist_id: number | null;
   bookwalker_id: number | null;
+  c_average: Generated<number>;
   c_end_date: Generated<number>;
   c_latest_release_date: Generated<number>;
   c_popularity: Generated<number>;
