@@ -338,6 +338,7 @@ export interface Series {
 	c_start_date: number;
 	c_latest_release_date: number;
 	c_popularity: Generated<number>;
+	c_average: Generated<number>;
 	description: string;
 	end_date: number;
 	hidden: boolean;
@@ -375,6 +376,7 @@ export interface SeriesHist {
 	c_start_date: Generated<number>;
 	c_latest_release_date: Generated<number>;
 	c_popularity: Generated<number>;
+	c_average: Generated<number>;
 	change_id: number;
 	description: string;
 	end_date: number;

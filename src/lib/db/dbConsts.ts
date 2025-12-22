@@ -315,6 +315,8 @@ export const booksUserListSortArray = [
 export const seriesSortArray = [
 	'Relevance desc',
 	'Relevance asc',
+	'Rating asc',
+	'Rating desc',
 	'Title asc',
 	'Title desc',
 	'Start date asc',
