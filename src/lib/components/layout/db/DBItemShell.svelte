@@ -37,7 +37,7 @@
 				<h1 class="text-2xl font-bold">
 					{name}
 				</h1>
-				{#if subName}
+				{#if subName && subName !== name}
 					<p class="opacity-75">{subName}</p>
 				{/if}
 			</div>
