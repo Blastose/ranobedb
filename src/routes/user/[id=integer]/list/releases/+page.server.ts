@@ -10,8 +10,9 @@ import {
 	releaseFiltersSchema,
 	userListReleaseSchema,
 } from '$lib/server/zod/schema.js';
+import { normalizeTitle } from '$lib/utils/title.js';
 import { error } from '@sveltejs/kit';
-import type { Expression, SqlBool } from 'kysely';
+import { sql, type Expression, type SqlBool } from 'kysely';
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -21,7 +22,7 @@ export const load = async ({ params, locals, url }) => {
 	const qS = await superValidate(url, zod4(qSchema));
 
 	const currentPage = page.data.page;
-	const q = qS.data.q;
+	const q = normalizeTitle(qS.data.q);
 	const user = locals.user;
 	const form = await superValidate(url, zod4(releaseFiltersSchema));
 	const [publishers] = await Promise.all([
@@ -102,9 +103,21 @@ export const load = async ({ params, locals, url }) => {
 					.where('release.hidden', '=', false)
 					.$if(Boolean(q), (qb) =>
 						qb.where((eb) =>
-							eb.or([
-								eb('release.title', 'ilike', `%${q}%`),
-								eb('release.romaji', 'ilike', `%${q}%`),
+							eb.and([
+								eb.or([
+									eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
+									eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
+								]),
+								eb(
+									(eb) =>
+										eb.fn('greatest', [
+											eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
+											eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+										]),
+
+									'>',
+									0.3,
+								),
 							]),
 						),
 					)
@@ -159,7 +172,22 @@ export const load = async ({ params, locals, url }) => {
 		.where('release.hidden', '=', false)
 		.$if(Boolean(q), (qb) =>
 			qb.where((eb) =>
-				eb.or([eb('release.title', 'ilike', `%${q}%`), eb('release.romaji', 'ilike', `%${q}%`)]),
+				eb.and([
+					eb.or([
+						eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
+						eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
+					]),
+					eb(
+						(eb) =>
+							eb.fn('greatest', [
+								eb.fn('word_similarity', [eb.val(q), eb.ref('release.title')]),
+								eb.fn('word_similarity', [eb.val(q), eb.ref('release.romaji')]),
+							]),
+
+						'>',
+						0.3,
+					),
+				]),
 			),
 		)
 		.$if(form.data.rl.length > 0, (qb) =>

@@ -7,6 +7,7 @@ import type { User } from '$lib/server/lucia/lucia';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
+import { normalizeTitle } from '$lib/utils/title';
 
 export async function getReleases(params: {
 	currentPage: number;
@@ -18,7 +19,9 @@ export async function getReleases(params: {
 	url: URL;
 	form: SuperValidated<Infer<typeof releaseFiltersSchema>>;
 }) {
-	const { currentPage, q, db, listUser, currentUser, form, limit } = params;
+	const { currentPage, db, listUser, currentUser, form, limit } = params;
+	let { q } = params;
+	q = normalizeTitle(q);
 
 	const dbReleases = DBReleases.fromDB(db, currentUser);
 
@@ -85,7 +88,6 @@ export async function getReleases(params: {
 								eb(eb.val(q), sql.raw('<%'), eb.ref('release.title')).$castTo<boolean>(),
 								eb(eb.val(q), sql.raw('<%'), eb.ref('release.romaji')).$castTo<boolean>(),
 							]),
-
 							eb(
 								(eb) =>
 									eb.fn('greatest', [

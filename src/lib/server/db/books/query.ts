@@ -8,6 +8,7 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { getUserBookLabels } from '../user/list';
 import { dateStringToNumber } from '$lib/components/form/release/releaseDate';
+import { normalizeTitle } from '$lib/utils/title';
 
 export async function getBooks(params: {
 	limit: number;
@@ -20,7 +21,9 @@ export async function getBooks(params: {
 	form: SuperValidated<Infer<typeof bookFiltersSchema>>;
 	isList?: boolean;
 }) {
-	const { currentPage, q, db, listUser, currentUser, url, form, limit, isList } = params;
+	const { currentPage, db, listUser, currentUser, url, form, limit, isList } = params;
+	let { q } = params;
+	q = normalizeTitle(q);
 
 	const dbBooks = DBBooks.fromDB(db, currentUser);
 
