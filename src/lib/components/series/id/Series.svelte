@@ -245,6 +245,7 @@
 		<UserStats
 			rating={series.rating}
 			type="series"
+			id={series.id}
 			user_stats_score={series.user_stats_score}
 			user_stats_label={series.user_stats_label}
 		/>

@@ -354,4 +354,13 @@ export const releaseSortArray = [
 	'Pages desc',
 ] as const;
 
+export const statsFiltersSortArray = [
+	'Score asc',
+	'Score desc',
+	'Last updated asc',
+	'Last updated desc',
+	'Reading status asc',
+	'Reading status desc',
+] as const;
+
 export const avatarUrlPrefix = 'avatar';

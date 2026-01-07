@@ -219,6 +219,7 @@
 			<UserStats
 				rating={book.rating}
 				type="book"
+				id={book.id}
 				user_stats_score={book.user_stats_score}
 				user_stats_label={book.user_stats_label}
 			/>
