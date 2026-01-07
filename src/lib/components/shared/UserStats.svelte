@@ -15,9 +15,10 @@
 			count: string | number | bigint;
 		} | null;
 		type: 'book' | 'series';
+		id: number;
 	}
 
-	let { user_stats_score, user_stats_label, rating, type }: Props = $props();
+	let { user_stats_score, user_stats_label, rating, type, id }: Props = $props();
 
 	let scoreCount = $derived(user_stats_score.reduce((a, c) => a + Number(c.count), 0));
 	let listCounts = $derived(user_stats_label.reduce((a, c) => a + Number(c.count), 0));
@@ -67,5 +68,6 @@
 		{:else}
 			<p class="italic">No users have added this {type} to their list yet</p>
 		{/if}
+		<p class="mt-4"><a class="link" href="/{type}/{id}/stats">View all stats</a></p>
 	</section>
 </div>

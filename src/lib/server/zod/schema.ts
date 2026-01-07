@@ -17,6 +17,7 @@ import {
 	settingsTabs,
 	staffRolesArray,
 	staffTabs,
+	statsFiltersSortArray,
 	tagTypeArray,
 	userListReleaseStatus,
 	userListStatus,
@@ -933,6 +934,12 @@ export const releaseFiltersObjCalendarSchema = z.object({
 
 export const readingLogSchema = z.object({
 	date: zYearMonth,
+});
+
+export const statsFiltersSchema = z.object({
+	reading_status: z.array(z.number().max(maxNumberValue)).max(10),
+	has_score: z.boolean().optional(),
+	sort: z.enum(statsFiltersSortArray).catch('Last updated desc'),
 });
 
 export const searchNameSchema = z.object({ name: z.string().max(maxTextLength).trim() });
