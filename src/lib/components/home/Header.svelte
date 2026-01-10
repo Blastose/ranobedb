@@ -28,7 +28,7 @@
 
 			<div class="pt-4 flex gap-2 sub-text-alt">
 				<a href="/series" class="primary-btn">Browse series</a>
-				<a href="/about" class="tet-btn">Learn more</a>
+				<a href="/about" class="tet-btn">About RanobeDB</a>
 			</div>
 
 			<div class="pt-4 flex gap-x-6 gap-y-2 flex-wrap sub-text-alt">

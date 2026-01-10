@@ -68,6 +68,8 @@
 		{:else}
 			<p class="italic">No users have added this {type} to their list yet</p>
 		{/if}
-		<p class="mt-4"><a class="link" href="/{type}/{id}/stats">View all stats</a></p>
+		{#if listCounts > 0}
+			<p class="mt-4"><a class="link" href="/{type}/{id}/stats">View all stats</a></p>
+		{/if}
 	</section>
 </div>
