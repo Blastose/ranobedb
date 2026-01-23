@@ -99,14 +99,11 @@ export const signupSchema = z
 		password: zPasswordNew,
 		confirm_password: zPasswordNew,
 		privacy_policy_cla: z
-			.literal(true, {
-				error: (issue) => {
-					if (issue.code === 'invalid_value') {
-						return 'You must agree in order to create an account';
-					}
-				},
+			.boolean()
+			.refine((val) => val, {
+				message: 'You must agree in order to create an account',
 			})
-			.default(false as true),
+			.default(false),
 	})
 	.refine((data) => data.password === data.confirm_password, {
 		message: 'Passwords do not match',

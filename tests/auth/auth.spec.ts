@@ -83,6 +83,7 @@ test.describe('auth', () => {
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(page).toHaveURL('/signup');
+		await expect(page.getByText('You must agree in order to create an account')).toBeVisible();
 	});
 
 	test('user cannot create an account without confirming their password', async ({ page }) => {
