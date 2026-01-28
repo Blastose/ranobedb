@@ -46,10 +46,18 @@
 			label="Confirm password"
 		/>
 
-		<CheckboxField {form} field="privacy_policy_cla" label="I have read and agree with the ">
-			<a href="/about/privacy-policy" class="link" target="_blank">privacy policy </a> and
-			<a href="/about/terms-of-use" class="link" target="_blank">terms of use.</a>
-		</CheckboxField>
+		<section class="mt-2">
+			<CheckboxField {form} field="privacy_policy_cla" label="I have read and agree with the ">
+				<a href="/about/privacy-policy" class="link" target="_blank">privacy policy </a> and
+				<a href="/about/terms-of-use" class="link" target="_blank">terms of use.</a>
+			</CheckboxField>
+
+			<CheckboxField
+				{form}
+				field="database_and_tracker"
+				label="I understand that RanobeDB is a database and tracking tool and does not provide books for reading."
+			></CheckboxField>
+		</section>
 	</svelte:fragment>
 
 	<svelte:fragment slot="bottom">

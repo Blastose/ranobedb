@@ -101,7 +101,14 @@ export const signupSchema = z
 		privacy_policy_cla: z
 			.boolean()
 			.refine((val) => val, {
-				message: 'You must agree in order to create an account',
+				message:
+					'You must agree to the privacy policy and terms of use in order to create an account',
+			})
+			.default(false),
+		database_and_tracker: z
+			.boolean()
+			.refine((val) => val, {
+				message: 'You must check this box in order to create an account',
 			})
 			.default(false),
 	})

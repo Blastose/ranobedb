@@ -29,6 +29,11 @@ test.describe('auth', () => {
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
+		await page
+			.getByLabel(
+				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+			)
+			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 		await expect(page).toHaveURL('/welcome');
 		await page.goto('/settings?view=email');

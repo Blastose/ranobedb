@@ -58,6 +58,11 @@ test.describe('auth', () => {
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
+		await page
+			.getByLabel(
+				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+			)
+			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(page).toHaveURL('/welcome');
@@ -81,9 +86,38 @@ test.describe('auth', () => {
 		await page.getByLabel('Password (15+ characters)').fill(password);
 		await page.getByLabel('Confirm password').fill(password);
 		await page.getByRole('button', { name: 'Sign Up' }).click();
+		await page
+			.getByLabel(
+				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+			)
+			.check();
 
 		await expect(page).toHaveURL('/signup');
-		await expect(page.getByText('You must agree in order to create an account')).toBeVisible();
+		await expect(
+			page.getByText(
+				'You must agree to the privacy policy and terms of use in order to create an account',
+			),
+		).toBeVisible();
+	});
+
+	test('user cannot create an account without confirming that RanobeDB cannot be used to read books', async ({
+		page,
+	}) => {
+		await page.goto('/signup');
+		await page.getByLabel('email').fill(`${generateUserId(15)}@a.com`);
+		await page.getByLabel('username').fill(generateUserId(15));
+		const password = generateUserId(15);
+		await page.getByLabel('Password (15+ characters)').fill(password);
+		await page.getByLabel('Confirm password').fill(password);
+		await page.getByRole('button', { name: 'Sign Up' }).click();
+		await page
+			.getByLabel('I have read and agree with the privacy policy and terms of use.')
+			.check();
+
+		await expect(page).toHaveURL('/signup');
+		await expect(
+			page.getByText('You must check this box in order to create an account'),
+		).toBeVisible();
 	});
 
 	test('user cannot create an account without confirming their password', async ({ page }) => {
@@ -94,6 +128,11 @@ test.describe('auth', () => {
 		await page.getByLabel('Confirm password').fill(generateUserId(15));
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
+			.check();
+		await page
+			.getByLabel(
+				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+			)
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
@@ -109,6 +148,11 @@ test.describe('auth', () => {
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
 			.check();
+		await page
+			.getByLabel(
+				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+			)
+			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
 		await expect(page).toHaveURL('/signup');
@@ -123,6 +167,11 @@ test.describe('auth', () => {
 		await page.getByLabel('Confirm password').fill(password);
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
+			.check();
+		await page
+			.getByLabel(
+				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+			)
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
@@ -140,6 +189,11 @@ test.describe('auth', () => {
 		await page.getByLabel('Confirm password').fill(password);
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
+			.check();
+		await page
+			.getByLabel(
+				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+			)
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
@@ -159,6 +213,11 @@ test.describe('auth', () => {
 		await page.getByLabel('Confirm password').fill(password);
 		await page
 			.getByLabel('I have read and agree with the privacy policy and terms of use.')
+			.check();
+		await page
+			.getByLabel(
+				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+			)
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
 
