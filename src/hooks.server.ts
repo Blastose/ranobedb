@@ -11,6 +11,7 @@ import {
 } from '$lib/server/db/cron/series';
 import { Lucia } from '$lib/server/lucia/lucia';
 import { db } from '$lib/server/db/db';
+import { DateNumber, DateNumberGenerator } from '$lib/components/form/release/releaseDate';
 
 schedule.scheduleJob('0 0 * * *', async function () {
 	await sendRecentlyReleasedNotifications();
@@ -45,6 +46,9 @@ export const handle: Handle = async ({ event, resolve }) => {
 		theme = themeCookie;
 	}
 	event.locals.theme = theme;
+
+	const todayDateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
+	event.locals.today = todayDateNumber.date;
 
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => {

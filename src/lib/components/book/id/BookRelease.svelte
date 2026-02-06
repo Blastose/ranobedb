@@ -8,6 +8,7 @@
 	import type { SuperValidated } from 'sveltekit-superforms';
 	import type { Infer } from 'sveltekit-superforms/server';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
+	import { getTodayContext } from '$lib/stores/todayContext';
 
 	interface Props {
 		release: BookOne['releases'][number];
@@ -20,11 +21,13 @@
 
 	let releaseDate = $derived(new DateNumber(release.release_date).getDateFormatted());
 
+	const today = getTodayContext();
+
 	const size = '24';
 </script>
 
 <div class="flex flex-col sm:grid sm:grid-cols-[92px_1fr] gap-x-2">
-	<time datetime={releaseDate}>{releaseDate}</time>
+	<time class={release.release_date > today ? '' : ''} datetime={releaseDate}>{releaseDate}</time>
 
 	<div class="flex justify-between items-start">
 		<div class="flex gap-2">

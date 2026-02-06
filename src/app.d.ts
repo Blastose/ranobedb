@@ -44,6 +44,7 @@ declare global {
 			user: User | null;
 			session: Session | null;
 			theme: Theme;
+			today: number;
 		}
 		interface PageData {
 			flash?: { type: ToastData['type']; message: string };

@@ -71,6 +71,8 @@
 		relCalView.set('compact');
 	});
 	setContext('relCal', relCalView);
+
+	setContext('today', data.today);
 </script>
 
 <svelte:document onkeydown={handleKeyDown} />

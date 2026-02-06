@@ -45,7 +45,7 @@ export function sortByLang<T extends { lang: Language | null }>(objs: T[], olang
 }
 
 export function sortByLangObjEntries<T extends object>(entries: [string, T[]][], olang?: Language) {
-	entries.sort((a, b) => {
+	return entries.toSorted((a, b) => {
 		const langA = a[0] as Language;
 		const langB = b[0] as Language;
 		if (langA === olang) {
@@ -56,7 +56,6 @@ export function sortByLangObjEntries<T extends object>(entries: [string, T[]][],
 		}
 		return languageSortPrio[langA] - languageSortPrio[langB];
 	});
-	return entries;
 }
 
 export function sortByLangReleaseDates<T extends object>(
@@ -66,7 +65,7 @@ export function sortByLangReleaseDates<T extends object>(
 	},
 	olang?: Language,
 ) {
-	entries.sort((a, b) => {
+	return entries.toSorted((a, b) => {
 		const langA = a[0] as Language;
 		const langB = b[0] as Language;
 		if (langA === olang) {
@@ -75,7 +74,6 @@ export function sortByLangReleaseDates<T extends object>(
 		if (langB === olang) {
 			return 1;
 		}
-		return releaseDates[langA] ?? 99999999 - (releaseDates[langB] ?? 99999999);
+		return (releaseDates[langA] ?? 99999999) - (releaseDates[langB] ?? 99999999);
 	});
-	return entries;
 }
