@@ -247,6 +247,7 @@ export class DBBooks {
 				'cte_book.title',
 				'cte_book.title_orig',
 				'cte_book.c_release_date',
+				'cte_book.c_release_dates',
 				'cte_book.olang',
 				'cte_book.locked',
 				'cte_book.hidden',
@@ -384,7 +385,9 @@ export class DBBooks {
 						.whereRef('release_book.book_id', '=', 'cte_book.id')
 						.where('release.hidden', '=', false)
 						.orderBy('release.release_date')
-						.orderBy('release.format'),
+						.orderBy('release.format')
+						.orderBy((eb) => eb.fn('length', ['release.title']))
+						.orderBy('release.title'),
 				).as('releases'),
 				jsonArrayFrom(
 					eb
@@ -429,6 +432,7 @@ export class DBBooks {
 				'cte_book.title',
 				'cte_book.title_orig',
 				'cte_book.c_release_date',
+				'cte_book.c_release_dates',
 				'cte_book.olang',
 				'change.ilock as locked',
 				'change.ihid as hidden',
@@ -569,7 +573,9 @@ export class DBBooks {
 						.where('release_book.book_id', '=', id)
 						.where('release.hidden', '=', false)
 						.orderBy('release.release_date')
-						.orderBy('release.format'),
+						.orderBy('release.format')
+						.orderBy((eb) => eb.fn('length', ['release.title']))
+						.orderBy('release.title'),
 				).as('releases'),
 				jsonArrayFrom(
 					eb

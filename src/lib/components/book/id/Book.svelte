@@ -178,7 +178,12 @@
 
 		<PublishersSection publishers={book.publishers} olang={book.olang} onlyOpenOlang={false} />
 
-		<BookReleases releases={book.releases} olang={book.olang} {userListReleaseForm} />
+		<BookReleases
+			releases={book.releases}
+			releaseDates={book.c_release_dates}
+			olang={book.olang}
+			{userListReleaseForm}
+		/>
 
 		{#if book_series}
 			{#key book_series.id}

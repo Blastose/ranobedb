@@ -58,3 +58,24 @@ export function sortByLangObjEntries<T extends object>(entries: [string, T[]][],
 	});
 	return entries;
 }
+
+export function sortByLangReleaseDates<T extends object>(
+	entries: [string, T[]][],
+	releaseDates: {
+		[K in Language]?: number;
+	},
+	olang?: Language,
+) {
+	entries.sort((a, b) => {
+		const langA = a[0] as Language;
+		const langB = b[0] as Language;
+		if (langA === olang) {
+			return -1;
+		}
+		if (langB === olang) {
+			return 1;
+		}
+		return releaseDates[langA] ?? 99999999 - (releaseDates[langB] ?? 99999999);
+	});
+	return entries;
+}

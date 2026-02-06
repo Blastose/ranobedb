@@ -48,7 +48,7 @@
 		clearTimeoutsAndIntervals();
 		progressTimeoutId = setTimeout(() => {
 			progressStart();
-		}, 500);
+		}, 250);
 	}
 
 	$effect(() => {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Collapsible from '$lib/components/display/Collapsible.svelte';
-	import { getLanguageFromString, groupBy, sortByLangObjEntries } from '$lib/db/array';
+	import { getLanguageFromString, groupBy, sortByLangReleaseDates } from '$lib/db/array';
 	import type { BookOne } from '$lib/server/db/books/books';
 	import type { Language } from '$lib/server/db/dbTypes';
 	import BookRelease from './BookRelease.svelte';
@@ -12,11 +12,12 @@
 
 	interface Props {
 		releases: BookOne['releases'];
+		releaseDates: BookOne['c_release_dates'];
 		olang: Language;
 		userListReleaseForm: SuperValidated<Infer<typeof userListReleaseSchema>> | undefined;
 	}
 
-	let { releases, olang, userListReleaseForm }: Props = $props();
+	let { releases, releaseDates, olang, userListReleaseForm }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 
@@ -26,7 +27,7 @@
 <section>
 	<h2 class="font-bold text-lg">Releases</h2>
 	<div class="flex flex-col gap-1">
-		{#each sortByLangObjEntries(Object.entries(groupedReleasesByLang), olang) as [key, releases]}
+		{#each sortByLangReleaseDates(Object.entries(groupedReleasesByLang), releaseDates, olang) as [key, releases]}
 			<section>
 				<Collapsible
 					open={key === 'ja' ||
