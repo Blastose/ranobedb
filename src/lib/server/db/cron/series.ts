@@ -1,5 +1,6 @@
 import { db } from '$lib/server/db/db';
 import { sql } from 'kysely';
+import type { Language } from '../dbTypes';
 
 export async function updateSeriesStartEndDates() {
 	// Run after updateBookReleaseDate()
@@ -93,6 +94,39 @@ export async function updateSeriesAverage() {
 			.from('rel')
 			.set((eb) => ({
 				c_average: eb.ref('rel.bayesian_avg'),
+			}))
+			.whereRef('series.id', '=', 'rel.series_id')
+			.execute();
+	});
+}
+
+export async function updateSeriesTranslated() {
+	console.log('Running update series translated job');
+	await db.transaction().execute(async (trx) => {
+		await trx.updateTable('series').set('c_fully_translated', []).execute();
+		await trx
+			.with('rel', (db) =>
+				db
+					.selectFrom('series')
+					.innerJoin('series_book', 'series_book.series_id', 'series.id')
+					.innerJoin('book', 'book.id', 'series_book.book_id')
+					.distinctOn('series.id')
+					.select(['series.id as series_id', 'series_book.sort_order'])
+					.select(
+						sql<Language[]>`array(select jsonb_object_keys(book.c_release_dates))::language[]`.as(
+							'langs',
+						),
+					)
+					.where('book.hidden', '=', false)
+					.where('series.hidden', '=', false)
+					.where('series_book.book_type', '=', 'main')
+					.orderBy('series.id')
+					.orderBy('series_book.sort_order', 'desc'),
+			)
+			.updateTable('series')
+			.from('rel')
+			.set((eb) => ({
+				c_fully_translated: eb.ref('rel.langs'),
 			}))
 			.whereRef('series.id', '=', 'rel.series_id')
 			.execute();

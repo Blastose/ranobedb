@@ -8,6 +8,7 @@ import {
 	updateSeriesAverage,
 	updateSeriesPopularity,
 	updateSeriesStartEndDates,
+	updateSeriesTranslated,
 } from '$lib/server/db/cron/series';
 import { Lucia } from '$lib/server/lucia/lucia';
 import { db } from '$lib/server/db/db';
@@ -20,6 +21,7 @@ schedule.scheduleJob('0 0 * * *', async function () {
 	await updateSeriesStartEndDates();
 	await updateSeriesPopularity();
 	await updateSeriesAverage();
+	await updateSeriesTranslated();
 });
 
 export const handle: Handle = async ({ event, resolve }) => {

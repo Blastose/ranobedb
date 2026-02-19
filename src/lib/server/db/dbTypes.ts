@@ -22,6 +22,11 @@ import type {
 } from '$lib/server/zod/schema';
 import type { ColumnType } from 'kysely';
 
+export type ArrayType<T> = ArrayTypeImpl<T> extends (infer U)[] ? U[] : ArrayTypeImpl<T>;
+
+export type ArrayTypeImpl<T> =
+	T extends ColumnType<infer S, infer I, infer U> ? ColumnType<S[], I[], U[]> : T[];
+
 export type DbItem = (typeof dbItemArray)[number];
 
 export type Generated<T> =
@@ -334,6 +339,7 @@ export interface Series {
 	anilist_id: number | null;
 	bookwalker_id: number | null;
 	c_end_date: number;
+	c_fully_translated: Generated<ArrayType<Language>>;
 	c_num_books: number;
 	c_start_date: number;
 	c_latest_release_date: number;
@@ -373,6 +379,7 @@ export interface SeriesHist {
 	anilist_id: number | null;
 	bookwalker_id: number | null;
 	c_end_date: Generated<number>;
+	c_fully_translated: Generated<ArrayType<Language>>;
 	c_start_date: Generated<number>;
 	c_latest_release_date: Generated<number>;
 	c_popularity: Generated<number>;

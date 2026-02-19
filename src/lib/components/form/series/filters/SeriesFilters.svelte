@@ -133,7 +133,7 @@
 		</div>
 
 		<div class="flex flex-col gap-2">
-			<div class="w-fit">
+			<div class="flex gap-2 w-fit flex-wrap">
 				<Keyed>
 					<MultiSelectField
 						form={sForm}
@@ -142,6 +142,17 @@
 						allSelectedText="any"
 						labelText="Pub. status"
 						dropdownOptions={seriesStatusArray.map((v) => ({ display: v, value: v }))}
+					/>
+				</Keyed>
+
+				<Keyed>
+					<MultiSelectField
+						form={sForm}
+						field="translated"
+						noneSelectedText="any"
+						allSelectedText="any"
+						labelText="Fully translated"
+						dropdownOptions={languagesArray.map((v) => ({ display: languageNames[v], value: v }))}
 					/>
 				</Keyed>
 			</div>
