@@ -5,8 +5,8 @@ import {
 } from '$lib/server/zod/schema';
 import { superValidate, type Infer, type SuperValidated } from 'sveltekit-superforms';
 import { DBSeries } from './series';
-import { DeduplicateJoinsPlugin, type Expression, type Kysely, type SqlBool } from 'kysely';
-import type { DB } from '../dbTypes';
+import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool } from 'kysely';
+import { type Language, type DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
@@ -43,6 +43,7 @@ export async function getSeries(params: {
 	const useTagsFilters = form.data.tagsInclude.length + form.data.tagsExclude.length > 0;
 	const usePublisherFilters = form.data.p.length > 0;
 	const useStatusFilters = form.data.pubStatus.length > 0;
+	const useTranslatedFilters = form.data.translated.length > 0;
 
 	const genres = await db
 		.selectFrom('tag')
@@ -254,6 +255,19 @@ export async function getSeries(params: {
 
 	if (useStatusFilters) {
 		query = query.where('cte_series.publication_status', 'in', form.data.pubStatus);
+	}
+
+	if (useTranslatedFilters) {
+		query = query.where((eb) =>
+			eb(
+				'cte_series.c_fully_translated',
+				'&&',
+				eb.cast<Language[]>(
+					sql<Language[]>`ARRAY[${sql.join(form.data.translated)}]`,
+					sql`Language[]`,
+				),
+			),
+		);
 	}
 
 	if (

@@ -5,6 +5,14 @@
 
 import type { ColumnType } from "kysely";
 
+export type ArrayType<T> = ArrayTypeImpl<T> extends (infer U)[]
+  ? U[]
+  : ArrayTypeImpl<T>;
+
+export type ArrayTypeImpl<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S[], I[], U[]>
+  : T[];
+
 export type DbItem = "book" | "publisher" | "release" | "series" | "staff";
 
 export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
@@ -319,6 +327,7 @@ export interface Series {
   bookwalker_id: number | null;
   c_average: Generated<number>;
   c_end_date: number;
+  c_fully_translated: Generated<ArrayType<Language>>;
   c_latest_release_date: number;
   c_num_books: number;
   c_popularity: Generated<number>;
@@ -358,6 +367,7 @@ export interface SeriesHist {
   bookwalker_id: number | null;
   c_average: Generated<number>;
   c_end_date: Generated<number>;
+  c_fully_translated: Generated<ArrayType<Language>>;
   c_latest_release_date: Generated<number>;
   c_popularity: Generated<number>;
   c_start_date: Generated<number>;
