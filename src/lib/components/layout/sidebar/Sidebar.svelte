@@ -217,6 +217,9 @@
 				<a href="/database-dumps">Database dumps</a>
 			</div>
 			<div class="flex flex-wrap gap-4">
+				<a target="_blank" href="https://github.com/sponsors/Blastose">Donate</a>
+			</div>
+			<div class="flex flex-wrap gap-4">
 				<a href="/about/privacy-policy">Privacy policy</a>
 			</div>
 			<div class="flex flex-wrap gap-4">
