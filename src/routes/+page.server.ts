@@ -170,6 +170,9 @@ export const load = async ({ locals }) => {
 		seasonalAnimePromise,
 	]);
 
+	const todayIso = dayjs().format('YYYY-MM-DD');
+	const yesterdayIso = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+
 	return {
 		recentlyReleased,
 		upcomingReleases,
@@ -179,5 +182,7 @@ export const load = async ({ locals }) => {
 		mostPopularSeries,
 		seasonalAnime,
 		homeDisplaySettings,
+		todayIso,
+		yesterdayIso,
 	};
 };

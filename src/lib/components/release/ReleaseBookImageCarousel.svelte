@@ -9,12 +9,13 @@
 	interface Props {
 		releases: ReleaseWithImage[];
 		heading: string;
+		viewAllLink: string;
 	}
 
-	let { releases, heading }: Props = $props();
+	let { releases, heading, viewAllLink }: Props = $props();
 </script>
 
-<BookCarousel>
+<BookCarousel {viewAllLink}>
 	{#snippet link()}
 		<h2 class="text-lg font-bold">{heading}</h2>
 	{/snippet}

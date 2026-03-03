@@ -3,9 +3,10 @@
 	interface Props {
 		link?: import('svelte').Snippet;
 		items?: import('svelte').Snippet;
+		viewAllLink?: string;
 	}
 
-	let { link, items }: Props = $props();
+	let { link, items, viewAllLink }: Props = $props();
 
 	let width: number = $state(0);
 	let counter = $state(0);
@@ -64,6 +65,9 @@
 		{@render link?.()}
 
 		<div class="flex items-center">
+			{#if viewAllLink}
+				<p class="text-sm font-semibold sub-text-alt mr-4"><a href={viewAllLink}>View all</a></p>
+			{/if}
 			<button
 				type="button"
 				class="btn rounded-full"
