@@ -231,6 +231,27 @@ export const defaultUserListLabelsArrayAndRemove = [
 	'Remove',
 ] as const;
 
+export const defaultUserListLabelsColorMap: Record<string, string | undefined> = {
+	Reading: '#3c5da5',
+	Finished: '#05755d',
+	'Plan to read': '#6e5a91',
+	Stalled: '#a8652e',
+	Dropped: '#b3404a',
+	Other: '#48576d',
+};
+
+export const defaultUserListLabelsCssClassMap: Record<
+	(typeof defaultUserListLabelsArray)[number] | string,
+	string
+> = {
+	Reading: 'reading',
+	Finished: 'finished',
+	'Plan to read': 'plan-to-read',
+	Stalled: 'stalled',
+	Dropped: 'dropped',
+	Other: 'other',
+};
+
 export const defaultUserListLabelsMap = new Map<ReadingStatus, number>();
 export const defaultUserListLabels = defaultUserListLabelsArray.map((v, index) => {
 	defaultUserListLabelsMap.set(v, index + 1);

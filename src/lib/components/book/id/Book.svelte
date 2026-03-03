@@ -25,6 +25,7 @@
 	import BookImageBadge from '../BookImageBadge.svelte';
 	import UserStats from '$lib/components/shared/UserStats.svelte';
 	import Rating from '$lib/components/shared/Rating.svelte';
+	import { defaultUserListLabelsCssClass } from '$lib/utils/colors';
 
 	interface Props {
 		book: BookOne;
@@ -192,15 +193,28 @@
 					<div class="flex flex-col gap-2">
 						<BookCarousel>
 							{#snippet link()}
-								<a class="link w-fit font-bold" href="/series/{book_series.id}"
-									><TitleDisplay obj={book_series} /></a
-								>
+								<span>
+									<a class="link w-fit font-bold" href="/series/{book_series.id}"
+										><TitleDisplay obj={book_series} /></a
+									>{#if book_series.label?.label}
+										<span
+											style="outline-color: var(--{defaultUserListLabelsCssClass(
+												book_series.label?.label,
+											)});"
+											class="outline rounded-full outline-2 text-xs font-bold px-2 ml-2"
+											>{book_series.label?.label}</span
+										>{/if}
+								</span>
 							{/snippet}
 							{#snippet items()}
-								{#each book_series.books as other_book (other_book.id)}
+								{#each book_series.books as other_book, index (other_book.id)}
 									{@const isCurrent = other_book.id === book.id}
 									<div class="carousel-item">
-										<BookImage book={other_book} urlPrefix="/book/">
+										<BookImage
+											book={other_book}
+											urlPrefix="/book/"
+											blurTop={Boolean(other_book.label)}
+										>
 											{#if other_book.label}
 												<BookImageBadge
 													badges={[`${other_book.label.label}`]}
@@ -208,7 +222,12 @@
 												/>
 											{/if}
 											{#if isCurrent}
-												<BookImageBadge badges={['Viewing']} location="bottom-right" />
+												<BookImageBadge
+													badges={[`Viewing #${index + 1}`]}
+													location="bottom-right"
+												/>
+											{:else}
+												<BookImageBadge badges={[`#${index + 1}`]} location="bottom-right" />
 											{/if}
 										</BookImage>
 									</div>

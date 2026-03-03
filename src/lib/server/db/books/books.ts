@@ -225,6 +225,24 @@ export class DBBooks {
 				'cte_series.id',
 				'cte_series.lang',
 			])
+			.$if(typeof userId === 'string', (qb) =>
+				qb.select((eb) =>
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_series_label')
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_series_label.label_id', '=', 'user_list_label.id')
+									.onRef('user_list_series_label.user_id', '=', 'user_list_label.user_id')
+									.onRef('user_list_series_label.series_id', '=', 'cte_series.id'),
+							)
+							.select('user_list_label.label')
+							.where('user_list_label.user_id', '=', String(userId))
+							.where('user_list_label.id', '<=', 10)
+							.limit(1),
+					).as('label'),
+				),
+			)
 			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
 			.where('series_book.book_id', '=', id)
 			.where('cte_series.hidden', '=', false);

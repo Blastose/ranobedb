@@ -48,6 +48,7 @@
 						title_orig: book.title_orig,
 					}}
 					urlPrefix="/book/"
+					blurTop={Boolean(book.label)}
 				>
 					{#if book.label}
 						<BookImageBadge badges={[book.label.label]} location="top-right" />

@@ -32,6 +32,7 @@
 	import UserStats from '$lib/components/shared/UserStats.svelte';
 	import Rating from '$lib/components/shared/Rating.svelte';
 	import SeriesBatchBookModal from './SeriesBatchBookModal.svelte';
+	import { defaultUserListLabelsCssClass } from '$lib/utils/colors';
 
 	interface Props {
 		series: Series;
@@ -208,7 +209,14 @@
 								<li>
 									<a class="link" href="/series/{serie.id}"
 										>{getTitleDisplay({ obj: serie, prefs: $displayPrefs.title_prefs })}</a
-									>
+									>{#if serie.label?.label}
+										<span
+											style="outline-color: var(--{defaultUserListLabelsCssClass(
+												serie.label?.label,
+											)});"
+											class="outline rounded-full outline-2 text-xs font-bold px-2 ml-2"
+											>{serie.label?.label}</span
+										>{/if}
 								</li>
 							{/each}
 						</ul>
@@ -228,7 +236,7 @@
 		{#if series.books.length > 0}
 			<BookImageContainer moreColumns={true}>
 				{#each series.books as book, index (book.id)}
-					<BookImage {book} urlPrefix="/book/">
+					<BookImage {book} urlPrefix="/book/" blurTop={Boolean(book.label)}>
 						{#if book.label}
 							<BookImageBadge badges={[`${book.label.label}`]} location="top-right" />
 						{/if}

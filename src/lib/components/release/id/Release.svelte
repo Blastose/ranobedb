@@ -157,7 +157,7 @@
 		{#if release.books.length > 0}
 			<BookImageContainer moreColumns={true}>
 				{#each release.books as book (book.id)}
-					<BookImage {book} urlPrefix="/book/">
+					<BookImage {book} urlPrefix="/book/" blurTop={Boolean(book.label)}>
 						{#if book.label}
 							<BookImageBadge badges={[book.label.label]} location="top-right" />
 						{/if}

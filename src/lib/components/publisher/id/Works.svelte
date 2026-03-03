@@ -69,6 +69,7 @@
 								image: series.book?.image,
 							}}
 							urlPrefix="/series/"
+							blurTop={Boolean(series.label?.label)}
 						>
 							<BookImageBadge badges={[series.label?.label ?? '', ...series.publisher_types]} />
 							{#if series.volumes}

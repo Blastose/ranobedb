@@ -21,6 +21,8 @@
 	import SelectField from '$lib/components/form/SelectField.svelte';
 	import TextField from '$lib/components/form/TextField.svelte';
 	import CheckboxField from '$lib/components/form/CheckboxField.svelte';
+	import LabelIcon from '$lib/components/icon/LabelIcon.svelte';
+	import { defaultUserListLabelsCssClass } from '$lib/utils/colors';
 
 	interface Props {
 		series: Series;
@@ -84,8 +86,13 @@
 </script>
 
 <div class="flex justify-center sm:justify-normal">
-	<button use:melt={$trigger} class="primary-btn w-full max-w-xs"
-		>{$form.labels.at(0)?.label ?? 'Add to reading list'}</button
+	<button
+		use:melt={$trigger}
+		class="primary-btn w-full flex gap-1 items-center max-w-xs {defaultUserListLabelsCssClass(
+			$form.labels.at(0)?.label,
+		)}"
+		><LabelIcon label={$form.labels.at(0)?.label} />{$form.labels.at(0)?.label ??
+			'Add to reading list'}</button
 	>
 </div>
 

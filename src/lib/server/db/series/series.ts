@@ -560,6 +560,24 @@ export class DBSeries {
 							'child_series.lang',
 							'series_relation.relation_type',
 						])
+						.$if(typeof userId === 'string', (qb) =>
+							qb.select((eb) =>
+								jsonObjectFrom(
+									eb
+										.selectFrom('user_list_series_label')
+										.innerJoin('user_list_label', (join) =>
+											join
+												.onRef('user_list_series_label.label_id', '=', 'user_list_label.id')
+												.onRef('user_list_series_label.user_id', '=', 'user_list_label.user_id')
+												.onRef('user_list_series_label.series_id', '=', 'child_series.id'),
+										)
+										.select('user_list_label.label')
+										.where('user_list_label.user_id', '=', userId!)
+										.where('user_list_label.id', '<=', 10)
+										.limit(1),
+								).as('label'),
+							),
+						)
 						.whereRef('series_relation.id_parent', '=', 'cte_series.id')
 						.where('child_series.hidden', '=', false)
 						.orderBy('series_relation.relation_type'),

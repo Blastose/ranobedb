@@ -39,6 +39,10 @@ export const load = async ({ locals }) => {
 		.where('release.release_date', '<', now)
 		.where('release.hidden', '=', false)
 		.orderBy('release.release_date', 'desc')
+		.orderBy(
+			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+			(ob) => ob.collate('numeric').asc(),
+		)
 		.orderBy('release.id')
 		.limit(10)
 		.execute();
@@ -47,6 +51,10 @@ export const load = async ({ locals }) => {
 		.where('release.release_date', '>=', now)
 		.where('release.hidden', '=', false)
 		.orderBy('release.release_date', 'asc')
+		.orderBy(
+			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+			(ob) => ob.collate('numeric').asc(),
+		)
 		.orderBy('release.id')
 		.limit(10)
 		.execute();
