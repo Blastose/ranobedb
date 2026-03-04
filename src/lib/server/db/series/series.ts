@@ -469,6 +469,18 @@ export class DBSeries {
 								).as('label'),
 							),
 						)
+						.$if(typeof userId === 'string', (qb) =>
+							qb.select((eb) =>
+								jsonObjectFrom(
+									eb
+										.selectFrom('user_list_book')
+										.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score'))
+										.whereRef('user_list_book.book_id', '=', 'cte_book.id')
+										.where('user_list_book.user_id', '=', String(userId))
+										.limit(1),
+								).as('score'),
+							),
+						)
 						.where('cte_book.hidden', '=', false)
 						.whereRef('series_book.series_id', '=', 'cte_series.id')
 						.orderBy('sort_order', 'asc'),

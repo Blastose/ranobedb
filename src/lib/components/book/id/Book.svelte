@@ -217,7 +217,12 @@
 										>
 											{#if other_book.label}
 												<BookImageBadge
-													badges={[`${other_book.label.label}`]}
+													badges={[
+														`${other_book.label.label}`,
+														other_book.score?.score
+															? `Score: ★ ${Number(other_book.score.score)}`
+															: '',
+													]}
 													location="top-right"
 												/>
 											{/if}

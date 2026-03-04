@@ -238,7 +238,13 @@
 				{#each series.books as book, index (book.id)}
 					<BookImage {book} urlPrefix="/book/" blurTop={Boolean(book.label)}>
 						{#if book.label}
-							<BookImageBadge badges={[`${book.label.label}`]} location="top-right" />
+							<BookImageBadge
+								badges={[
+									`${book.label.label}`,
+									book.score?.score ? `Score: ★ ${Number(book.score.score)}` : '',
+								]}
+								location="top-right"
+							/>
 						{/if}
 						<BookImageBadge badges={[`#${index + 1}`]} location="bottom-right" />
 					</BookImage>
