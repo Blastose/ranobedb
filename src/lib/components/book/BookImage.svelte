@@ -19,14 +19,15 @@
 			}>;
 		};
 		urlPrefix: string;
+		blurTop?: boolean;
 		children?: import('svelte').Snippet;
 	}
 
-	let { book, urlPrefix, children }: Props = $props();
+	let { book, urlPrefix, blurTop = false, children }: Props = $props();
 </script>
 
 <a href="{urlPrefix}{book.id}" class="flex flex-col gap-1">
-	<Cover obj={book}>
+	<Cover obj={book} {blurTop}>
 		{@render children?.()}
 	</Cover>
 	<p class="line-clamp-2 text-sm sm:text-base">

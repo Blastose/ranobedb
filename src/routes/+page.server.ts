@@ -39,6 +39,10 @@ export const load = async ({ locals }) => {
 		.where('release.release_date', '<', now)
 		.where('release.hidden', '=', false)
 		.orderBy('release.release_date', 'desc')
+		.orderBy(
+			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+			(ob) => ob.collate('numeric').asc(),
+		)
 		.orderBy('release.id')
 		.limit(10)
 		.execute();
@@ -47,6 +51,10 @@ export const load = async ({ locals }) => {
 		.where('release.release_date', '>=', now)
 		.where('release.hidden', '=', false)
 		.orderBy('release.release_date', 'asc')
+		.orderBy(
+			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
+			(ob) => ob.collate('numeric').asc(),
+		)
 		.orderBy('release.id')
 		.limit(10)
 		.execute();
@@ -170,6 +178,9 @@ export const load = async ({ locals }) => {
 		seasonalAnimePromise,
 	]);
 
+	const todayIso = dayjs().format('YYYY-MM-DD');
+	const yesterdayIso = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+
 	return {
 		recentlyReleased,
 		upcomingReleases,
@@ -179,5 +190,7 @@ export const load = async ({ locals }) => {
 		mostPopularSeries,
 		seasonalAnime,
 		homeDisplaySettings,
+		todayIso,
+		yesterdayIso,
 	};
 };

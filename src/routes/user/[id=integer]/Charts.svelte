@@ -3,6 +3,7 @@
 	import DbItemShellUser from '$lib/components/layout/db/DBItemShellUser.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
+	import { defaultUserListLabelsColorMap } from '$lib/db/dbConsts';
 	import type { UserLabel } from '$lib/server/db/user/list.js';
 	import { getThemeContext } from '$lib/stores/themeStore';
 	import {
@@ -98,6 +99,7 @@
 					{
 						label: label,
 						data: data.map((v) => v.count),
+						backgroundColor: Object.values(defaultUserListLabelsColorMap),
 					},
 				],
 			},

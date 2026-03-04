@@ -10,13 +10,19 @@
 				filename: string;
 			}>;
 		} | null;
+		blurTop?: boolean;
 		children?: import('svelte').Snippet;
 	}
 
-	let { obj, children }: Props = $props();
+	let { obj, blurTop = false, children }: Props = $props();
 </script>
 
 <div class="overflow-hidden rounded-md relative">
+	{#if blurTop}
+		<div
+			class="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-[#303030]/25 dark:from-[#303030]/75 to-transparent pointer-events-none z-1"
+		></div>
+	{/if}
 	{#if obj?.image}
 		{#key obj.image.filename}
 			<img

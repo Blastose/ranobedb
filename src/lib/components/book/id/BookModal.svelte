@@ -14,6 +14,8 @@
 	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
+	import { defaultUserListLabelsCssClass } from '$lib/utils/colors';
+	import LabelIcon from '$lib/components/icon/LabelIcon.svelte';
 
 	interface Props {
 		book: BookOne;
@@ -77,8 +79,13 @@
 </script>
 
 <div class="flex justify-center">
-	<button use:melt={$trigger} class="primary-btn w-full max-w-xs"
-		>{$form.labels.at(0)?.label ?? 'Add to reading list'}</button
+	<button
+		use:melt={$trigger}
+		class="primary-btn w-full flex gap-1 items-center max-w-xs {defaultUserListLabelsCssClass(
+			$form.labels.at(0)?.label,
+		)}"
+		><LabelIcon label={$form.labels.at(0)?.label} />{$form.labels.at(0)?.label ??
+			'Add to reading list'}</button
 	>
 </div>
 

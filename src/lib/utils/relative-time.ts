@@ -19,7 +19,7 @@ const unitsInSecondsFull = {
 };
 
 const pluralize = (word: string, amount: number) => {
-	if (word.endsWith('.')) {
+	if (word.endsWith('.') || word.endsWith('s')) {
 		return word;
 	}
 	return amount > 1 ? `${word}s` : word;

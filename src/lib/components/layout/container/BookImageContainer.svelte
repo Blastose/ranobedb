@@ -57,6 +57,11 @@
 	}
 	@container book-image-container (min-width: 768px) {
 		.book-image-container.more-columns {
+			grid-template-columns: repeat(5, minmax(0, 1fr));
+		}
+	}
+	@container book-image-container (min-width: 1024px) {
+		.book-image-container.more-columns {
 			grid-template-columns: repeat(6, minmax(0, 1fr));
 		}
 	}

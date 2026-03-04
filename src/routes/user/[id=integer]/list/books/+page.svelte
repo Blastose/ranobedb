@@ -64,9 +64,10 @@
 						title_orig: book.title_orig,
 					}}
 					urlPrefix="/book/"
+					blurTop={Boolean(book.label?.label)}
 				>
 					<BookImageBadge
-						badges={[`${book.label?.label}`, book.score ? `Score: ${Number(book.score)}` : '']}
+						badges={[`${book.label?.label}`, book.score ? `Score: ★ ${Number(book.score)}` : '']}
 						location="top-right"
 					/>
 				</BookImage>

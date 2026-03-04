@@ -39,13 +39,21 @@
 
 	{#if !data.user || data.homeDisplaySettings?.upcoming_releases}
 		<section>
-			<ReleaseBookImageCarousel releases={data.upcomingReleases} heading="Upcoming releases" />
+			<ReleaseBookImageCarousel
+				releases={data.upcomingReleases}
+				heading="Upcoming releases"
+				viewAllLink="/releases?sort=Release+date+asc&minDate={data.todayIso}"
+			/>
 		</section>
 	{/if}
 
 	{#if !data.user || data.homeDisplaySettings?.recently_released}
 		<section>
-			<ReleaseBookImageCarousel releases={data.recentlyReleased} heading="Recently released" />
+			<ReleaseBookImageCarousel
+				releases={data.recentlyReleased}
+				heading="Recently released"
+				viewAllLink="/releases?sort=Release+date+desc&maxDate={data.yesterdayIso}"
+			/>
 		</section>
 	{/if}
 

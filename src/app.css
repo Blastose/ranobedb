@@ -36,6 +36,19 @@
 		--dark-550: #2f3031;
 		--dark-600: #272829;
 		--dark-700: #212224;
+
+		--reading: #3c5da5;
+		--finished: #05755d;
+		--plan-to-read: #68548a;
+		--stalled: #a8652e;
+		--dropped: #b3404a;
+		--other: #48576d;
+		--reading-hover: #1a4379;
+		--finished-hover: #01503f;
+		--plan-to-read-hover: #554079;
+		--stalled-hover: #83552b;
+		--dropped-hover: #832830;
+		--other-hover: #2f3b4d;
 	}
 }
 
@@ -356,6 +369,43 @@ input[type='number'].input.reset-padding {
 	background-color: var(--primary-800);
 }
 
+.primary-btn.reading {
+	background-color: var(--reading);
+}
+.primary-btn.reading:hover {
+	background-color: var(--reading-hover);
+}
+.primary-btn.finished {
+	background-color: var(--finished);
+}
+.primary-btn.finished:hover {
+	background-color: var(--finished-hover);
+}
+.primary-btn.plan-to-read {
+	background-color: var(--plan-to-read);
+}
+.primary-btn.plan-to-read:hover {
+	background-color: var(--plan-to-read-hover);
+}
+.primary-btn.stalled {
+	background-color: var(--stalled);
+}
+.primary-btn.stalled:hover {
+	background-color: var(--stalled-hover);
+}
+.primary-btn.dropped {
+	background-color: var(--dropped);
+}
+.primary-btn.dropped:hover {
+	background-color: var(--dropped-hover);
+}
+.primary-btn.other {
+	background-color: var(--other);
+}
+.primary-btn.other:hover {
+	background-color: var(--other-hover);
+}
+
 .sub-btn {
 	border-radius: 9999px;
 	display: flex;
@@ -429,7 +479,12 @@ input[type='number'].input.reset-padding {
 }
 @container carousel-container (min-width: 768px) {
 	.carousel-container .carousel-item {
-		flex: 0 0 16.66666666666666666666666666666%;
+		flex: 0 0 20%;
+	}
+}
+@container carousel-container (min-width: 1024px) {
+	.carousel-container .carousel-item {
+		flex: 0 0 16.666666666666666666666666666666%;
 	}
 }
 @container carousel-container (min-width: 1280px) {

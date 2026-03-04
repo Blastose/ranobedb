@@ -202,6 +202,18 @@ export class DBBooks {
 								).as('label'),
 							),
 						)
+						.$if(typeof userId === 'string', (qb) =>
+							qb.select((eb) =>
+								jsonObjectFrom(
+									eb
+										.selectFrom('user_list_book')
+										.select((eb) => eb(eb.cast<string>('score', 'decimal'), '/', '10').as('score'))
+										.whereRef('user_list_book.book_id', '=', 'cte_book_2.id')
+										.where('user_list_book.user_id', '=', String(userId))
+										.limit(1),
+								).as('score'),
+							),
+						)
 						.innerJoin('series_book', 'series_book.book_id', 'cte_book_2.id')
 						.whereRef('series_book.series_id', '=', 'cte_series.id')
 						.where('cte_book_2.hidden', '=', false)
@@ -225,6 +237,24 @@ export class DBBooks {
 				'cte_series.id',
 				'cte_series.lang',
 			])
+			.$if(typeof userId === 'string', (qb) =>
+				qb.select((eb) =>
+					jsonObjectFrom(
+						eb
+							.selectFrom('user_list_series_label')
+							.innerJoin('user_list_label', (join) =>
+								join
+									.onRef('user_list_series_label.label_id', '=', 'user_list_label.id')
+									.onRef('user_list_series_label.user_id', '=', 'user_list_label.user_id')
+									.onRef('user_list_series_label.series_id', '=', 'cte_series.id'),
+							)
+							.select('user_list_label.label')
+							.where('user_list_label.user_id', '=', String(userId))
+							.where('user_list_label.id', '<=', 10)
+							.limit(1),
+					).as('label'),
+				),
+			)
 			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
 			.where('series_book.book_id', '=', id)
 			.where('cte_series.hidden', '=', false);
