@@ -25,7 +25,6 @@ export const load = async ({ params, locals, url }) => {
 			currentPage,
 			db,
 			q,
-			url,
 			currentUser: locals.user,
 			listUser: listUser,
 			limit: 40,

@@ -16,7 +16,6 @@ export async function getReleases(params: {
 	db: Kysely<DB>;
 	listUser: Pick<User, 'id'> | null;
 	currentUser: User | null;
-	url: URL;
 	form: SuperValidated<Infer<typeof releaseFiltersSchema>>;
 }) {
 	const { currentPage, db, listUser, currentUser, form, limit } = params;

@@ -19,7 +19,6 @@ async function get(params: { url: URL; locals: App.Locals }) {
 		currentPage,
 		db,
 		q,
-		url,
 		currentUser: locals.user,
 		listUser: null,
 		limit: limit.data.limit,

@@ -20,7 +20,6 @@ async function get(params: { url: URL; locals: App.Locals }) {
 		currentPage,
 		db,
 		q,
-		url,
 		listUser: locals.user,
 		currentUser: locals.user,
 		form,
