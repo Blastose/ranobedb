@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { buildImageUrl } from '$lib/components/book/book';
 	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
+	import ListFilters from '$lib/components/form/book/ListFilters.svelte';
 	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
@@ -21,6 +22,12 @@
 >
 	{#snippet filters()}
 		<ReleaseFilters filtersForm={data.filtersFormObj} isUser={Boolean(data.user)} isList={false} />
+	{/snippet}
+
+	{#snippet info()}
+		{#if data.user}
+			<ListFilters searchParams={data.urlSearchForm} />
+		{/if}
 	{/snippet}
 
 	{#snippet display()}

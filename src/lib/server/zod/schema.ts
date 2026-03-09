@@ -974,7 +974,7 @@ export const seriesListSchema = z.object({
 	serieslist: z.boolean().default(false),
 });
 export const listFiltersSchema = z.object({
-	filters: z.string().min(1).max(maxTextLength),
+	filters: z.string().max(maxTextLength),
 	target: z.enum(dbItemArray),
 	is_list: z.boolean(),
 });

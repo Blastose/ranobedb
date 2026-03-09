@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { languageNames } from '$lib/db/dbConsts';
-	import type { ReleaseWithImage } from '$lib/server/db/releases/releases';
+	import type { getReleases } from '$lib/server/db/releases/query';
 	import BookCarousel from '../book/BookCarousel.svelte';
 	import BookImage from '../book/BookImage.svelte';
 	import BookImageBadge from '../book/BookImageBadge.svelte';
 	import { DateNumber } from '../form/release/releaseDate';
 
 	interface Props {
-		releases: ReleaseWithImage[];
+		releases: Awaited<ReturnType<typeof getReleases>>['releases'];
 		heading: string;
 		viewAllLink: string;
 	}
@@ -41,6 +41,8 @@
 					/>
 				</BookImage>
 			</div>
+		{:else}
+			<p>None</p>
 		{/each}
 	{/snippet}
 </BookCarousel>

@@ -27,20 +27,22 @@ export const actions = {
 		searchParams.delete('page');
 		searchParams.delete('q');
 
-		await db
-			.insertInto('saved_filter')
-			.values({
-				filters: searchParams.toString(),
-				item_name: form.data.target,
-				user_id: locals.user.id,
-				is_list: form.data.is_list,
-			})
-			.onConflict((oc) =>
-				oc.columns(['user_id', 'item_name', 'is_list']).doUpdateSet({
+		if (searchParams.toString().length > 0) {
+			await db
+				.insertInto('saved_filter')
+				.values({
 					filters: searchParams.toString(),
-				}),
-			)
-			.execute();
+					item_name: form.data.target,
+					user_id: locals.user.id,
+					is_list: form.data.is_list,
+				})
+				.onConflict((oc) =>
+					oc.columns(['user_id', 'item_name', 'is_list']).doUpdateSet({
+						filters: searchParams.toString(),
+					}),
+				)
+				.execute();
+		}
 
 		return message(form, { type: 'Success', text: 'Saved filters as default!' });
 	},
