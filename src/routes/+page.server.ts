@@ -1,26 +1,21 @@
 import { DBChanges } from '$lib/server/db/change/change';
 import { db } from '$lib/server/db/db';
-import { DBReleases } from '$lib/server/db/releases/releases';
-import { historyFiltersSchema } from '$lib/server/zod/schema';
+import { historyFiltersSchema, releaseFiltersSchema } from '$lib/server/zod/schema';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { DBReviews } from '$lib/server/db/reviews/reviews.js';
 import { DBSeries } from '$lib/server/db/series/series';
+import { getReleases } from '$lib/server/db/releases/query.js';
 
 dayjs.extend(customParseFormat);
 
-function getNow() {
-	const now = dayjs().format('YYYYMMDD');
-	return Number(now);
-}
-
 export const load = async ({ locals }) => {
-	const now = getNow();
+	const todayIso = dayjs().format('YYYY-MM-DD');
+	const yesterdayIso = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
 
 	const form = await superValidate(zod4(historyFiltersSchema));
-	const dbReleases = DBReleases.fromDB(db, locals.user);
 	const dbChanges = new DBChanges(db);
 
 	let homeDisplaySettings = null;
@@ -34,30 +29,55 @@ export const load = async ({ locals }) => {
 		).home_display_settings;
 	}
 
-	const recentlyReleasedPromise = dbReleases
-		.getReleasesWithImage()
-		.where('release.release_date', '<', now)
-		.where('release.hidden', '=', false)
-		.orderBy('release.release_date', 'desc')
-		.orderBy(
-			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
-			(ob) => ob.collate('numeric').asc(),
-		)
-		.orderBy('release.id')
-		.limit(10)
-		.execute();
-	const upcomingReleasesPromise = dbReleases
-		.getReleasesWithImage()
-		.where('release.release_date', '>=', now)
-		.where('release.hidden', '=', false)
-		.orderBy('release.release_date', 'asc')
-		.orderBy(
-			(eb) => eb.fn.coalesce('release.romaji', 'release.title'),
-			(ob) => ob.collate('numeric').asc(),
-		)
-		.orderBy('release.id')
-		.limit(10)
-		.execute();
+	const userListReleasesFilters = locals.user
+		? await db
+				.selectFrom('saved_filter')
+				.select('saved_filter.filters')
+				.where('saved_filter.user_id', '=', locals.user.id)
+				.where('saved_filter.item_name', '=', 'release')
+				.where('saved_filter.is_list', '=', false)
+				.executeTakeFirst()
+		: null;
+
+	const releasesForm = await superValidate(
+		new URLSearchParams(userListReleasesFilters?.filters),
+		zod4(releaseFiltersSchema),
+	);
+	const recentlyReleasedFiltersParams = new URLSearchParams(userListReleasesFilters?.filters);
+	recentlyReleasedFiltersParams.set('sort', 'Release date desc');
+	recentlyReleasedFiltersParams.set('maxDate', yesterdayIso);
+	const upcomingReleasesFiltersParams = new URLSearchParams(userListReleasesFilters?.filters);
+	upcomingReleasesFiltersParams.set('sort', 'Release date asc');
+	upcomingReleasesFiltersParams.set('minDate', todayIso);
+
+	const recentlyReleasedForm = await superValidate(
+		{ ...releasesForm.data, sort: 'Release date desc', maxDate: yesterdayIso },
+		zod4(releaseFiltersSchema),
+	);
+	const upcomingReleasesForm = await superValidate(
+		{ ...releasesForm.data, sort: 'Release date asc', minDate: todayIso },
+		zod4(releaseFiltersSchema),
+	);
+
+	const recentlyReleasedPromise = getReleases({
+		currentPage: 1,
+		db,
+		q: '',
+		listUser: locals.user,
+		currentUser: locals.user,
+		form: recentlyReleasedForm,
+		limit: 10,
+	});
+	const upcomingReleasesPromise = getReleases({
+		currentPage: 1,
+		db,
+		q: '',
+		listUser: locals.user,
+		currentUser: locals.user,
+		form: upcomingReleasesForm,
+		limit: 10,
+	});
+
 	const recentChangesPromise = dbChanges
 		.getChangesAll({
 			filters: form.data,
@@ -178,9 +198,6 @@ export const load = async ({ locals }) => {
 		seasonalAnimePromise,
 	]);
 
-	const todayIso = dayjs().format('YYYY-MM-DD');
-	const yesterdayIso = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
-
 	return {
 		recentlyReleased,
 		upcomingReleases,
@@ -192,5 +209,7 @@ export const load = async ({ locals }) => {
 		homeDisplaySettings,
 		todayIso,
 		yesterdayIso,
+		upcomingReleasesFilters: upcomingReleasesFiltersParams.toString(),
+		recentlyReleasedFilters: recentlyReleasedFiltersParams.toString(),
 	};
 };

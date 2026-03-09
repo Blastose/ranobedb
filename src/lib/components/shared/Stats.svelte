@@ -79,7 +79,7 @@
 						</div>
 					</div>
 					<div>
-						<p class="sub-text-alt text-sm">
+						<p class="sub-text-alt text-sm" title={change.last_updated.toLocaleString()}>
 							{relativeTime(change.last_updated.getTime() / 1000, true)}
 						</p>
 					</div>

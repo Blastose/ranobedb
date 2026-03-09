@@ -22,12 +22,12 @@
 	const sForm = superForm(searchParams, {
 		dataType: 'json',
 		onUpdated: async ({ form }) => {
-			if (!form.valid) return;
+			const message = form.valid ? (form.message?.text ?? 'Success') : '';
 			await tick();
 			open.set(false);
 			addToast({
 				data: {
-					title: form.message?.text ?? 'Success',
+					title: message,
 					type: 'success',
 				},
 			});
@@ -62,6 +62,11 @@
 				<h2 use:melt={$title} class="text-lg font-medium">Confirm</h2>
 				<p use:melt={$description}>
 					Are you sure you want to save the current filters as the default?
+					{#if searchParams.data.target === 'release'}
+						<br /><br />
+						These filters will also apply to the releases on the home page.
+						<br />
+					{/if}
 					<br />
 					If you have just changed the filters, make sure to click the filter button before saving.
 				</p>

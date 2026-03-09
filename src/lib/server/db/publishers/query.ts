@@ -10,7 +10,6 @@ export async function getPublishers(params: {
 	db: Kysely<DB>;
 	currentUser: User | null;
 	listUser: Pick<User, 'id'> | null;
-	url: URL;
 	limit: number;
 }) {
 	const { currentPage, q, db, currentUser, limit, listUser } = params;

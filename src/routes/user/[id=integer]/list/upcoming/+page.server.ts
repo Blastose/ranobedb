@@ -182,7 +182,7 @@ export const load = async ({ params, locals, url }) => {
 	const userListReleaseForm = await superValidate(zod4(userListReleaseSchema));
 
 	const dateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
-	const currentYearMonth = `${dateNumber.getYear()}-${dateNumber.getMonth()}`;
+	const currentYearMonth = `${dateNumber.getYear()}-${dateNumber.getMonth().toString().padStart(2, '0')}`;
 
 	return {
 		isMyList,

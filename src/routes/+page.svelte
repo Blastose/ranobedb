@@ -40,9 +40,9 @@
 	{#if !data.user || data.homeDisplaySettings?.upcoming_releases}
 		<section>
 			<ReleaseBookImageCarousel
-				releases={data.upcomingReleases}
+				releases={data.upcomingReleases.releases}
 				heading="Upcoming releases"
-				viewAllLink="/releases?sort=Release+date+asc&minDate={data.todayIso}"
+				viewAllLink="/releases?{data.upcomingReleasesFilters}"
 			/>
 		</section>
 	{/if}
@@ -50,9 +50,9 @@
 	{#if !data.user || data.homeDisplaySettings?.recently_released}
 		<section>
 			<ReleaseBookImageCarousel
-				releases={data.recentlyReleased}
+				releases={data.recentlyReleased.releases}
 				heading="Recently released"
-				viewAllLink="/releases?sort=Release+date+desc&maxDate={data.yesterdayIso}"
+				viewAllLink="/releases?{data.recentlyReleasedFilters}"
 			/>
 		</section>
 	{/if}
