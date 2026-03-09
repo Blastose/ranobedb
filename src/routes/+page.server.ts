@@ -38,7 +38,7 @@ export const load = async ({ locals }) => {
 				.where('saved_filter.is_list', '=', false)
 				.executeTakeFirst()
 		: null;
-	console.log(userListReleasesFilters?.filters);
+
 	const releasesForm = await superValidate(
 		new URLSearchParams(userListReleasesFilters?.filters),
 		zod4(releaseFiltersSchema),
