@@ -24,7 +24,7 @@
 					: '#000000CA'}
 			>
 				{#if defaultUserListLabelsArray.includes(badge as any)}
-					<div class="">
+					<div class="label-icon">
 						<LabelIcon label={badge} size="small" />
 					</div>
 				{/if}
@@ -33,3 +33,15 @@
 		{/if}
 	{/each}
 </div>
+
+<style>
+	.label-icon {
+		display: none;
+	}
+
+	@container (min-width: 400px) {
+		.label-icon {
+			display: block;
+		}
+	}
+</style>
