@@ -20,7 +20,7 @@
 <div class="overflow-hidden rounded-md relative">
 	{#if blurTop}
 		<div
-			class="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-[#303030]/25 dark:from-[#303030]/75 to-transparent pointer-events-none z-1"
+			class="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-[#303030]/20 dark:from-[#303030]/50 to-transparent pointer-events-none z-1"
 		></div>
 	{/if}
 	{#if obj?.image}

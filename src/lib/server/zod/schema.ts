@@ -679,6 +679,7 @@ export const displayPrefsSchema = z.object({
 		.max(10, { message: 'You can only have max 10 languages' }),
 	names: z.enum(['romaji', 'native'] as const),
 	descriptions: z.enum(['en', 'ja'] as const),
+	label_badge_display: z.boolean().default(true),
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
 

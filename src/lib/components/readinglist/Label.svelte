@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { UserLabel } from '$lib/server/db/user/list';
+	import LabelIcon from '../icon/LabelIcon.svelte';
 
 	interface Props {
 		userLabel: UserLabel;
@@ -11,8 +12,8 @@
 </script>
 
 <div class="flex flex-col gap-1">
-	<a class="font-bold reading-label" class:active href="?l={userLabel.label_id}"
-		>{userLabel.label} ({userLabel.count})</a
+	<a class="flex gap-1 font-bold reading-label" class:active href="?l={userLabel.label_id}">
+		<LabelIcon label={userLabel.label} />{userLabel.label} ({userLabel.count})</a
 	>
 	<div class="box-underline" class:active></div>
 </div>

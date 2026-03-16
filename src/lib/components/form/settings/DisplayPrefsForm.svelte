@@ -5,6 +5,8 @@
 	import TitlePrefsInput from './TitlePrefsInput.svelte';
 	import SelectField from '../SelectField.svelte';
 	import SubmitButton from '../SubmitButton.svelte';
+	import CheckboxField from '../CheckboxField.svelte';
+	import ReadingListBadge from '$lib/components/book/ReadingListBadge.svelte';
 
 	export let displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
 
@@ -57,6 +59,31 @@
 			showRequiredSymbolIfRequired={false}
 			fit={true}
 		/>
+	</div>
+
+	<div>
+		<h3 class="text-lg font-bold">Reading status label badge</h3>
+		<p class="text-sm">
+			Choose whether to display the reading status and the icon or the icon only (also affects
+			display for scores).
+		</p>
+
+		<div class="w-fit">
+			<CheckboxField
+				form={sForm}
+				field={'label_badge_display'}
+				label="Display reading status label and icon"
+				showRequiredSymbolIfRequired={false}
+			/>
+		</div>
+
+		<div class="flex gap-2 items-center">
+			<span>Preview: </span>
+			<ReadingListBadge
+				badge="Reading"
+				displayOverride={$form.label_badge_display ? 'full' : 'compact'}
+			/>
+		</div>
 	</div>
 
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Save preferences'} />

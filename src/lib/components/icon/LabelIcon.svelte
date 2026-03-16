@@ -4,16 +4,16 @@
 
 	interface Props {
 		label: string | undefined;
-		size?: 'normal' | 'small';
+		size?: 'normal' | 'mild' | 'small';
 	}
 
 	let { label, size = 'normal' }: Props = $props();
 
-	const width = size === 'normal' ? '24' : '16';
-	const height = size === 'normal' ? '24' : '16';
+	const width = size === 'normal' ? '24' : size === 'mild' ? '20' : '16';
+	const height = size === 'normal' ? '24' : size === 'mild' ? '20' : '16';
 
 	const labelToIconMap: Record<string | (typeof defaultUserListLabelsArray)[number], IconType> = {
-		Reading: 'book',
+		Reading: 'bookOpenOutline',
 		Finished: 'checkCircleOutline',
 		'Plan to read': 'bookmark',
 		Stalled: 'pauseBoxOutline',

@@ -1,11 +1,15 @@
 <script lang="ts">
 	import { defaultUserListLabelsArray, defaultUserListLabelsColorMap } from '$lib/db/dbConsts';
+	import { getDisplayPrefsContext } from '$lib/display/prefs';
 	import LabelIcon from '../icon/LabelIcon.svelte';
+	import ReadingListBadge from './ReadingListBadge.svelte';
 
 	interface Props {
 		badges: string[];
 		location?: 'top-right' | 'bottom-right';
 	}
+
+	const displayPrefs = getDisplayPrefsContext();
 
 	let { badges, location = 'top-right' }: Props = $props();
 </script>
@@ -17,31 +21,20 @@
 >
 	{#each badges as badge}
 		{#if badge !== ''}
-			<div
-				class="dark-main-text w-fit text-sm sm:text-base rounded-full px-2 flex items-center gap-1 drop-shadow-md"
-				style:background-color={defaultUserListLabelsArray.includes(badge as any)
-					? `${defaultUserListLabelsColorMap[badge]}EA`
-					: '#000000CA'}
-			>
-				{#if defaultUserListLabelsArray.includes(badge as any)}
-					<div class="label-icon">
-						<LabelIcon label={badge} size="small" />
-					</div>
-				{/if}
-				<p>{badge}</p>
-			</div>
+			{#if defaultUserListLabelsArray.includes(badge as any)}
+				<ReadingListBadge {badge} />
+			{:else}
+				<div
+					class="dark-main-text w-fit text-sm sm:text-base rounded-full px-2 flex items-center gap-1 drop-shadow-md"
+					style:background-color="#000000BF"
+				>
+					{#if badge.startsWith('Score: ') && !$displayPrefs.label_badge_display}
+						<p>{badge.replace('Score: ', '').trim()}</p>
+					{:else}
+						<p>{badge}</p>
+					{/if}
+				</div>
+			{/if}
 		{/if}
 	{/each}
 </div>
-
-<style>
-	.label-icon {
-		display: none;
-	}
-
-	@container (min-width: 400px) {
-		.label-icon {
-			display: block;
-		}
-	}
-</style>
