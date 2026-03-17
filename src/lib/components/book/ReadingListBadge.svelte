@@ -5,10 +5,11 @@
 
 	interface Props {
 		badge: string;
+		score?: string;
 		displayOverride?: 'full' | 'compact';
 	}
 
-	let { badge, displayOverride }: Props = $props();
+	let { badge, score, displayOverride }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 
@@ -19,7 +20,7 @@
 
 <div
 	class="dark-main-text flex items-center gap-1 w-fit text-sm sm:text-base rounded-full
-  {display === 'full' ? 'px-2' : 'p-1'}"
+  {display === 'full' ? 'px-2' : score ? 'py-1 sm:py-[0.125rem] pl-1 pr-2' : 'p-1'}"
 	style:background-color={defaultUserListLabelsArray.includes(badge as any)
 		? `${defaultUserListLabelsColorMap[badge]}EA`
 		: '#000000CA'}
@@ -31,6 +32,9 @@
 	{/if}
 	{#if display === 'full'}
 		<p>{badge}</p>
+	{/if}
+	{#if score}
+		<p>{score}</p>
 	{/if}
 </div>
 

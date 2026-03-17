@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { defaultUserListLabelsArray, defaultUserListLabelsColorMap } from '$lib/db/dbConsts';
+	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
 	import { getDisplayPrefsContext } from '$lib/display/prefs';
-	import LabelIcon from '../icon/LabelIcon.svelte';
+	import Icon from '../icon/Icon.svelte';
 	import ReadingListBadge from './ReadingListBadge.svelte';
 
 	interface Props {
@@ -12,6 +12,17 @@
 	const displayPrefs = getDisplayPrefsContext();
 
 	let { badges, location = 'top-right' }: Props = $props();
+
+	// TODO - This is pretty hacky, but it combines the score and reading list label icon for those with display prefs set to that
+	let score = $derived.by(() => {
+		for (const badge of badges) {
+			if (badge.startsWith('Score:')) {
+				return badge.replace('Score: ', '');
+			}
+		}
+
+		return undefined;
+	});
 </script>
 
 <div
@@ -22,14 +33,17 @@
 	{#each badges as badge}
 		{#if badge !== ''}
 			{#if defaultUserListLabelsArray.includes(badge as any)}
-				<ReadingListBadge {badge} />
+				<ReadingListBadge {badge} {score} />
 			{:else}
 				<div
 					class="dark-main-text w-fit text-sm sm:text-base rounded-full px-2 flex items-center gap-1 drop-shadow-md"
 					style:background-color="#000000BF"
 				>
 					{#if badge.startsWith('Score: ') && !$displayPrefs.label_badge_display}
-						<p>{badge.replace('Score: ', '').trim()}</p>
+						<!-- Empty; combined with ReadingListBadge component -->
+					{:else if badge.endsWith('vols.') && !$displayPrefs.label_badge_display}
+						<p class="text-sm">{badge.replace(' vols.', '').trim()}</p>
+						<Icon name="bookshelf" height="18" width="18" />
 					{:else}
 						<p>{badge}</p>
 					{/if}
