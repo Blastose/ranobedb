@@ -16,7 +16,7 @@
 	// TODO - This is pretty hacky, but it combines the score and reading list label icon for those with display prefs set to that
 	let score = $derived.by(() => {
 		for (const badge of badges) {
-			if (badge.startsWith('Score:')) {
+			if (badge.startsWith('Score:') && !$displayPrefs.label_badge_display) {
 				return badge.replace('Score: ', '');
 			}
 		}
