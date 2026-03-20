@@ -288,6 +288,7 @@ export const defaultDisplayPrefs: DisplayPrefs = {
 	names: 'romaji',
 	title_prefs: defaultLangPrio,
 	descriptions: 'en',
+	label_badge_display: true,
 };
 
 export const staffTabs = ['series', 'books'] as const;
