@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { defaultUserListLabelsArray, defaultUserListLabelsColorMap } from '$lib/db/dbConsts';
 	import { getDisplayPrefsContext } from '$lib/display/prefs';
+	import Icon from '../icon/Icon.svelte';
 	import LabelIcon from '../icon/LabelIcon.svelte';
 
 	interface Props {
@@ -34,6 +35,7 @@
 		<p>{badge}</p>
 	{/if}
 	{#if score}
+		<Icon name={'star'} width="18" height="18" />
 		<p>{score}</p>
 	{/if}
 </div>

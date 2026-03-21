@@ -41,6 +41,10 @@
 				>
 					{#if badge.startsWith('Score: ') && !$displayPrefs.label_badge_display}
 						<!-- Empty; combined with ReadingListBadge component -->
+					{:else if badge.startsWith('Score: ')}
+						<p>{'Score: '}</p>
+						<Icon name="star" height="18" width="18" />
+						<p>{badge.replace('Score: ', '')}</p>
 					{:else if badge.endsWith('vols.') && !$displayPrefs.label_badge_display}
 						<p class="text-sm">{badge.replace(' vols.', '').trim()}</p>
 						<Icon name="bookshelf" height="18" width="18" />

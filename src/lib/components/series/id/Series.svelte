@@ -241,7 +241,7 @@
 							<BookImageBadge
 								badges={[
 									`${book.label.label}`,
-									book.score?.score ? `Score: ★ ${Number(book.score.score)}` : '',
+									book.score?.score ? `Score: ${Number(book.score.score)}` : '',
 								]}
 								location="top-right"
 							/>

@@ -75,7 +75,7 @@
 						<BookImageBadge
 							badges={[
 								`${series.label?.label}`,
-								series.score ? `Score: ★ ${Number(series.score)}` : '',
+								series.score ? `Score: ${Number(series.score)}` : '',
 							]}
 							location="top-right"
 						/>
