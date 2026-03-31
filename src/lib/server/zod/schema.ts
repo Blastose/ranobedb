@@ -501,7 +501,13 @@ export const publisherSchema = z.object({
 	name: z.string().trim().max(2000),
 	romaji: zRomaji,
 	description: zDescription,
-	bookwalker: zLink(['bookwalker.jp', 'global.bookwalker.jp']),
+	bookwalker: zLink([
+		'bookwalker.jp',
+		'global.bookwalker.jp',
+		'bookwalker.com',
+		'www.bookwalker.com.tw',
+		'bookwalker.in.th',
+	]),
 
 	child_publishers: z
 		.array(
@@ -559,6 +565,7 @@ export const releaseSchema = z.object({
 	bookwalker: zLink([
 		'bookwalker.jp',
 		'global.bookwalker.jp',
+		'bookwalker.com',
 		'www.bookwalker.com.tw',
 		'bookwalker.in.th',
 	]),
