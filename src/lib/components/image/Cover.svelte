@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import { getDisplayPrefsContext } from '$lib/display/prefs';
 	import type { Nullish } from '$lib/server/zod/schema';
 
 	interface Props {
@@ -14,13 +15,18 @@
 		children?: import('svelte').Snippet;
 	}
 
+	const displayPrefs = getDisplayPrefsContext();
 	let { obj, blurTop = false, children }: Props = $props();
 </script>
 
 <div class="overflow-hidden rounded-md relative">
 	{#if blurTop}
 		<div
-			class="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b from-[#303030]/20 dark:from-[#303030]/50 to-transparent pointer-events-none z-1"
+			class="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b
+			{$displayPrefs.label_badge_display
+				? 'from-[#303030]/20 dark:from-[#303030]/50'
+				: 'from-[#303030]/5 dark:from-[#303030]/10'}
+				     to-transparent pointer-events-none z-1"
 		></div>
 	{/if}
 	{#if obj?.image}

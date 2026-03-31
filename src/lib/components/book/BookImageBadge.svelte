@@ -26,7 +26,7 @@
 </script>
 
 <div
-	class="absolute flex flex-col gap-1 p-1 sm:p-2 items-end {location === 'top-right'
+	class="absolute flex flex-col gap-1 p-1 sm:p-[0.375rem] items-end {location === 'top-right'
 		? 'top-0 right-0'
 		: 'bottom-0 right-0'}"
 >
@@ -34,14 +34,12 @@
 		{#if badge !== ''}
 			{#if defaultUserListLabelsArray.includes(badge as any)}
 				<ReadingListBadge {badge} {score} />
-			{:else}
+			{:else if !(badge.startsWith('Score: ') && !$displayPrefs.label_badge_display)}
 				<div
-					class="dark-main-text w-fit text-sm sm:text-base rounded-full px-2 flex items-center gap-1 drop-shadow-md"
+					class="shadow-md dark-main-text w-fit text-sm sm:text-base rounded-full px-2 flex items-center gap-1"
 					style:background-color="#000000BF"
 				>
-					{#if badge.startsWith('Score: ') && !$displayPrefs.label_badge_display}
-						<!-- Empty; combined with ReadingListBadge component -->
-					{:else if badge.startsWith('Score: ')}
+					{#if badge.startsWith('Score: ')}
 						<p>{'Score: '}</p>
 						<Icon name="star" height="18" width="18" />
 						<p>{badge.replace('Score: ', '')}</p>
