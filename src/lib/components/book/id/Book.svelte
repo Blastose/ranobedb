@@ -201,7 +201,7 @@
 											style="outline-color: var(--{defaultUserListLabelsCssClass(
 												book_series.label?.label,
 											)});"
-											class="outline rounded-full outline-2 text-xs font-bold px-2 ml-2"
+											class="whitespace-nowrap outline rounded-full outline-2 text-xs font-bold px-2 ml-2"
 											>{book_series.label?.label}</span
 										>{/if}
 								</span>
