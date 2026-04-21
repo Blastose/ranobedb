@@ -21,7 +21,7 @@
 	export let label: string = '';
 </script>
 
-<div class="flex flex-col gap-1">
+<div class="flex flex-col gap-1 w-fit">
 	<label class="flex gap-2"
 		><input
 			name={field}
