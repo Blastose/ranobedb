@@ -336,7 +336,7 @@ const zReleaseDate = z
 		{ message: 'Release date must have correct format.' },
 	);
 
-const zLink = (validHostnames: string[]) =>
+export const zLink = (validHostnames: string[]) =>
 	z
 		.string()
 		.max(maxTextLength)
@@ -364,6 +364,64 @@ const zLink = (validHostnames: string[]) =>
 		)
 		.nullish();
 
+const zBookEditions = z
+	.array(
+		z.object({
+			eid: z.number().min(0).max(2000000).nullish(),
+			title: z
+				.string()
+				.trim()
+				.min(1, { message: 'Title must be at least 1 character' })
+				.max(2000, { message: 'Title must be at most 2000 characters' }),
+			lang: z.enum(languagesArray).nullish(),
+			staff: z
+				.array(
+					z.object({
+						name: z.string().max(2000).nullish(),
+						romaji: z.string().max(2000).nullish(),
+						staff_id: z.number().max(2000000),
+						staff_alias_id: z.number().max(2000000),
+						role_type: z.enum(staffRolesArray),
+						note: z.string().trim().max(2000, { message: 'Note must be at most 2000 characters' }),
+					}),
+				)
+				.max(50),
+		}),
+	)
+	.min(1, { message: 'There must be at least 1 edition' })
+	.max(10, { message: 'The total number of editions must be less than or equal to 10' })
+	.refine(
+		(editions) => {
+			const originalEdition = editions.at(0);
+			if (!originalEdition) {
+				return false;
+			}
+			if (originalEdition.title !== 'Original edition') {
+				return false;
+			}
+			if (originalEdition.lang !== null) {
+				return false;
+			}
+			return true;
+		},
+		{ message: 'Original edition must be first and lang must be null' },
+	)
+	.refine(
+		(editions) => {
+			for (let i = 1; i < editions.length; i++) {
+				const edition = editions[i];
+				if (edition.title.toLowerCase() === 'Original edition'.toLowerCase()) {
+					return false;
+				}
+				if (edition.lang === null) {
+					return false;
+				}
+			}
+			return true;
+		},
+		{ message: "Cannot name other editions 'Original edition'" },
+	);
+
 export const bookSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
@@ -376,66 +434,7 @@ export const bookSchema = z.object({
 
 	titles: zTitles,
 
-	editions: z
-		.array(
-			z.object({
-				eid: z.number().min(0).max(2000000).nullish(),
-				title: z
-					.string()
-					.trim()
-					.min(1, { message: 'Title must be at least 1 character' })
-					.max(2000, { message: 'Title must be at most 2000 characters' }),
-				lang: z.enum(languagesArray).nullish(),
-				staff: z
-					.array(
-						z.object({
-							name: z.string().max(2000).nullish(),
-							romaji: z.string().max(2000).nullish(),
-							staff_id: z.number().max(2000000),
-							staff_alias_id: z.number().max(2000000),
-							role_type: z.enum(staffRolesArray),
-							note: z
-								.string()
-								.trim()
-								.max(2000, { message: 'Note must be at most 2000 characters' }),
-						}),
-					)
-					.max(50),
-			}),
-		)
-		.min(1, { message: 'There must be at least 1 edition' })
-		.max(10, { message: 'The total number of editions must be less than or equal to 10' })
-		.refine(
-			(editions) => {
-				const originalEdition = editions.at(0);
-				if (!originalEdition) {
-					return false;
-				}
-				if (originalEdition.title !== 'Original edition') {
-					return false;
-				}
-				if (originalEdition.lang !== null) {
-					return false;
-				}
-				return true;
-			},
-			{ message: 'Original edition must be first and lang must be null' },
-		)
-		.refine(
-			(editions) => {
-				for (let i = 1; i < editions.length; i++) {
-					const edition = editions[i];
-					if (edition.title.toLowerCase() === 'Original edition'.toLowerCase()) {
-						return false;
-					}
-					if (edition.lang === null) {
-						return false;
-					}
-				}
-				return true;
-			},
-			{ message: "Cannot name other editions 'Original edition'" },
-		),
+	editions: zBookEditions,
 	image: z
 		.instanceof(File, { message: 'Please upload a file.' })
 		.refine((f) => f.size < 10_000_000, 'Max 10 MB upload size.')
@@ -527,6 +526,50 @@ export const publisherSchema = z.object({
 	comment: zComment,
 });
 
+const zReleaseBooks = z
+	.array(
+		z.object({
+			id: z.number().max(200000),
+			title: z.string().nullish(),
+			romaji: z.string().nullish(),
+			lang: z.enum(languagesArray).nullish(),
+			rtype: z.enum(releaseTypeArray),
+		}),
+	)
+	.max(50, { message: 'The number of books must be less than or equal to 50' });
+const zReleasePublishers = z
+	.array(
+		z.object({
+			id: z.number().max(200000),
+			name: z.string(),
+			romaji: z.string().nullish(),
+			publisher_type: z.enum(releasePublisherTypeArray),
+		}),
+	)
+	.max(50, { message: 'The number of publishers must be less than or equal to 50' });
+const zIsbn13 = z
+	.string()
+	.trim()
+	.transform((v) =>
+		v
+			.replaceAll(/\u200e/g, '')
+			.trim()
+			.replaceAll('-', ''),
+	)
+	// Note, this doesn't show the errors because it's in the `.pipe`,
+	// but zod doesn't let you do `.transform()` and then `.min()` and others
+	.pipe(
+		z
+			.string()
+			.min(13, { message: 'ISBN must be 13 characters' })
+			.max(13, { message: 'ISBN must be 13 characters' })
+			.regex(/[0-9]{13}/, { message: 'Invalid ISBN13 identifier' }),
+	)
+	.nullish()
+	.or(z.literal(''))
+	.transform((v) => (v === '' ? null : v))
+	.optional();
+
 export const releaseSchema = z.object({
 	hidden: z.boolean(),
 	locked: z.boolean(),
@@ -539,28 +582,7 @@ export const releaseSchema = z.object({
 	lang: z.enum(languagesArray),
 	release_date: zReleaseDate,
 	pages: z.number().min(1).max(200000).nullish(),
-	isbn13: z
-		.string()
-		.trim()
-		.transform((v) =>
-			v
-				.replaceAll(/\u200e/g, '')
-				.trim()
-				.replaceAll('-', ''),
-		)
-		// Note, this doesn't show the errors because it's in the `.pipe`,
-		// but zod doesn't let you do `.transform()` and then `.min()` and others
-		.pipe(
-			z
-				.string()
-				.min(13, { message: 'ISBN must be 13 characters' })
-				.max(13, { message: 'ISBN must be 13 characters' })
-				.regex(/[0-9]{13}/, { message: 'Invalid ISBN13 identifier' }),
-		)
-		.nullish()
-		.or(z.literal(''))
-		.transform((v) => (v === '' ? null : v))
-		.optional(),
+	isbn13: zIsbn13,
 	amazon: zLink(['www.amazon.co.jp', 'www.amazon.com']),
 	bookwalker: zLink([
 		'bookwalker.jp',
@@ -572,27 +594,8 @@ export const releaseSchema = z.object({
 	rakuten: zLink(['books.rakuten.co.jp']),
 	website: zLink([]),
 
-	books: z
-		.array(
-			z.object({
-				id: z.number().max(200000),
-				title: z.string().nullish(),
-				romaji: z.string().nullish(),
-				lang: z.enum(languagesArray).nullish(),
-				rtype: z.enum(releaseTypeArray),
-			}),
-		)
-		.max(50, { message: 'The number of books must be less than or equal to 50' }),
-	publishers: z
-		.array(
-			z.object({
-				id: z.number().max(200000),
-				name: z.string(),
-				romaji: z.string().nullish(),
-				publisher_type: z.enum(releasePublisherTypeArray),
-			}),
-		)
-		.max(50, { message: 'The number of publishers must be less than or equal to 50' }),
+	books: zReleaseBooks,
+	publishers: zReleasePublishers,
 
 	comment: zComment,
 });
@@ -669,6 +672,76 @@ export const seriesSchema = z.object({
 			}),
 		)
 		.max(200),
+
+	comment: zComment,
+});
+
+export const scrapedBookDataSchema = z.object({
+	create_series: z.boolean().optional(),
+	series: z.object({
+		series_titles: zTitles,
+		bw_id: z.number().max(maxNumberValue).nullish(),
+	}),
+	start_date: zReleaseDate,
+	end_date: zReleaseDate,
+	publication_status: z.enum(seriesStatusArray),
+
+	create_book: z.boolean().default(true).optional(),
+	titles: zTitles,
+	scraped_website_url: z.string(),
+	editions: zBookEditions,
+	staff_not_in_db: z
+		.array(
+			z.object({
+				name: z.string().max(2000),
+				romaji: z.string().max(2000).nullish(),
+				bw_id: z.number().max(maxNumberValue).nullish(),
+				role_type: z.enum(staffRolesArray),
+				note: z.string().trim().max(2000, { message: 'Note must be at most 2000 characters' }),
+			}),
+		)
+		.max(50),
+	description: zDescription,
+	description_ja: zDescription,
+	use_img: z.boolean().default(true).optional(),
+	img_url: zLink(['rimg.bookwalker.jp', 'www.amazon.co.jp']),
+
+	title: z.string().trim().max(2000),
+	romaji: zRomaji,
+	format: z.enum(releaseFormatArray),
+	lang: z.enum(languagesArray),
+	release_date: zReleaseDate,
+	pages: z.number().min(1).max(200000).nullish(),
+	isbn13: zIsbn13,
+	website: zLink([]),
+	amazon: zLink(['www.amazon.co.jp', 'www.amazon.com']),
+	bookwalker: zLink([
+		'bookwalker.jp',
+		'global.bookwalker.jp',
+		'bookwalker.com',
+		'www.bookwalker.com.tw',
+		'bookwalker.in.th',
+	]),
+	rakuten: zLink(['books.rakuten.co.jp']),
+	publishers: zReleasePublishers,
+	publishers_not_in_db: z
+		.array(
+			z.object({
+				name: z.string().max(2000),
+				romaji: z.string().max(2000).nullish(),
+				bw_id: z.number().max(maxNumberValue).nullish(),
+				bw_url: zLink([
+					'bookwalker.jp',
+					'global.bookwalker.jp',
+					'bookwalker.com',
+					'www.bookwalker.com.tw',
+					'bookwalker.in.th',
+				]),
+				publisher_type: z.enum(releasePublisherTypeArray),
+			}),
+		)
+		.max(50),
+	book_rel_type: z.enum(releaseTypeArray),
 
 	comment: zComment,
 });

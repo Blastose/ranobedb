@@ -20,4 +20,10 @@
 		<LinkBox display="Add staff" href="/staff/add" />
 		<LinkBox display="Add publisher" href="/publishers/add" />
 	</div>
+
+	<section class="flex flex-col gap-2">
+		<h2 class="text-lg font-bold">Add from URL</h2>
+
+		<LinkBox display="Add from BookWalker JP" href="/add/from-bookwalker" />
+	</section>
 </main>
