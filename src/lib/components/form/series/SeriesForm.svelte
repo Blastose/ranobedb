@@ -9,7 +9,7 @@
 	import { hasVisibilityPerms } from '$lib/db/permissions';
 	import type { User } from '$lib/server/lucia/lucia';
 	import type { SeriesEdit } from '$lib/server/db/series/series';
-	import SeriesTitlesInput from './SeriesTitlesInput.svelte';
+	import TitlesInput from '../book/TitlesInput.svelte';
 	import SeriesBookInput from './SeriesBookInput.svelte';
 	import SeriesRelInput from './SeriesRelInput.svelte';
 	import SelectField from '../SelectField.svelte';
@@ -60,7 +60,7 @@
 		<VisibilityInputs form={sForm} />
 	{/if}
 
-	<SeriesTitlesInput form={sForm} />
+	<TitlesInput form={sForm} field="titles" />
 
 	<TextField
 		form={sForm}
