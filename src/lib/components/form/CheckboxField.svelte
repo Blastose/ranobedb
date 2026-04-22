@@ -13,6 +13,7 @@
 	export let form: SuperForm<T, App.Superforms.Message>;
 	export let field: FormPathLeaves<T, boolean>;
 	export let showRequiredSymbolIfRequired: boolean = true;
+	export let disabled: boolean = false;
 
 	const { value, errors, constraints } = formFieldProxy(
 		form,
@@ -28,9 +29,10 @@
 			type="checkbox"
 			class="checkbox"
 			bind:checked={$value}
+			{disabled}
 			{...$constraints}
 			{...$$restProps}
-		/><span
+		/><span class={disabled ? 'italic' : ''}
 			>{label}<slot />{#if $constraints?.required && showRequiredSymbolIfRequired}
 				<span class="error-text-color">*</span>
 			{/if}</span
