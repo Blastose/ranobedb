@@ -132,7 +132,7 @@
 	<Hr />
 
 	<ReleaseBookInput form={sForm} />
-	<ReleasePublisherInput form={sForm} />
+	<ReleasePublisherInput form={sForm} field="publishers" />
 
 	<Hr />
 

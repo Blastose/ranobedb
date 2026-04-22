@@ -1,14 +1,31 @@
-<script lang="ts">
+<script lang="ts" generics="T extends Record<string, unknown>, F extends FormPathArrays<T>">
 	import { releasePublisherTypeArray } from '$lib/db/dbConsts';
-	import type { releaseSchema } from '$lib/server/zod/schema';
-	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
+	import {
+		type SuperForm,
+		arrayProxy,
+		type FormPathArrays,
+		type ArrayProxy,
+		type FormPathType,
+	} from 'sveltekit-superforms';
 	import ComboboxInput from '../ComboboxInput.svelte';
 	import type { ApiPublisher } from '../../../../routes/api/i/publisher/+server';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
+	import type { ReleasePublisherType } from '$lib/server/db/dbTypes';
 
-	export let form: SuperForm<Infer<typeof releaseSchema>, App.Superforms.Message>;
+	export let form: SuperForm<T, App.Superforms.Message>;
+	export let field: FormPathType<T, F> extends Publisher[] ? F : never;
 
-	const { values, errors, valueErrors } = arrayProxy(form, 'publishers');
+	type Publisher = {
+		name: string;
+		romaji?: string | null;
+		id: number;
+		publisher_type: ReleasePublisherType;
+	};
+
+	const { values, errors, valueErrors } = arrayProxy(
+		form,
+		field,
+	) as unknown as ArrayProxy<Publisher>;
 	function handleRemovePublisher(index: number) {
 		$values.splice(index, 1);
 		$values = $values;
