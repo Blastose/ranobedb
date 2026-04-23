@@ -3,7 +3,7 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import UrlInput from '$lib/components/form/scraper/UrlInput.svelte';
-	import Add from '$lib/components/form/scraper/Add.svelte';
+	import ScraperForm from '$lib/components/form/scraper/ScraperForm.svelte';
 	import type { SuperValidated, Infer } from 'sveltekit-superforms';
 	import type { scrapedBookDataSchema } from '$lib/server/zod/schema';
 
@@ -26,6 +26,6 @@
 	{/if}
 
 	{#if form?.form}
-		<Add addForm={form.form} />
+		<ScraperForm addForm={form.form} />
 	{/if}
 </main>
