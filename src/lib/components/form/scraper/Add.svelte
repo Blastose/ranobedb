@@ -17,7 +17,7 @@
 		seriesStatusArray,
 	} from '$lib/db/dbConsts';
 	import type { scrapedBookDataSchema } from '$lib/server/zod/schema';
-	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import StaffNotInDbInput from './StaffNotInDbInput.svelte';
 	import PublishersNotInDbInput from './PublishersNotInDbInput.svelte';
 	import ReleasePublisherInput from '$lib/components/form/release/ReleasePublisherInput.svelte';
@@ -43,6 +43,8 @@
 		}
 	}
 </script>
+
+<!-- <SuperDebug data={$form} /> -->
 
 <form method="POST" class="flex flex-col gap-4" action="?/add_from_data" use:enhance>
 	<p>

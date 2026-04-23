@@ -14,7 +14,7 @@ const zBwBook = z.object({
 	title: z.string(),
 	series: z
 		.object({
-			name: z.string(),
+			name: z.string().nullish(),
 			url: z.string().nullish(),
 			id: z.number(),
 		})
