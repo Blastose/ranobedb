@@ -23,7 +23,7 @@ export class DBStaffActions {
 	}
 
 	async editStaff(data: { staff: Infer<typeof staffSchema>; id: number }, user: User) {
-		await this.ranobeDB.db.transaction().execute(async (trx) => {
+		await this.ranobeDB.runTransaction(async (trx) => {
 			const currentStaff = await trx
 				.selectFrom('staff')
 				.where('staff.id', '=', data.id)
@@ -216,7 +216,7 @@ export class DBStaffActions {
 	}
 
 	async addStaff(data: { staff: Infer<typeof staffSchema> }, user: User) {
-		return await this.ranobeDB.db.transaction().execute(async (trx) => {
+		return await this.ranobeDB.runTransaction(async (trx) => {
 			const canChangeVisibility = permissions[user.role].includes('visibility');
 			const hidden = canChangeVisibility ? data.staff.hidden : false;
 			const locked = canChangeVisibility ? data.staff.hidden || data.staff.locked : false;

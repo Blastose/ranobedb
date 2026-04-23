@@ -288,7 +288,7 @@ export class DBPublisherActions {
 	}
 
 	async editPublisher(data: { publisher: Infer<typeof publisherSchema>; id: number }, user: User) {
-		await this.ranobeDB.db.transaction().execute(async (trx) => {
+		await this.ranobeDB.runTransaction(async (trx) => {
 			const currentPublisher = await trx
 				.selectFrom('publisher')
 				.where('publisher.id', '=', data.id)
@@ -444,7 +444,7 @@ export class DBPublisherActions {
 	}
 
 	async addPublisher(data: { publisher: Infer<typeof publisherSchema> }, user: User) {
-		return await this.ranobeDB.db.transaction().execute(async (trx) => {
+		return await this.ranobeDB.runTransaction(async (trx) => {
 			const canChangeVisibility = permissions[user.role].includes('visibility');
 			const hidden = canChangeVisibility ? data.publisher.hidden : false;
 			const locked = canChangeVisibility ? data.publisher.hidden || data.publisher.locked : false;

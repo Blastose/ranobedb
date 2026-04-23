@@ -32,7 +32,7 @@ export class DBBookActions {
 	}
 
 	async editBook(data: { book: Infer<typeof bookSchema>; id: number }, user: User) {
-		const uploadImage = await this.ranobeDB.db.transaction().execute(async (trx) => {
+		const uploadImage = await this.ranobeDB.runTransaction(async (trx) => {
 			const currentBook = await trx
 				.selectFrom('book')
 				.where('book.id', '=', data.id)
@@ -235,7 +235,7 @@ export class DBBookActions {
 	}
 
 	async addBook(data: { book: Infer<typeof bookSchema> }, user: User) {
-		const res = await this.ranobeDB.db.transaction().execute(async (trx) => {
+		const res = await this.ranobeDB.runTransaction(async (trx) => {
 			const canChangeVisibility = permissions[user.role].includes('visibility');
 			const hidden = canChangeVisibility ? data.book.hidden : false;
 			const locked = canChangeVisibility ? data.book.hidden || data.book.locked : false;

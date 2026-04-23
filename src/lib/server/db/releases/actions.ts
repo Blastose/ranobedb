@@ -348,7 +348,7 @@ export class DBReleaseActions {
 	}
 
 	async editRelease(data: { release: Infer<typeof releaseSchema>; id: number }, user: User) {
-		await this.ranobeDB.db.transaction().execute(async (trx) => {
+		await this.ranobeDB.runTransaction(async (trx) => {
 			const currentRelease = await trx
 				.selectFrom('release')
 				.selectAll('release')
@@ -513,7 +513,7 @@ export class DBReleaseActions {
 	}
 
 	async addRelease(data: { release: Infer<typeof releaseSchema> }, user: User) {
-		return await this.ranobeDB.db.transaction().execute(async (trx) => {
+		return await this.ranobeDB.runTransaction(async (trx) => {
 			const canChangeVisibility = permissions[user.role].includes('visibility');
 			const hidden = canChangeVisibility ? data.release.hidden : false;
 			const locked = canChangeVisibility ? data.release.hidden || data.release.locked : false;
