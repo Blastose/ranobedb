@@ -681,10 +681,10 @@ export const scrapedBookDataSchema = z.object({
 	series: z.object({
 		series_titles: zTitles,
 		bw_id: z.number().max(maxNumberValue).nullish(),
+		start_date: zReleaseDate,
+		end_date: zReleaseDate,
+		publication_status: z.enum(seriesStatusArray),
 	}),
-	start_date: zReleaseDate,
-	end_date: zReleaseDate,
-	publication_status: z.enum(seriesStatusArray),
 
 	create_book: z.boolean().default(true).optional(),
 	titles: zTitles,

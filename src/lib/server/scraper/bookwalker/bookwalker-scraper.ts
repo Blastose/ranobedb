@@ -140,6 +140,9 @@ export class BookWalkerScraper extends BookScraper {
 				series_titles: [
 					{ lang: 'ja', romaji: '', official: true, title: data.series?.name ?? data.title },
 				],
+				start_date: data.dateNumber,
+				end_date: 99999999,
+				publication_status: 'unknown',
 			},
 
 			titles: [
@@ -167,9 +170,6 @@ export class BookWalkerScraper extends BookScraper {
 			lang: 'ja',
 			comment: `Add from ${data.url}`,
 			book_rel_type: 'complete',
-			start_date: data.dateNumber,
-			end_date: 99999999,
-			publication_status: 'unknown',
 		} satisfies BookData);
 	}
 }

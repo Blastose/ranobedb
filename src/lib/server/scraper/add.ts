@@ -39,7 +39,6 @@ export async function addFromScrapedBookData(params: {
 		throw new Error('______TODO_______');
 	}
 	const data = params.scrapedBookData;
-	console.log(data);
 
 	let addedBookId;
 	if (data.create_book) {
@@ -240,33 +239,39 @@ export async function addFromScrapedBookData(params: {
 	// TODO
 	if (data.create_series && data.create_book) {
 		// TDOO if series bw is already in, what to do?
-		await dbSeriesActions.addSeries(
-			{
-				series: seriesSchema.parse({
-					comment,
-					hidden: false,
-					locked: false,
-					titles: data.series.series_titles,
-					child_series: [],
-					start_date: 99999999,
-					end_date: 99999999,
-					olang: 'ja',
-					publication_status: 'unknown',
-					tags: [],
-					books: addedBookId
-						? [
-								{
-									book_type: 'main',
-									id: addedBookId,
-									sort_order: 1,
-								},
-							]
-						: [],
-					bookwalker_id: data.series.bw_id,
-				} satisfies z.infer<typeof seriesSchema>),
-			},
-			params.user,
-		);
+		const seriesInDbAlready = await db
+			.selectFrom('series')
+			.where('series.bookwalker_id', '=', data.series.bw_id ?? -1)
+			.executeTakeFirst();
+		if (!seriesInDbAlready) {
+			await dbSeriesActions.addSeries(
+				{
+					series: seriesSchema.parse({
+						comment,
+						hidden: false,
+						locked: false,
+						titles: data.series.series_titles,
+						child_series: [],
+						start_date: data.series.start_date,
+						end_date: data.series.end_date,
+						olang: 'ja',
+						publication_status: data.series.publication_status,
+						tags: [],
+						books: addedBookId
+							? [
+									{
+										book_type: 'main',
+										id: addedBookId,
+										sort_order: 1,
+									},
+								]
+							: [],
+						bookwalker_id: data.series.bw_id,
+					} satisfies z.infer<typeof seriesSchema>),
+				},
+				params.user,
+			);
+		}
 	}
 
 	if (addedBookId) {

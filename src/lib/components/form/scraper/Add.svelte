@@ -66,12 +66,12 @@
 
 				<SelectField
 					form={sForm}
-					field="publication_status"
+					field="series.publication_status"
 					dropdownOptions={seriesStatusArray.map((item) => ({
 						display: item,
 						value: item,
 					}))}
-					selectedValue={$form.publication_status}
+					selectedValue={$form.series.publication_status}
 					label="Publication status"
 					resetPadding={true}
 					showRequiredSymbolIfRequired={false}
@@ -79,8 +79,8 @@
 				/>
 
 				<div class="flex flex-wrap gap-x-4">
-					<ReleaseDateInput form={sForm} field="start_date" label="Start date" />
-					<ReleaseDateInput form={sForm} field="end_date" label="End date" />
+					<ReleaseDateInput form={sForm} field="series.start_date" label="Start date" />
+					<ReleaseDateInput form={sForm} field="series.end_date" label="End date" />
 				</div>
 			</div>
 		{/if}
