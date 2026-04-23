@@ -168,7 +168,7 @@ export class BookWalkerScraper extends BookScraper {
 			editions,
 			staff_not_in_db: staff_not_in_db,
 			lang: 'ja',
-			comment: `Add from ${data.url}`,
+			comment: `Imported from BookWalker`,
 			book_rel_type: 'complete',
 		} satisfies BookData);
 	}

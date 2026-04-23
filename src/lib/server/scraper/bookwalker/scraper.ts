@@ -519,7 +519,7 @@ export function scrapeBW(text: string) {
 		label.url = null;
 	}
 
-	const goodCategories = ['ライトノベル', '新文芸', '文芸・小説', 'マンガ']; // TODO remove マンガ later
+	const goodCategories = ['ライトノベル', '新文芸', '文芸・小説', 'マンガ'];
 	if (category && !goodCategories.includes(category)) {
 		throw new Error('Book category is not valid');
 	}

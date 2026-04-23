@@ -30,17 +30,14 @@ export async function addFromScrapedBookData(params: {
 		const dbReleaseActions = DBReleaseActions.fromDB(trx);
 		const dbStaffActions = DBStaffActions.fromDB(trx);
 		const dbSeriesActions = DBSeriesActions.fromDB(trx);
-		const comment = `Imported from BookWalker`;
+		const comment = params.scrapedBookData.comment;
 
 		const bookInDbAlready = await db
 			.selectFrom('release')
-			//                        TODO Change this later (needs to be generic?)
-			.where('release.bookwalker', '=', `https://bookwalker.jp/de${params.scrapedBookData.title}/`)
+			.where('release.bookwalker', '=', params.scrapedBookData.scraped_website_url)
 			.executeTakeFirst();
 		if (bookInDbAlready) {
-			console.log('Alreadu');
-			// TODO
-			throw new Error('______TODO_______');
+			throw new Error('Already in DB');
 		}
 		const data = params.scrapedBookData;
 
