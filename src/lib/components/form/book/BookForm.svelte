@@ -7,7 +7,6 @@
 		type SuperValidated,
 	} from 'sveltekit-superforms';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
-	import BookTitlesInput from './BookTitlesInput.svelte';
 	import type { BookEdit } from '$lib/server/db/books/books';
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
@@ -20,6 +19,7 @@
 	import SelectField from '../SelectField.svelte';
 	import { buildImageUrl } from '$lib/components/book/book';
 	import TextField from '../TextField.svelte';
+	import TitlesInput from './TitlesInput.svelte';
 
 	export let book: BookEdit | undefined;
 	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
@@ -68,7 +68,7 @@
 		<VisibilityInputs form={sForm} />
 	{/if}
 
-	<BookTitlesInput form={sForm} />
+	<TitlesInput form={sForm} field="titles" />
 
 	<Hr />
 

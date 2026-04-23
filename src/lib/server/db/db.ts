@@ -1,5 +1,5 @@
 import { DATABASE_URL } from '$env/static/private';
-import { Kysely, PostgresDialect } from 'kysely';
+import { Kysely, PostgresDialect, type Transaction } from 'kysely';
 import pkg from 'pg';
 const { types, Pool } = pkg;
 import type { DB } from '$lib/server/db/dbTypes';
@@ -27,5 +27,13 @@ export class RanobeDB {
 	constructor(db: Kysely<DB>, user?: User | null) {
 		this.db = db;
 		this.user = user;
+	}
+
+	async runTransaction<T>(callback: (trx: Transaction<DB>) => Promise<T>) {
+		if (this.db.isTransaction) {
+			return await callback(this.db as Transaction<DB>);
+		}
+
+		return await this.db.transaction().execute(callback);
 	}
 }

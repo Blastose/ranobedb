@@ -6,6 +6,13 @@ export const dbItemActionsLimiter = new RateLimiter({
 	IP: [[10, '10s']],
 });
 
+export const scraperLimiter = new RateLimiter({
+	IP: [
+		[1, 's'],
+		[10, 'm'],
+	],
+});
+
 export const loginLimiter = new RateLimiter({
 	IP: [
 		[1, 's'],

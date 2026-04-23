@@ -1,5 +1,5 @@
 import type { DB, UserListLabel } from '$lib/server/db/dbTypes';
-import { defaultUserListLabels } from '$lib/db/dbConsts';
+import { defaultDisplayPrefs, defaultUserListLabels } from '$lib/db/dbConsts';
 import type { Insertable, Kysely, Transaction } from 'kysely';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
 import { deletedUser } from './ranobebot';
@@ -191,3 +191,11 @@ export class DBUsers {
 }
 
 export type SafeUser = NonNullable<Awaited<ReturnType<DBUsers['getUserByIdNumbericSafe']>>>;
+
+export const ranobeBot = {
+	id: 'RanobeBot',
+	id_numeric: 1,
+	role: 'admin',
+	display_prefs: defaultDisplayPrefs,
+	username: 'RanobeBot',
+} satisfies User;

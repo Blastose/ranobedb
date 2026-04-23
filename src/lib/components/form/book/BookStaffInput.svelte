@@ -1,5 +1,4 @@
 <script lang="ts">
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import NameDisplayBoth from '$lib/components/display/NameDisplayBoth.svelte';
 	import { staffRolesArray } from '$lib/db/dbConsts';
 	import type { bookSchema } from '$lib/server/zod/schema';

@@ -73,11 +73,12 @@
 				bind:value={$value}
 				{...$constraints}
 				{...$$restProps}
+				pattern={undefined}
 			/>
 		{/if}
 	</label>
 	{#if $errors}
-		<span class="error-text-color">{$errors}</span>
+		<span class="error-text-color">{$errors.join(', ')}</span>
 	{/if}
 </div>
 

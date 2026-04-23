@@ -365,7 +365,7 @@ export class DBSeriesActions {
 	}
 
 	async editSeries(data: { series: Infer<typeof seriesSchema>; id: number }, user: User) {
-		await this.ranobeDB.db.transaction().execute(async (trx) => {
+		await this.ranobeDB.runTransaction(async (trx) => {
 			const currentSeries = await trx
 				.selectFrom('series')
 				.where('series.id', '=', data.id)
@@ -639,7 +639,7 @@ export class DBSeriesActions {
 	}
 
 	async addSeries(data: { series: Infer<typeof seriesSchema> }, user: User) {
-		return await this.ranobeDB.db.transaction().execute(async (trx) => {
+		return await this.ranobeDB.runTransaction(async (trx) => {
 			const canChangeVisibility = permissions[user.role].includes('visibility');
 			const hidden = canChangeVisibility ? data.series.hidden : false;
 			const locked = canChangeVisibility ? data.series.hidden || data.series.locked : false;
