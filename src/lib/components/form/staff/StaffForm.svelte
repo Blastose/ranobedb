@@ -37,6 +37,7 @@
 				addToast({ data: { title: f.message?.text || 'Error in form!', type: 'error' } });
 			}
 		},
+		taintedMessage: true,
 	});
 	const { form, enhance, delayed, submitting } = sForm;
 
