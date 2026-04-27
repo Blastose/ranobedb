@@ -46,6 +46,13 @@ VALUES (
         'testusereditor',
         'editor',
         '2024-02-16 19:20:40.378687-08'
+    ),
+    (
+        'nkksie37j74du9z',
+        'TestUserToDelete',
+        'testusertodelete',
+        'user',
+        '2024-02-16 19:20:40.378687-08'
     );
 
 INSERT INTO public.auth_user_credentials(user_id, email, email_verified, hashed_password)
@@ -90,6 +97,13 @@ VALUES (
         true,
         -- password is `password`
         '$argon2id$v=19$m=19456,t=2,p=1$e03JSJ0mZurdCzdbD369gw$vb4XzPD/kquUs3bDov0k8+/bWw141A0qumDPlP62yIo'
+    ),
+    (
+        'nkksie37j74du9z',
+        'dummy@example.com',
+        true,
+        -- password is `password`
+        '$argon2id$v=19$m=19456,t=2,p=1$e03JSJ0mZurdCzdbD369gw$vb4XzPD/kquUs3bDov0k8+/bWw141A0qumDPlP62yIo'
     );
 
 INSERT INTO public.auth_session (id, user_id, expires_at)
@@ -111,6 +125,11 @@ VALUES (
     (
         'f0e81579046dadbe447516e9d09ee9f6aca23f5ffedcf4a8135d117ab01e0e72',
         '0opogjc1rrkdc6r',
+        '2999-03-28 14:03:16.973-07'
+    ),
+    (
+        '795164166f4b6584fc8704ee945e87e7666693079079f47068df01d3033293fe',
+        'nkksie37j74du9z',
         '2999-03-28 14:03:16.973-07'
     );
 
@@ -150,4 +169,10 @@ VALUES ('RanobeBot', 1, false, 'Reading'),
     ('0opogjc1rrkdc6r', 3, false, 'Plan to read'),
     ('0opogjc1rrkdc6r', 4, false, 'Stalled'),
     ('0opogjc1rrkdc6r', 5, false, 'Dropped'),
-    ('0opogjc1rrkdc6r', 6, false, 'Other');
+    ('0opogjc1rrkdc6r', 6, false, 'Other'),
+    ('nkksie37j74du9z', 1, false, 'Reading'),
+    ('nkksie37j74du9z', 2, false, 'Finished'),
+    ('nkksie37j74du9z', 3, false, 'Plan to read'),
+    ('nkksie37j74du9z', 4, false, 'Stalled'),
+    ('nkksie37j74du9z', 5, false, 'Dropped'),
+    ('nkksie37j74du9z', 6, false, 'Other');

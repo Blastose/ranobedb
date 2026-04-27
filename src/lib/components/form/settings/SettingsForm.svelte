@@ -4,6 +4,7 @@
 	import UsernameForm from './UsernameForm.svelte';
 	import type {
 		changeEmailSchema,
+		deleteAccountSchema,
 		displayPrefsSchema,
 		homeDisplaySettingsSchema,
 		passwordSchema,
@@ -28,10 +29,12 @@
 	import ProfilePictureForm from './picture/ProfilePictureForm.svelte';
 	import RemoveProfilePictureForm from './picture/RemoveProfilePictureForm.svelte';
 	import HomeDisplayForm from './HomeDisplayForm.svelte';
+	import DeleteAccountForm from './DeleteAccountForm.svelte';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
 	export let passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
+	export let deleteAccountForm: SuperValidated<Infer<typeof deleteAccountSchema>>;
 	export let verifyEmailForm: SuperValidated<Infer<typeof verifyEmailSchema>>;
 	export let sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
@@ -90,6 +93,11 @@
 			<Hr />
 			<section>
 				<PasswordForm {passwordForm} />
+			</section>
+			<Hr />
+			<section>
+				<p class="font-bold error-text-color">Danger zone</p>
+				<DeleteAccountForm {deleteAccountForm} />
 			</section>
 		</div>
 	{:else if view === 'display'}

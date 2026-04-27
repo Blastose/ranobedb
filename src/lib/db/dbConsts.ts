@@ -122,6 +122,12 @@ export const languageNames: Record<Language, string> = {
 	'zh-Hant': 'Chinese (Traditional)',
 };
 
+export const languageNamesShort: Record<Language, string> = {
+	...languageNames,
+	'zh-Hant': 'Chinese (T.)',
+	'zh-Hans': 'Chinese (S.)',
+};
+
 export const langsWithoutRomaji = [
 	'en',
 	'fr',
@@ -310,6 +316,8 @@ export const historyFilterVisibilitys = ['all', 'public', 'deleted', 'locked'] a
 
 export const logicalOps = ['and', 'or'] as const;
 export type LogicalOp = (typeof logicalOps)[number];
+
+export const accountDeletionPhrase = 'Delete my account';
 
 export const booksSortArray = [
 	'Relevance desc',

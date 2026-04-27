@@ -1,5 +1,6 @@
 import { DateNumber, DateNumberGenerator } from '$lib/components/form/release/releaseDate';
 import {
+	accountDeletionPhrase,
 	booksUserListSortArray,
 	dbItemArray,
 	defaultUserListLabelsArrayAndRemove,
@@ -336,7 +337,7 @@ const zReleaseDate = z
 		{ message: 'Release date must have correct format.' },
 	);
 
-export const zLink = (validHostnames: string[]) =>
+const zLinkNonNullish = (validHostnames: string[]) =>
 	z
 		.string()
 		.max(maxTextLength)
@@ -361,8 +362,32 @@ export const zLink = (validHostnames: string[]) =>
 			{
 				message: `Invalid url${validHostnames.length > 0 ? `; Url must be one of ${validHostnames.join(', ')}` : ``}`,
 			},
-		)
-		.nullish();
+		);
+export const zLink = (validHostnames: string[]) => zLinkNonNullish(validHostnames).nullish();
+const zLinkAmazon = zLinkNonNullish([
+	'www.amazon.com',
+	'www.amazon.ca',
+	'www.amazon.co.jp',
+	'www.amazon.co.uk',
+])
+	.transform((url, ctx) => {
+		if (!url) {
+			return url;
+		}
+
+		const match = url.match(
+			/(amazon\.[a-z]+(?:\.[a-z]+)?).*?\/+(?:dp|gp\/product)\/([A-Z0-9]{10})/i,
+		);
+		if (!match) {
+			ctx.addIssue('Valid Amazon product ID (ASIN) not found');
+			return z.NEVER;
+		}
+
+		const [_, domain, asin] = match;
+
+		return `https://www.${domain.toLowerCase()}/dp/${asin.toUpperCase()}`;
+	})
+	.nullish();
 
 const zBookEditions = z
 	.array(
@@ -583,7 +608,7 @@ export const releaseSchema = z.object({
 	release_date: zReleaseDate,
 	pages: z.number().min(1).max(200000).nullish(),
 	isbn13: zIsbn13,
-	amazon: zLink(['www.amazon.co.jp', 'www.amazon.com']),
+	amazon: zLinkAmazon,
 	bookwalker: zLink([
 		'bookwalker.jp',
 		'global.bookwalker.jp',
@@ -714,7 +739,7 @@ export const scrapedBookDataSchema = z.object({
 	pages: z.number().min(1).max(200000).nullish(),
 	isbn13: zIsbn13,
 	website: zLink([]),
-	amazon: zLink(['www.amazon.co.jp', 'www.amazon.com']),
+	amazon: zLinkAmazon,
 	bookwalker: zLink([
 		'bookwalker.jp',
 		'global.bookwalker.jp',
@@ -777,6 +802,17 @@ export const userListLabelsSchema = z.object({
 			}),
 		)
 		.max(50),
+});
+
+export const deleteAccountSchema = z.object({
+	password: zPasswordEntry,
+	confirmationPhrase: z
+		.string()
+		.min(1)
+		.max(255)
+		.refine((v) => {
+			return v === accountDeletionPhrase;
+		}, 'Confirmation phrase must match exactly (including capital letters)'),
 });
 
 export const homeDisplaySettingsSchema = z.object({

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { languageNames } from '$lib/db/dbConsts';
+	import { languageNames, languageNamesShort } from '$lib/db/dbConsts';
 	import type { getReleases } from '$lib/server/db/releases/query';
 	import BookCarousel from '../book/BookCarousel.svelte';
 	import BookImage from '../book/BookImage.svelte';
@@ -35,7 +35,7 @@
 					<BookImageBadge
 						badges={[
 							new DateNumber(release.release_date).getDateFormatted(),
-							languageNames[release.lang],
+							languageNamesShort[release.lang],
 							release.format,
 						]}
 					/>

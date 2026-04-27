@@ -91,7 +91,18 @@ describe('users', () => {
 		const dbChanges = new DBChanges(db);
 		let changeBook = await dbChanges.getChanges('book', addedBookId).executeTakeFirstOrThrow();
 		expect(changeBook.user_id).toBe(userId);
+
+		const userCountsBefore = await db
+			.selectFrom('auth_user')
+			.select((eb) => eb.fn.count('auth_user.id').as('count'))
+			.executeTakeFirstOrThrow();
 		await dbUsers.deleteUser({ userId });
+		const userCountsAfter = await db
+			.selectFrom('auth_user')
+			.select((eb) => eb.fn.count('auth_user.id').as('count'))
+			.executeTakeFirstOrThrow();
+		expect(Number(userCountsBefore.count)).toBeGreaterThan(0);
+		expect(Number(userCountsBefore.count) - 1).toBe(Number(userCountsAfter.count));
 
 		changeBook = await dbChanges.getChanges('book', addedBookId).executeTakeFirstOrThrow();
 		expect(changeBook.user_id).toBe(deletedUser.id);

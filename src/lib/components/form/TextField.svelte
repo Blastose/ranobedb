@@ -17,6 +17,7 @@
 	export let resetPadding: boolean = false;
 	export let disabled: boolean = false;
 	export let showLabel: boolean = true;
+	export let autocomplete: 'on' | 'off' | undefined = undefined;
 
 	const { value, errors, constraints } = formFieldProxy(form, field);
 </script>
@@ -52,6 +53,7 @@
 				name={field}
 				{placeholder}
 				{disabled}
+				{autocomplete}
 				class="input"
 				class:reset-padding={resetPadding}
 				class:error={$errors}

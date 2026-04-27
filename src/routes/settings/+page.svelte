@@ -17,6 +17,7 @@
 		<SettingsForm
 			usernameForm={data.usernameForm}
 			passwordForm={data.passwordForm}
+			deleteAccountForm={data.deleteAccountForm}
 			changeEmailForm={data.changeEmailForm}
 			verifyEmailForm={data.verifyEmailForm}
 			sendEmailVerificationForm={data.sendEmailVerificationForm}
