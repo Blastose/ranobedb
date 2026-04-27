@@ -807,11 +807,12 @@ export const userListLabelsSchema = z.object({
 export const deleteAccountSchema = z.object({
 	password: zPasswordEntry,
 	confirmationPhrase: z
-		.literal(
-			accountDeletionPhrase,
-			'Confirmation phrase must match exactly (including capital letters)',
-		)
-		.default('' as any),
+		.string()
+		.min(1)
+		.max(255)
+		.refine((v) => {
+			return v === accountDeletionPhrase;
+		}, 'Confirmation phrase must match exactly (including capital letters)'),
 });
 
 export const homeDisplaySettingsSchema = z.object({
