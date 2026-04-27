@@ -201,7 +201,13 @@ export class DBUsers {
 			await trx.deleteFrom('saved_filter').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('auth_session').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('auth_user_credentials').where('user_id', '=', params.userId).execute();
-			await trx.deleteFrom('auth_user').where('id', '=', params.userId).execute();
+			const result = await trx
+				.deleteFrom('auth_user')
+				.where('id', '=', params.userId)
+				.executeTakeFirst();
+			if (Number(result.numDeletedRows) > 1) {
+				throw new Error('Attempted to delete multiple users; rolling back...');
+			}
 		});
 	}
 }
