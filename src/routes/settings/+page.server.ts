@@ -11,6 +11,7 @@ import {
 	userListSeriesSettingsSchema,
 	usernameSchema,
 	verifyEmailSchema,
+	deleteAccountSchema,
 } from '$lib/server/zod/schema.js';
 import {
 	fail,
@@ -47,6 +48,7 @@ import {
 	removeProfileImagesFromUser,
 	saveProfileImageToR2,
 } from '$lib/server/db/images/upload.js';
+import { redirect } from '@sveltejs/kit';
 const { DatabaseError } = pkg;
 
 type SettingsWithoutUser = {
@@ -57,6 +59,7 @@ type SettingsWithUser = {
 	email_verified: boolean;
 	usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
 	passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
+	deleteAccountForm: SuperValidated<Infer<typeof deleteAccountSchema>>;
 	verifyEmailForm: SuperValidated<Infer<typeof verifyEmailSchema>>;
 	sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
@@ -87,6 +90,7 @@ export const load = async ({ locals, url }) => {
 		zod4(usernameSchema),
 	);
 	const passwordForm = await superValidate(zod4(passwordSchema));
+	const deleteAccountForm = await superValidate(zod4(deleteAccountSchema));
 	const changeEmailForm = await superValidate(
 		{ current_email: user.email },
 		zod4(changeEmailSchema),
@@ -148,6 +152,7 @@ export const load = async ({ locals, url }) => {
 		email_verified: user.email_verified,
 		usernameForm,
 		passwordForm,
+		deleteAccountForm,
 		changeEmailForm,
 		verifyEmailForm,
 		sendEmailVerificationForm,
@@ -266,6 +271,61 @@ export const actions = {
 		lucia.setSessionTokenCookie(event, token, session.expiresAt);
 
 		return message(passwordForm, { text: 'Updated password!', type: 'success' });
+	},
+
+	delete_account: async (event) => {
+		const { request, locals } = event;
+		if (!locals.user) {
+			return fail(401);
+		}
+		if (!locals.session) {
+			return fail(401);
+		}
+
+		const deleteAccountForm = await superValidate(request, zod4(deleteAccountSchema));
+		if (!deleteAccountForm.valid) {
+			return fail(400, { deleteAccountForm });
+		}
+
+		const dbUsers = new DBUsers(db);
+
+		const user = await dbUsers.getUserFull(locals.user.username);
+		if (!user) {
+			return message(deleteAccountForm, { type: 'error', text: 'Error' }, { status: 400 });
+		}
+		if (user.role === 'admin') {
+			return message(
+				deleteAccountForm,
+				{ type: 'error', text: 'Admin accounts cannot be deleted via this interface' },
+				{ status: 400 },
+			);
+		}
+
+		const currentPassword = deleteAccountForm.data.password;
+		const validPassword = await verifyPasswordHash(user.hashed_password, currentPassword);
+		if (!validPassword) {
+			setError(deleteAccountForm, 'password', 'Invalid password');
+			return message(
+				deleteAccountForm,
+				{ type: 'error', text: 'Invalid password' },
+				{ status: 400 },
+			);
+		}
+
+		try {
+			await dbUsers.deleteUser({ userId: locals.user.id });
+		} catch (e) {
+			return message(
+				deleteAccountForm,
+				{ type: 'error', text: 'An error has occurred' },
+				{ status: 400 },
+			);
+		}
+		const lucia = new Lucia(db);
+		await lucia.invalidateSession(locals.session.id);
+		lucia.deleteSessionTokenCookie(event);
+
+		redirect(302, '/deleted-account');
 	},
 
 	displayprefs: async ({ request, locals }) => {

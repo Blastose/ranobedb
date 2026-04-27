@@ -54,7 +54,7 @@
 			{...$$restProps}
 		/>
 	</label>
-	<label>
+	<label class="w-fit">
 		<input type="checkbox" on:click={handleShowPasswordCheck} />
 		<span>Show password</span>
 	</label>

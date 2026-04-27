@@ -173,17 +173,33 @@ export class DBUsers {
 			await trx.deleteFrom('user_list_settings').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('user_list_book_label').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('user_list_book').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_list_series_label').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_list_series_lang').where('user_id', '=', params.userId).execute();
+			await trx
+				.deleteFrom('user_list_series_format')
+				.where('user_id', '=', params.userId)
+				.execute();
+			await trx.deleteFrom('user_list_series').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('user_list_label').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_list_release').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_list_publisher').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_list_staff_format').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_list_staff_lang').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_list_staff').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_book_review').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('user_series_review').where('user_id', '=', params.userId).execute();
 			await trx
 				.deleteFrom('email_verification_code')
 				.where('user_id', '=', params.userId)
 				.execute();
-			await trx.deleteFrom('auth_session').where('user_id', '=', params.userId).execute();
 			await trx
 				.updateTable('change')
 				.set({ user_id: deletedUser.id })
 				.where('user_id', '=', params.userId)
 				.execute();
+			await trx.deleteFrom('notification').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('saved_filter').where('user_id', '=', params.userId).execute();
+			await trx.deleteFrom('auth_session').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('auth_user_credentials').where('user_id', '=', params.userId).execute();
 			await trx.deleteFrom('auth_user').where('id', '=', params.userId).execute();
 		});
