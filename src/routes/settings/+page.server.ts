@@ -32,6 +32,7 @@ import { defaultUserListSeriesSettings, type SettingsTab } from '$lib/db/dbConst
 import {
 	changeEmailLimiter,
 	changePasswordLimiter,
+	deleteAccountLimiter,
 	isLimited,
 	sendVerificationCodelimiter,
 	verifyCodeLimiter,
@@ -309,6 +310,14 @@ export const actions = {
 				deleteAccountForm,
 				{ type: 'error', text: 'Invalid password' },
 				{ status: 400 },
+			);
+		}
+
+		if (await isLimited(deleteAccountLimiter, event)) {
+			return message(
+				deleteAccountForm,
+				{ type: 'error', text: 'Too many incorrect deletion attempts; Try again later' },
+				{ status: 429 },
 			);
 		}
 

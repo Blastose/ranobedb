@@ -52,6 +52,10 @@ export const changePasswordLimiter = new RateLimiter({
 	IP: [[1, 'm']],
 });
 
+export const deleteAccountLimiter = new RateLimiter({
+	IP: [[10, 'd']],
+});
+
 export const forgotPasswordLimiter = new RateLimiter({
 	IP: [
 		[1, 's'],
