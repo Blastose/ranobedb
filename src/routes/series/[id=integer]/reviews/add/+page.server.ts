@@ -108,8 +108,7 @@ export const load = async ({ params, locals, url }) => {
 			review_text: review?.review_text,
 			spoiler: review?.spoiler,
 			type: review ? 'update' : 'add',
-			// Note: Even though the zod schema uses coerce, it doesn't correctly convert the string score to a number for unknown reasons
-			score: reviewScore !== 0 ? reviewScore : null,
+			score: reviewScore || null,
 			volumes_read:
 				userListSeries?.volumes_read ?? (Number(userListSeries?.c_vols_read?.count) || undefined),
 		},

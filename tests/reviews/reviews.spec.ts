@@ -71,7 +71,6 @@ test.describe('series reviews', () => {
 		await page.goto('/series/1/reviews');
 		await page.getByText('Write a review').click();
 		await expect(page).toHaveURL('/series/1/reviews/add');
-		await page.getByLabel('Score').fill('10');
 		await page.getByLabel('This review contains unmarked spoilers').check();
 		await page
 			.getByLabel('Review', { exact: true })
@@ -87,7 +86,7 @@ test.describe('series reviews', () => {
 		await expect(page.getByText('1 results')).toBeVisible();
 		await page.getByText('View in full view').click();
 		await expect(page).toHaveURL(new RegExp('.*\\/review\\/series\\/\\d+'));
-		await expect(page.getByText('Score: 10')).toBeVisible();
+		await expect(page.getByText('Score: No score given')).toBeVisible();
 		await expect(page.getByText('This review contains spoilers. Click to show.')).toBeVisible();
 
 		await page.getByText('Edit your review').click();
