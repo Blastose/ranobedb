@@ -39,7 +39,7 @@ export class DBStaff {
 			)
 			.selectAll('staff')
 			.select(['staff_alias.name', 'staff_alias.romaji'])
-			.select((eb) =>
+			.select((eb) => [
 				jsonArrayFrom(
 					eb
 						.selectFrom('staff_alias as all_aliases')
@@ -47,7 +47,14 @@ export class DBStaff {
 						.selectAll('all_aliases')
 						.orderBy((eb) => eb.fn.coalesce('all_aliases.romaji', 'all_aliases.name')),
 				).as('aliases'),
-			)
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_staff')
+						.whereRef('user_list_staff.staff_id', '=', 'staff.id')
+						.select((eb) => eb.fn.count('user_list_staff.staff_id').as('count'))
+						.groupBy('user_list_staff.staff_id'),
+				).as('follow_count'),
+			])
 			.where('staff.id', '=', id);
 	}
 
@@ -76,7 +83,7 @@ export class DBStaff {
 			])
 			.select(['staff_alias_hist.name', 'staff_alias_hist.romaji'])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
-			.select((eb) =>
+			.select((eb) => [
 				jsonArrayFrom(
 					eb
 						.selectFrom('staff_alias_hist as all_aliases')
@@ -90,7 +97,14 @@ export class DBStaff {
 						])
 						.orderBy((eb) => eb.fn.coalesce('all_aliases.romaji', 'all_aliases.name')),
 				).as('aliases'),
-			)
+				jsonObjectFrom(
+					eb
+						.selectFrom('user_list_staff')
+						.whereRef('user_list_staff.staff_id', '=', 'change.item_id')
+						.select((eb) => eb.fn.count('user_list_staff.staff_id').as('count'))
+						.groupBy('user_list_staff.staff_id'),
+				).as('follow_count'),
+			])
 			.where('change.item_id', '=', options.id)
 			.where('change.item_name', '=', 'staff');
 		if (options.revision) {

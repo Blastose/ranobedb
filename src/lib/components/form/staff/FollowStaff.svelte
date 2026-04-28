@@ -70,9 +70,13 @@
 </script>
 
 <div class="flex">
-	<button use:melt={$trigger} class="primary-btn w-full max-w-[10rem]"
-		>{$form.type === 'add' ? 'Follow' : 'Following'}</button
-	>
+	<button use:melt={$trigger} class="flex items-center gap-2 primary-btn w-[10rem]">
+		{#if $form.type === 'add'}
+			<Icon name="accountPlusOutline" height="24" width="24" /><span>Follow</span>
+		{:else}
+			<Icon name="accountCheckOutline" height="24" width="24" /><span>Following</span>
+		{/if}
+	</button>
 </div>
 
 {#if $open}
