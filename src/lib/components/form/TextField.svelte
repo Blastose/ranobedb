@@ -68,6 +68,7 @@
 				name={field}
 				{placeholder}
 				{disabled}
+				{autocomplete}
 				class="input"
 				class:reset-padding={resetPadding}
 				class:error={$errors}

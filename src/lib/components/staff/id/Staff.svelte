@@ -21,6 +21,7 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { userListStaffSchema } from '$lib/server/zod/schema';
 	import NameDisplayBoth from '$lib/components/display/NameDisplayBoth.svelte';
+	import Icon from '$lib/components/icon/Icon.svelte';
 
 	interface Props {
 		staff: Staff;
@@ -57,9 +58,17 @@
 	{user}
 	item={staff}
 >
-	{#if user && userListStaffForm}
-		<FollowStaff {staff} {userListStaffForm}></FollowStaff>
-	{/if}
+	<section class="flex gap-4 items-center">
+		{#if user && userListStaffForm}
+			<FollowStaff {staff} {userListStaffForm}></FollowStaff>
+		{/if}
+		<div class="flex items-center gap-2">
+			<Icon name="peopleOutline" height="24" width="24" />
+			<p class="text-sm">
+				<span class="font-bold">{staff.follow_count?.count ?? 0}</span> followers
+			</p>
+		</div>
+	</section>
 
 	{#if aliases.length > 0}
 		<section>
