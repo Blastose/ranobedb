@@ -95,6 +95,14 @@
 		resetPadding={true}
 		showRequiredSymbolIfRequired={false}
 		fit={true}
+		onChange={(v) => {
+			if ($form.end_date === 99999999 && (v === 'completed' || v === 'cancelled')) {
+				$form.end_date = series?.books.at(-1)?.c_release_date || 99999999;
+				$form = $form;
+			} else if (v === 'ongoing' || v === 'stalled' || v === 'unknown' || v === 'hiatus') {
+				$form.end_date = 99999999;
+			}
+		}}
 	/>
 
 	<SelectField
@@ -113,7 +121,9 @@
 
 	<div class="flex flex-wrap gap-x-4">
 		<ReleaseDateInput form={sForm} field="start_date" label="Start date" />
-		<ReleaseDateInput form={sForm} field="end_date" label="End date" />
+		{#key $form.end_date}
+			<ReleaseDateInput form={sForm} field="end_date" label="End date" />
+		{/key}
 	</div>
 
 	<div class="max-w-md">

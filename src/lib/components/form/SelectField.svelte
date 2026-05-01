@@ -15,8 +15,11 @@
 	export let resetPadding: boolean = false;
 	export let fit: boolean;
 	export let column: boolean = true;
+	export let onChange: (newValue: unknown) => void = () => {};
 
 	const { value, errors, constraints } = formFieldProxy(form, field);
+
+	$: onChange($value);
 </script>
 
 <div class="flex flex-col gap-1 {fit ? 'w-fit' : ''}">
