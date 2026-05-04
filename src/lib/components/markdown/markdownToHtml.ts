@@ -1,10 +1,10 @@
 import { rules, rulesSingleLine } from './markdownRules';
-import SimpleMarkdown from 'simple-markdown';
+import SimpleMarkdown, { type Output, type Parser } from '$lib/components/markdown/simple-markdown';
 
-export const htmlOutput: SimpleMarkdown.Output<string> = SimpleMarkdown.outputFor(rules, 'html');
+export const htmlOutput: Output<string> = SimpleMarkdown.outputFor(rules, 'html');
 
 export const converter = (text: string, type: 'full' | 'singleline') => {
-	let parser: SimpleMarkdown.Parser;
+	let parser: Parser;
 	if (type === 'full') {
 		parser = SimpleMarkdown.parserFor(rules);
 	} else {

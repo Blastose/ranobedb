@@ -69,7 +69,6 @@
 		"pg": "^8.16.0",
 		"postcss": "^8.5.3",
 		"sharp": "^0.34.2",
-		"simple-markdown": "^0.7.3",
 		"svelte-sequential-preprocessor": "^2.0.2",
 		"sveltekit-flash-message": "^2.4.6",
 		"sveltekit-superforms": "^2.27.1",
