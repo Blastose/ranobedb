@@ -42,8 +42,8 @@ importers:
         specifier: ^9.0.0
         version: 9.0.0
       dotenv:
-        specifier: ^17.4.2
-        version: 17.4.2
+        specifier: '=16.6.1'
+        version: 16.6.1
       image-size:
         specifier: ^2.0.2
         version: 2.0.2
