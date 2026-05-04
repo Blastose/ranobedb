@@ -35,6 +35,12 @@
 		/>
 		<CheckboxField
 			form={sForm}
+			label="Show new English licenses"
+			field="newly_licensed_en"
+			showRequiredSymbolIfRequired={false}
+		/>
+		<CheckboxField
+			form={sForm}
 			label="Show reviews"
 			field="reviews"
 			showRequiredSymbolIfRequired={false}

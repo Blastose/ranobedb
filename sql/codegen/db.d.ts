@@ -191,6 +191,12 @@ export interface Image {
   width: number;
 }
 
+export interface KvStore {
+  key: string;
+  updated_at: Generated<Timestamp>;
+  value: Json;
+}
+
 export interface Notification {
   hidden: boolean;
   id: Generated<number>;
@@ -613,6 +619,7 @@ export interface DB {
   email_verification_code: EmailVerificationCode;
   email_verification_token: EmailVerificationToken;
   image: Image;
+  kv_store: KvStore;
   notification: Notification;
   password_reset_token: PasswordResetToken;
   profile_image: ProfileImage;

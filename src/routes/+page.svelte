@@ -7,6 +7,7 @@
 	import Reviews from '$lib/components/home/Reviews.svelte';
 	import RecentChanges from '$lib/components/home/RecentChanges.svelte';
 	import SeasonalAnime from '$lib/components/home/SeasonalAnime.svelte';
+	import NewlyLicensed from '$lib/components/home/NewlyLicensed.svelte';
 
 	let { data } = $props();
 
@@ -55,6 +56,10 @@
 				viewAllLink="/releases?{data.recentlyReleasedFilters}"
 			/>
 		</section>
+	{/if}
+
+	{#if !data.user || data.homeDisplaySettings?.newly_licensed_en}
+		<NewlyLicensed {data} />
 	{/if}
 
 	{#if !data.user || data.homeDisplaySettings?.seasonal_anime}
