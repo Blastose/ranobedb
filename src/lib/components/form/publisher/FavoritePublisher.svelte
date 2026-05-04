@@ -15,6 +15,7 @@
 
 	let { publisher, userListPublisherForm: userListStaffForm }: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(userListStaffForm, {
 		dataType: 'json',
 		onUpdated: async ({ form }) => {

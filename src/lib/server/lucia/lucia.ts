@@ -15,12 +15,20 @@ export function generateIdFromEntropySize(size: number): string {
 
 export function generateUserId(length: number): string {
 	const alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789';
-	return generateRandomString({ read: (bytes) => crypto.getRandomValues(bytes) }, alphabet, length);
+	return generateRandomString(
+		{ read: (bytes) => crypto.getRandomValues(bytes as unknown as Uint8Array<ArrayBuffer>) },
+		alphabet,
+		length,
+	);
 }
 
 export function generateCode(length: number): string {
 	const alphabet = '0123456789';
-	return generateRandomString({ read: (bytes) => crypto.getRandomValues(bytes) }, alphabet, length);
+	return generateRandomString(
+		{ read: (bytes) => crypto.getRandomValues(bytes as unknown as Uint8Array<ArrayBuffer>) },
+		alphabet,
+		length,
+	);
 }
 
 export function generateEntropyId(): string {

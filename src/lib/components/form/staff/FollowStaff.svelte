@@ -22,6 +22,7 @@
 
 	let { staff, userListStaffForm }: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(userListStaffForm, {
 		dataType: 'json',
 		onUpdated: async ({ form }) => {
@@ -70,7 +71,10 @@
 </script>
 
 <div class="flex">
-	<button use:melt={$trigger} class="flex items-center gap-2 primary-btn w-[10rem]">
+	<button
+		use:melt={$trigger}
+		class="flex items-center gap-2 {$form.type === 'add' ? 'primary-btn' : 'tet-alt-btn'} w-[10rem]"
+	>
 		{#if $form.type === 'add'}
 			<Icon name="accountPlusOutline" height="24" width="24" /><span>Follow</span>
 		{:else}

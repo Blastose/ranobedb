@@ -121,7 +121,7 @@
 
 	<div class="flex flex-wrap gap-x-4">
 		<ReleaseDateInput form={sForm} field="start_date" label="Start date" />
-		{#key $form.end_date}
+		{#key $form.publication_status}
 			<ReleaseDateInput form={sForm} field="end_date" label="End date" />
 		{/key}
 	</div>
