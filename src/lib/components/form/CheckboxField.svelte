@@ -32,7 +32,7 @@
 			{disabled}
 			{...$constraints}
 			{...$$restProps}
-		/><span class={disabled ? 'italic' : ''}
+		/><span class={disabled ? 'italic' : ''} style="line-height: normal;"
 			>{label}<slot />{#if $constraints?.required && showRequiredSymbolIfRequired}
 				<span class="error-text-color">*</span>
 			{/if}</span

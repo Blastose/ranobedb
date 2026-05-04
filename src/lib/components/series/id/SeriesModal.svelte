@@ -36,6 +36,7 @@
 		return { display: v, value: v };
 	});
 
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(userListSeriesForm, {
 		dataType: 'json',
 		onUpdated: async ({ form }) => {

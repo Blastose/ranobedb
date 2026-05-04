@@ -24,7 +24,7 @@ test.describe('add/edit/remove series from reading list', () => {
 		await expect(page.getByRole('button', { name: 'Plan to read' })).toBeVisible();
 
 		// Add series from adding release
-		await page.goto('/release/21');
+		await page.goto('/release/14');
 		await page.getByLabel('Open release options').first().click();
 		await page.getByRole('menuitem', { name: 'owned' }).click();
 		await expect(page.locator('.toast-container').last()).toHaveText('Added release to list!');
@@ -47,7 +47,7 @@ test.describe('add/edit/remove series from reading list', () => {
 			page.locator('main').getByRole('button', { name: 'Add to reading list' }),
 		).toBeVisible();
 		// Check if release is also removed
-		await page.goto('/release/21');
+		await page.goto('/release/14');
 		await expect(page.locator('dd').filter({ hasText: 'Not in your collection' })).toBeVisible();
 	});
 

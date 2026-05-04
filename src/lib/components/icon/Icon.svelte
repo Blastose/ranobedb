@@ -275,7 +275,7 @@
 
 	let { name, width = '24', height = '24', hidden = true, class: className = '' }: Props = $props();
 
-	const icon = icons[name];
+	let icon = $derived(icons[name]);
 </script>
 
 <svg

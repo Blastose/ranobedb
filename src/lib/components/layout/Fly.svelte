@@ -9,6 +9,7 @@
 	}
 
 	let { key, children }: Props = $props();
+	// svelte-ignore state_referenced_locally
 	key;
 
 	// beforeNavigate((beforeNavigate) => {

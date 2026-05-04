@@ -1,13 +1,19 @@
-import SimpleMarkdown from 'simple-markdown';
+import SimpleMarkdown, {
+	type HtmlNodeOutput,
+	type HtmlOutputRule,
+	type MatchFunction,
+	type ParseFunction,
+	type ParserRule,
+} from '$lib/components/markdown/simple-markdown';
 
-type SimpleMarkdownRule = SimpleMarkdown.ParserRule & SimpleMarkdown.HtmlOutputRule;
+type SimpleMarkdownRule = ParserRule & HtmlOutputRule;
 
 let order = 0;
 
 export const rules = {
 	Array: Object.assign({}, SimpleMarkdown.defaultRules.Array, {
 		order: order++,
-	}),
+	}) as any,
 	heading: Object.assign({}, SimpleMarkdown.defaultRules.heading, {
 		order: order++,
 		match: SimpleMarkdown.blockRegex(/^ *(#{1,6})([^\n]+?)#* *\n/),
@@ -24,7 +30,7 @@ export const rules = {
 		order: order++,
 		match: SimpleMarkdown.blockRegex(
 			/^ *(`{3,}|~{3,}) *(?:(\S+) *)?\n([\s\S]+?)\n?\1 *\n/,
-		) satisfies SimpleMarkdown.MatchFunction,
+		) satisfies MatchFunction,
 	}) satisfies SimpleMarkdownRule,
 	spoiler: {
 		order: order++,
@@ -42,7 +48,7 @@ export const rules = {
 		order: order++,
 		match: SimpleMarkdown.blockRegex(
 			/^( {0,3}>(?!!).*?(?=\n\n|\n +\n))(?:\n| )*/s,
-		) satisfies SimpleMarkdown.MatchFunction,
+		) satisfies MatchFunction,
 	}) satisfies SimpleMarkdownRule,
 	list: Object.assign({}, SimpleMarkdown.defaultRules.list, {
 		order: order++,
@@ -59,7 +65,7 @@ export const rules = {
 		html: function (node, output, state) {
 			if (node.content.length === 0) return '';
 			return SimpleMarkdown.htmlTag('p', output(node.content, state));
-		} satisfies SimpleMarkdown.HtmlNodeOutput,
+		} satisfies HtmlNodeOutput,
 	}) satisfies SimpleMarkdownRule,
 	escape: Object.assign({}, SimpleMarkdown.defaultRules.escape, {
 		order: order++,
@@ -78,7 +84,7 @@ export const rules = {
 				state,
 				prevCapture,
 			);
-		} satisfies SimpleMarkdown.MatchFunction,
+		} satisfies MatchFunction,
 		parse: function (capture) {
 			// Add backpedal logic from markedjs https://github.com/markedjs/marked/blob/7c1e114f9f7949ba4033366582d2a4ddf09e85af/lib/marked.cjs#L1058
 			// See https://github.github.com/gfm/#extended-autolink-path-validation
@@ -108,7 +114,7 @@ export const rules = {
 				target: backpedalCapture,
 				title: undefined,
 			};
-		} satisfies SimpleMarkdown.ParseFunction,
+		} satisfies ParseFunction,
 	}),
 	link: Object.assign({}, SimpleMarkdown.defaultRules.link, {
 		order: order++,
@@ -120,7 +126,7 @@ export const rules = {
 				target: '_blank',
 			};
 			return SimpleMarkdown.htmlTag('a', output(node.content, state), attributes);
-		} satisfies SimpleMarkdown.HtmlNodeOutput,
+		} satisfies HtmlNodeOutput,
 	}),
 	em: Object.assign({}, SimpleMarkdown.defaultRules.em, {
 		order: order++,
@@ -144,7 +150,7 @@ export const rules = {
 export const rulesSingleLine = {
 	Array: Object.assign({}, SimpleMarkdown.defaultRules.Array, {
 		order: order++,
-	}),
+	}) as any,
 	spoiler: {
 		order: order++,
 		match: SimpleMarkdown.inlineRegex(/^>!\s*((.|\n(?!\n))*?)\s*!</),
@@ -166,7 +172,7 @@ export const rulesSingleLine = {
 		html: function (node, output, state) {
 			if (node.content.length === 0) return '';
 			return SimpleMarkdown.htmlTag('p', output(node.content, state));
-		} satisfies SimpleMarkdown.HtmlNodeOutput,
+		} satisfies HtmlNodeOutput,
 	}) satisfies SimpleMarkdownRule,
 	autolink: Object.assign({}, SimpleMarkdown.defaultRules.autolink, {
 		order: order++,
@@ -184,7 +190,7 @@ export const rulesSingleLine = {
 				target: '_blank',
 			};
 			return SimpleMarkdown.htmlTag('a', output(node.content, state), attributes);
-		} satisfies SimpleMarkdown.HtmlNodeOutput,
+		} satisfies HtmlNodeOutput,
 	}),
 	text: Object.assign({}, SimpleMarkdown.defaultRules.text, {
 		order: order++,

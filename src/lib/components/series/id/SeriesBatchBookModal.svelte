@@ -25,6 +25,7 @@
 		return { display: v, value: v };
 	});
 
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(userListBookBatchForm, {
 		dataType: 'json',
 		onUpdated: async ({ form }) => {

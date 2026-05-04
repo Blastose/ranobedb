@@ -37,6 +37,7 @@
 		showStatus = false,
 	}: Props = $props();
 
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(userListReleaseForm, {
 		dataType: 'json',
 		invalidateAll: 'force',
@@ -58,6 +59,7 @@
 	} = createDropdownMenu({
 		forceVisible: true,
 		preventScroll: false,
+		// svelte-ignore state_referenced_locally
 		positioning: { placement },
 	});
 </script>

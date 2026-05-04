@@ -9,8 +9,8 @@
 
 	let { label, size = 'normal' }: Props = $props();
 
-	const width = size === 'normal' ? '24' : size === 'mild' ? '20' : '16';
-	const height = size === 'normal' ? '24' : size === 'mild' ? '20' : '16';
+	let width = $derived(size === 'normal' ? '24' : size === 'mild' ? '20' : '16');
+	let height = $derived(size === 'normal' ? '24' : size === 'mild' ? '20' : '16');
 
 	const labelToIconMap: Record<string | (typeof defaultUserListLabelsArray)[number], IconType> = {
 		Reading: 'bookOpenOutline',
