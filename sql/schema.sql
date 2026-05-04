@@ -139,7 +139,7 @@ CREATE TABLE public.auth_user (
     username_lowercase text NOT NULL UNIQUE,
     display_prefs JSONB NOT NULL default '{"names": "romaji","title_prefs": [ { "lang": "en", "romaji": false }, { "lang": "ja", "romaji": true } ],"descriptions": "en","label_badge_display": true}'::jsonb,
     profile_image_id integer,
-    home_display_settings JSONB NOT NULL DEFAULT '{"header": true, "popular_series": true, "reviews": true, "upcoming_releases": true, "recently_released": true, "seasonal_anime": true, "annoucements": true, "recent_changes": true}'::jsonb,
+    home_display_settings JSONB NOT NULL DEFAULT '{"header": true, "popular_series": true, "reviews": true, "upcoming_releases": true, "recently_released": true, "seasonal_anime": true, "annoucements": true, "recent_changes": true, "newly_licensed_en": true}'::jsonb,
     FOREIGN KEY (profile_image_id) REFERENCES public.profile_image(id)
 );
 
@@ -802,6 +802,12 @@ CREATE TABLE public.user_list_settings (
     default_release_settings JSONB NOT NULL DEFAULT '{}'::jsonb,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id),
     PRIMARY KEY (user_id)
+);
+
+CREATE TABLE public.kv_store (
+    key text NOT NULL PRIMARY KEY,
+    value JSONB NOT NULL,
+    updated_at timestamptz NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX book_staff_alias_book_id_idx ON public.book_staff_alias USING btree (book_id);

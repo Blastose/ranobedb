@@ -824,6 +824,7 @@ export const homeDisplaySettingsSchema = z.object({
 	seasonal_anime: z.boolean().default(true),
 	annoucements: z.boolean().default(true),
 	recent_changes: z.boolean().default(true),
+	newly_licensed_en: z.boolean().default(true),
 });
 export type HomeDisplaySettings = z.infer<typeof homeDisplaySettingsSchema>;
 

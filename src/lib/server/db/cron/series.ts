@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db/db';
 import { sql } from 'kysely';
 import type { Language } from '../dbTypes';
+import { getTodayAsDateNumber } from '$lib/components/form/release/releaseDate';
 
 export async function updateSeriesStartEndDates() {
 	// Run after updateBookReleaseDate()
@@ -129,6 +130,51 @@ export async function updateSeriesTranslated() {
 				c_fully_translated: eb.ref('rel.langs'),
 			}))
 			.whereRef('series.id', '=', 'rel.series_id')
+			.execute();
+	});
+}
+
+export async function updateNewlyLicensedEnglishSeries() {
+	await db.transaction().execute(async (trx) => {
+		const licensedSeriesIds = await db
+			.with('licensed_series', (db) =>
+				db
+					.selectFrom('change')
+					.innerJoin('release', 'release.id', 'change.item_id')
+					.innerJoin('release_book', 'release_book.release_id', 'release.id')
+					.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
+					.select([
+						'series_book.series_id',
+						(eb) => eb.fn.min('release.release_date').as('earliest_release'),
+						(eb) => eb.fn.max('change.added').as('latest_change'),
+					])
+					.where('change.item_name', '=', 'release')
+					.where('change.revision', '=', 1)
+					.where('release.lang', '=', 'en')
+					.where('release.release_date', '<', 99999999)
+					.where('release.hidden', '=', false)
+					.where('series_book.sort_order', '=', 1)
+					.groupBy('series_book.series_id'),
+			)
+			.selectFrom('licensed_series')
+			.select('licensed_series.series_id')
+			.where('licensed_series.earliest_release', '>=', getTodayAsDateNumber())
+			.orderBy('latest_change', 'desc')
+			.limit(24)
+			.execute();
+
+		await trx
+			.insertInto('kv_store')
+			.values({
+				key: 'newly_licensed_en',
+				value: JSON.stringify(licensedSeriesIds),
+			})
+			.onConflict((oc) =>
+				oc.column('key').doUpdateSet({
+					value: JSON.stringify(licensedSeriesIds),
+					updated_at: new Date(),
+				}),
+			)
 			.execute();
 	});
 }

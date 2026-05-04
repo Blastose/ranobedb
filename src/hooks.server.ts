@@ -5,6 +5,7 @@ import schedule from 'node-schedule';
 import { sendRecentlyReleasedNotifications } from '$lib/server/db/cron/release';
 import { updateBookReleaseDate, updateBookReleaseDates } from '$lib/server/db/cron/book';
 import {
+	updateNewlyLicensedEnglishSeries,
 	updateSeriesAverage,
 	updateSeriesPopularity,
 	updateSeriesStartEndDates,
@@ -22,6 +23,7 @@ schedule.scheduleJob('0 0 * * *', async function () {
 	await updateSeriesPopularity();
 	await updateSeriesAverage();
 	await updateSeriesTranslated();
+	await updateNewlyLicensedEnglishSeries();
 });
 
 export const handle: Handle = async ({ event, resolve }) => {

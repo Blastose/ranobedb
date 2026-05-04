@@ -204,6 +204,12 @@ export interface Image {
 	width: number;
 }
 
+export interface KvStore {
+	key: 'newly_licensed_en';
+	updated_at: Generated<Timestamp>;
+	value: unknown;
+}
+
 export interface ProfileImage {
 	filename: string;
 	height: number;
@@ -625,6 +631,7 @@ export interface DB {
 	email_verification_code: EmailVerificationCode;
 	email_verification_token: EmailVerificationToken;
 	image: Image;
+	kv_store: KvStore;
 	profile_image: ProfileImage;
 	notification: Notification;
 	password_reset_token: PasswordResetToken;

@@ -8,6 +8,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { DBReviews } from '$lib/server/db/reviews/reviews.js';
 import { DBSeries } from '$lib/server/db/series/series';
 import { getReleases } from '$lib/server/db/releases/query.js';
+import { z } from 'zod/v4';
 
 dayjs.extend(customParseFormat);
 
@@ -102,6 +103,26 @@ export const load = async ({ locals }) => {
 		.limit(8)
 		.execute();
 
+	const maybelicensedSeriesIds = await db
+		.selectFrom('kv_store')
+		.where('kv_store.key', '=', 'newly_licensed_en')
+		.select('kv_store.value')
+		.executeTakeFirst();
+
+	const seriesIdsSchema = z.array(z.object({ series_id: z.number() })).catch([{ series_id: 3343 }]);
+	const licensedSeriesIds = seriesIdsSchema.parse(maybelicensedSeriesIds?.value);
+	const licensedSeriesPromise = DBSeries.fromDB(db)
+		.getSeries()
+		.where((eb) =>
+			eb(
+				'cte_series.id',
+				'in',
+				licensedSeriesIds.map((v) => v.series_id),
+			),
+		)
+		.execute();
+	const licensed_series_id_map = new Map(licensedSeriesIds.map((v, idx) => [v.series_id, idx]));
+
 	// const airing_series = await db
 	// 	.selectFrom('series')
 	// 	.innerJoin('series_book', 'series_book.series_id', 'series.id')
@@ -187,6 +208,7 @@ export const load = async ({ locals }) => {
 		seriesReviews,
 		mostPopularSeries,
 		seasonalAnime,
+		licensedSeries,
 	] = await Promise.all([
 		recentlyReleasedPromise,
 		upcomingReleasesPromise,
@@ -195,7 +217,12 @@ export const load = async ({ locals }) => {
 		seriesReviewsPromise,
 		mostPopularSeriesPromise,
 		seasonalAnimePromise,
+		licensedSeriesPromise,
 	]);
+
+	licensedSeries.sort((a, b) => {
+		return (licensed_series_id_map.get(a.id) || 0) - (licensed_series_id_map.get(b.id) || 0);
+	});
 
 	return {
 		recentlyReleased,
@@ -204,6 +231,7 @@ export const load = async ({ locals }) => {
 		bookReviews,
 		seriesReviews,
 		mostPopularSeries,
+		licensedSeries,
 		seasonalAnime,
 		homeDisplaySettings,
 		todayIso,
