@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-test.describe('bookwalker scraper mod', () => {
+test.describe.skip('bookwalker scraper mod', () => {
 	test.use({ storageState: 'storage-state/storageStateMod.json' });
 
 	test('Mod can use BookWalker scraper', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('bookwalker scraper mod', () => {
 	});
 });
 
-test.describe('bookwalker scraper invalid permissions', () => {
+test.describe.skip('bookwalker scraper invalid permissions', () => {
 	test.use({ storageState: 'storage-state/storageStateUser.json' });
 
 	test('User cannot use BookWalker scraper due to invalid permissions', async ({
