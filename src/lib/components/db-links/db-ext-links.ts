@@ -29,19 +29,19 @@ export const anilistLink: LinkBeforeAfter = {
 export const bookwalkerSeriesLink: LinkBeforeAfter = {
 	before: 'https://bookwalker.jp/series/',
 	after: '/list/',
-	name: 'Bookwalker',
+	name: 'BookWalker',
 };
 
 export const bookwalkerAuthorLink: LinkBeforeAfter = {
 	before: 'https://bookwalker.jp/author/',
 	after: '',
-	name: 'Bookwalker',
+	name: 'BookWalker',
 };
 
 export const bookwalkerGlobalAuthorLink: LinkBeforeAfter = {
-	before: 'https://global.bookwalker.jp/authors/',
+	before: 'https://bookwalker.com/browse?filter.contributor[]=',
 	after: '',
-	name: 'Bookwalker Global',
+	name: 'BookWalker Global',
 };
 
 export const twitterLink: LinkBeforeAfter = {

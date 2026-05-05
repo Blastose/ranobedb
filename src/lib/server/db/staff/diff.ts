@@ -45,7 +45,7 @@ export function getStaffDiffs(params: { prevStaffHistEdit: StaffEdit; staffHistE
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
-			name: 'Bookwalker',
+			name: 'BookWalker',
 			words1: prevStaffHistEdit.bookwalker_id?.toString(),
 			words2: staffHistEdit.bookwalker_id?.toString(),
 		}),
@@ -53,9 +53,9 @@ export function getStaffDiffs(params: { prevStaffHistEdit: StaffEdit; staffHistE
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
-			name: 'Bookwalker Global',
-			words1: prevStaffHistEdit.bookwalker_gl_id?.toString(),
-			words2: staffHistEdit.bookwalker_gl_id?.toString(),
+			name: 'BookWalker Global',
+			words1: prevStaffHistEdit.bookwalker_gl_con_id,
+			words2: staffHistEdit.bookwalker_gl_con_id,
 		}),
 	);
 	pushIfNotUndefined(

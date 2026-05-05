@@ -442,6 +442,7 @@ export interface SeriesTitleHist {
 export interface Staff {
 	bookwalker_id: number | null;
 	bookwalker_gl_id: number | null;
+	bookwalker_gl_con_id: string | null;
 	description: string;
 	hidden: boolean;
 	id: Generated<number>;
@@ -466,6 +467,7 @@ export interface StaffAlias {
 export interface StaffHist {
 	bookwalker_id: number | null;
 	bookwalker_gl_id: number | null;
+	bookwalker_gl_con_id: string | null;
 	change_id: number;
 	description: string;
 	kakuyomu_id: string | null;

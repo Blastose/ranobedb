@@ -89,15 +89,15 @@
 				form={sForm}
 				type="number"
 				field="bookwalker_id"
-				label="Bookwalker"
+				label="BookWalker"
 				resetPadding={true}
 				linkBeforeAfter={bookwalkerAuthorLink}
 			/>
 			<TextFieldLink
 				form={sForm}
-				type="number"
-				field="bookwalker_gl_id"
-				label="Bookwalker Global"
+				type="text"
+				field="bookwalker_gl_con_id"
+				label="BookWalker Global"
 				resetPadding={true}
 				linkBeforeAfter={bookwalkerGlobalAuthorLink}
 			/>
