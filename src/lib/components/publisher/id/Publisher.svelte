@@ -72,7 +72,7 @@
 					<a href={publisher.website} target="_blank" class="link">Website</a>
 				{/if}
 				{#if publisher.bookwalker}
-					<a href={publisher.bookwalker} target="_blank" class="link">Bookwalker</a>
+					<a href={publisher.bookwalker} target="_blank" class="link">BookWalker</a>
 				{/if}
 				{#if publisher.twitter_id}
 					<DbExtLinkShort fullLink={{ ...twitterLink, value: publisher.twitter_id }} />

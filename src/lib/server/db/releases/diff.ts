@@ -145,7 +145,7 @@ export function getReleaseDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
-			name: 'Bookwalker',
+			name: 'BookWalker',
 			words1: prevReleaseHistEdit.bookwalker,
 			words2: releaseHistEdit.bookwalker,
 		}),

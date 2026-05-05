@@ -162,7 +162,7 @@
 		form={sForm}
 		type="number"
 		field="bookwalker_id"
-		label="Bookwalker id"
+		label="BookWalker id"
 		resetPadding={true}
 		linkBeforeAfter={bookwalkerSeriesLink}
 	/>
