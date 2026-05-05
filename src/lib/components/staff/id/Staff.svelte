@@ -93,7 +93,7 @@
 
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
-		{#if staff.website || staff.bookwalker_id || staff.bookwalker_gl_id || staff.twitter_id || staff.pixiv_id || staff.wikidata_id || staff.syosetu_id || staff.kakuyomu_id || staff.bsky_id}
+		{#if staff.website || staff.bookwalker_id || staff.bookwalker_gl_con_id || staff.twitter_id || staff.pixiv_id || staff.wikidata_id || staff.syosetu_id || staff.kakuyomu_id || staff.bsky_id}
 			<div class="flex flex-wrap gap-x-4">
 				{#if staff.website}
 					<a href={staff.website} target="_blank" class="link">Website</a>
@@ -107,9 +107,9 @@
 				{#if staff.bookwalker_id}
 					<DbExtLinkShort fullLink={{ ...bookwalkerAuthorLink, value: staff.bookwalker_id }} />
 				{/if}
-				{#if staff.bookwalker_gl_id}
+				{#if staff.bookwalker_gl_con_id}
 					<DbExtLinkShort
-						fullLink={{ ...bookwalkerGlobalAuthorLink, value: staff.bookwalker_gl_id }}
+						fullLink={{ ...bookwalkerGlobalAuthorLink, value: staff.bookwalker_gl_con_id }}
 					/>
 				{/if}
 				{#if staff.twitter_id}

@@ -60,6 +60,9 @@
 				<a href="https://opendatacommons.org/licenses/dbcl/1-0/" target="_blank"
 					>Database Contents License</a
 				>.
+				<br />
+				Exceptions to this are book descriptions and covers, which are gathered from various third-party
+				online sources and may be subject to separate license conditions.
 			</p>
 			<p>
 				The <a href="https://github.com/Blastose/ranobedb" target="_blank">source code</a> is
@@ -80,8 +83,8 @@
 					compiling a list of English light novels
 				</li>
 				<li>
-					<a href="https://ranobe-mori.net/" target="_blank">Ranobe Mori</a> for compiling a list of
-					Japanese light novels
+					<a href="https://ranobe-mori.net/" target="_blank">Ranobe Mori</a> for compiling a list of Japanese
+					light novels
 				</li>
 			</ul>
 		</section>

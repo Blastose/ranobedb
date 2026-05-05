@@ -22,7 +22,10 @@
 				<h3>Website</h3>
 			</section>
 			<section>
-				<h3>Bookwalker</h3>
+				<h3>BookWalker</h3>
+			</section>
+			<section>
+				<h3>BookWalker Global</h3>
 			</section>
 			<section>
 				<h3>Wikidata</h3>

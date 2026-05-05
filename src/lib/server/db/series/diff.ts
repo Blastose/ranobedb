@@ -141,7 +141,7 @@ export function getSeriesDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
-			name: 'Bookwalker',
+			name: 'BookWalker',
 			words1: prevSeriesHistEdit.bookwalker_id?.toString(),
 			words2: seriesHistEdit.bookwalker_id?.toString(),
 		}),

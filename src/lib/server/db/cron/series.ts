@@ -135,6 +135,7 @@ export async function updateSeriesTranslated() {
 }
 
 export async function updateNewlyLicensedEnglishSeries() {
+	console.log('Running update new English Licenses job');
 	await db.transaction().execute(async (trx) => {
 		const licensedSeriesIds = await db
 			.with('licensed_series', (db) =>

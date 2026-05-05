@@ -71,7 +71,7 @@
 				<LinkInput form={sForm} field="website" label="Website" resetPadding={true} />
 			</div>
 			<div class="max-w-md">
-				<LinkInput form={sForm} field="bookwalker" label="Bookwalker" resetPadding={true} />
+				<LinkInput form={sForm} field="bookwalker" label="BookWalker" resetPadding={true} />
 			</div>
 			<TextFieldLink
 				form={sForm}

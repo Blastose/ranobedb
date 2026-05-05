@@ -104,7 +104,7 @@
 					<a href={release.amazon} target="_blank" class="link">Amazon</a>
 				{/if}
 				{#if release.bookwalker}
-					<a href={release.bookwalker} target="_blank" class="link">Bookwalker</a>
+					<a href={release.bookwalker} target="_blank" class="link">BookWalker</a>
 				{/if}
 				{#if release.rakuten}
 					<a href={release.rakuten} target="_blank" class="link">Rakuten</a>

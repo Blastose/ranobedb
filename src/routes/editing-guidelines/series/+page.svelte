@@ -88,8 +88,8 @@
 				<p>If the series has an anime, the id of the anime.</p>
 			</section>
 			<section>
-				<h3>Bookwalker id</h3>
-				<p>The Bookwalker id.</p>
+				<h3>BookWalker id</h3>
+				<p>The BookWalker id.</p>
 			</section>
 			<section>
 				<h3>Wikidata id</h3>

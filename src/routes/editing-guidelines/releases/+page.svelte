@@ -63,7 +63,7 @@
 				<h3>Amazon</h3>
 			</section>
 			<section>
-				<h3>Bookwalker</h3>
+				<h3>BookWalker</h3>
 			</section>
 			<section>
 				<h3>Rakuten</h3>

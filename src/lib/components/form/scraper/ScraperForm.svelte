@@ -214,7 +214,7 @@
 
 					<LinkInput form={sForm} field="amazon" label="Amazon" resetPadding={true} />
 
-					<LinkInput form={sForm} field="bookwalker" label="Bookwalker" resetPadding={true} />
+					<LinkInput form={sForm} field="bookwalker" label="BookWalker" resetPadding={true} />
 
 					<LinkInput form={sForm} field="rakuten" label="Rakuten" resetPadding={true} />
 				</div>
