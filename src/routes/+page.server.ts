@@ -111,7 +111,7 @@ export const load = async ({ locals }) => {
 
 	const seriesIdsSchema = z.array(z.object({ series_id: z.number() })).catch([{ series_id: 3343 }]);
 	const licensedSeriesIds = seriesIdsSchema.parse(maybelicensedSeriesIds?.value);
-	const licensedSeriesPromise = DBSeries.fromDB(db)
+	const licensedSeriesPromise = DBSeries.fromDB(db, locals.user)
 		.getSeries()
 		.where((eb) =>
 			eb(
