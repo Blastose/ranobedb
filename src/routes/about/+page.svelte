@@ -22,6 +22,9 @@
 		<p>
 			This website is an open, editable database and you can contribute new information or
 			corrections to the database.
+			<br />
+			Please note that this site is for tracking and data purposes only; we do not host or provide any
+			copyrighted reading material.
 		</p>
 
 		<p>

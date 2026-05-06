@@ -55,7 +55,7 @@
 			<CheckboxField
 				{form}
 				field="database_and_tracker"
-				label="I understand that RanobeDB is a database and tracking tool and does not provide books for reading."
+				label="I understand that RanobeDB DOES NOT provide books for reading and is primarily a database and tracking tool."
 			></CheckboxField>
 		</section>
 	</svelte:fragment>

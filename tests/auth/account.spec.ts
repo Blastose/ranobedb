@@ -31,7 +31,7 @@ test.describe('auth', () => {
 			.check();
 		await page
 			.getByLabel(
-				'I understand that RanobeDB is a database and tracking tool and does not provide books for reading.',
+				'I understand that RanobeDB DOES NOT provide books for reading and is primarily a database and tracking tool.',
 			)
 			.check();
 		await page.getByRole('button', { name: 'Sign Up' }).click();
