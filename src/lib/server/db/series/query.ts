@@ -126,7 +126,11 @@ export async function getSeries(params: {
 	} else if (sort === 'Start date asc') {
 		query = query.orderBy('cte_series.start_date', 'asc');
 	} else if (sort === 'Start date desc') {
-		query = query.orderBy('cte_series.start_date', 'desc');
+		query = query.orderBy('cte_series.start_date', (ob) => ob.desc().nullsLast());
+	} else if (sort === 'End date asc') {
+		query = query.orderBy('cte_series.end_date', 'asc');
+	} else if (sort === 'End date desc') {
+		query = query.orderBy('cte_series.end_date', (ob) => ob.desc().nullsLast());
 	} else if (sort === 'Num. books asc') {
 		query = query.orderBy('cte_series.c_num_books', 'asc');
 	} else if (sort === 'Num. books desc') {
