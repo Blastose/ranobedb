@@ -83,7 +83,7 @@
 				</BookImageContainer>
 			{:else}
 				<div>
-					{#each works.releases as release (release.id)}
+					{#each works.releases as release (`${release.id}|${release.publisher_type}`)}
 						<p>
 							<a class="link" href="/release/{release.id}"
 								>{new DateNumber(release.release_date).getDateFormatted()} - <ReleaseTitleDisplay
