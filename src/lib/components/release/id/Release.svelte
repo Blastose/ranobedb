@@ -140,7 +140,7 @@
 		<section>
 			<h2 class="text-lg font-bold">Publishers</h2>
 			<p>
-				{#each release.publishers as publisher, index (publisher.id)}
+				{#each release.publishers as publisher, index (`${publisher.id}|${publisher.publisher_type}`)}
 					<span>
 						<a class="link" href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></a>
 						<span class="text-xs">{publisher.publisher_type}</span
