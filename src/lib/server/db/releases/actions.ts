@@ -92,6 +92,7 @@ async function sendSeriesNotifications(params: {
 					'release.title',
 					'release.romaji',
 					'release.format',
+					'release.release_date',
 					'release.id as release_id',
 					'auth_user.display_prefs',
 					'image.filename',
@@ -133,7 +134,28 @@ async function sendSeriesNotifications(params: {
 						eb.cast(eb.val(' ('), 'text'),
 						eb.ref('format'),
 						eb.cast(eb.val(') '), 'text'),
-						eb.cast(eb.val('has been added to the database.'), 'text'),
+						eb.cast(eb.val('has been added to the database. '), 'text'),
+						eb
+							.case()
+							.when(eb(eb.cast('release_to_add.release_date', 'text'), 'not like', '%99%'))
+							.then(
+								eb.fn<string>('concat', [
+									eb.cast(eb.val('It will be released on '), 'text'),
+									eb.cast(
+										eb.fn('to_char', [
+											eb.fn('to_date', [
+												eb.cast('release_to_add.release_date', 'text'),
+												eb.val('YYYYMMDD'),
+											]),
+											eb.val('YYYY-MM-DD'),
+										]),
+										'text',
+									),
+									eb.cast(eb.val('.'), 'text'),
+								]),
+							)
+							.else('')
+							.end(),
 					])
 					.as('message'),
 				eb.val('New related release added').as('notification_type'),
@@ -259,6 +281,7 @@ async function sendStaffNotifications(params: {
 					'release.title',
 					'release.romaji',
 					'release.format',
+					'release.release_date',
 					'release.id as release_id',
 					'auth_user.display_prefs',
 					'image.filename',
@@ -302,7 +325,28 @@ async function sendStaffNotifications(params: {
 						eb.cast(eb.val(' ('), 'text'),
 						eb.ref('format'),
 						eb.cast(eb.val(') '), 'text'),
-						eb.cast(eb.val('has been added to the database.'), 'text'),
+						eb.cast(eb.val('has been added to the database. '), 'text'),
+						eb
+							.case()
+							.when(eb(eb.cast('release_to_add.release_date', 'text'), 'not like', '%99%'))
+							.then(
+								eb.fn<string>('concat', [
+									eb.cast(eb.val('It will be released on '), 'text'),
+									eb.cast(
+										eb.fn('to_char', [
+											eb.fn('to_date', [
+												eb.cast('release_to_add.release_date', 'text'),
+												eb.val('YYYYMMDD'),
+											]),
+											eb.val('YYYY-MM-DD'),
+										]),
+										'text',
+									),
+									eb.cast(eb.val('.'), 'text'),
+								]),
+							)
+							.else('')
+							.end(),
 					])
 					.as('message'),
 				eb
