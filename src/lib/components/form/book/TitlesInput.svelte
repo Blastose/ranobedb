@@ -11,7 +11,7 @@
 
 	type Title = {
 		lang: Language;
-		official: true;
+		official: boolean;
 		title: string;
 		romaji?: string | null;
 	};
@@ -73,7 +73,7 @@
 				<span class="error-text-color">{$valueErrors[i]?.romaji}</span>
 			{/if}
 
-			<div class="flex flex-wrap gap-1 items-center justify-between">
+			<div class="flex flex-wrap gap-4 items-center">
 				<button
 					type="button"
 					class="sub-btn"
@@ -81,6 +81,12 @@
 						handleRemoveTitle(i);
 					}}>Remove title</button
 				>
+				{#if $values[i].lang !== 'ja'}
+					<label class="flex gap-1 text-sm"
+						><input type="checkbox" bind:checked={$values[i].official} /><span>Official</span
+						></label
+					>
+				{/if}
 			</div>
 		</div>
 	{/each}

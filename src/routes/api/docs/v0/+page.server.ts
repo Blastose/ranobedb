@@ -49,7 +49,7 @@ export const load = async () => {
         lang: Language;
         romaji: string | null;
         book_id: number;
-        official: true;
+        official: boolean;
         title: string;
     }[];
     editions: {
@@ -268,7 +268,7 @@ export const load = async () => {
     titles: {
         lang: Language;
         romaji: string | null;
-        official: true;
+        official: boolean;
         title: string;
     }[];
     child_series: {

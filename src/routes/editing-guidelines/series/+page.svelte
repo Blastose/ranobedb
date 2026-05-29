@@ -22,8 +22,8 @@
 		<section>
 			<h2>Titles</h2>
 			<p>
-				A title for each language can be added to a series. Use only official titles from the
-				publisher; do not use fan translated titles.
+				A title for each language can be added to a series. When using titles from fan translations,
+				uncheck the 'official' checkbox.
 				<br />
 				Romanize the title if it needs to be romanized, and leave the field blank if it doesn't.
 			</p>
@@ -80,6 +80,10 @@
 		<section>
 			<h2>Links</h2>
 			<section>
+				<h3>Website</h3>
+				<p>A link to the series's official web page.</p>
+			</section>
+			<section>
 				<h3>Web novel</h3>
 				<p>A link to Syosetu or Kakuyomu.</p>
 			</section>
@@ -89,11 +93,18 @@
 			</section>
 			<section>
 				<h3>BookWalker id</h3>
-				<p>The BookWalker id.</p>
+			</section>
+			<section>
+				<h3>BookWalker Global id</h3>
 			</section>
 			<section>
 				<h3>Wikidata id</h3>
-				<p>The Wikidata id.</p>
+			</section>
+			<section>
+				<h3>MyAnimeList id</h3>
+			</section>
+			<section>
+				<h3>Anilist id</h3>
 			</section>
 		</section>
 
@@ -107,8 +118,11 @@
 					<h4>Book type</h4>
 					<p>The following types can be used:</p>
 					<ul>
-						<li>Main</li>
-						<li>Sub</li>
+						<li>Main: Core books that advance the primary plot (e.g., Volume 1, Volume 2).</li>
+						<li>
+							Sub: Supplemental reading, such as .5 volumes (e.g., Volume 1.5), side stories, or
+							short story collections.
+						</li>
 					</ul>
 				</section>
 				<section>

@@ -94,7 +94,7 @@ export function generateBookTitleChangeStringTitle(book?: {
 	if (!book) {
 		return '';
 	}
-	let str = `[${book.lang}] ${book.title}`;
+	let str = `[${book.lang}] ${book.title} [${book.official ? 'official' : 'unofficial'}]`;
 	return str;
 }
 export function generateBookTitleChangeStringRomaji(book?: {

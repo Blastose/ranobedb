@@ -154,7 +154,7 @@ export interface BookStaffAliasHist {
 export interface BookTitle {
 	book_id: number;
 	lang: Language;
-	official: true;
+	official: boolean;
 	romaji: string | null;
 	title: string;
 }
@@ -162,7 +162,7 @@ export interface BookTitle {
 export interface BookTitleHist {
 	change_id: number;
 	lang: Language;
-	official: true;
+	official: boolean;
 	romaji: string | null;
 	title: string;
 }
@@ -426,7 +426,7 @@ export interface SeriesTagHist {
 
 export interface SeriesTitle {
 	lang: Language;
-	official: true;
+	official: boolean;
 	romaji: string | null;
 	series_id: number;
 	title: string;
@@ -435,7 +435,7 @@ export interface SeriesTitle {
 export interface SeriesTitleHist {
 	change_id: number;
 	lang: Language;
-	official: true;
+	official: boolean;
 	romaji: string | null;
 	title: string;
 }

@@ -7,7 +7,7 @@
 		titles: {
 			lang: Language;
 			romaji: string | null;
-			official: true;
+			official: boolean;
 			title: string;
 		}[];
 	}

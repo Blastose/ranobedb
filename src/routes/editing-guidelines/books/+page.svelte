@@ -22,10 +22,9 @@
 		<section>
 			<h2>Titles</h2>
 			<p>
-				A title for each language can be added to a book. Use only official titles from the
-				publisher; do not use fan translated titles. Some books contain an English title; do not use
-				these are they often have poor English; you can add those to the aliases field in series
-				instead.
+				A title for each language can be added to a book. When using titles from fan translations,
+				uncheck the 'official' checkbox. Some books contain an English title; do not use these are
+				they often have poor English; you can add those to the aliases field in series instead.
 				<br />
 				Romanize the title if it needs to be romanized, and leave the field blank if it doesn't.
 			</p>
