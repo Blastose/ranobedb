@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { defaultUserListLabelsArray } from '$lib/db/dbConsts';
+	import ScoresChart from './ScoresChart.svelte';
 
 	interface Props {
 		user_stats_score: {
@@ -28,27 +29,7 @@
 	<section>
 		<h2 class="font-bold text-lg">User scores</h2>
 		{#if scoreCount > 0}
-			<div class="grid grid-cols-[min-content_1fr] gap-x-2 text-sm">
-				{#each user_stats_score as user_stat_score}
-					<div class="whitespace-nowrap text-right">
-						{user_stat_score.gs}
-					</div>
-					<div class="flex items-center gap-1">
-						{#if ((Number(user_stat_score.count) / scoreCount) * 100) / 1.4 > 0}
-							<div
-								class="bg-[var(--primary-500)] h-[80%] rounded-sm"
-								style="width: {((Number(user_stat_score.count) / scoreCount) * 100) / 1.4}%;"
-							></div>
-						{/if}
-						<div>
-							{((Number(user_stat_score.count) / scoreCount) * 100).toFixed(1)}% ({user_stat_score.count})
-						</div>
-					</div>
-				{/each}
-			</div>
-			<div class="text-sm flex flex-col items-center">
-				<p>{Number(rating?.score).toFixed(2)} average from {scoreCount} total scores</p>
-			</div>
+			<ScoresChart {rating} {user_stats_score} />
 		{:else}
 			<p class="italic">There are no scores for this {type} yet</p>
 		{/if}
