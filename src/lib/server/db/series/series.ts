@@ -1272,4 +1272,5 @@ export class DBSeries {
 }
 
 export type Series = InferResult<ReturnType<DBSeries['getSeriesOne']>>[number];
+export type SeriesMany = InferResult<ReturnType<DBSeries['getSeries']>>[number];
 export type SeriesEdit = InferResult<ReturnType<DBSeries['getSeriesOneEdit']>>[number];
