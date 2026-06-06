@@ -43,10 +43,10 @@
 		{/key}
 	{:else}
 		<div
-			class="bg-neutral-500 w-full h-full"
+			class="bg-neutral-500 w-full h-full @container"
 			style="aspect-ratio: 0.70381231671554252199413489736072;"
 		>
-			<p class="p-4">No cover</p>
+			<p class="hidden @md:block p-4">No cover</p>
 		</div>
 	{/if}
 	{@render children?.()}
