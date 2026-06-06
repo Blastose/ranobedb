@@ -11,7 +11,7 @@
 		title: string;
 		items: { items: Book[]; type: 'book' } | { items: SeriesMany[]; type: 'series' };
 		itemType: 'book' | 'series';
-		viewAllHref?: string;
+		viewAllHref: string;
 	}
 
 	let { title, items, itemType, viewAllHref }: Props = $props();
@@ -23,9 +23,7 @@
 			<h2 class="font-bold text-lg">
 				{title}
 			</h2>
-			{#if viewAllHref}
-				<a href={viewAllHref} class="text-xs ml-6">View all</a>
-			{/if}
+			<a href={viewAllHref} class="text-xs ml-6">View all</a>
 		</div>
 
 		<div class="flex flex-col gap-1">
