@@ -3,6 +3,8 @@
 	import DbItemShellUser from '$lib/components/layout/db/DBItemShellUser.svelte';
 	import DbRouteShell from '$lib/components/layout/db/DBRouteShell.svelte';
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
+	import ScoresChart from '$lib/components/shared/ScoresChart.svelte';
+	import RecentListUpdates from './RecentListUpdates.svelte';
 	import { defaultUserListLabelsColorMap } from '$lib/db/dbConsts';
 	import type { UserLabel } from '$lib/server/db/user/list.js';
 	import { getThemeContext } from '$lib/stores/themeStore';
@@ -20,6 +22,7 @@
 		Colors,
 	} from 'chart.js';
 	import { onMount } from 'svelte';
+	import type { PageProps } from './$types';
 
 	Chart.register(
 		LineController,
@@ -35,24 +38,7 @@
 	);
 
 	interface Props {
-		data: {
-			listUser: {
-				id_numeric: number;
-				id: string;
-				joined: Date;
-				role: 'user' | 'admin' | 'banned' | 'editor' | 'adder' | 'moderator';
-				username: string;
-			};
-			profile_image: {
-				filename: string | null;
-			};
-			readPerMonth: {
-				date: string;
-				count: number;
-			}[];
-			labelCounts: UserLabel[];
-			seriesLabelCounts: UserLabel[];
-		};
+		data: PageProps['data'];
 	}
 
 	let { data }: Props = $props();
@@ -217,6 +203,58 @@
 				</div>
 			</div>
 
+			<section>
+				<h2 class="font-bold text-lg mb-2">Stats overview</h2>
+				<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+					{#if data.listCounts.book !== '0' || data.listCounts.series === '0'}
+						<div class="stat-card">
+							<div class="stat-value">{data.listCounts.book ?? '0'}</div>
+							<div class="stat-label">Books in list</div>
+						</div>
+					{/if}
+					<div class="stat-card">
+						<div class="stat-value">{data.listCounts.series ?? '0'}</div>
+						<div class="stat-label">Series in list</div>
+					</div>
+					{#if Number(data.listCounts.release ?? 0) > 0}
+						<div class="stat-card">
+							<div class="stat-value">{data.listCounts.release ?? '0'}</div>
+							<div class="stat-label">Releases in list</div>
+						</div>
+					{/if}
+					{#if data.bookReviewCount > 0}
+						<div class="stat-card">
+							<div class="stat-value">{data.bookReviewCount}</div>
+							<div class="stat-label">Book reviews</div>
+						</div>
+					{/if}
+					{#if data.seriesReviewCount > 0}
+						<div class="stat-card">
+							<div class="stat-value">{data.seriesReviewCount}</div>
+							<div class="stat-label">Series reviews</div>
+						</div>
+					{/if}
+					{#if data.changeCount > 0}
+						<div class="stat-card">
+							<div class="stat-value">{data.changeCount}</div>
+							<div class="stat-label">Edits made</div>
+						</div>
+					{/if}
+					{#if data.avgScoreBook !== 0}
+						<div class="stat-card">
+							<div class="stat-value">{Number(data.avgScoreBook).toFixed(1)}</div>
+							<div class="stat-label">Avg. book score</div>
+						</div>
+					{/if}
+					{#if data.avgScoreSeries !== 0}
+						<div class="stat-card">
+							<div class="stat-value">{Number(data.avgScoreSeries).toFixed(1)}</div>
+							<div class="stat-label">Avg. series score</div>
+						</div>
+					{/if}
+				</div>
+			</section>
+
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-x--2 gap-y-4">
 				{#if data.labelCounts.reduce((a, { count }) => a + Number(count), 0) > 0}
 					<section>
@@ -274,32 +312,82 @@
 					</section>
 				{/if}
 
-				<section>
-					<h2 class="font-bold text-lg">Number of books read in the last 12 months by month:</h2>
+				{#if data.finishedCounts > 0}
+					<section>
+						<h2 class="font-bold text-lg">Number of books read in the last 12 months by month:</h2>
 
-					<div class="chart-container">
-						<canvas bind:this={booksPerMonthCanvas}>
-							<table>
-								<caption>Number of books read in the last 12 months by month</caption>
-								<thead>
-									<tr>
-										<th>Year and month</th>
-										<th>Count</th>
-									</tr>
-								</thead>
-								<tbody>
-									{#each data.readPerMonth as row}
+						<div class="chart-container">
+							<canvas bind:this={booksPerMonthCanvas}>
+								<table>
+									<caption>Number of books read in the last 12 months by month</caption>
+									<thead>
 										<tr>
-											<th>{row.date}</th>
-											<td>{row.count}</td>
+											<th>Year and month</th>
+											<th>Count</th>
 										</tr>
-									{/each}
-								</tbody>
-							</table>
-						</canvas>
+									</thead>
+									<tbody>
+										{#each data.readPerMonth as row}
+											<tr>
+												<th>{row.date}</th>
+												<td>{row.count}</td>
+											</tr>
+										{/each}
+									</tbody>
+								</table>
+							</canvas>
+						</div>
+					</section>
+				{/if}
+
+				{#if data.scoreDistributionBook.some((d) => Number(d.count) > 0) || data.scoreDistributionSeries.some((d) => Number(d.count) > 0)}
+					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+						{#if data.scoreDistributionBook.some((d) => Number(d.count) > 0)}
+							{@const totalBookScores = data.scoreDistributionBook.reduce(
+								(a, c) => a + Number(c.count),
+								0,
+							)}
+							<section>
+								<h2 class="font-bold text-lg mb-2">Book score distribution</h2>
+								<ScoresChart
+									user_stats_score={data.scoreDistributionBook}
+									rating={{ score: data.avgScoreBook, count: totalBookScores }}
+								/>
+							</section>
+						{/if}
+						{#if data.scoreDistributionSeries.some((d) => Number(d.count) > 0)}
+							{@const totalSeriesScores = data.scoreDistributionSeries.reduce(
+								(a, c) => a + Number(c.count),
+								0,
+							)}
+							<section>
+								<h2 class="font-bold text-lg mb-2">Series score distribution</h2>
+								<ScoresChart
+									user_stats_score={data.scoreDistributionSeries}
+									rating={{ score: data.avgScoreSeries, count: totalSeriesScores }}
+								/>
+							</section>
+						{/if}
 					</div>
-				</section>
+				{/if}
 			</div>
+
+			{#if data.recentBooks.length > 0 || data.recentSeries.length > 0}
+				<div class="grid grid-cols-1 @lg:grid-cols-2 gap-4">
+					<RecentListUpdates
+						title="Recent book updates"
+						items={{ items: data.recentBooks, type: 'book' }}
+						itemType="book"
+						viewAllHref="/user/{data.listUser.id_numeric}/list/books?sort=Last+updated+desc"
+					/>
+					<RecentListUpdates
+						title="Recent series updates"
+						items={{ items: data.recentSeries, type: 'series' }}
+						itemType="series"
+						viewAllHref="/user/{data.listUser.id_numeric}/list/series?sort=Last+updated+desc"
+					/>
+				</div>
+			{/if}
 		</main>
 	</DbItemShellUser>
 </DbRouteShell>
@@ -318,5 +406,23 @@
 
 	dt {
 		font-weight: 700;
+	}
+
+	.stat-card {
+		padding: 0.75rem 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	.stat-value {
+		font-size: 1.5rem;
+		font-weight: 700;
+		line-height: 1;
+	}
+
+	.stat-label {
+		font-size: 0.8rem;
+		opacity: 0.75;
 	}
 </style>
