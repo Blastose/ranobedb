@@ -7,10 +7,12 @@
 	interface Props {
 		badge: string;
 		score?: string;
+		textSize?: 'full' | 'compact';
 		displayOverride?: 'full' | 'compact';
+		shadow?: boolean;
 	}
 
-	let { badge, score, displayOverride }: Props = $props();
+	let { badge, score, displayOverride, textSize, shadow }: Props = $props();
 
 	const displayPrefs = getDisplayPrefsContext();
 
@@ -20,7 +22,10 @@
 </script>
 
 <div
-	class="shadow-md dark-main-text flex items-center gap-1 w-fit text-sm sm:text-base rounded-full
+	class="{shadow ? 'shadow-md' : ''} dark-main-text flex items-center gap-1 w-fit {textSize ===
+	'full'
+		? 'text-sm sm:text-base'
+		: 'text-sm'} rounded-full
   {display === 'full' ? 'px-2' : score ? 'py-1 pl-1 pr-2' : 'p-1'}"
 	style:background-color={defaultUserListLabelsArray.includes(badge as any)
 		? `${defaultUserListLabelsColorMap[badge]}EA`
