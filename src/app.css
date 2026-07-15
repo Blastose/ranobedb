@@ -73,12 +73,9 @@
 }
 
 html {
-	overflow-x: hidden;
-	height: 100dvh;
 	background-color: var(--bg-light);
 	color: var(--text-light);
 	overflow-wrap: anywhere;
-	scrollbar-gutter: stable;
 }
 
 html.dark {
@@ -88,7 +85,9 @@ html.dark {
 }
 
 body {
-	height: 100%;
+	min-height: 100dvh;
+	scrollbar-gutter: stable;
+	overflow-x: hidden;
 }
 
 .link {
@@ -410,6 +409,7 @@ input[type='number'].input.reset-padding {
 	border-radius: 9999px;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 	padding: 0.125rem 0.75rem;
 	color: white;
 	background-color: var(--primary-500);
