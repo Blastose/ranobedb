@@ -323,6 +323,7 @@ export interface SavedFilter {
   filters: string;
   is_list: boolean;
   item_name: DbItem;
+  name: string;
   user_id: string;
 }
 
