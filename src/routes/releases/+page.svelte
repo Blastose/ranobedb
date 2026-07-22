@@ -26,7 +26,7 @@
 
 	{#snippet info()}
 		{#if data.user}
-			<ListFilters searchParams={data.urlSearchForm} />
+			<ListFilters searchParams={data.urlSearchForm} savedFilters={data.savedFilters} />
 		{/if}
 	{/snippet}
 

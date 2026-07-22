@@ -45,7 +45,7 @@
 
 	{#snippet info()}
 		{#if data.isMyList}
-			<ListFilters searchParams={data.urlSearchForm} />
+			<ListFilters searchParams={data.urlSearchForm} savedFilters={data.savedFilters} />
 		{/if}
 
 		<div class="flex flex-col gap-1">
