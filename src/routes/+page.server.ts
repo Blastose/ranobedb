@@ -1,5 +1,6 @@
 import { DBChanges } from '$lib/server/db/change/change';
 import { db } from '$lib/server/db/db';
+import { getDefaultSavedFilter } from '$lib/server/db/user/saved-filters';
 import { historyFiltersSchema, releaseFiltersSchema } from '$lib/server/zod/schema';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -30,15 +31,7 @@ export const load = async ({ locals }) => {
 		).home_display_settings;
 	}
 
-	const userListReleasesFilters = locals.user
-		? await db
-				.selectFrom('saved_filter')
-				.select('saved_filter.filters')
-				.where('saved_filter.user_id', '=', locals.user.id)
-				.where('saved_filter.item_name', '=', 'release')
-				.where('saved_filter.is_list', '=', false)
-				.executeTakeFirst()
-		: null;
+	const userListReleasesFilters = await getDefaultSavedFilter(locals.user?.id, 'release', false);
 
 	const releasesForm = await superValidate(
 		new URLSearchParams(userListReleasesFilters?.filters),
@@ -47,16 +40,18 @@ export const load = async ({ locals }) => {
 	const recentlyReleasedFiltersParams = new URLSearchParams(userListReleasesFilters?.filters);
 	recentlyReleasedFiltersParams.set('sort', 'Release date desc');
 	recentlyReleasedFiltersParams.set('maxDate', yesterdayIso);
+	recentlyReleasedFiltersParams.set('minDate', '');
 	const upcomingReleasesFiltersParams = new URLSearchParams(userListReleasesFilters?.filters);
 	upcomingReleasesFiltersParams.set('sort', 'Release date asc');
 	upcomingReleasesFiltersParams.set('minDate', todayIso);
+	upcomingReleasesFiltersParams.set('maxDate', '');
 
 	const recentlyReleasedForm = await superValidate(
-		{ ...releasesForm.data, sort: 'Release date desc', maxDate: yesterdayIso },
+		{ ...releasesForm.data, sort: 'Release date desc', maxDate: yesterdayIso, minDate: '' },
 		zod4(releaseFiltersSchema),
 	);
 	const upcomingReleasesForm = await superValidate(
-		{ ...releasesForm.data, sort: 'Release date asc', minDate: todayIso },
+		{ ...releasesForm.data, sort: 'Release date asc', minDate: todayIso, maxDate: '' },
 		zod4(releaseFiltersSchema),
 	);
 

@@ -14,6 +14,7 @@ import {
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
+import { getSavedFilters, getDefaultSavedFilter } from '$lib/server/db/user/saved-filters';
 
 export const load = async ({ params, locals, url }) => {
 	const userIdNumeric = Number(params.id);
@@ -30,13 +31,7 @@ export const load = async ({ params, locals, url }) => {
 		error(404);
 	}
 
-	const userListFilters = await db
-		.selectFrom('saved_filter')
-		.select('saved_filter.filters')
-		.where('saved_filter.user_id', '=', listUser.id)
-		.where('saved_filter.item_name', '=', 'series')
-		.where('saved_filter.is_list', '=', true)
-		.executeTakeFirst();
+	const userListFilters = await getDefaultSavedFilter(listUser.id, 'series', true);
 
 	const series_list_filter_user = userListFilters?.filters;
 	const listFilters =
@@ -51,6 +46,11 @@ export const load = async ({ params, locals, url }) => {
 	form.data.list = 'In my list';
 	const userLabelCounts = await getUserSeriesListCounts(db, listUser.id).execute();
 	const userCustLabelCounts = await getUserSeriesListCounts(db, listUser.id, 11, 99).execute();
+
+	const savedFilters =
+		locals.user?.id === listUser.id
+			? await getSavedFilters(locals.user.id, 'series', true)
+			: [];
 
 	const urlSearchForm = await superValidate(
 		{ filters: url.search, target: 'series', is_list: true },
@@ -87,5 +87,6 @@ export const load = async ({ params, locals, url }) => {
 		genres: res.genres,
 		allCustLabels: res.allCustLabels,
 		urlSearchForm,
+		savedFilters,
 	};
 };

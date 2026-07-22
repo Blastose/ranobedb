@@ -318,6 +318,7 @@ export const logicalOps = ['and', 'or'] as const;
 export type LogicalOp = (typeof logicalOps)[number];
 
 export const accountDeletionPhrase = 'Delete my account';
+export const defaultFilterName = 'Default';
 
 export const booksSortArray = [
 	'Relevance desc',

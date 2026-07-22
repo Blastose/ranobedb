@@ -1110,9 +1110,11 @@ export const seriesListSchema = z.object({
 	serieslist: z.boolean().default(false),
 });
 export const listFiltersSchema = z.object({
-	filters: z.string().max(maxTextLength),
+	filters: z.string().max(maxTextLength * 3),
 	target: z.enum(dbItemArray),
 	is_list: z.boolean(),
+	name: z.string().min(1).max(100),
 });
+export type SavedFilterEntry = { name: string; filters: string };
 
 export type Nullish<T> = T | null | undefined;

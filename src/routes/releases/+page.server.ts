@@ -5,6 +5,7 @@ import { pageSchema, qSchema, releaseFiltersSchema } from '$lib/server/zod/schem
 import { redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
+import { getSavedFilters, getDefaultSavedFilter } from '$lib/server/db/user/saved-filters';
 
 export const load = async ({ url, locals }) => {
 	const page = await superValidate(url, zod4(pageSchema));
@@ -14,14 +15,8 @@ export const load = async ({ url, locals }) => {
 	const q = qS.data.q;
 
 	const userListFilters =
-		locals.user && new URLSearchParams(url.search).size === 0 // Use is logged in and there is no current filters
-			? await db
-					.selectFrom('saved_filter')
-					.select('saved_filter.filters')
-					.where('saved_filter.user_id', '=', locals.user.id)
-					.where('saved_filter.item_name', '=', 'release')
-					.where('saved_filter.is_list', '=', false)
-					.executeTakeFirst()
+		locals.user && new URLSearchParams(url.search).size === 0
+			? await getDefaultSavedFilter(locals.user.id, 'release', false)
 			: null;
 
 	if (userListFilters?.filters && new URLSearchParams(url.search).size === 0) {
@@ -30,6 +25,8 @@ export const load = async ({ url, locals }) => {
 		newUrl.search = newUrlSearchParams.toString();
 		redirect(307, newUrl);
 	}
+
+	const savedFilters = await getSavedFilters(locals.user?.id, 'release', false);
 
 	const urlSearchForm = await superValidate(
 		{ filters: url.search, target: 'release', is_list: false },
@@ -55,5 +52,6 @@ export const load = async ({ url, locals }) => {
 		totalPages: res.totalPages,
 		filtersFormObj: res.filtersFormObj,
 		urlSearchForm,
+		savedFilters,
 	};
 };
