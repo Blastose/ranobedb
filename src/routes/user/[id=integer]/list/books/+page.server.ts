@@ -54,6 +54,7 @@ export const load = async ({ url, params, locals }) => {
 	const urlSearchForm = await superValidate(
 		{ filters: url.search, target: 'book', is_list: true },
 		zod4(listFiltersSchema),
+		{ errors: false },
 	);
 
 	const [res, listCounts] = await Promise.all([

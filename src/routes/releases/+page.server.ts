@@ -31,6 +31,7 @@ export const load = async ({ url, locals }) => {
 	const urlSearchForm = await superValidate(
 		{ filters: url.search, target: 'release', is_list: false },
 		zod4(listFiltersSchema),
+		{ errors: false },
 	);
 
 	const form = await superValidate(url, zod4(releaseFiltersSchema));
