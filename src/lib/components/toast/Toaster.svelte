@@ -34,7 +34,7 @@
 		position: fixed;
 		right: 0;
 		top: 0;
-		z-index: 99999;
+		z-index: 999999;
 		margin: 1rem;
 		display: flex;
 		flex-direction: column;
