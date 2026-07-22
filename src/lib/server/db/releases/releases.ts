@@ -130,6 +130,7 @@ export class DBReleases {
 				'release_hist.lang',
 				'release_hist.pages',
 				'release_hist.release_date',
+				'release_hist.release_date_parsed',
 				'release_hist.romaji',
 				'release_hist.title',
 				'release_hist.amazon',

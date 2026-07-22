@@ -35,7 +35,7 @@ git clone https://github.com/{YOUR_ACCOUNT_HERE}/ranobedb.git
 pnpm install
 ```
 
-3. Copy the `.env.example` file to `.env` and fill it out. If you are only running the site locally, you can skip filling out the `MAILGUN_DOMAIN` and `MAILGUN_API_KEY` fields
+3. Copy the `.env.example` file to `.env` and fill it out. If you are only running the site locally, you can fill the `MAILGUN_DOMAIN` and `MAILGUN_API_KEY` fields with dummy values
 
 4. Create a PostgreSQL database with the same name as the one you put in the `DATABASE_URL` env variable, then run the database migration script
 

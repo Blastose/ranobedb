@@ -29,7 +29,7 @@ export const load = async ({ params, locals, url }) => {
 		isCurrentUser = true;
 	}
 
-	let query = DBBooks.fromDB(db)
+	let query = DBBooks.fromDB(db, user)
 		.getBooks()
 		.innerJoin('user_list_book', 'user_list_book.book_id', 'cte_book.id')
 		.select(['user_list_book.finished'])

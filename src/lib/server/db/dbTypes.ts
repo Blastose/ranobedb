@@ -287,6 +287,7 @@ export interface Release {
 	pages: number | null;
 	rakuten: string | null;
 	release_date: number;
+	release_date_parsed: Generated<DateString | null>;
 	romaji: string | null;
 	title: string;
 	website: string | null;
@@ -315,6 +316,7 @@ export interface ReleaseHist {
 	pages: number | null;
 	rakuten: string | null;
 	release_date: number;
+	release_date_parsed: Generated<DateString | null>;
 	romaji: string | null;
 	title: string;
 	website: string | null;
