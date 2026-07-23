@@ -15,16 +15,3 @@ ALTER TABLE public.saved_filter
 ADD CONSTRAINT saved_filter_pkey PRIMARY KEY (user_id, item_name, is_list, name);
 `.execute(db);
 }
-
-export async function down(db: Kysely<unknown>): Promise<void> {
-	await sql`
-ALTER TABLE public.saved_filter
-DROP CONSTRAINT saved_filter_pkey;
-
-ALTER TABLE public.saved_filter
-ADD CONSTRAINT saved_filter_pkey PRIMARY KEY (user_id, item_name, is_list);
-
-ALTER TABLE public.saved_filter
-DROP COLUMN name;
-`.execute(db);
-}
