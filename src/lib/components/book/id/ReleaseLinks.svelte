@@ -3,6 +3,8 @@
 	import { createDropdownMenu, melt } from '@melt-ui/svelte';
 	import { fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import { getDomain } from '$lib/components/db-links/db-ext-links';
+	import Favicon from '$lib/components/db-links/Favicon.svelte';
 
 	interface Props {
 		release: BookOne['releases'][number];
@@ -10,34 +12,20 @@
 
 	let { release }: Props = $props();
 
-	function collectLinks(release: BookOne['releases'][number]): { url: string; display: string }[] {
-		const links: { url: string; display: string }[] = [];
-		if (release.website) {
-			links.push({
-				display: 'Official website',
-				url: release.website,
-			});
-		}
-		if (release.amazon) {
-			links.push({
-				display: 'Amazon',
-				url: release.amazon,
-			});
-		}
-		if (release.bookwalker) {
-			links.push({
-				display: 'BookWalker',
-				url: release.bookwalker,
-			});
-		}
-		if (release.rakuten) {
-			links.push({
-				display: 'Rakuten',
-				url: release.rakuten,
-			});
-		}
-
-		return links;
+	function collectLinks(release: BookOne['releases'][number]) {
+		const config = [
+			{ field: 'website' as const, display: 'Official website' },
+			{ field: 'amazon' as const, display: 'Amazon' },
+			{ field: 'bookwalker' as const, display: 'BookWalker' },
+			{ field: 'rakuten' as const, display: 'Rakuten' },
+		];
+		return config
+			.filter((c) => release[c.field])
+			.map((c) => ({
+				url: release[c.field]!,
+				display: c.display,
+				domain: getDomain(release[c.field]!),
+			}));
 	}
 
 	const {
@@ -71,7 +59,12 @@
 	<div use:melt={$overlay} class="fixed inset-0 z-40"></div>
 	<section class="menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
 		{#each links as link}
-			<a use:melt={$item} class="sidebar-item" href={link.url} target="_blank">{link.display}</a>
+			<a use:melt={$item} class="sidebar-item items-center" href={link.url} target="_blank">
+				{#if link.domain}
+					<Favicon domain={link.domain} name={link.display} />
+				{/if}
+				{link.display}
+			</a>
 		{/each}
 	</section>
 {/if}

@@ -91,12 +91,12 @@
 		{/if}
 	</section>
 
-	<section>
+	<section class="flex flex-col gap-1">
 		<h2 class="text-lg font-bold">Links</h2>
 		{#if staff.website || staff.bookwalker_id || staff.bookwalker_gl_con_id || staff.twitter_id || staff.pixiv_id || staff.wikidata_id || staff.syosetu_id || staff.kakuyomu_id || staff.bsky_id}
-			<div class="flex flex-wrap gap-x-4">
+			<div class="flex flex-wrap gap-x-2 gap-y-2">
 				{#if staff.website}
-					<a href={staff.website} target="_blank" class="link">Website</a>
+					<DbExtLinkShort href={staff.website} name="Website" />
 				{/if}
 				{#if staff.syosetu_id}
 					<DbExtLinkShort fullLink={{ ...syosetuLink, value: staff.syosetu_id }} />
