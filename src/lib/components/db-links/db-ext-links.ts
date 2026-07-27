@@ -84,3 +84,37 @@ export function buildLink(fullLink: FullLink): string {
 	const { before, after, value } = fullLink;
 	return `${before}${value}${after}`;
 }
+
+export function getDomain(url: string): string {
+	try {
+		return new URL(url).hostname;
+	} catch {
+		return '';
+	}
+}
+
+export function faviconUrl(domain: string): string {
+	return `/external-links/favicon?domain=${domain}`;
+}
+
+// Override domains for favicon lookup to avoid caching for similar domains (e.g. amazon.co.jp, amazon.com, etc.)
+export const faviconDomains: Record<string, string | undefined> = {
+	Amazon: 'www.amazon.com',
+};
+
+export const linkColors: Record<string, string | undefined> = {
+	Twitter: '29, 161, 242',
+	Amazon: '255, 153, 0',
+	Rakuten: '191, 0, 0',
+	BookWalker: '50, 162, 253',
+	'BookWalker Global': '20, 120, 255',
+	AniDB: '180, 125, 10',
+	MyAnimeList: '66, 133, 255',
+	Anilist: '20, 169, 255',
+	Pixiv: '0, 150, 250',
+	Syosetu: '90, 200, 248',
+	Kakuyomu: '33, 150, 243',
+	Bluesky: '0, 133, 255',
+	Alphapolis: '225, 140, 0',
+	Wikidata: '0, 142, 153',
+};

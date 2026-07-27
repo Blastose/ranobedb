@@ -17,6 +17,7 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { userListReleaseSchema } from '$lib/server/zod/schema';
 	import BookImageBadge from '$lib/components/book/BookImageBadge.svelte';
+	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 
 	interface Props {
 		release: Release;
@@ -93,21 +94,21 @@
 		</section>
 	{/if}
 
-	<section>
+	<section class="flex flex-col gap-1">
 		<h2 class="text-lg font-bold">Links</h2>
 		{#if release.website || release.amazon || release.bookwalker || release.rakuten}
-			<div class="flex flex-wrap gap-x-4">
+			<div class="flex flex-wrap gap-x-2 gap-y-2">
 				{#if release.website}
-					<a href={release.website} target="_blank" class="link">Website</a>
+					<DbExtLinkShort href={release.website} name="Website" />
 				{/if}
 				{#if release.amazon}
-					<a href={release.amazon} target="_blank" class="link">Amazon</a>
+					<DbExtLinkShort href={release.amazon} name="Amazon" />
 				{/if}
 				{#if release.bookwalker}
-					<a href={release.bookwalker} target="_blank" class="link">BookWalker</a>
+					<DbExtLinkShort href={release.bookwalker} name="BookWalker" />
 				{/if}
 				{#if release.rakuten}
-					<a href={release.rakuten} target="_blank" class="link">Rakuten</a>
+					<DbExtLinkShort href={release.rakuten} name="Rakuten" />
 				{/if}
 			</div>
 		{:else}
@@ -116,21 +117,19 @@
 	</section>
 
 	{#if release.isbn13}
-		<section>
+		<section class="flex flex-col gap-1">
 			<h2 class="text-lg font-bold">ISBN lookup</h2>
-			<div class="flex flex-wrap gap-x-4">
+			<div class="flex flex-wrap gap-x-2 gap-y-2">
 				{#if release.lang === 'ja'}
-					<a
+					<DbExtLinkShort
 						href="https://ja.wikipedia.org/wiki/%E7%89%B9%E5%88%A5:%E6%96%87%E7%8C%AE%E8%B3%87%E6%96%99?isbn={release.isbn13}"
-						target="_blank"
-						class="link">Wikipedia book sources</a
-					>
+						name="Wikipedia book sources"
+					/>
 				{:else}
-					<a
+					<DbExtLinkShort
 						href="https://en.wikipedia.org/wiki/Special:BookSources?isbn={release.isbn13}"
-						target="_blank"
-						class="link">Wikipedia book sources</a
-					>
+						name="Wikipedia book sources"
+					/>
 				{/if}
 			</div>
 		</section>
