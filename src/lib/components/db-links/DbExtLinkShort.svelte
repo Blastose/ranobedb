@@ -59,9 +59,9 @@
 		background-color: rgba(var(--brand, 0, 0, 0), 0.22);
 	}
 	:global(.dark) a.link-box.branded {
-		background-color: rgba(var(--brand, 0, 0, 0), 0.15);
+		background-color: rgba(var(--brand, 0, 0, 0), 0.2);
 	}
 	:global(.dark) a.link-box.branded:hover {
-		background-color: rgba(var(--brand, 0, 0, 0), 0.27);
+		background-color: rgba(var(--brand, 0, 0, 0), 0.3);
 	}
 </style>

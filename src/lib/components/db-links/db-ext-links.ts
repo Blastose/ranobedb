@@ -117,4 +117,5 @@ export const linkColors: Record<string, string | undefined> = {
 	Bluesky: '0, 133, 255',
 	Alphapolis: '225, 140, 0',
 	Wikidata: '0, 142, 153',
+	Website: '115, 125, 255',
 };
