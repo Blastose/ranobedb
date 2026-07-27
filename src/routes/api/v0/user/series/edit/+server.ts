@@ -49,7 +49,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const [existingUserSeries, userCustLabels] = await Promise.all([
 		db
 			.selectFrom('user_list_series')
-			.select('series_id')
+			.innerJoin('user_list_series_label', 'user_list_series.series_id', 'label_id')
+			.select('user_list_series.series_id')
+			.select('user_list_series_label.label_id')
 			.where('user_id', '=', user.id)
 			.where('series_id', '=', data.seriesId)
 			.executeTakeFirst(),
@@ -61,8 +63,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 			.execute(),
 	]);
 
-	if (existingUserSeries) {
-		return error(400, 'Series is already in list');
+	if (!existingUserSeries) {
+		return error(400, 'Series is not in the list');
 	}
 
 	const userCustLabelIds = new Set(userCustLabels.map((l) => l.id));
@@ -76,11 +78,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const readingStatusId = defaultUserListLabelsMap.get(data.readingStatus) ?? 1;
 	const dbSeriesListActions = new DBSeriesListActions(db);
 
-	await dbSeriesListActions.addSeriesToList({
-		trx: undefined,
+	await dbSeriesListActions.editSeriesInList({
 		series_id: data.seriesId,
 		user_id: user.id,
-		labelIds: [],
+		labelIds: [existingUserSeries.label_id],
 		readingStatusId,
 		langs: data.langs,
 		formats: data.formats,
