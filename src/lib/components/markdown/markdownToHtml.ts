@@ -9,7 +9,7 @@ export const converter = (text: string, type: 'full' | 'singleline') => {
 		parser = SimpleMarkdown.parserFor(rules);
 	} else {
 		parser = SimpleMarkdown.parserFor(rulesSingleLine);
-		text = text.replaceAll('\n', '');
+		text = text.replaceAll('\n', ' ');
 	}
 
 	const parse = (source: string) => {
