@@ -545,6 +545,17 @@ export const publisherSchema = z.object({
 
 	name: z.string().trim().max(2000),
 	romaji: zRomaji,
+	aliases: z
+		.string()
+		.trim()
+		.max(2000)
+		.transform((v) =>
+			v
+				.split('\n')
+				.map((v) => v.trim())
+				.join('\n'),
+		)
+		.nullish(),
 	description: zDescription,
 	bookwalker: zLink([
 		'bookwalker.jp',

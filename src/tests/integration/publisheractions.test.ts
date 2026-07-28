@@ -49,6 +49,7 @@ describe('publisher actions', () => {
 						{ id: otherPublisher.id, name: otherPublisher.name, relation_type: 'imprint' },
 					],
 					name: 'Publisher',
+					aliases: 'Old Name',
 					bookwalker: 'https://bookwalker.jp/company/24/',
 					website: 'https://www.example.com',
 					twitter_id: 'example',
@@ -68,6 +69,7 @@ describe('publisher actions', () => {
 			cb_publisher: (p) => {
 				expect(p.child_publishers.length).toBe(1);
 				expect(p.child_publishers.at(0)?.relation_type).toBe('imprint');
+				expect(p.aliases).toBe('Old Name');
 			},
 		});
 
@@ -86,6 +88,7 @@ describe('publisher actions', () => {
 					child_publishers: [
 						{ id: otherPublisher.id, name: otherPublisher.name, relation_type: 'parent company' },
 					],
+					aliases: 'Also Known As',
 					bookwalker: undefined,
 					website: undefined,
 					twitter_id: undefined,
@@ -102,6 +105,7 @@ describe('publisher actions', () => {
 			cb_publisher: (p) => {
 				expect(p.child_publishers.length).toBe(1);
 				expect(p.child_publishers.at(0)?.relation_type).toBe('parent company');
+				expect(p.aliases).toBe('Also Known As');
 			},
 		});
 		await testPublishers({
@@ -115,7 +119,7 @@ describe('publisher actions', () => {
 		changedPublisher = await dbPublishers.getPublisherEdit(publisher.id).executeTakeFirstOrThrow();
 		await dbPublisherActions.editPublisher(
 			{
-				publisher: { ...changedPublisher, child_publishers: [], comment: 'Edit' },
+				publisher: { ...changedPublisher, child_publishers: [], aliases: '', comment: 'Edit' },
 				id: publisher.id,
 			},
 			ranobeBot,

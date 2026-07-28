@@ -58,6 +58,7 @@ export class DBPublishers {
 			.innerJoin('change', 'change.id', 'publisher_hist.change_id')
 			.select([
 				'publisher_hist.change_id as id',
+				'publisher_hist.aliases',
 				'publisher_hist.description',
 				'publisher_hist.name',
 				'publisher_hist.romaji',
@@ -121,6 +122,7 @@ export class DBPublishers {
 			.selectFrom('publisher')
 			.select([
 				'publisher.id',
+				'publisher.aliases',
 				'publisher.description',
 				'publisher.name',
 				'publisher.romaji',
@@ -157,6 +159,7 @@ export class DBPublishers {
 			.innerJoin('change', 'change.id', 'publisher_hist.change_id')
 			.select([
 				'publisher_hist.change_id as id',
+				'publisher_hist.aliases',
 				'publisher_hist.description',
 				'publisher_hist.name',
 				'publisher_hist.romaji',

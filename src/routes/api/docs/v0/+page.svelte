@@ -32,8 +32,8 @@
 					href="https://discord.com/channels/1252094266650656788/1259922625300529294"
 					class="link">#development</a
 				>
-				channel on our <a href="https://discord.gg/ZeAnhGncFx" target="_blank">Discord server</a> to
-				ask for any help or if you have any questions.
+				channel on our <a href="https://discord.gg/ZeAnhGncFx" target="_blank">Discord server</a> to ask
+				for any help or if you have any questions.
 			</p>
 		</section>
 

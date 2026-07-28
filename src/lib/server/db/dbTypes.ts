@@ -239,6 +239,7 @@ export interface PasswordResetToken {
 }
 
 export interface Publisher {
+	aliases: string;
 	bookwalker: string | null;
 	description: string;
 	hidden: boolean;
@@ -252,6 +253,7 @@ export interface Publisher {
 }
 
 export interface PublisherHist {
+	aliases: string;
 	bookwalker: string | null;
 	change_id: number;
 	description: string;

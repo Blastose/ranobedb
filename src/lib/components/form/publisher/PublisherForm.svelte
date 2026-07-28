@@ -64,6 +64,16 @@
 		placeholder="Romanization"
 	/>
 
+	<TextField
+		form={sForm}
+		type="textarea"
+		field="aliases"
+		label="Aliases"
+		showRequiredSymbolIfRequired={false}
+		placeholder="Aliases separated by new lines"
+		textareaRows={3}
+	/>
+
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
 		<div class="flex flex-col gap-2">

@@ -13,6 +13,7 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { userListPublisherSchema } from '$lib/server/zod/schema';
 	import FavoritePublisher from '$lib/components/form/publisher/FavoritePublisher.svelte';
+	import Collapsible from '$lib/components/display/Collapsible.svelte';
 
 	interface Props {
 		publisher: Publisher;
@@ -63,6 +64,19 @@
 			<p class="italic mb-2">No biography added</p>
 		{/if}
 	</section>
+
+	{#if publisher.aliases}
+		<section>
+			<Collapsible open={false}>
+				{#snippet summary()}
+					<h2 class="font-bold text-lg">Aliases</h2>
+				{/snippet}
+				{#snippet details()}
+					<p>{publisher.aliases.split('\n').join(', ')}</p>
+				{/snippet}
+			</Collapsible>
+		</section>
+	{/if}
 
 	<section class="flex flex-col gap-1">
 		<h2 class="text-lg font-bold">Links</h2>
