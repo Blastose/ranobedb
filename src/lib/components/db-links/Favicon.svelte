@@ -19,4 +19,3 @@
 </script>
 
 <img {src} width="16" height="16" alt="" class="shrink-0 w-4 h-4 object-contain" loading="lazy" />
-

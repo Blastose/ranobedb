@@ -1,7 +1,7 @@
 import type { CompiledQuery } from 'kysely';
 
 export function compileQuery(query: CompiledQuery) {
-	query.sql, query.parameters;
+	(query.sql, query.parameters);
 
 	let sql = query.sql;
 	for (const [index, value] of query.parameters.entries()) {

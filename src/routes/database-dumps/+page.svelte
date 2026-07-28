@@ -13,8 +13,8 @@
 			<p>
 				These database dumps are generated using <code>pg_dump</code>'s plain-text format and then
 				compressed with gzip. You can use
-				<code>psql</code> to restore the database. Once restored, you can connect to your PostgreSQL
-				database and start querying the data.
+				<code>psql</code> to restore the database. Once restored, you can connect to your PostgreSQL database
+				and start querying the data.
 			</p>
 			<p>These dumps contain almost everything in RanobeDB, expect for the following:</p>
 			<ul>
