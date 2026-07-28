@@ -7,6 +7,7 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { withSeriesTitleCte } from '$lib/server/db/series/series';
 import type { User } from '$lib/server/lucia/lucia';
 import { sql } from 'kysely';
+import { escapeRegex } from '$lib/db/match';
 
 async function getSeriesByTitle(title: string, titleAsNumber: number, user: User | null) {
 	return await db
@@ -28,6 +29,13 @@ async function getSeriesByTitle(title: string, titleAsNumber: number, user: User
 							),
 					),
 				);
+				ors.push(
+					eb.fn<boolean>('regexp_like', [
+						'series.aliases',
+						eb.val(`^${escapeRegex(title)}$`),
+						eb.val('im'),
+					]),
+				);
 				if (!isNaN(titleAsNumber)) {
 					ors.push(eb('series.id', '=', titleAsNumber));
 				}
@@ -41,10 +49,30 @@ async function getSeriesByTitle(title: string, titleAsNumber: number, user: User
 		.select((eb) =>
 			eb.fn
 				.max(
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(title), eb.ref('series_title.title')]),
-						eb.fn('word_similarity', [eb.val(title), eb.ref('series_title.romaji')]),
-					]),
+					eb
+						.case()
+						.when(
+							eb.or([
+								eb('series_title.title', 'ilike', title ?? ''),
+								eb('series_title.romaji', 'ilike', title ?? ''),
+							]),
+						)
+						.then(2)
+						.when(
+							eb.fn('regexp_like', [
+								'cte_series.aliases',
+								eb.val(`^${escapeRegex(title)}$`),
+								eb.val('im'),
+							]),
+						)
+						.then(1)
+						.else(
+							eb.fn('greatest', [
+								eb.fn('word_similarity', [eb.val(title), eb.ref('series_title.title')]),
+								eb.fn('word_similarity', [eb.val(title), eb.ref('series_title.romaji')]),
+							]),
+						)
+						.end(),
 				)
 				.as('sim_score'),
 		)

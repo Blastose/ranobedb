@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { publisherFilters } from '$lib/server/zod/schema';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
- 	import PublisherFiltersInput from './PublisherFiltersInput.svelte';
+	import PublisherFiltersInput from './PublisherFiltersInput.svelte';
 
 	export let filtersForm: SuperValidated<Infer<typeof publisherFilters>>;
 

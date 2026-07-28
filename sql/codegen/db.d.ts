@@ -3,670 +3,727 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType } from "kysely";
+import type { ColumnType } from 'kysely';
 
-export type ArrayType<T> = ArrayTypeImpl<T> extends (infer U)[]
-  ? U[]
-  : ArrayTypeImpl<T>;
+export type ArrayType<T> = ArrayTypeImpl<T> extends (infer U)[] ? U[] : ArrayTypeImpl<T>;
 
-export type ArrayTypeImpl<T> = T extends ColumnType<infer S, infer I, infer U>
-  ? ColumnType<S[], I[], U[]>
-  : T[];
+export type ArrayTypeImpl<T> =
+	T extends ColumnType<infer S, infer I, infer U> ? ColumnType<S[], I[], U[]> : T[];
 
-export type DbItem = "book" | "publisher" | "release" | "series" | "staff";
+export type DbItem = 'book' | 'publisher' | 'release' | 'series' | 'staff';
 
-export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
-  ? ColumnType<S, I | undefined, U>
-  : ColumnType<T, T | undefined, T>;
+export type Generated<T> =
+	T extends ColumnType<infer S, infer I, infer U>
+		? ColumnType<S, I | undefined, U>
+		: ColumnType<T, T | undefined, T>;
 
 export type Json = JsonValue;
 
 export type JsonArray = JsonValue[];
 
 export type JsonObject = {
-  [x: string]: JsonValue | undefined;
+	[x: string]: JsonValue | undefined;
 };
 
 export type JsonPrimitive = boolean | number | string | null;
 
 export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
 
-export type Language = "ar" | "bg" | "ca" | "ck" | "cs" | "da" | "de" | "el" | "en" | "eo" | "es" | "eu" | "fa" | "fi" | "fr" | "ga" | "gd" | "he" | "hi" | "hr" | "hu" | "id" | "it" | "iu" | "ja" | "ko" | "la" | "lt" | "lv" | "mk" | "ms" | "nl" | "no" | "pl" | "pt-br" | "pt-pt" | "ro" | "ru" | "sk" | "sl" | "sr" | "sv" | "ta" | "th" | "tr" | "uk" | "ur" | "vi" | "zh-Hans" | "zh-Hant";
+export type Language =
+	| 'ar'
+	| 'bg'
+	| 'ca'
+	| 'ck'
+	| 'cs'
+	| 'da'
+	| 'de'
+	| 'el'
+	| 'en'
+	| 'eo'
+	| 'es'
+	| 'eu'
+	| 'fa'
+	| 'fi'
+	| 'fr'
+	| 'ga'
+	| 'gd'
+	| 'he'
+	| 'hi'
+	| 'hr'
+	| 'hu'
+	| 'id'
+	| 'it'
+	| 'iu'
+	| 'ja'
+	| 'ko'
+	| 'la'
+	| 'lt'
+	| 'lv'
+	| 'mk'
+	| 'ms'
+	| 'nl'
+	| 'no'
+	| 'pl'
+	| 'pt-br'
+	| 'pt-pt'
+	| 'ro'
+	| 'ru'
+	| 'sk'
+	| 'sl'
+	| 'sr'
+	| 'sv'
+	| 'ta'
+	| 'th'
+	| 'tr'
+	| 'uk'
+	| 'ur'
+	| 'vi'
+	| 'zh-Hans'
+	| 'zh-Hant';
 
-export type ListLabelTarget = "book" | "both" | "series";
+export type ListLabelTarget = 'book' | 'both' | 'series';
 
-export type ListReleaseStatus = "deleted" | "notify" | "on loan" | "owned" | "pending" | "unknown";
+export type ListReleaseStatus = 'deleted' | 'notify' | 'on loan' | 'owned' | 'pending' | 'unknown';
 
-export type PublisherRelType = "imprint" | "parent brand" | "parent company" | "subsidiary";
+export type PublisherRelType = 'imprint' | 'parent brand' | 'parent company' | 'subsidiary';
 
-export type ReleaseFormat = "audio" | "digital" | "print";
+export type ReleaseFormat = 'audio' | 'digital' | 'print';
 
-export type ReleasePublisherType = "imprint" | "publisher";
+export type ReleasePublisherType = 'imprint' | 'publisher';
 
-export type ReleaseType = "complete" | "omnibus" | "partial";
+export type ReleaseType = 'complete' | 'omnibus' | 'partial';
 
-export type SeriesBookType = "main" | "sub";
+export type SeriesBookType = 'main' | 'sub';
 
-export type SeriesRelType = "alternate version" | "main story" | "parent story" | "prequel" | "sequel" | "side story" | "spin-off";
+export type SeriesRelType =
+	| 'alternate version'
+	| 'main story'
+	| 'parent story'
+	| 'prequel'
+	| 'sequel'
+	| 'side story'
+	| 'spin-off';
 
-export type SeriesStatus = "cancelled" | "completed" | "hiatus" | "ongoing" | "stalled" | "unknown";
+export type SeriesStatus = 'cancelled' | 'completed' | 'hiatus' | 'ongoing' | 'stalled' | 'unknown';
 
-export type StaffRole = "artist" | "author" | "editor" | "narrator" | "staff" | "translator";
+export type StaffRole = 'artist' | 'author' | 'editor' | 'narrator' | 'staff' | 'translator';
 
-export type TagType = "content" | "demographic" | "genre" | "tag";
+export type TagType = 'content' | 'demographic' | 'genre' | 'tag';
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export type UserRole = "adder" | "admin" | "banned" | "editor" | "moderator" | "user";
+export type UserRole = 'adder' | 'admin' | 'banned' | 'editor' | 'moderator' | 'user';
 
 export interface AuthSession {
-  expires_at: Timestamp;
-  id: string;
-  user_id: string;
+	expires_at: Timestamp;
+	id: string;
+	user_id: string;
 }
 
 export interface AuthUser {
-  display_prefs: Generated<Json>;
-  home_display_settings: Generated<Json>;
-  id: string;
-  id_numeric: Generated<number>;
-  joined: Generated<Timestamp>;
-  profile_image_id: number | null;
-  role: Generated<UserRole>;
-  username: string;
-  username_lowercase: string;
+	display_prefs: Generated<Json>;
+	home_display_settings: Generated<Json>;
+	id: string;
+	id_numeric: Generated<number>;
+	joined: Generated<Timestamp>;
+	profile_image_id: number | null;
+	role: Generated<UserRole>;
+	username: string;
+	username_lowercase: string;
 }
 
 export interface AuthUserCredentials {
-  email: string;
-  email_verified: Generated<boolean>;
-  hashed_password: string;
-  user_id: string;
+	email: string;
+	email_verified: Generated<boolean>;
+	hashed_password: string;
+	user_id: string;
 }
 
 export interface Book {
-  c_release_date: number;
-  c_release_dates: Generated<Json>;
-  description: string;
-  description_ja: string;
-  hidden: boolean;
-  id: Generated<number>;
-  image_id: number | null;
-  locked: boolean;
-  olang: Language;
-  release_date: number;
+	c_release_date: number;
+	c_release_dates: Generated<Json>;
+	description: string;
+	description_ja: string;
+	hidden: boolean;
+	id: Generated<number>;
+	image_id: number | null;
+	locked: boolean;
+	olang: Language;
+	release_date: number;
 }
 
 export interface BookEdition {
-  book_id: number;
-  eid: number;
-  lang: Language | null;
-  title: string;
+	book_id: number;
+	eid: number;
+	lang: Language | null;
+	title: string;
 }
 
 export interface BookEditionHist {
-  change_id: number;
-  eid: number;
-  lang: Language | null;
-  title: string;
+	change_id: number;
+	eid: number;
+	lang: Language | null;
+	title: string;
 }
 
 export interface BookHist {
-  c_release_date: Generated<number>;
-  c_release_dates: Generated<Json>;
-  change_id: number;
-  description: string;
-  description_ja: string;
-  image_id: number | null;
-  olang: Language;
-  release_date: number;
+	c_release_date: Generated<number>;
+	c_release_dates: Generated<Json>;
+	change_id: number;
+	description: string;
+	description_ja: string;
+	image_id: number | null;
+	olang: Language;
+	release_date: number;
 }
 
 export interface BookStaffAlias {
-  book_id: number;
-  eid: number;
-  note: string;
-  role_type: StaffRole;
-  staff_alias_id: number;
+	book_id: number;
+	eid: number;
+	note: string;
+	role_type: StaffRole;
+	staff_alias_id: number;
 }
 
 export interface BookStaffAliasHist {
-  change_id: number;
-  eid: number;
-  note: string;
-  role_type: StaffRole;
-  staff_alias_id: number;
+	change_id: number;
+	eid: number;
+	note: string;
+	role_type: StaffRole;
+	staff_alias_id: number;
 }
 
 export interface BookTitle {
-  book_id: number;
-  lang: Language;
-  official: boolean;
-  romaji: string | null;
-  title: string;
+	book_id: number;
+	lang: Language;
+	official: boolean;
+	romaji: string | null;
+	title: string;
 }
 
 export interface BookTitleHist {
-  change_id: number;
-  lang: Language;
-  official: boolean;
-  romaji: string | null;
-  title: string;
+	change_id: number;
+	lang: Language;
+	official: boolean;
+	romaji: string | null;
+	title: string;
 }
 
 export interface Change {
-  added: Generated<Timestamp>;
-  comments: string;
-  id: Generated<number>;
-  ihid: boolean;
-  ilock: boolean;
-  item_id: number;
-  item_name: DbItem;
-  revision: number;
-  user_id: string;
+	added: Generated<Timestamp>;
+	comments: string;
+	id: Generated<number>;
+	ihid: boolean;
+	ilock: boolean;
+	item_id: number;
+	item_name: DbItem;
+	revision: number;
+	user_id: string;
 }
 
 export interface EmailVerificationCode {
-  code: string;
-  email: string;
-  expires_at: Timestamp;
-  id: Generated<number>;
-  user_id: string;
+	code: string;
+	email: string;
+	expires_at: Timestamp;
+	id: Generated<number>;
+	user_id: string;
 }
 
 export interface EmailVerificationToken {
-  expires_at: Timestamp;
-  id: Generated<number>;
-  new_email: string;
-  token_hash: string;
-  user_id: string;
+	expires_at: Timestamp;
+	id: Generated<number>;
+	new_email: string;
+	token_hash: string;
+	user_id: string;
 }
 
 export interface Image {
-  filename: string;
-  height: number;
-  id: Generated<number>;
-  nsfw: boolean;
-  spoiler: boolean;
-  width: number;
+	filename: string;
+	height: number;
+	id: Generated<number>;
+	nsfw: boolean;
+	spoiler: boolean;
+	width: number;
 }
 
 export interface KvStore {
-  key: string;
-  updated_at: Generated<Timestamp>;
-  value: Json;
+	key: string;
+	updated_at: Generated<Timestamp>;
+	value: Json;
 }
 
 export interface Notification {
-  hidden: boolean;
-  id: Generated<number>;
-  is_read: boolean;
-  item_id: number | null;
-  item_name: DbItem | null;
-  message: string;
-  notification_type: string;
-  sent: Generated<Timestamp>;
-  url: string;
-  user_id: string;
+	hidden: boolean;
+	id: Generated<number>;
+	is_read: boolean;
+	item_id: number | null;
+	item_name: DbItem | null;
+	message: string;
+	notification_type: string;
+	sent: Generated<Timestamp>;
+	url: string;
+	user_id: string;
 }
 
 export interface PasswordResetToken {
-  expires_at: Timestamp;
-  id: Generated<number>;
-  token_hash: string;
-  user_id: string;
+	expires_at: Timestamp;
+	id: Generated<number>;
+	token_hash: string;
+	user_id: string;
 }
 
 export interface ProfileImage {
-  filename: string;
-  height: number;
-  id: Generated<number>;
-  spoiler: boolean;
-  width: number;
+	filename: string;
+	height: number;
+	id: Generated<number>;
+	spoiler: boolean;
+	width: number;
 }
 
 export interface Publisher {
-  bookwalker: string | null;
-  description: string;
-  hidden: boolean;
-  id: Generated<number>;
-  locked: boolean;
-  name: string;
-  romaji: string | null;
-  twitter_id: string | null;
-  website: string | null;
-  wikidata_id: number | null;
+	aliases: Generated<string>;
+	bookwalker: string | null;
+	description: string;
+	hidden: boolean;
+	id: Generated<number>;
+	locked: boolean;
+	name: string;
+	romaji: string | null;
+	twitter_id: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface PublisherHist {
-  bookwalker: string | null;
-  change_id: number;
-  description: string;
-  name: string;
-  romaji: string | null;
-  twitter_id: string | null;
-  website: string | null;
-  wikidata_id: number | null;
+	aliases: Generated<string>;
+	bookwalker: string | null;
+	change_id: number;
+	description: string;
+	name: string;
+	romaji: string | null;
+	twitter_id: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface PublisherRelation {
-  id_child: number;
-  id_parent: number;
-  relation_type: PublisherRelType;
+	id_child: number;
+	id_parent: number;
+	relation_type: PublisherRelType;
 }
 
 export interface PublisherRelationHist {
-  change_id: number;
-  id_child: number;
-  relation_type: PublisherRelType;
+	change_id: number;
+	id_child: number;
+	relation_type: PublisherRelType;
 }
 
 export interface Release {
-  amazon: string | null;
-  bookwalker: string | null;
-  description: string;
-  format: ReleaseFormat;
-  hidden: boolean;
-  id: Generated<number>;
-  isbn13: string | null;
-  lang: Language;
-  locked: boolean;
-  pages: number | null;
-  rakuten: string | null;
-  release_date: number;
-  release_date_parsed: Generated<Timestamp | null>;
-  romaji: string | null;
-  title: string;
-  website: string | null;
+	amazon: string | null;
+	bookwalker: string | null;
+	description: string;
+	format: ReleaseFormat;
+	hidden: boolean;
+	id: Generated<number>;
+	isbn13: string | null;
+	lang: Language;
+	locked: boolean;
+	pages: number | null;
+	rakuten: string | null;
+	release_date: number;
+	release_date_parsed: Generated<Timestamp | null>;
+	romaji: string | null;
+	title: string;
+	website: string | null;
 }
 
 export interface ReleaseBook {
-  book_id: number;
-  release_id: number;
-  rtype: ReleaseType;
+	book_id: number;
+	release_id: number;
+	rtype: ReleaseType;
 }
 
 export interface ReleaseBookHist {
-  book_id: number;
-  change_id: number;
-  rtype: ReleaseType;
+	book_id: number;
+	change_id: number;
+	rtype: ReleaseType;
 }
 
 export interface ReleaseHist {
-  amazon: string | null;
-  bookwalker: string | null;
-  change_id: number;
-  description: string;
-  format: ReleaseFormat;
-  isbn13: string | null;
-  lang: Language;
-  pages: number | null;
-  rakuten: string | null;
-  release_date: number;
-  release_date_parsed: Generated<Timestamp | null>;
-  romaji: string | null;
-  title: string;
-  website: string | null;
+	amazon: string | null;
+	bookwalker: string | null;
+	change_id: number;
+	description: string;
+	format: ReleaseFormat;
+	isbn13: string | null;
+	lang: Language;
+	pages: number | null;
+	rakuten: string | null;
+	release_date: number;
+	release_date_parsed: Generated<Timestamp | null>;
+	romaji: string | null;
+	title: string;
+	website: string | null;
 }
 
 export interface ReleasePublisher {
-  publisher_id: number;
-  publisher_type: ReleasePublisherType;
-  release_id: number;
+	publisher_id: number;
+	publisher_type: ReleasePublisherType;
+	release_id: number;
 }
 
 export interface ReleasePublisherHist {
-  change_id: number;
-  publisher_id: number;
-  publisher_type: ReleasePublisherType;
+	change_id: number;
+	publisher_id: number;
+	publisher_type: ReleasePublisherType;
 }
 
 export interface SavedFilter {
-  filters: string;
-  is_list: boolean;
-  item_name: DbItem;
-  name: string;
-  user_id: string;
+	filters: string;
+	is_list: boolean;
+	item_name: DbItem;
+	name: string;
+	user_id: string;
 }
 
 export interface Series {
-  aliases: string;
-  anidb_id: number | null;
-  anilist_id: number | null;
-  bookwalker_id: number | null;
-  c_average: Generated<number>;
-  c_end_date: number;
-  c_fully_translated: Generated<ArrayType<Language>>;
-  c_latest_release_date: number;
-  c_num_books: number;
-  c_popularity: Generated<number>;
-  c_start_date: number;
-  description: string;
-  end_date: number;
-  hidden: boolean;
-  id: Generated<number>;
-  locked: boolean;
-  mal_id: number | null;
-  olang: Language;
-  publication_status: SeriesStatus;
-  start_date: number;
-  web_novel: string | null;
-  website: string | null;
-  wikidata_id: number | null;
+	aliases: string;
+	anidb_id: number | null;
+	anilist_id: number | null;
+	bookwalker_id: number | null;
+	c_average: Generated<number>;
+	c_end_date: number;
+	c_fully_translated: Generated<ArrayType<Language>>;
+	c_latest_release_date: number;
+	c_num_books: number;
+	c_popularity: Generated<number>;
+	c_start_date: number;
+	description: string;
+	end_date: number;
+	hidden: boolean;
+	id: Generated<number>;
+	locked: boolean;
+	mal_id: number | null;
+	olang: Language;
+	publication_status: SeriesStatus;
+	start_date: number;
+	web_novel: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface SeriesBook {
-  book_id: number;
-  book_type: SeriesBookType;
-  series_id: number;
-  sort_order: number;
+	book_id: number;
+	book_type: SeriesBookType;
+	series_id: number;
+	sort_order: number;
 }
 
 export interface SeriesBookHist {
-  book_id: number;
-  book_type: SeriesBookType;
-  change_id: number;
-  sort_order: number;
+	book_id: number;
+	book_type: SeriesBookType;
+	change_id: number;
+	sort_order: number;
 }
 
 export interface SeriesHist {
-  aliases: string;
-  anidb_id: number | null;
-  anilist_id: number | null;
-  bookwalker_id: number | null;
-  c_average: Generated<number>;
-  c_end_date: Generated<number>;
-  c_fully_translated: Generated<ArrayType<Language>>;
-  c_latest_release_date: Generated<number>;
-  c_popularity: Generated<number>;
-  c_start_date: Generated<number>;
-  change_id: number;
-  description: string;
-  end_date: number;
-  mal_id: number | null;
-  olang: Language;
-  publication_status: SeriesStatus;
-  start_date: number;
-  web_novel: string | null;
-  website: string | null;
-  wikidata_id: number | null;
+	aliases: string;
+	anidb_id: number | null;
+	anilist_id: number | null;
+	bookwalker_id: number | null;
+	c_average: Generated<number>;
+	c_end_date: Generated<number>;
+	c_fully_translated: Generated<ArrayType<Language>>;
+	c_latest_release_date: Generated<number>;
+	c_popularity: Generated<number>;
+	c_start_date: Generated<number>;
+	change_id: number;
+	description: string;
+	end_date: number;
+	mal_id: number | null;
+	olang: Language;
+	publication_status: SeriesStatus;
+	start_date: number;
+	web_novel: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface SeriesRelation {
-  id_child: number;
-  id_parent: number;
-  relation_type: SeriesRelType;
+	id_child: number;
+	id_parent: number;
+	relation_type: SeriesRelType;
 }
 
 export interface SeriesRelationHist {
-  change_id: number;
-  id_child: number;
-  relation_type: SeriesRelType;
+	change_id: number;
+	id_child: number;
+	relation_type: SeriesRelType;
 }
 
 export interface SeriesTag {
-  series_id: number;
-  tag_id: number;
+	series_id: number;
+	tag_id: number;
 }
 
 export interface SeriesTagHist {
-  change_id: number;
-  tag_id: number;
+	change_id: number;
+	tag_id: number;
 }
 
 export interface SeriesTitle {
-  lang: Language;
-  official: boolean;
-  romaji: string | null;
-  series_id: number;
-  title: string;
+	lang: Language;
+	official: boolean;
+	romaji: string | null;
+	series_id: number;
+	title: string;
 }
 
 export interface SeriesTitleHist {
-  change_id: number;
-  lang: Language;
-  official: boolean;
-  romaji: string | null;
-  title: string;
+	change_id: number;
+	lang: Language;
+	official: boolean;
+	romaji: string | null;
+	title: string;
 }
 
 export interface Staff {
-  bookwalker_gl_con_id: string | null;
-  bookwalker_gl_id: number | null;
-  bookwalker_id: number | null;
-  bsky_id: string | null;
-  description: string;
-  hidden: boolean;
-  id: Generated<number>;
-  kakuyomu_id: string | null;
-  locked: boolean;
-  pixiv_id: number | null;
-  syosetu_id: number | null;
-  twitter_id: string | null;
-  website: string | null;
-  wikidata_id: number | null;
+	bookwalker_gl_con_id: string | null;
+	bookwalker_gl_id: number | null;
+	bookwalker_id: number | null;
+	bsky_id: string | null;
+	description: string;
+	hidden: boolean;
+	id: Generated<number>;
+	kakuyomu_id: string | null;
+	locked: boolean;
+	pixiv_id: number | null;
+	syosetu_id: number | null;
+	twitter_id: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface StaffAlias {
-  id: Generated<number>;
-  main_alias: boolean;
-  name: string;
-  romaji: string | null;
-  staff_id: number;
+	id: Generated<number>;
+	main_alias: boolean;
+	name: string;
+	romaji: string | null;
+	staff_id: number;
 }
 
 export interface StaffAliasHist {
-  aid: number;
-  change_id: number;
-  main_alias: boolean;
-  name: string;
-  romaji: string | null;
+	aid: number;
+	change_id: number;
+	main_alias: boolean;
+	name: string;
+	romaji: string | null;
 }
 
 export interface StaffHist {
-  bookwalker_gl_con_id: string | null;
-  bookwalker_gl_id: number | null;
-  bookwalker_id: number | null;
-  bsky_id: string | null;
-  change_id: number;
-  description: string;
-  kakuyomu_id: string | null;
-  pixiv_id: number | null;
-  syosetu_id: number | null;
-  twitter_id: string | null;
-  website: string | null;
-  wikidata_id: number | null;
+	bookwalker_gl_con_id: string | null;
+	bookwalker_gl_id: number | null;
+	bookwalker_id: number | null;
+	bsky_id: string | null;
+	change_id: number;
+	description: string;
+	kakuyomu_id: string | null;
+	pixiv_id: number | null;
+	syosetu_id: number | null;
+	twitter_id: string | null;
+	website: string | null;
+	wikidata_id: number | null;
 }
 
 export interface Tag {
-  description: string | null;
-  id: Generated<number>;
-  name: string;
-  ttype: TagType;
+	description: string | null;
+	id: Generated<number>;
+	name: string;
+	ttype: TagType;
 }
 
 export interface UserBookReview {
-  book_id: number;
-  created: Generated<Timestamp>;
-  id: Generated<number>;
-  last_updated: Timestamp;
-  review_text: string;
-  score: number | null;
-  spoiler: boolean;
-  user_id: string;
+	book_id: number;
+	created: Generated<Timestamp>;
+	id: Generated<number>;
+	last_updated: Timestamp;
+	review_text: string;
+	score: number | null;
+	spoiler: boolean;
+	user_id: string;
 }
 
 export interface UserListBook {
-  added: Generated<Timestamp>;
-  book_id: number;
-  finished: Timestamp | null;
-  last_updated: Timestamp;
-  notes: string;
-  score: number | null;
-  started: Timestamp | null;
-  user_id: string;
+	added: Generated<Timestamp>;
+	book_id: number;
+	finished: Timestamp | null;
+	last_updated: Timestamp;
+	notes: string;
+	score: number | null;
+	started: Timestamp | null;
+	user_id: string;
 }
 
 export interface UserListBookLabel {
-  book_id: number;
-  label_id: number;
-  user_id: string;
+	book_id: number;
+	label_id: number;
+	user_id: string;
 }
 
 export interface UserListLabel {
-  id: number;
-  label: string;
-  private: boolean;
-  sort_order: Generated<number>;
-  target: Generated<ListLabelTarget>;
-  user_id: string;
+	id: number;
+	label: string;
+	private: boolean;
+	sort_order: Generated<number>;
+	target: Generated<ListLabelTarget>;
+	user_id: string;
 }
 
 export interface UserListPublisher {
-  added: Generated<Timestamp>;
-  publisher_id: number;
-  user_id: string;
+	added: Generated<Timestamp>;
+	publisher_id: number;
+	user_id: string;
 }
 
 export interface UserListRelease {
-  added: Generated<Timestamp>;
-  release_id: number;
-  release_status: ListReleaseStatus;
-  user_id: string;
+	added: Generated<Timestamp>;
+	release_id: number;
+	release_status: ListReleaseStatus;
+	user_id: string;
 }
 
 export interface UserListSeries {
-  added: Generated<Timestamp>;
-  finished: Timestamp | null;
-  last_updated: Timestamp;
-  notes: string;
-  notify_book: boolean;
-  notify_when_released: boolean;
-  score: number | null;
-  series_id: number;
-  show_upcoming: boolean;
-  started: Timestamp | null;
-  user_id: string;
-  volumes_read: number | null;
+	added: Generated<Timestamp>;
+	finished: Timestamp | null;
+	last_updated: Timestamp;
+	notes: string;
+	notify_book: boolean;
+	notify_when_released: boolean;
+	score: number | null;
+	series_id: number;
+	show_upcoming: boolean;
+	started: Timestamp | null;
+	user_id: string;
+	volumes_read: number | null;
 }
 
 export interface UserListSeriesFormat {
-  format: ReleaseFormat;
-  series_id: number;
-  user_id: string;
+	format: ReleaseFormat;
+	series_id: number;
+	user_id: string;
 }
 
 export interface UserListSeriesLabel {
-  label_id: number;
-  series_id: number;
-  user_id: string;
+	label_id: number;
+	series_id: number;
+	user_id: string;
 }
 
 export interface UserListSeriesLang {
-  lang: Language;
-  series_id: number;
-  user_id: string;
+	lang: Language;
+	series_id: number;
+	user_id: string;
 }
 
 export interface UserListSettings {
-  default_book_settings: Generated<Json>;
-  default_release_settings: Generated<Json>;
-  default_series_settings: Generated<Json>;
-  user_id: string;
+	default_book_settings: Generated<Json>;
+	default_release_settings: Generated<Json>;
+	default_series_settings: Generated<Json>;
+	user_id: string;
 }
 
 export interface UserListStaff {
-  added: Generated<Timestamp>;
-  notify_book: boolean;
-  only_first_book: boolean;
-  show_upcoming: boolean;
-  staff_id: number;
-  user_id: string;
+	added: Generated<Timestamp>;
+	notify_book: boolean;
+	only_first_book: boolean;
+	show_upcoming: boolean;
+	staff_id: number;
+	user_id: string;
 }
 
 export interface UserListStaffFormat {
-  format: ReleaseFormat;
-  staff_id: number;
-  user_id: string;
+	format: ReleaseFormat;
+	staff_id: number;
+	user_id: string;
 }
 
 export interface UserListStaffLang {
-  lang: Language;
-  staff_id: number;
-  user_id: string;
+	lang: Language;
+	staff_id: number;
+	user_id: string;
 }
 
 export interface UserSeriesReview {
-  created: Generated<Timestamp>;
-  id: Generated<number>;
-  last_updated: Timestamp;
-  review_text: string;
-  score: number | null;
-  series_id: number;
-  spoiler: boolean;
-  user_id: string;
-  volumes_read: number | null;
+	created: Generated<Timestamp>;
+	id: Generated<number>;
+	last_updated: Timestamp;
+	review_text: string;
+	score: number | null;
+	series_id: number;
+	spoiler: boolean;
+	user_id: string;
+	volumes_read: number | null;
 }
 
 export interface DB {
-  auth_session: AuthSession;
-  auth_user: AuthUser;
-  auth_user_credentials: AuthUserCredentials;
-  book: Book;
-  book_edition: BookEdition;
-  book_edition_hist: BookEditionHist;
-  book_hist: BookHist;
-  book_staff_alias: BookStaffAlias;
-  book_staff_alias_hist: BookStaffAliasHist;
-  book_title: BookTitle;
-  book_title_hist: BookTitleHist;
-  change: Change;
-  email_verification_code: EmailVerificationCode;
-  email_verification_token: EmailVerificationToken;
-  image: Image;
-  kv_store: KvStore;
-  notification: Notification;
-  password_reset_token: PasswordResetToken;
-  profile_image: ProfileImage;
-  publisher: Publisher;
-  publisher_hist: PublisherHist;
-  publisher_relation: PublisherRelation;
-  publisher_relation_hist: PublisherRelationHist;
-  release: Release;
-  release_book: ReleaseBook;
-  release_book_hist: ReleaseBookHist;
-  release_hist: ReleaseHist;
-  release_publisher: ReleasePublisher;
-  release_publisher_hist: ReleasePublisherHist;
-  saved_filter: SavedFilter;
-  series: Series;
-  series_book: SeriesBook;
-  series_book_hist: SeriesBookHist;
-  series_hist: SeriesHist;
-  series_relation: SeriesRelation;
-  series_relation_hist: SeriesRelationHist;
-  series_tag: SeriesTag;
-  series_tag_hist: SeriesTagHist;
-  series_title: SeriesTitle;
-  series_title_hist: SeriesTitleHist;
-  staff: Staff;
-  staff_alias: StaffAlias;
-  staff_alias_hist: StaffAliasHist;
-  staff_hist: StaffHist;
-  tag: Tag;
-  user_book_review: UserBookReview;
-  user_list_book: UserListBook;
-  user_list_book_label: UserListBookLabel;
-  user_list_label: UserListLabel;
-  user_list_publisher: UserListPublisher;
-  user_list_release: UserListRelease;
-  user_list_series: UserListSeries;
-  user_list_series_format: UserListSeriesFormat;
-  user_list_series_label: UserListSeriesLabel;
-  user_list_series_lang: UserListSeriesLang;
-  user_list_settings: UserListSettings;
-  user_list_staff: UserListStaff;
-  user_list_staff_format: UserListStaffFormat;
-  user_list_staff_lang: UserListStaffLang;
-  user_series_review: UserSeriesReview;
+	auth_session: AuthSession;
+	auth_user: AuthUser;
+	auth_user_credentials: AuthUserCredentials;
+	book: Book;
+	book_edition: BookEdition;
+	book_edition_hist: BookEditionHist;
+	book_hist: BookHist;
+	book_staff_alias: BookStaffAlias;
+	book_staff_alias_hist: BookStaffAliasHist;
+	book_title: BookTitle;
+	book_title_hist: BookTitleHist;
+	change: Change;
+	email_verification_code: EmailVerificationCode;
+	email_verification_token: EmailVerificationToken;
+	image: Image;
+	kv_store: KvStore;
+	notification: Notification;
+	password_reset_token: PasswordResetToken;
+	profile_image: ProfileImage;
+	publisher: Publisher;
+	publisher_hist: PublisherHist;
+	publisher_relation: PublisherRelation;
+	publisher_relation_hist: PublisherRelationHist;
+	release: Release;
+	release_book: ReleaseBook;
+	release_book_hist: ReleaseBookHist;
+	release_hist: ReleaseHist;
+	release_publisher: ReleasePublisher;
+	release_publisher_hist: ReleasePublisherHist;
+	saved_filter: SavedFilter;
+	series: Series;
+	series_book: SeriesBook;
+	series_book_hist: SeriesBookHist;
+	series_hist: SeriesHist;
+	series_relation: SeriesRelation;
+	series_relation_hist: SeriesRelationHist;
+	series_tag: SeriesTag;
+	series_tag_hist: SeriesTagHist;
+	series_title: SeriesTitle;
+	series_title_hist: SeriesTitleHist;
+	staff: Staff;
+	staff_alias: StaffAlias;
+	staff_alias_hist: StaffAliasHist;
+	staff_hist: StaffHist;
+	tag: Tag;
+	user_book_review: UserBookReview;
+	user_list_book: UserListBook;
+	user_list_book_label: UserListBookLabel;
+	user_list_label: UserListLabel;
+	user_list_publisher: UserListPublisher;
+	user_list_release: UserListRelease;
+	user_list_series: UserListSeries;
+	user_list_series_format: UserListSeriesFormat;
+	user_list_series_label: UserListSeriesLabel;
+	user_list_series_lang: UserListSeriesLang;
+	user_list_settings: UserListSettings;
+	user_list_staff: UserListStaff;
+	user_list_staff_format: UserListStaffFormat;
+	user_list_staff_lang: UserListStaffLang;
+	user_series_review: UserSeriesReview;
 }

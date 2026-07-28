@@ -90,7 +90,7 @@ export async function initDatabase(db: Kysely<DB>) {
 		.execute();
 	const publisher = await db
 		.insertInto('publisher')
-		.values({ description: '', hidden: false, locked: false, name: 'BestBooks' })
+		.values({ aliases: 'BB', description: '', hidden: false, locked: false, name: 'BestBooks' })
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changePublisher = await db
@@ -108,11 +108,11 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('publisher_hist')
-		.values({ change_id: changePublisher.id, description: '', name: 'BestBooks' })
+		.values({ change_id: changePublisher.id, aliases: 'BB', description: '', name: 'BestBooks' })
 		.execute();
 	const publisher2 = await db
 		.insertInto('publisher')
-		.values({ description: '', hidden: false, locked: false, name: 'GoodBooks' })
+		.values({ aliases: 'GB', description: '', hidden: false, locked: false, name: 'GoodBooks' })
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changePublisher2 = await db
@@ -130,7 +130,7 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('publisher_hist')
-		.values({ change_id: changePublisher2.id, description: '', name: 'GoodBooks' })
+		.values({ change_id: changePublisher2.id, aliases: 'GB', description: '', name: 'GoodBooks' })
 		.execute();
 	const release = await db
 		.insertInto('release')

@@ -3,6 +3,7 @@ import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { DBPublishers } from './publishers';
+import { escapeRegex } from '$lib/db/match';
 
 export async function getPublishers(params: {
 	currentPage: number;
@@ -30,29 +31,50 @@ export async function getPublishers(params: {
 
 	if (q) {
 		query = query
-			.where(
-				(eb) =>
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.name')]),
-						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
-					]),
-				'>',
-				0.3,
-			)
 			.where((eb) =>
 				eb.or([
-					eb(eb.val(q), sql.raw('<%'), eb.ref('publisher.name')).$castTo<boolean>(),
-					eb(eb.val(q), sql.raw('<%'), eb.ref('publisher.romaji')).$castTo<boolean>(),
+					eb.and([
+						eb(
+							eb.fn('greatest', [
+								eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.name')]),
+								eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
+							]),
+							'>',
+							0.3,
+						),
+						eb.or([
+							eb(eb.val(q), sql.raw('<%'), eb.ref('publisher.name')).$castTo<boolean>(),
+							eb(eb.val(q), sql.raw('<%'), eb.ref('publisher.romaji')).$castTo<boolean>(),
+						]),
+					]),
+					eb.fn<boolean>('regexp_like', [
+						'publisher.aliases',
+						eb.val(`^${escapeRegex(q)}$`),
+						eb.val('im'),
+					]),
 				]),
 			)
-			.orderBy(
-				(eb) =>
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.name')]),
-						eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
-					]),
-				'desc',
-			);
+			.select((eb) =>
+				eb
+					.case()
+					.when(
+						eb.fn<boolean>('regexp_like', [
+							'publisher.aliases',
+							eb.val(`^${escapeRegex(q)}$`),
+							eb.val('im'),
+						]),
+					)
+					.then(1)
+					.else(
+						eb.fn('greatest', [
+							eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.name')]),
+							eb.fn('word_similarity', [eb.val(q), eb.ref('publisher.romaji')]),
+						]),
+					)
+					.end()
+					.as('sim_score'),
+			)
+			.orderBy('sim_score', 'desc');
 	}
 
 	query = query.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
