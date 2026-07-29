@@ -806,6 +806,7 @@ export const scrapedBookDataSchema = z.object({
 const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),
 	romaji: z.boolean(),
+	official: z.enum(['official', 'any'] as const).default('official'),
 });
 export type LanguagePriority = z.infer<typeof zLanguagePrio>;
 

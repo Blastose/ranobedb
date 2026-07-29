@@ -18,15 +18,17 @@ function titleCaseBuilder(
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
+		const conditions = [eb('book_title.lang', '=', prio.lang)];
+
 		if (prio.romaji) {
-			cb = cb
-				.when(
-					eb.and([eb('book_title.lang', '=', prio.lang), eb('book_title.romaji', 'is not', null)]),
-				)
-				.then(count);
-		} else {
-			cb = cb.when(eb.and([eb('book_title.lang', '=', prio.lang)])).then(count);
+			conditions.push(eb('book_title.romaji', 'is not', null));
 		}
+
+		if (prio.official === 'official') {
+			conditions.push(eb('book_title.official', '=', true));
+		}
+
+		cb = cb.when(eb.and(conditions)).then(count);
 		count++;
 	}
 	// Fallback to original title if there are no matches
@@ -45,18 +47,17 @@ function titleHistCaseBuilder(
 	let count = 1;
 	const maxCount = 9999;
 	for (const prio of langPrios) {
+		const conditions = [eb('book_title_hist.lang', '=', prio.lang)];
+
 		if (prio.romaji) {
-			cb = cb
-				.when(
-					eb.and([
-						eb('book_title_hist.lang', '=', prio.lang),
-						eb('book_title_hist.romaji', 'is not', null),
-					]),
-				)
-				.then(count);
-		} else {
-			cb = cb.when(eb.and([eb('book_title_hist.lang', '=', prio.lang)])).then(count);
+			conditions.push(eb('book_title_hist.romaji', 'is not', null));
 		}
+
+		if (prio.official === 'official') {
+			conditions.push(eb('book_title_hist.official', '=', true));
+		}
+
+		cb = cb.when(eb.and(conditions)).then(count);
 		count++;
 	}
 	// Fallback to original title if there are no matches
