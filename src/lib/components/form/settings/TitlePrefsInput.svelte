@@ -4,7 +4,9 @@
 	import { langsWithoutRomaji, languageNames } from '$lib/db/dbConsts';
 	import type { displayPrefsSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
-
+	import Hr from '$lib/components/layout/Hr.svelte';
+	import { flip } from 'svelte/animate';
+	import { quintOut } from 'svelte/easing';
 	export let form: SuperForm<Infer<typeof displayPrefsSchema>, App.Superforms.Message>;
 
 	const { values, errors, valueErrors } = arrayProxy(form, 'title_prefs');
@@ -19,6 +21,7 @@
 
 		$values.push({
 			romaji: false,
+			official: 'official',
 			lang: e.currentTarget.value as Language,
 		});
 		$values = $values;
@@ -40,45 +43,57 @@
 		The title will fallback to the book's title in its original language if it doesn't have any of
 		the titles listed
 	</p>
-	<div>
-		{#each $values as title, index}
-			<div class="grid grid-cols-2 gap-2">
-				<div>
-					<p>#{index + 1} {languageNames[title.lang]}</p>
-					{#if !langsWithoutRomaji.includes(title.lang)}
-						<label class="flex gap-1 text-sm"
-							><input type="checkbox" bind:checked={title.romaji} /><span>Romaji</span></label
+	<div class="flex flex-col gap-1">
+		{#each $values as title, index (title)}
+			<div class="flex flex-col gap-1" animate:flip={{ duration: 500, easing: quintOut }}>
+				<div class="grid grid-cols-2 gap-2">
+					<div>
+						<p>#{index + 1} {languageNames[title.lang]}</p>
+
+						{#if !langsWithoutRomaji.includes(title.lang)}
+							<label class="flex gap-1 text-sm w-fit"
+								><input type="checkbox" bind:checked={title.romaji} /><span>Romaji</span></label
+							>
+						{/if}
+					</div>
+					<div class="flex gap-2 items-center justify-self-end">
+						{#if title.lang !== 'ja'}
+							<label class="flex gap-1 text-sm">
+								<select class="input w-fit reset-padding" bind:value={title.official}>
+									<option value="official">Official only</option>
+									<option value="any">Any</option>
+								</select>
+							</label>
+						{/if}
+						<button
+							class="btn rounded-full"
+							disabled={index === 0}
+							on:click={() => {
+								swap($values, index, index - 1);
+							}}
+							type="button"
+							aria-label="Move up"><Icon name="chevronUp" /></button
 						>
-					{/if}
+						<button
+							class="btn rounded-full"
+							disabled={index === $values.length - 1}
+							on:click={() => {
+								swap($values, index, index + 1);
+							}}
+							type="button"
+							aria-label="Move down"><Icon name="chevronDown" /></button
+						>
+						<button
+							class="btn rounded-full"
+							on:click={() => {
+								handleRemoveLanguage(index);
+							}}
+							type="button"
+							aria-label="Remove"><Icon name="close" /></button
+						>
+					</div>
 				</div>
-				<div>
-					<button
-						class="btn rounded-full"
-						disabled={index === 0}
-						on:click={() => {
-							swap($values, index, index - 1);
-						}}
-						type="button"
-						aria-label="Move up"><Icon name="chevronUp" /></button
-					>
-					<button
-						class="btn rounded-full"
-						disabled={index === $values.length - 1}
-						on:click={() => {
-							swap($values, index, index + 1);
-						}}
-						type="button"
-						aria-label="Move down"><Icon name="chevronDown" /></button
-					>
-					<button
-						class="btn rounded-full"
-						on:click={() => {
-							handleRemoveLanguage(index);
-						}}
-						type="button"
-						aria-label="Remove"><Icon name="close" /></button
-					>
-				</div>
+				{#if index !== $values.length - 1}<Hr />{:else}<div class="h-[1px]"></div>{/if}
 			</div>
 		{/each}
 	</div>

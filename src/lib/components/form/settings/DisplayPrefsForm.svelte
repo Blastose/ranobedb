@@ -10,7 +10,11 @@
 
 	export let displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
 
-	const sForm = superForm(displayPrefsForm, { dataType: 'json', invalidateAll: 'force' });
+	const sForm = superForm(displayPrefsForm, {
+		dataType: 'json',
+		invalidateAll: 'force',
+		taintedMessage: true,
+	});
 	const { form, enhance, delayed, submitting, message } = sForm;
 
 	$: if (!$delayed && $message) {

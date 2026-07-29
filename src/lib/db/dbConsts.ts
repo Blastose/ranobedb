@@ -286,8 +286,8 @@ export const userListReleaseStatus = [
 ] as const;
 
 export const defaultLangPrio: LanguagePriority[] = [
-	{ lang: 'en', romaji: false },
-	{ lang: 'ja', romaji: true },
+	{ lang: 'en', romaji: false, official: 'official' },
+	{ lang: 'ja', romaji: true, official: 'official' },
 ];
 
 export const defaultDisplayPrefs: DisplayPrefs = {

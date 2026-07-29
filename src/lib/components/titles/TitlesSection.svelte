@@ -26,7 +26,9 @@
 					<LangChip lang={title.lang} />
 
 					<div>
-						<p>{title.title}</p>
+						<p>
+							{title.title}{#if !title.official}{' [unofficial]'}{/if}
+						</p>
 						{#if title.romaji}
 							<p>{title.romaji}</p>
 						{/if}
