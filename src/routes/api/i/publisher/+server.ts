@@ -4,11 +4,32 @@ import { sql, type Expression, type SqlBool } from 'kysely';
 import { superValidate } from 'sveltekit-superforms';
 import { searchNameSchema } from '$lib/server/zod/schema';
 import { zod4 } from 'sveltekit-superforms/adapters';
+import { escapeRegex } from '$lib/db/match';
 
 async function getPublisherByName(name: string, nameAsNumber: number) {
 	return await db
 		.selectFrom('publisher')
 		.select(['publisher.name', 'publisher.id', 'publisher.romaji'])
+		.select((eb) =>
+			eb
+				.case()
+				.when(
+					eb.fn<boolean>('regexp_like', [
+						'publisher.aliases',
+						eb.val(`^${escapeRegex(name)}$`),
+						eb.val('im'),
+					]),
+				)
+				.then(1)
+				.else(
+					eb.fn('greatest', [
+						eb.fn('word_similarity', [eb.val(name), eb.ref('publisher.name')]),
+						eb.fn('word_similarity', [eb.val(name), eb.ref('publisher.romaji')]),
+					]),
+				)
+				.end()
+				.as('sim_score'),
+		)
 		.where(({ eb }) => {
 			const ors: Expression<SqlBool>[] = [];
 			ors.push(
@@ -27,6 +48,13 @@ async function getPublisherByName(name: string, nameAsNumber: number) {
 					]),
 				]),
 			);
+			ors.push(
+				eb.fn<boolean>('regexp_like', [
+					'publisher.aliases',
+					eb.val(`^${escapeRegex(name)}$`),
+					eb.val('im'),
+				]),
+			);
 
 			if (!isNaN(nameAsNumber)) {
 				ors.push(eb('publisher.id', '=', nameAsNumber));
@@ -34,14 +62,7 @@ async function getPublisherByName(name: string, nameAsNumber: number) {
 			return eb.or(ors);
 		})
 		.where('publisher.hidden', '=', false)
-		.orderBy(
-			(eb) =>
-				eb.fn('greatest', [
-					eb.fn('word_similarity', [eb.val(name), eb.ref('publisher.name')]),
-					eb.fn('word_similarity', [eb.val(name), eb.ref('publisher.romaji')]),
-				]),
-			'desc',
-		)
+		.orderBy('sim_score', 'desc')
 		.limit(16)
 		.execute();
 }

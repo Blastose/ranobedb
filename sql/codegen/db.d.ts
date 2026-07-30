@@ -287,6 +287,7 @@ export interface ProfileImage {
 }
 
 export interface Publisher {
+	aliases: Generated<string>;
 	bookwalker: string | null;
 	description: string;
 	hidden: boolean;
@@ -300,6 +301,7 @@ export interface Publisher {
 }
 
 export interface PublisherHist {
+	aliases: Generated<string>;
 	bookwalker: string | null;
 	change_id: number;
 	description: string;
@@ -383,11 +385,11 @@ export interface ReleasePublisherHist {
 }
 
 export interface SavedFilter {
-  filters: string;
-  is_list: boolean;
-  item_name: DbItem;
-  name: string;
-  user_id: string;
+	filters: string;
+	is_list: boolean;
+	item_name: DbItem;
+	name: string;
+	user_id: string;
 }
 
 export interface Series {

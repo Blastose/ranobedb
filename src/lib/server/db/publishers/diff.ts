@@ -34,6 +34,14 @@ export function getPublisherDiffs(params: {
 	);
 	pushIfNotUndefined(
 		diffs,
+		getDiffLines({
+			name: 'Aliases',
+			lines1: prevPublisherHistEdit.aliases,
+			lines2: publisherHistEdit.aliases,
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
 		getDiffWords({
 			name: 'Biography',
 			words1: prevPublisherHistEdit.description,

@@ -13,6 +13,7 @@
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import type { userListPublisherSchema } from '$lib/server/zod/schema';
 	import FavoritePublisher from '$lib/components/form/publisher/FavoritePublisher.svelte';
+	import Collapsible from '$lib/components/display/Collapsible.svelte';
 
 	interface Props {
 		publisher: Publisher;
@@ -64,15 +65,28 @@
 		{/if}
 	</section>
 
-	<section>
+	{#if publisher.aliases}
+		<section>
+			<Collapsible open={false}>
+				{#snippet summary()}
+					<h2 class="font-bold text-lg">Aliases</h2>
+				{/snippet}
+				{#snippet details()}
+					<p>{publisher.aliases.split('\n').join(', ')}</p>
+				{/snippet}
+			</Collapsible>
+		</section>
+	{/if}
+
+	<section class="flex flex-col gap-1">
 		<h2 class="text-lg font-bold">Links</h2>
 		{#if publisher.website || publisher.bookwalker || publisher.twitter_id || publisher.wikidata_id}
-			<div class="flex flex-wrap gap-x-4">
+			<div class="flex flex-wrap gap-x-2 gap-y-2">
 				{#if publisher.website}
-					<a href={publisher.website} target="_blank" class="link">Website</a>
+					<DbExtLinkShort href={publisher.website} name="Website" />
 				{/if}
 				{#if publisher.bookwalker}
-					<a href={publisher.bookwalker} target="_blank" class="link">BookWalker</a>
+					<DbExtLinkShort href={publisher.bookwalker} name="BookWalker" />
 				{/if}
 				{#if publisher.twitter_id}
 					<DbExtLinkShort fullLink={{ ...twitterLink, value: publisher.twitter_id }} />

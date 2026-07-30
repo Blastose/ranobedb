@@ -16,6 +16,7 @@
 		bookwalkerSeriesLink,
 		malLink,
 		wikidataLink,
+		getDomain,
 	} from '$lib/components/db-links/db-ext-links';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 	import TitlesSection from '$lib/components/titles/TitlesSection.svelte';
@@ -54,6 +55,15 @@
 
 	let child_series = $derived(groupBy(series.child_series, (item) => item.relation_type));
 	const displayPrefs = getDisplayPrefsContext();
+
+	function webNovelName(url: string): string {
+		const domain = getDomain(url);
+		if (domain.includes('syosetu')) return 'Syosetu';
+		if (domain.includes('kakuyomu')) return 'Kakuyomu';
+		if (domain.includes('alphapolis')) return 'Alphapolis';
+		if (domain.includes('pixiv')) return 'Pixiv';
+		return '';
+	}
 </script>
 
 <DBItemShell
@@ -164,15 +174,15 @@
 
 	<Tags tags={series.tags} />
 
-	<section>
+	<section class="flex flex-col gap-1">
 		<h2 class="font-bold text-lg">Links</h2>
 		{#if series.website || series.web_novel || series.bookwalker_id || series.anidb_id || series.wikidata_id || series.mal_id || series.anilist_id}
-			<div class="flex flex-wrap gap-x-4">
+			<div class="flex flex-wrap gap-x-2 gap-y-2">
 				{#if series.website}
-					<a href={series.website} target="_blank" class="link">Website</a>
+					<DbExtLinkShort href={series.website} name="Website" />
 				{/if}
 				{#if series.web_novel}
-					<a href={series.web_novel} target="_blank" class="link">Web novel</a>
+					<DbExtLinkShort href={series.web_novel} name={webNovelName(series.web_novel)} />
 				{/if}
 				{#if series.bookwalker_id}
 					<DbExtLinkShort fullLink={{ ...bookwalkerSeriesLink, value: series.bookwalker_id }} />

@@ -185,7 +185,7 @@ export const userListBookSchema = z.object({
 	notes: z
 		.string()
 		.trim()
-		.max(2000, { message: 'Note must between less than 2000 characters' })
+		.max(2000, { message: 'Note must be less than 2000 characters' })
 		.nullish(),
 	type: z.enum(userListFormTypes),
 });
@@ -545,6 +545,17 @@ export const publisherSchema = z.object({
 
 	name: z.string().trim().max(2000),
 	romaji: zRomaji,
+	aliases: z
+		.string()
+		.trim()
+		.max(2000)
+		.transform((v) =>
+			v
+				.split('\n')
+				.map((v) => v.trim())
+				.join('\n'),
+		)
+		.nullish(),
 	description: zDescription,
 	bookwalker: zLink([
 		'bookwalker.jp',
@@ -795,6 +806,7 @@ export const scrapedBookDataSchema = z.object({
 const zLanguagePrio = z.object({
 	lang: z.enum(languagesArray),
 	romaji: z.boolean(),
+	official: z.enum(['official', 'any'] as const).default('official'),
 });
 export type LanguagePriority = z.infer<typeof zLanguagePrio>;
 

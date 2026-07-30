@@ -60,6 +60,7 @@ export class DBPublisherActions {
 			)
 			.select([
 				'publisher.id',
+				'publisher.aliases',
 				'publisher.description',
 				'publisher.name',
 				'publisher.romaji',
@@ -133,6 +134,7 @@ export class DBPublisherActions {
 				.insertInto('publisher_hist')
 				.values({
 					change_id: reverseRelChange.change_id,
+					aliases: publisher_to_update.aliases,
 					description: publisher_to_update.description,
 					name: publisher_to_update.name,
 					romaji: publisher_to_update.romaji,
@@ -188,6 +190,7 @@ export class DBPublisherActions {
 				.insertInto('publisher_hist')
 				.values({
 					change_id: reverseRelChange.change_id,
+					aliases: publisher_to_remove.aliases,
 					description: publisher_to_remove.description,
 					name: publisher_to_remove.name,
 					romaji: publisher_to_remove.romaji,
@@ -272,6 +275,7 @@ export class DBPublisherActions {
 				.insertInto('publisher_hist')
 				.values({
 					change_id: reverseRelChange.change_id,
+					aliases: publisher_to_add.aliases,
 					description: publisher_to_add.description,
 					name: publisher_to_add.name,
 					romaji: publisher_to_add.romaji,
@@ -336,6 +340,7 @@ export class DBPublisherActions {
 					locked,
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
+					aliases: data.publisher.aliases || '',
 					description: data.publisher.description ?? '',
 					bookwalker: data.publisher.bookwalker ?? null,
 					twitter_id: data.publisher.twitter_id ?? null,
@@ -351,6 +356,7 @@ export class DBPublisherActions {
 					change_id: change.change_id,
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
+					aliases: data.publisher.aliases || '',
 					description: data.publisher.description ?? '',
 					bookwalker: data.publisher.bookwalker,
 					twitter_id: data.publisher.twitter_id,
@@ -456,6 +462,7 @@ export class DBPublisherActions {
 					locked,
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
+					aliases: data.publisher.aliases || '',
 					description: data.publisher.description ?? '',
 					bookwalker: data.publisher.bookwalker,
 					twitter_id: data.publisher.twitter_id,
@@ -483,6 +490,7 @@ export class DBPublisherActions {
 					change_id: change.change_id,
 					name: data.publisher.name,
 					romaji: data.publisher.romaji,
+					aliases: data.publisher.aliases || '',
 					description: data.publisher.description ?? '',
 					bookwalker: data.publisher.bookwalker,
 					twitter_id: data.publisher.twitter_id,

@@ -44,7 +44,6 @@ npx kysely migrate:latest
 ```
 
 5. Seed the database (optional)
-
    - Add test users from `sql/test_users.sql` or
    - Populate the database with the test database dump `db-seed.dump`
    - Run the database migration script again

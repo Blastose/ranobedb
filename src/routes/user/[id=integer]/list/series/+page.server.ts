@@ -48,9 +48,7 @@ export const load = async ({ params, locals, url }) => {
 	const userCustLabelCounts = await getUserSeriesListCounts(db, listUser.id, 11, 99).execute();
 
 	const savedFilters =
-		locals.user?.id === listUser.id
-			? await getSavedFilters(locals.user.id, 'series', true)
-			: [];
+		locals.user?.id === listUser.id ? await getSavedFilters(locals.user.id, 'series', true) : [];
 
 	const urlSearchForm = await superValidate(
 		{ filters: url.search, target: 'series', is_list: true },
