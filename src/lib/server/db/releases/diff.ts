@@ -1,3 +1,4 @@
+import { formatDuration } from '$lib/utils/duration';
 import { DateNumber } from '$lib/components/form/release/releaseDate';
 import {
 	generateReleaseBookChangeStringFromBooks,
@@ -108,6 +109,14 @@ export function getReleaseDiffs(params: {
 			name: 'Pages',
 			words1: prevReleaseHistEdit.pages?.toString(),
 			words2: releaseHistEdit.pages?.toString(),
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffChars({
+			name: 'Duration',
+			words1: formatDuration(prevReleaseHistEdit.duration),
+			words2: formatDuration(releaseHistEdit.duration),
 		}),
 	);
 	pushIfNotUndefined(

@@ -49,6 +49,8 @@ describe('release actions', () => {
 					],
 					format: 'print',
 					lang: 'ja',
+					pages: 123,
+					duration: null,
 					publishers: [
 						{
 							id: publisher.id,
@@ -154,8 +156,10 @@ describe('release actions', () => {
 							rtype: 'complete',
 						},
 					],
-					format: 'print',
+					format: 'audio',
 					lang: 'ja',
+					pages: null,
+					duration: 234,
 					publishers: [
 						{
 							id: publisher.id,

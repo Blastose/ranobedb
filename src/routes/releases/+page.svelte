@@ -3,6 +3,7 @@
 	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
 	import ListFilters from '$lib/components/form/book/ListFilters.svelte';
 	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
+	import { formatDuration } from '$lib/utils/duration';
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
@@ -56,8 +57,12 @@
 							<div class="flex justify-between">
 								<p>{new DateNumber(release.release_date).getDateFormatted()}</p>
 								<p>
-									{release.format}{#if release.pages}
-										- {release.pages} pages{/if}
+									{release.format}
+									{#if release.format === 'audio' && release.duration}
+										- {formatDuration(release.duration)}
+									{:else if release.pages}
+										- {release.pages} pages
+									{/if}
 								</p>
 							</div>
 						</div>
