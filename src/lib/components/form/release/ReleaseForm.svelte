@@ -12,6 +12,7 @@
 	import ReleasePublisherInput from './ReleasePublisherInput.svelte';
 	import ReleaseBookInput from './ReleaseBookInput.svelte';
 	import ReleaseDateInput from './ReleaseDateInput.svelte';
+	import { formFieldProxy } from 'sveltekit-superforms';
 	import { languageNames, languagesArray, releaseFormatArray } from '$lib/db/dbConsts';
 	import SelectField from '../SelectField.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
@@ -34,8 +35,21 @@
 		taintedMessage: true,
 	});
 	const { form, enhance, delayed, submitting } = sForm;
+	const { errors: durationErrors } = formFieldProxy(sForm, 'duration');
 
 	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
+
+	function onDurationHoursInput(e: Event) {
+		const hours = parseInt((e.target as HTMLInputElement).value) || 0;
+		const mins = $form.duration ? $form.duration % 60 : 0;
+		$form.duration = hours * 60 + mins || null;
+	}
+
+	function onDurationMinutesInput(e: Event) {
+		const mins = parseInt((e.target as HTMLInputElement).value) || 0;
+		const hours = $form.duration ? Math.floor($form.duration / 60) : 0;
+		$form.duration = hours * 60 + mins || null;
+	}
 </script>
 
 <!-- <SuperDebug data={$form} /> -->
@@ -95,15 +109,51 @@
 			placeholder="ISBN 13"
 			resetPadding={true}
 		/>
-		<TextField
-			form={sForm}
-			type="number"
-			field="pages"
-			label="Number of pages"
-			placeholder="Pages"
-			resetPadding={true}
-		/>
+		{#if $form.format === 'digital' || $form.format === 'print'}
+			<TextField
+				form={sForm}
+				type="number"
+				field="pages"
+				label="Number of pages"
+				placeholder="Pages"
+				resetPadding={true}
+			/>
+		{/if}
 	</div>
+
+	{#if $form.format === 'audio'}
+		<section>
+			<p>Duration</p>
+
+			<div class="flex gap-2">
+				<label class="flex flex-col gap-1 max-w-24">
+					<span>Hours</span>
+					<input
+						type="number"
+						placeholder="hrs"
+						class="input reset-padding"
+						min={0}
+						value={$form.duration ? Math.floor($form.duration / 60) : ''}
+						oninput={onDurationHoursInput}
+					/>
+				</label>
+				<label class="flex flex-col gap-1 max-w-20">
+					<span>Minutes</span>
+					<input
+						type="number"
+						placeholder="min"
+						class="input reset-padding"
+						min={0}
+						value={$form.duration ? $form.duration % 60 : ''}
+						oninput={onDurationMinutesInput}
+					/>
+				</label>
+			</div>
+			{#if $durationErrors?.length}
+				<span class="error-text-color">{$durationErrors.join(', ')}</span>
+			{/if}
+		</section>
+	{/if}
 
 	<ReleaseDateInput form={sForm} field="release_date" label="Release date" />
 

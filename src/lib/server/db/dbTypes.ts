@@ -280,6 +280,7 @@ export interface Release {
 	amazon: string | null;
 	bookwalker: string | null;
 	description: string;
+	duration: number | null;
 	format: ReleaseFormat;
 	hidden: boolean;
 	id: Generated<number>;
@@ -312,6 +313,7 @@ export interface ReleaseHist {
 	bookwalker: string | null;
 	change_id: number;
 	description: string;
+	duration: number | null;
 	format: ReleaseFormat;
 	isbn13: string | null;
 	lang: Language;
