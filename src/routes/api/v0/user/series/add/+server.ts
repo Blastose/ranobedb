@@ -22,6 +22,8 @@ const apiUserListSeriesSchema = userListSeriesSchema
 	})
 	.omit({
 		type: true,
+
+		// from my understanding this is omittable
 		labels: true,
 	});
 
@@ -41,6 +43,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const validatedBody = apiUserListSeriesSchema.safeParse(body);
 	if (!validatedBody.success) {
+		// cant use error() here because treeifyError doesnt satisfy Error
 		return json({ error: z.treeifyError(validatedBody.error) }, { status: 400 });
 	}
 

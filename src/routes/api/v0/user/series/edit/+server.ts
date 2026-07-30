@@ -3,25 +3,18 @@ import { userListSeriesSchema } from '$lib/server/zod/schema';
 import * as z from 'zod';
 import { DBSeriesListActions } from '$lib/server/db/user/series-list';
 import { db } from '$lib/server/db/db';
-import {
-	defaultUserListLabelsArray,
-	defaultUserListLabelsMap,
-	languagesArray,
-	releaseFormatArray,
-} from '$lib/db/dbConsts';
+import { defaultUserListLabelsMap } from '$lib/db/dbConsts';
 
 const maxNumberValue = 2147483647;
 
 const apiUserListSeriesSchema = userListSeriesSchema
 	.extend({
 		seriesId: z.number(),
-		formats: z.array(z.enum(releaseFormatArray)).default([]),
-		langs: z.array(z.enum(languagesArray)).default(['en']),
-		readingStatus: z.enum(defaultUserListLabelsArray).default('Reading'),
-		selectedCustLabels: z.array(z.number().min(11).max(maxNumberValue)).max(2000).default([]),
 	})
 	.omit({
 		type: true,
+
+		// from my understanding this is omittable
 		labels: true,
 	});
 
@@ -41,6 +34,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const validatedBody = apiUserListSeriesSchema.safeParse(body);
 	if (!validatedBody.success) {
+		// cant use error() here because treeifyError doesnt satisfy Error
 		return json({ error: z.treeifyError(validatedBody.error) }, { status: 400 });
 	}
 
@@ -49,9 +43,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const [existingUserSeries, userCustLabels] = await Promise.all([
 		db
 			.selectFrom('user_list_series')
-			.innerJoin('user_list_series_label', 'user_list_series.series_id', 'label_id')
-			.select('user_list_series.series_id')
-			.select('user_list_series_label.label_id')
+			.select('series_id')
 			.where('user_id', '=', user.id)
 			.where('series_id', '=', data.seriesId)
 			.executeTakeFirst(),
@@ -81,7 +73,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	await dbSeriesListActions.editSeriesInList({
 		series_id: data.seriesId,
 		user_id: user.id,
-		labelIds: [existingUserSeries.label_id],
+		labelIds: [],
 		readingStatusId,
 		langs: data.langs,
 		formats: data.formats,

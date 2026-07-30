@@ -22,6 +22,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
 	const validatedBody = apiUserRemoveSeriesSchema.safeParse(body);
 	if (!validatedBody.success) {
+		// cant use error() here because treeifyError doesnt satisfy Error
 		return json({ error: z.treeifyError(validatedBody.error) }, { status: 400 });
 	}
 
