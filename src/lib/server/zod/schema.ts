@@ -240,7 +240,7 @@ export const userListSeriesSchema = z.object({
 	notes: z
 		.string()
 		.trim()
-		.max(2000, { message: 'Note must between less than 2000 characters' })
+		.max(2000, { message: 'Note must be less than 2000 characters' })
 		.nullish(),
 	type: z.enum(userListFormTypes),
 });
