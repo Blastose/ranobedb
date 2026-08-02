@@ -1,13 +1,7 @@
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db/db.js';
 import { error, json } from '@sveltejs/kit';
-import { DBUsers } from '$lib/server/db/user/user';
 
-async function fetchFullUserInfo(locals: App.Locals) {
-	const dbUsers = new DBUsers(db);
-	if (locals.pat) {
-		return await dbUsers.getUserByPat(locals.pat);
-	}
+async function getUserInfo(locals: App.Locals) {
 	if (locals.user) {
 		return locals.user;
 	}
@@ -15,7 +9,7 @@ async function fetchFullUserInfo(locals: App.Locals) {
 }
 
 export const GET: RequestHandler = async ({ locals }) => {
-	const userInfo = await fetchFullUserInfo(locals);
+	const userInfo = await getUserInfo(locals);
 	if (!userInfo) {
 		return error(401, { message: 'unauthorized' });
 	}
