@@ -114,7 +114,7 @@ export class DBUsers {
 			username: record.username,
 			id_numeric: record.id_numeric,
 			role: record.role,
-			display_prefs: record.display_prefs as unknown as DisplayPrefs,
+			display_prefs: record.display_prefs,
 			profile_image_filename: record.profile_image_filename,
 		};
 	}
