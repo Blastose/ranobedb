@@ -6,6 +6,7 @@
 	import { languageNames } from '$lib/db/dbConsts';
 	import type { Release } from '$lib/server/db/releases/releases';
 	import type { User } from '$lib/server/lucia/lucia';
+	import { formatDuration } from '$lib/utils/duration';
 	import {
 		getDisplayPrefsContext,
 		getReleaseTitleDisplay,
@@ -72,17 +73,23 @@
 			<dd>{release.format}</dd>
 		</div>
 
+		{#if release.format === 'audio' && release.duration}
+			<div>
+				<dt>Duration</dt>
+				<dd>{formatDuration(release.duration)}</dd>
+			</div>
+		{/if}
+		{#if release.format !== 'audio' && release.pages}
+			<div>
+				<dt>Pages</dt>
+				<dd>{release.pages}</dd>
+			</div>
+		{/if}
+
 		{#if release.isbn13}
 			<div>
 				<dt>ISBN13</dt>
 				<dd>{release.isbn13}</dd>
-			</div>
-		{/if}
-
-		{#if release.pages}
-			<div>
-				<dt>Pages</dt>
-				<dd>{release.pages}</dd>
 			</div>
 		{/if}
 	</dl>
