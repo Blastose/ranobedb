@@ -127,7 +127,6 @@ export class Lucia {
 	async invalidateUserSessions(userId: string): Promise<void> {
 		await this.db.deleteFrom('auth_session').where('auth_session.user_id', '=', userId).execute();
 	}
-
 	setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date): void {
 		event.cookies.set('auth_session', token, {
 			httpOnly: true,

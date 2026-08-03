@@ -30,6 +30,7 @@
 	import RemoveProfilePictureForm from './picture/RemoveProfilePictureForm.svelte';
 	import HomeDisplayForm from './HomeDisplayForm.svelte';
 	import DeleteAccountForm from './DeleteAccountForm.svelte';
+	import PersonalAccessTokenForm from './PersonalAccessTokenForm.svelte';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
@@ -46,6 +47,7 @@
 	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 
 	export let view: SettingsTab;
+	export let personalAccessToken: string;
 </script>
 
 <div class="grid gap-4">
@@ -93,6 +95,11 @@
 			<Hr />
 			<section>
 				<PasswordForm {passwordForm} />
+			</section>
+			<Hr />
+			<section>
+				<!-- No superform used because we dont need to validate inputs -->
+				<PersonalAccessTokenForm bind:token={personalAccessToken} />
 			</section>
 			<Hr />
 			<section>

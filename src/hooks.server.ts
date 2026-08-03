@@ -1,5 +1,5 @@
 import type { Theme } from '$lib/stores/themeStore';
-import type { Handle } from '@sveltejs/kit';
+import { error, type Handle } from '@sveltejs/kit';
 import { getMode } from '$lib/mode/mode';
 import schedule from 'node-schedule';
 import { sendRecentlyReleasedNotifications } from '$lib/server/db/cron/release';
@@ -14,6 +14,7 @@ import {
 import { Lucia } from '$lib/server/lucia/lucia';
 import { db } from '$lib/server/db/db';
 import { DateNumber, DateNumberGenerator } from '$lib/components/form/release/releaseDate';
+import { DBUsers } from '$lib/server/db/user/user';
 
 schedule.scheduleJob('0 0 * * *', async function () {
 	await sendRecentlyReleasedNotifications();
@@ -53,6 +54,26 @@ export const handle: Handle = async ({ event, resolve }) => {
 
 	const todayDateNumber = new DateNumber(DateNumberGenerator.fromToday().date);
 	event.locals.today = todayDateNumber.date;
+
+	if (event.url.pathname.startsWith('/api/v0/user')) {
+		const authHeaderValue = event.request.headers.get('Authorization');
+		if (!authHeaderValue) {
+			if (!event.locals.user) return error(401, 'unauthorized');
+		} else {
+			const [type, token] = authHeaderValue.split(' ');
+			if (type !== 'Bearer' || !token) {
+				return error(400, 'Invalid authorization header format');
+			}
+
+			const dbUsers = new DBUsers(db);
+			const user = await dbUsers.getUserByPat(token);
+			if (!user) {
+				return error(401, 'unauthorized');
+			}
+			event.locals.user = user;
+			event.locals.pat = token;
+		}
+	}
 
 	const response = await resolve(event, {
 		transformPageChunk: ({ html }) => {

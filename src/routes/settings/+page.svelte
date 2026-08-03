@@ -29,6 +29,7 @@
 			listLabelsForm={data.listLabelsForm}
 			view={data.view}
 			email_verified={data.email_verified}
+			personalAccessToken={data.personalAccessToken}
 		/>
 	{:else}
 		<h2 class="text-2xl font-bold">Display preferences</h2>

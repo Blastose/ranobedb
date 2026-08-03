@@ -42,6 +42,8 @@ import { arrayDiff, arrayIntersection } from '$lib/db/array.js';
 import { sql } from 'kysely';
 import { Lucia } from '$lib/server/lucia/lucia.js';
 import { verifyPasswordHash } from '$lib/server/password/hash.js';
+import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
+import { sha256 } from '@oslojs/crypto/sha2';
 import imageSize from 'image-size';
 import sharp from 'sharp';
 import {
@@ -71,6 +73,7 @@ type SettingsWithUser = {
 	homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
 	listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
 	view: SettingsTab;
+	personalAccessToken: string;
 };
 type SettingsLoad = SettingsWithoutUser | SettingsWithUser;
 
@@ -83,6 +86,12 @@ export const load = async ({ locals, url }) => {
 
 	const dbUsers = new DBUsers(db);
 	const user = await dbUsers.getEmail(locals.user.id);
+
+	const patRecord = await db
+		.selectFrom('auth_user_personal_access_token')
+		.where('user_id', '=', locals.user.id)
+		.select('personal_access_token')
+		.executeTakeFirst();
 
 	const usernameForm = await superValidate(
 		{
@@ -164,6 +173,7 @@ export const load = async ({ locals, url }) => {
 		homeDisplaySettingsForm,
 		listLabelsForm,
 		view: settingsTabs.data.view,
+		personalAccessToken: patRecord?.personal_access_token ?? '',
 	} satisfies SettingsLoad;
 };
 
@@ -947,5 +957,40 @@ export const actions = {
 			text: 'Updated home display preferences successfully!',
 			type: 'success',
 		});
+	},
+	refreshpat: async ({ locals }) => {
+		const user = locals.user;
+		if (!user) {
+			return fail(401);
+		}
+
+		try {
+			const bytes = new Uint8Array(32);
+			crypto.getRandomValues(bytes);
+			const token = encodeBase32LowerCaseNoPadding(bytes);
+
+			await db
+				.insertInto('auth_user_personal_access_token')
+				.values({
+					user_id: user.id,
+					personal_access_token: token,
+					regenerated_at: new Date(),
+				})
+				.onConflict((oc) =>
+					oc.column('user_id').doUpdateSet({
+						personal_access_token: token,
+						regenerated_at: new Date(),
+					}),
+				)
+				.execute();
+
+			return {
+				success: true,
+				token: token,
+			};
+		} catch (e) {
+			console.error('Failed to regenerate PAT:', e);
+			return fail(500, { message: 'Failed to refresh token.' });
+		}
 	},
 };

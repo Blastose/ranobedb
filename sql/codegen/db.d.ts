@@ -139,6 +139,12 @@ export interface AuthUserCredentials {
 	user_id: string;
 }
 
+export interface AuthUserPersonalAccessToken {
+	personal_access_token: string;
+	regenerated_at: Generated<Timestamp>;
+	user_id: string;
+}
+
 export interface Book {
 	c_release_date: number;
 	c_release_dates: Generated<Json>;
@@ -671,6 +677,7 @@ export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
 	auth_user_credentials: AuthUserCredentials;
+	auth_user_personal_access_token: AuthUserPersonalAccessToken;
 	book: Book;
 	book_edition: BookEdition;
 	book_edition_hist: BookEditionHist;

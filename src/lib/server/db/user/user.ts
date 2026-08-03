@@ -85,6 +85,40 @@ export class DBUsers {
 			.executeTakeFirst();
 	}
 
+	async getUserByPat(token: string): Promise<User | null> {
+		const record = await this.db
+			.selectFrom('auth_user')
+			.innerJoin(
+				'auth_user_personal_access_token',
+				'auth_user.id',
+				'auth_user_personal_access_token.user_id',
+			)
+			.leftJoin('profile_image', 'auth_user.profile_image_id', 'profile_image.id')
+			.select([
+				'auth_user.id',
+				'auth_user.username',
+				'auth_user.id_numeric',
+				'auth_user.role',
+				'auth_user.display_prefs',
+				'profile_image.filename as profile_image_filename',
+			])
+			.where('auth_user_personal_access_token.personal_access_token', '=', token)
+			.executeTakeFirst();
+
+		if (!record) {
+			return null;
+		}
+
+		return {
+			id: record.id,
+			username: record.username,
+			id_numeric: record.id_numeric,
+			role: record.role,
+			display_prefs: record.display_prefs,
+			profile_image_filename: record.profile_image_filename,
+		};
+	}
+
 	async getUserFull(usernameemail: string) {
 		if (usernameemail.includes('@')) {
 			return await this.getUserByEmail(usernameemail);
