@@ -29,8 +29,6 @@ async function validateRequest(event: RequestEvent) {
 }
 
 async function addOrEditUserListSeries(event: RequestEvent) {
-	await validateRequest(event);
-
 	let body: unknown;
 	try {
 		body = await event.request.json();

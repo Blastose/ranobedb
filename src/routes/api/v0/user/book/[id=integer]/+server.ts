@@ -29,8 +29,6 @@ async function validateRequest(event: RequestEvent) {
 }
 
 async function addOrEditUserBook(event: RequestEvent) {
-	await validateRequest(event);
-
 	let body: unknown;
 	try {
 		body = await event.request.json();
