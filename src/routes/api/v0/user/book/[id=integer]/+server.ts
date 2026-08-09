@@ -45,7 +45,8 @@ async function addOrEditUserBook(event: RequestEvent) {
 	const data = validatedBody.data;
 	const { user, bookId } = await validateRequest(event);
 
-	const [existingUserBook, userCustLabels] = await Promise.all([
+	const [existInDatabase, existingUserBook, userCustLabels] = await Promise.all([
+		db.selectFrom('book').select('id').where('book.id', '=', bookId).executeTakeFirst(),
 		db
 			.selectFrom('user_list_book')
 			.select('book_id')
@@ -59,6 +60,10 @@ async function addOrEditUserBook(event: RequestEvent) {
 			.where('id', '>', 10)
 			.execute(),
 	]);
+
+	if (!existInDatabase) {
+		error(400, 'Book does not exist');
+	}
 
 	const userCustLabelIds = new Set(userCustLabels.map((l) => l.id));
 

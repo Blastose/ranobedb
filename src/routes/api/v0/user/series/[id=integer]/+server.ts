@@ -45,7 +45,8 @@ async function addOrEditUserListSeries(event: RequestEvent) {
 	const data = validatedBody.data;
 	const { user, series_id } = await validateRequest(event);
 
-	const [existingUserSeries, userCustLabels] = await Promise.all([
+	const [existInDatabase, existingUserSeries, userCustLabels] = await Promise.all([
+		db.selectFrom('series').select('id').where('series.id', '=', series_id).executeTakeFirst(),
 		db
 			.selectFrom('user_list_series')
 			.select('series_id')
@@ -59,6 +60,10 @@ async function addOrEditUserListSeries(event: RequestEvent) {
 			.where('id', '>', 10)
 			.execute(),
 	]);
+
+	if (!existInDatabase) {
+		error(400, 'Series does not exist');
+	}
 
 	const userCustLabelIds = new Set(userCustLabels.map((l) => l.id));
 
