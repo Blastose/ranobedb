@@ -4,7 +4,7 @@ import { superValidate, message } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { userListStaffSchema } from '$lib/server/zod/schema';
 import { db } from '$lib/server/db/db';
-import { DbStaffActions } from '$lib/server/db/user/staff-list';
+import { DBStaffListActions } from '$lib/server/db/user/staff-list';
 
 export const actions = {
 	default: async ({ params, request, locals }) => {
@@ -20,7 +20,7 @@ export const actions = {
 		}
 
 		let messageText = '';
-		const dbStaffActions = new DbStaffActions(db);
+		const dbStaffActions = new DBStaffListActions(db);
 		try {
 			if (form.data.type === 'add') {
 				await dbStaffActions.addStaffToList({

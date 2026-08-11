@@ -2,7 +2,7 @@ import { error, json, type RequestEvent, type RequestHandler } from '@sveltejs/k
 import { userListStaffSchema } from '$lib/server/zod/schema';
 import * as z from 'zod';
 import { db } from '$lib/server/db/db';
-import { DbStaffActions } from '$lib/server/db/user/staff-list';
+import { DBStaffListActions } from '$lib/server/db/user/staff-list';
 
 const apiUserListStaffSchema = userListStaffSchema.omit({
 	type: true,
@@ -56,7 +56,7 @@ async function addOrEditUserListStaff(event: RequestEvent) {
 		error(400, 'Staff does not exist');
 	}
 
-	const dbStaffActions = new DbStaffActions(db);
+	const dbStaffActions = new DBStaffListActions(db);
 	if (!existingUserStaff) {
 		await dbStaffActions.addStaffToList({
 			user_id: user.id,
@@ -86,7 +86,7 @@ async function deleteUserListStaff(event: RequestEvent) {
 		error(400, 'Staff is not in the list');
 	}
 
-	const dbStaffActions = new DbStaffActions(db);
+	const dbStaffActions = new DBStaffListActions(db);
 	await dbStaffActions.removeStaffInList({
 		user_id: user.id,
 		staff_id,

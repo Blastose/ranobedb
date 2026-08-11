@@ -8,7 +8,7 @@ import type {
 } from '$lib/server/db/dbTypes';
 import type { Insertable, Transaction } from 'kysely';
 
-export class DbStaffActions {
+export class DBStaffListActions {
 	db: Kysely<DB>;
 
 	constructor(db: Kysely<DB>) {
