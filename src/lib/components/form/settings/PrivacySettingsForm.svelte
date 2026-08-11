@@ -20,14 +20,14 @@
 
 <form method="post" action="?/privacysettings" class="flex flex-col gap-2" use:enhance>
 	<h3 class="text-lg font-bold">Profile privacy</h3>
-	<div>
+	<div class="flex flex-col gap-1">
 		<CheckboxField
 			form={sForm}
 			label="Make my profile private"
 			field="private"
 			showRequiredSymbolIfRequired={false}
 		/>
-		<p class="text-sm sub-text-alt mt-1">
+		<p class="text-sm sub-text-alt">
 			When enabled, only you can view your profile and reading list. Your edit history and reviews
 			will remain public.
 		</p>
