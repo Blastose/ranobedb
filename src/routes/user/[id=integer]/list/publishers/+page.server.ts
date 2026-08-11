@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db/db';
 import { getPublishers } from '$lib/server/db/publishers/query.js';
 import { getUserListCounts } from '$lib/server/db/user/list.js';
+import { profilePrivateError } from '$lib/server/db/user/profile-private-error.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
@@ -20,6 +21,9 @@ export const load = async ({ params, locals, url }) => {
 		error(404);
 	}
 
+	const isMyList = locals.user?.id_numeric === userIdNumeric;
+	await profilePrivateError({ routeUser: listUser, currentUser: locals.user });
+
 	const [res, listCounts] = await Promise.all([
 		getPublishers({
 			currentPage,
@@ -33,7 +37,7 @@ export const load = async ({ params, locals, url }) => {
 	]);
 
 	return {
-		isMyList: locals.user?.id_numeric === userIdNumeric,
+		isMyList,
 		listUser,
 		publishers: res.publishers,
 		count: res.count,

@@ -5,6 +5,7 @@ import {
 } from '$lib/components/form/release/releaseDate.js';
 import { groupBy } from '$lib/db/array.js';
 import { db } from '$lib/server/db/db';
+import { profilePrivateError } from '$lib/server/db/user/profile-private-error.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import {
 	releaseFiltersObjCalendarSchema,
@@ -20,6 +21,15 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 export const load = async ({ params, locals, url }) => {
 	const user = locals.user;
 	const userIdNumeric = Number(params.id);
+
+	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
+
+	if (!listUser) {
+		error(404);
+	}
+
+	const isMyList = user?.id_numeric === userIdNumeric;
+	await profilePrivateError({ routeUser: listUser, currentUser: user });
 
 	const form = await superValidate(url, zod4(releaseFiltersSchema));
 	const useReleaseLangFilters = form.data.rl.length > 0;
@@ -40,14 +50,6 @@ export const load = async ({ params, locals, url }) => {
 		{ ...form.data, p: publishers },
 		zod4(releaseFiltersObjCalendarSchema),
 	);
-
-	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
-
-	if (!listUser) {
-		error(404);
-	}
-
-	const isMyList = user?.id_numeric === userIdNumeric;
 
 	let query = db
 		.selectFrom('release')

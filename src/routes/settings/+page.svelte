@@ -27,6 +27,7 @@
 			removeProfilePictureForm={data.removeProfilePictureForm}
 			homeDisplaySettingsForm={data.homeDisplaySettingsForm}
 			listLabelsForm={data.listLabelsForm}
+			privacySettingsForm={data.privacySettingsForm}
 			view={data.view}
 			email_verified={data.email_verified}
 		/>

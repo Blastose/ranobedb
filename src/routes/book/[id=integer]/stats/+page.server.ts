@@ -25,6 +25,9 @@ export const load = async ({ params, locals, url }) => {
 		)
 		.leftJoin('profile_image', 'auth_user.profile_image_id', 'profile_image.id')
 		.where('user_list_book.book_id', '=', bookId)
+		.where((eb) =>
+			eb.or([eb('auth_user.private', '=', false), eb('auth_user.id', '=', locals.user?.id ?? '')]),
+		)
 		.select([
 			'user_list_book.last_updated',
 			'auth_user.username',

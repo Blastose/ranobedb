@@ -1,5 +1,6 @@
 import { DBBooks } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db.js';
+import { profilePrivateError } from '$lib/server/db/user/profile-private-error.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { readingLogSchema } from '$lib/server/zod/schema';
 import { error } from '@sveltejs/kit';
@@ -28,6 +29,8 @@ export const load = async ({ params, locals, url }) => {
 	if (user?.id_numeric === listUser.id_numeric) {
 		isCurrentUser = true;
 	}
+
+	await profilePrivateError({ routeUser: listUser, currentUser: user });
 
 	let query = DBBooks.fromDB(db, user)
 		.getBooks()

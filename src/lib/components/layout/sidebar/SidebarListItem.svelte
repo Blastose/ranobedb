@@ -27,7 +27,8 @@
 			| 'tag'
 			| 'bell'
 			| 'post'
-			| 'imageFrame';
+			| 'imageFrame'
+			| 'lock';
 	}
 
 	let { active, href, text, icon }: Props = $props();
@@ -77,6 +78,8 @@
 			<Icon name="post" />
 		{:else if icon === 'imageFrame'}
 			<Icon name="imageFrame" />
+		{:else if icon === 'lock'}
+			<Icon name="lock" />
 		{/if}
 	</SidebarItem>
 </li>

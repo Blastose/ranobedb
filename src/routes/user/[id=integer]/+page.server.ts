@@ -4,6 +4,7 @@ import { bookFiltersSchema, seriesFiltersSchema } from '$lib/server/zod/schema.j
 import { db } from '$lib/server/db/db.js';
 import { getUserLabelCounts, getUserListCounts } from '$lib/server/db/user/list.js';
 import { getUserSeriesListCounts } from '$lib/server/db/user/series-list.js';
+import { profilePrivateError } from '$lib/server/db/user/profile-private-error.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import type { User } from '$lib/server/lucia/lucia.js';
 import { error } from '@sveltejs/kit';
@@ -255,6 +256,7 @@ export const load = async ({ params, locals }) => {
 	}
 
 	const isCurrentUser = user?.id_numeric === listUser.id_numeric;
+	await profilePrivateError({ routeUser: listUser, currentUser: user });
 
 	const [profile_image, counts, scoreData, recentUpdates] = await Promise.all([
 		getUserProfileImage(listUser),
