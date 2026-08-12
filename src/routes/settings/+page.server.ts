@@ -966,6 +966,11 @@ export const actions = {
 		});
 	},
 	refreshpat: async ({ locals }) => {
+		const user = locals.user;
+		if (!user) {
+			return fail(401);
+		}
+
 		try {
 			const bytes = new Uint8Array(32);
 			crypto.getRandomValues(bytes);
