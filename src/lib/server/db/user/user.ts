@@ -117,6 +117,7 @@ export class DBUsers {
 			role: record.role,
 			display_prefs: record.display_prefs,
 			profile_image_filename: record.profile_image_filename,
+			private: record.private,
 		};
 	}
 
