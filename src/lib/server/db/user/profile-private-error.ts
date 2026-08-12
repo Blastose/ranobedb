@@ -25,6 +25,7 @@ export async function profilePrivateError(params: {
 					id_numeric: params.routeUser.id_numeric,
 				},
 			},
+			message: 'Private profile',
 		});
 	}
 }
