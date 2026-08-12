@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { buildAvatarImageUrl, buildImageUrl } from '$lib/components/book/book';
+	import { buildAvatarImageUrl } from '$lib/components/book/book';
 
 	// This is a copy of DBItemShell.svelte, but for users only, since it's hard to refactor it for users
-	import type { SafeUser } from '$lib/server/db/user/user';
 
 	interface Props {
-		user: SafeUser;
+		user: { username: string };
 		profile_image: { filename: string | null };
 		children?: import('svelte').Snippet;
 	}

@@ -82,6 +82,7 @@ export interface AuthUser {
 	role: Generated<UserRole>;
 	display_prefs: Generated<Json<DisplayPrefs>>;
 	home_display_settings: Generated<Json<HomeDisplaySettings>>;
+	private: Generated<boolean>;
 	username: string;
 	username_lowercase: string;
 }

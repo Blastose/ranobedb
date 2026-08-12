@@ -12,6 +12,7 @@ import {
 	usernameSchema,
 	verifyEmailSchema,
 	deleteAccountSchema,
+	privacySettingsSchema,
 } from '$lib/server/zod/schema.js';
 import {
 	fail,
@@ -70,6 +71,7 @@ type SettingsWithUser = {
 	userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
 	homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
 	listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
+	privacySettingsForm: SuperValidated<Infer<typeof privacySettingsSchema>>;
 	view: SettingsTab;
 };
 type SettingsLoad = SettingsWithoutUser | SettingsWithUser;
@@ -147,6 +149,10 @@ export const load = async ({ locals, url }) => {
 					zod4(userListLabelsSchema),
 				)
 			: await superValidate({}, zod4(userListLabelsSchema));
+	const privacySettingsForm = await superValidate(
+		{ private: locals.user.private },
+		zod4(privacySettingsSchema),
+	);
 
 	return {
 		type: 'user',
@@ -163,6 +169,7 @@ export const load = async ({ locals, url }) => {
 		removeProfilePictureForm,
 		homeDisplaySettingsForm,
 		listLabelsForm,
+		privacySettingsForm,
 		view: settingsTabs.data.view,
 	} satisfies SettingsLoad;
 };
@@ -945,6 +952,36 @@ export const actions = {
 
 		return message(homeDisplaySettingsForm, {
 			text: 'Updated home display preferences successfully!',
+			type: 'success',
+		});
+	},
+
+	privacysettings: async (event) => {
+		const { locals, request } = event;
+		const user = locals.user;
+		if (!user) {
+			return fail(401);
+		}
+
+		const formData = await request.formData();
+
+		const privacySettingsForm = await superValidate(formData, zod4(privacySettingsSchema));
+
+		if (!privacySettingsForm.valid) {
+			return message(
+				privacySettingsForm,
+				{ type: 'error', text: 'Invalid options' },
+				{ status: 400 },
+			);
+		}
+		await db
+			.updateTable('auth_user')
+			.set('private', privacySettingsForm.data.private)
+			.where('auth_user.id', '=', user.id)
+			.execute();
+
+		return message(privacySettingsForm, {
+			text: 'Updated privacy settings successfully!',
 			type: 'success',
 		});
 	},

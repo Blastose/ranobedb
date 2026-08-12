@@ -308,7 +308,7 @@ export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconT
 	series: 'bookshelf',
 	releases: 'file',
 };
-export const settingsTabs = ['account', 'display', 'list', 'email', 'picture'] as const;
+export const settingsTabs = ['account', 'privacy', 'display', 'list', 'email', 'picture'] as const;
 export type SettingsTab = (typeof settingsTabs)[number];
 
 export const historyFilterChangeType = ['all', 'edit', 'add'] as const;

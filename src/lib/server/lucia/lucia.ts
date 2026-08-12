@@ -84,6 +84,7 @@ export class Lucia {
 				'auth_user.display_prefs',
 				'auth_user.username',
 				'auth_user.role',
+				'auth_user.private',
 				'auth_user.id_numeric as user_id_numeric',
 				'profile_image.filename as profile_image_filename',
 			])
@@ -104,6 +105,7 @@ export class Lucia {
 			role: auth_session_res.role,
 			username: auth_session_res.username,
 			profile_image_filename: auth_session_res.profile_image_filename,
+			private: auth_session_res.private,
 		};
 		if (Date.now() >= session.expiresAt.getTime()) {
 			await this.invalidateSession(session.id);
@@ -164,4 +166,5 @@ export interface User {
 	role: UserRole;
 	display_prefs: DisplayPrefs;
 	profile_image_filename?: string | null;
+	private: boolean;
 }

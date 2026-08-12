@@ -103,6 +103,7 @@ export class DBUsers {
 				'auth_user.joined',
 				'auth_user.id',
 				'auth_user.role',
+				'auth_user.private',
 			])
 			.executeTakeFirst();
 	}
@@ -114,6 +115,7 @@ export class DBUsers {
 			joined: user.joined,
 			username: user.username,
 			role: user.role,
+			private: user.private,
 		};
 	}
 
@@ -220,4 +222,5 @@ export const ranobeBot = {
 	role: 'admin',
 	display_prefs: defaultDisplayPrefs,
 	username: 'RanobeBot',
+	private: false,
 } satisfies User;
