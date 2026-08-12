@@ -974,7 +974,7 @@ export const actions = {
 			await db
 				.insertInto('auth_user_personal_access_token')
 				.values({
-					user_id: locals.user.id,
+					user_id: user.id,
 					personal_access_token: token,
 					regenerated_at: new Date(),
 				})
