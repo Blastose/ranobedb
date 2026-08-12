@@ -126,6 +126,7 @@ export interface AuthUser {
 	id: string;
 	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;
+	private: Generated<boolean>;
 	profile_image_id: number | null;
 	role: Generated<UserRole>;
 	username: string;
@@ -287,7 +288,7 @@ export interface ProfileImage {
 }
 
 export interface Publisher {
-	aliases: Generated<string>;
+	aliases: string;
 	bookwalker: string | null;
 	description: string;
 	hidden: boolean;
@@ -301,7 +302,7 @@ export interface Publisher {
 }
 
 export interface PublisherHist {
-	aliases: Generated<string>;
+	aliases: string;
 	bookwalker: string | null;
 	change_id: number;
 	description: string;

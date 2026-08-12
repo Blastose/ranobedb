@@ -39,6 +39,10 @@ declare global {
 				reason: string | null;
 			};
 			missingPerm?: Perm;
+			profilePrivate?: {
+				hasChanges: boolean;
+				user: { username: string; id_numeric: number };
+			};
 		}
 		interface Locals {
 			user: User | null;

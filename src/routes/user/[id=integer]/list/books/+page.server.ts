@@ -1,6 +1,7 @@
 import { getBooks } from '$lib/server/db/books/query.js';
 import { db } from '$lib/server/db/db';
 import { getUserLabelCounts, getUserListCounts } from '$lib/server/db/user/list';
+import { profilePrivateError } from '$lib/server/db/user/profile-private-error.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import {
 	listLabelsSchema,
@@ -26,6 +27,10 @@ export const load = async ({ url, params, locals }) => {
 	if (!listUser) {
 		error(404);
 	}
+
+	const isMyList = locals.user?.id_numeric === userIdNumeric;
+	await profilePrivateError({ routeUser: listUser, currentUser: locals.user });
+
 	const currentPage = page.data.page;
 	const q = qS.data.q;
 
@@ -77,7 +82,7 @@ export const load = async ({ url, params, locals }) => {
 		totalPages: res.totalPages,
 		userLabelCounts,
 		userCustLabelCounts,
-		isMyList: locals.user?.id_numeric === userIdNumeric,
+		isMyList,
 		listUser,
 		labels,
 		listCounts,

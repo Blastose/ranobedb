@@ -871,6 +871,11 @@ export const homeDisplaySettingsSchema = z.object({
 });
 export type HomeDisplaySettings = z.infer<typeof homeDisplaySettingsSchema>;
 
+export const privacySettingsSchema = z.object({
+	private: z.boolean().default(false),
+});
+export type PrivacySettings = z.infer<typeof privacySettingsSchema>;
+
 // Url searchparams schemas
 export const historyFiltersSchema = z.object({
 	items: z.array(z.enum(dbItemArray)).max(dbItemArray.length).default([]),

@@ -12,6 +12,7 @@ import {
 	usernameSchema,
 	verifyEmailSchema,
 	deleteAccountSchema,
+	privacySettingsSchema,
 } from '$lib/server/zod/schema.js';
 import {
 	fail,
@@ -72,6 +73,7 @@ type SettingsWithUser = {
 	userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
 	homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
 	listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
+	privacySettingsForm: SuperValidated<Infer<typeof privacySettingsSchema>>;
 	view: SettingsTab;
 	personalAccessToken: string;
 };
@@ -156,6 +158,10 @@ export const load = async ({ locals, url }) => {
 					zod4(userListLabelsSchema),
 				)
 			: await superValidate({}, zod4(userListLabelsSchema));
+	const privacySettingsForm = await superValidate(
+		{ private: locals.user.private },
+		zod4(privacySettingsSchema),
+	);
 
 	return {
 		type: 'user',
@@ -172,6 +178,7 @@ export const load = async ({ locals, url }) => {
 		removeProfilePictureForm,
 		homeDisplaySettingsForm,
 		listLabelsForm,
+		privacySettingsForm,
 		view: settingsTabs.data.view,
 		personalAccessToken: patRecord?.personal_access_token ?? '',
 	} satisfies SettingsLoad;
@@ -959,11 +966,6 @@ export const actions = {
 		});
 	},
 	refreshpat: async ({ locals }) => {
-		const user = locals.user;
-		if (!user) {
-			return fail(401);
-		}
-
 		try {
 			const bytes = new Uint8Array(32);
 			crypto.getRandomValues(bytes);
@@ -972,7 +974,7 @@ export const actions = {
 			await db
 				.insertInto('auth_user_personal_access_token')
 				.values({
-					user_id: user.id,
+					user_id: locals.user.id,
 					personal_access_token: token,
 					regenerated_at: new Date(),
 				})
@@ -983,7 +985,6 @@ export const actions = {
 					}),
 				)
 				.execute();
-
 			return {
 				success: true,
 				token: token,
@@ -992,5 +993,34 @@ export const actions = {
 			console.error('Failed to regenerate PAT:', e);
 			return fail(500, { message: 'Failed to refresh token.' });
 		}
+	},
+
+	privacysettings: async (event) => {
+		const { locals, request } = event;
+		const user = locals.user;
+		if (!user) {
+			return fail(401);
+		}
+		const formData = await request.formData();
+
+		const privacySettingsForm = await superValidate(formData, zod4(privacySettingsSchema));
+
+		if (!privacySettingsForm.valid) {
+			return message(
+				privacySettingsForm,
+				{ type: 'error', text: 'Invalid options' },
+				{ status: 400 },
+			);
+		}
+		await db
+			.updateTable('auth_user')
+			.set('private', privacySettingsForm.data.private)
+			.where('auth_user.id', '=', user.id)
+			.execute();
+
+		return message(privacySettingsForm, {
+			text: 'Updated privacy settings successfully!',
+			type: 'success',
+		});
 	},
 };

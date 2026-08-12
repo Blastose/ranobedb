@@ -2,6 +2,7 @@ import { db } from '$lib/server/db/db';
 import { getSeries } from '$lib/server/db/series/query.js';
 import { getUserListCounts } from '$lib/server/db/user/list.js';
 import { getUserSeriesListCounts } from '$lib/server/db/user/series-list.js';
+import { profilePrivateError } from '$lib/server/db/user/profile-private-error.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import { seriesListSchema } from '$lib/server/zod/schema.js';
 import {
@@ -30,6 +31,9 @@ export const load = async ({ params, locals, url }) => {
 	if (!listUser) {
 		error(404);
 	}
+
+	const isMyList = locals.user?.id_numeric === userIdNumeric;
+	await profilePrivateError({ routeUser: listUser, currentUser: locals.user });
 
 	const userListFilters = await getDefaultSavedFilter(listUser.id, 'series', true);
 
@@ -72,7 +76,7 @@ export const load = async ({ params, locals, url }) => {
 	]);
 
 	return {
-		isMyList: locals.user?.id_numeric === userIdNumeric,
+		isMyList,
 		listUser,
 		user_list_series: res.series,
 		count: res.count,

@@ -15,6 +15,7 @@
 		userListSeriesSettingsSchema,
 		usernameSchema,
 		verifyEmailSchema,
+		privacySettingsSchema,
 	} from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import PasswordForm from './PasswordForm.svelte';
@@ -31,6 +32,7 @@
 	import HomeDisplayForm from './HomeDisplayForm.svelte';
 	import DeleteAccountForm from './DeleteAccountForm.svelte';
 	import PersonalAccessTokenForm from './PersonalAccessTokenForm.svelte';
+	import PrivacySettingsForm from './PrivacySettingsForm.svelte';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
@@ -45,6 +47,7 @@
 	export let removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
 	export let homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
 	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
+	export let privacySettingsForm: SuperValidated<Infer<typeof privacySettingsSchema>>;
 
 	export let view: SettingsTab;
 	export let personalAccessToken: string;
@@ -58,6 +61,12 @@
 				href="{page.url.pathname}?view=account"
 				text="Account"
 				icon="profile"
+			/>
+			<SidebarListItem
+				active={view === 'privacy'}
+				href="{page.url.pathname}?view=privacy"
+				text="Privacy"
+				icon="lock"
 			/>
 			<SidebarListItem
 				active={view === 'display'}
@@ -155,6 +164,13 @@
 		<div class="flex flex-col gap-4 max-w-lg">
 			<ProfilePictureForm {profilePictureForm} />
 			<RemoveProfilePictureForm {removeProfilePictureForm} />
+		</div>
+	{:else if view === 'privacy'}
+		<h2 class="font-bold text-2xl">Privacy settings</h2>
+		<div class="flex flex-col gap-4 max-w-lg">
+			<section>
+				<PrivacySettingsForm {privacySettingsForm} />
+			</section>
 		</div>
 	{/if}
 </div>

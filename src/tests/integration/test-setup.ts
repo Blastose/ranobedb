@@ -319,6 +319,7 @@ export const ranobeBot = {
 	role: 'admin',
 	display_prefs: defaultDisplayPrefs,
 	username: 'RanobeBot',
+	private: false,
 } satisfies User;
 
 dotenv.config({ path: '.env.testing' });
