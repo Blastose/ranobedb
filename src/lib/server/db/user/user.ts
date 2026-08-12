@@ -101,6 +101,7 @@ export class DBUsers {
 				'auth_user.role',
 				'auth_user.display_prefs',
 				'profile_image.filename as profile_image_filename',
+				'auth_user.private',
 			])
 			.where('auth_user_personal_access_token.personal_access_token', '=', token)
 			.executeTakeFirst();
