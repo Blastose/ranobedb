@@ -140,6 +140,7 @@ CREATE TABLE public.auth_user (
     display_prefs JSONB NOT NULL default '{"names": "romaji","title_prefs": [ { "lang": "en", "romaji": false, "official": "official" }, { "lang": "ja", "romaji": true, "official": "official" } ],"descriptions": "en","label_badge_display": true}'::jsonb,
     profile_image_id integer,
     home_display_settings JSONB NOT NULL DEFAULT '{"header": true, "popular_series": true, "reviews": true, "upcoming_releases": true, "recently_released": true, "seasonal_anime": true, "annoucements": true, "recent_changes": true, "newly_licensed_en": true}'::jsonb,
+    private boolean NOT NULL DEFAULT false,
     FOREIGN KEY (profile_image_id) REFERENCES public.profile_image(id)
 );
 
