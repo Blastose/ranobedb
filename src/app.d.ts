@@ -47,6 +47,7 @@ declare global {
 		interface Locals {
 			user: User | null;
 			session: Session | null;
+			pat: string | null;
 			theme: Theme;
 			today: number;
 		}
