@@ -34,12 +34,12 @@
 	}
 </script>
 
-<div class="flex items-center lg:hidden pr-4">
+<div class="flex items-center pr-4 lg:hidden">
 	<button type="button" use:melt={$trigger} class="btn rounded-full p-1" aria-label="Open sidebar">
 		<Icon name="menu" />
 	</button>
 </div>
-<div class="hidden items-center lg:flex pr-4">
+<div class="hidden items-center pr-4 lg:flex">
 	<button
 		type="button"
 		onclick={openSidebar}

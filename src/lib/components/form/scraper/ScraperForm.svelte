@@ -209,7 +209,7 @@
 
 			<section>
 				<h2 class="	font-bold">Links</h2>
-				<div class="flex flex-col gap-2 max-w-md">
+				<div class="flex max-w-md flex-col gap-2">
 					<LinkInput form={sForm} field="website" label="Website" resetPadding={true} />
 
 					<LinkInput form={sForm} field="amazon" label="Amazon" resetPadding={true} />

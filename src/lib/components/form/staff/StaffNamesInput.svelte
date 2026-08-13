@@ -41,11 +41,11 @@
 <div class="grid">
 	<div class="flex overflow-x-auto pb-2">
 		<section class="flex flex-col gap-2 whitespace-nowrap">
-			<h2 class="font-bold text-lg">Names</h2>
+			<h2 class="text-lg font-bold">Names</h2>
 			<div class="flex flex-col gap-2 px-1">
 				{#each $values as staff, i}
 					<div class="flex gap-2">
-						<div class="flex flex-col gap-2 w-[256px]">
+						<div class="flex w-[256px] flex-col gap-2">
 							<label class="flex flex-col gap-2">
 								<span>Name (in original script)</span>
 								<input
@@ -62,7 +62,7 @@
 								<span class="error-text-color">{$valueErrors[i]?.name}</span>
 							{/if}
 						</div>
-						<div class="flex flex-col gap-2 w-[256px]">
+						<div class="flex w-[256px] flex-col gap-2">
 							<label class="flex flex-col gap-2">
 								<span>Romanization</span>
 								<input
@@ -81,7 +81,7 @@
 						</div>
 						<label class="flex flex-col gap-2">
 							<span>Primary name?</span>
-							<span class="h-[40px] flex items-center justify-center"
+							<span class="flex h-[40px] items-center justify-center"
 								><input
 									name="main-alias"
 									checked={$values[i].main_alias}

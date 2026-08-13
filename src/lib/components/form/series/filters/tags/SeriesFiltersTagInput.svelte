@@ -36,7 +36,7 @@
 
 <div class="flex flex-col gap-1">
 	<h2>Themes</h2>
-	<div class="flex gap-2 flex-col">
+	<div class="flex flex-col gap-2">
 		<div class="flex flex-wrap gap-2">
 			{#each $values as tag, i (tag.id)}
 				<TagFilter
@@ -47,7 +47,7 @@
 					}}
 				/>
 			{:else}
-				<p class="italic text-sm">No tags selected</p>
+				<p class="text-sm italic">No tags selected</p>
 			{/each}
 		</div>
 		<ComboboxInput

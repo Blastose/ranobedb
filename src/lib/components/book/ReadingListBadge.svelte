@@ -22,7 +22,7 @@
 </script>
 
 <div
-	class="{shadow ? 'shadow-md' : ''} dark-main-text flex items-center gap-1 w-fit {textSize ===
+	class="{shadow ? 'shadow-md' : ''} dark-main-text flex w-fit items-center gap-1 {textSize ===
 	'full'
 		? 'text-sm sm:text-base'
 		: 'text-sm'} rounded-full

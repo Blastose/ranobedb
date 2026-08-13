@@ -63,7 +63,7 @@
 		<p>{data.count} results</p>
 
 		<button
-			class="w-fit sub-btn"
+			class="sub-btn w-fit"
 			onclick={() => {
 				if ($relCalView === 'compact') {
 					relCalView.set('grid');
@@ -77,7 +77,7 @@
 			{@const [month, year] = release_date.split('|')}
 			<section class="flex flex-col gap-2">
 				{#if month !== '99'}
-					<h2 class="font-bold flex justify-center">
+					<h2 class="flex justify-center font-bold">
 						{Intl.DateTimeFormat('en', { month: 'long' }).format(
 							new Date(0, Number(month) - 1, 15),
 						)}

@@ -30,7 +30,7 @@
 		<div class="blur-image"></div>
 	</div>
 
-	<div class="-mt-32 z-10">
+	<div class="z-10 -mt-32">
 		{@render children?.()}
 	</div>
 </main>

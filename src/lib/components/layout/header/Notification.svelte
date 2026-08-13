@@ -57,7 +57,7 @@
 		{/if}
 		{#if hasNotifs}
 			<span
-				class="absolute w-2 h-2 top-0 right-0 bg-[#7c7bb4] dark:bg-[#c6c5ff] rounded-full"
+				class="absolute right-0 top-0 h-2 w-2 rounded-full bg-[#7c7bb4] dark:bg-[#c6c5ff]"
 				transition:fade
 			></span>
 		{/if}
@@ -67,7 +67,7 @@
 {#if $open}
 	<section class="notification-menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
 		<div class="flex flex-col px-2 pt-2">
-			<div class="flex justify-between items-center">
+			<div class="flex items-center justify-between">
 				<p class="text-lg font-bold">Notifications</p>
 
 				<a href="/settings?view=list" aria-label="Settings" use:melt={$item}>
@@ -75,7 +75,7 @@
 				</a>
 			</div>
 
-			<div class="flex justify-between items-center">
+			<div class="flex items-center justify-between">
 				<a class="link text-sm" href="/notifications" use:melt={$item}>View all notifications</a>
 				<button type="button" on:click={markAllAsRead} class="link text-sm" use:melt={$item}
 					>Mark all as read</button
@@ -101,7 +101,7 @@
 										alt=""
 										width="240"
 										height="343"
-										class="rounded-lg w-[48px]"
+										class="w-[48px] rounded-lg"
 									/>
 								{/key}
 							{:else}
@@ -111,12 +111,12 @@
 							{/if}
 							<div class="flex flex-col">
 								<div class="grid grid-cols-[1fr_64px] gap-2">
-									<div class="flex font-semibold text-sm gap-2 items-baseline">
+									<div class="flex items-baseline gap-2 text-sm font-semibold">
 										<p class="w-fit">{notification.notification_type}</p>
 										{#if !notification.is_read}
 											<span
 												aria-label="Unread"
-												class="block w-2 h-2 bg-[#7c7bb4] dark:bg-[#c6c5ff] rounded-full"
+												class="block h-2 w-2 rounded-full bg-[#7c7bb4] dark:bg-[#c6c5ff]"
 											></span>
 										{/if}
 									</div>

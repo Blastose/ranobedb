@@ -25,9 +25,9 @@
 	let listCounts = $derived(user_stats_label.reduce((a, c) => a + Number(c.count), 0));
 </script>
 
-<div class="grid grid-cols-1 @md:grid-cols-2 gap-y-4 gap-x-2">
+<div class="grid grid-cols-1 gap-x-2 gap-y-4 @md:grid-cols-2">
 	<section>
-		<h2 class="font-bold text-lg">User scores</h2>
+		<h2 class="text-lg font-bold">User scores</h2>
 		{#if scoreCount > 0}
 			<ScoresChart {rating} {user_stats_score} />
 		{:else}
@@ -36,7 +36,7 @@
 	</section>
 
 	<section>
-		<h2 class="font-bold text-lg">User list stats</h2>
+		<h2 class="text-lg font-bold">User list stats</h2>
 		{#if listCounts > 0}
 			<div>
 				{#each defaultUserListLabelsArray as ar, index}

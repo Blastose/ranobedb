@@ -47,7 +47,7 @@
 {#if $open}
 	<section class="profile-menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
 		{#if user}
-			<a use:melt={$item} href="/user/{user.id_numeric}" class="flex px-2 items-center">
+			<a use:melt={$item} href="/user/{user.id_numeric}" class="flex items-center px-2">
 				<div class="profile-button" class:logged-in={user}>
 					{#if user.profile_image_filename}
 						{#key user.profile_image_filename}
@@ -57,7 +57,7 @@
 						{user.username.at(0)}
 					{/if}
 				</div>
-				<h2 class="font-semibold text-lg p-2">{user.username}</h2>
+				<h2 class="p-2 text-lg font-semibold">{user.username}</h2>
 			</a>
 
 			<Hr />

@@ -96,8 +96,8 @@
 	</div>
 
 	{#if view === 'account' || !view}
-		<h2 class="font-bold text-2xl">Account preferences</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">Account preferences</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<UsernameForm {usernameForm} />
 			</section>
@@ -112,14 +112,14 @@
 			</section>
 			<Hr />
 			<section>
-				<p class="font-bold error-text-color">Danger zone</p>
+				<p class="error-text-color font-bold">Danger zone</p>
 				<DeleteAccountForm {deleteAccountForm} />
 			</section>
 		</div>
 	{:else if view === 'display'}
-		<h2 class="font-bold text-2xl">Display preferences</h2>
+		<h2 class="text-2xl font-bold">Display preferences</h2>
 
-		<div class="flex flex-col gap-4 max-w-lg">
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<h3 class="text-lg font-bold">Theme</h3>
 				<ThemeSelect />
@@ -136,8 +136,8 @@
 			</section>
 		</div>
 	{:else if view === 'list'}
-		<h2 class="font-bold text-2xl">List settings</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">List settings</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<SeriesListSettingsForm {userListSeriesSettingsForm} />
 			</section>
@@ -147,8 +147,8 @@
 			</section>
 		</div>
 	{:else if view === 'email'}
-		<h2 class="font-bold text-2xl">Email settings</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">Email settings</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />
 			</section>
@@ -160,14 +160,14 @@
 			</section>
 		</div>
 	{:else if view === 'picture'}
-		<h2 class="font-bold text-2xl">Profile picture</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">Profile picture</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<ProfilePictureForm {profilePictureForm} />
 			<RemoveProfilePictureForm {removeProfilePictureForm} />
 		</div>
 	{:else if view === 'privacy'}
-		<h2 class="font-bold text-2xl">Privacy settings</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">Privacy settings</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<PrivacySettingsForm {privacySettingsForm} />
 			</section>

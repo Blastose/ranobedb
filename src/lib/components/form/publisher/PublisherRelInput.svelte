@@ -33,13 +33,13 @@
 
 <section class="flex flex-col gap-2">
 	<h2 class="text-lg font-bold">Publisher Relations</h2>
-	<div class="flex gap-6 flex-wrap">
+	<div class="flex flex-wrap gap-6">
 		{#each $values as publisher, i}
-			<div class="flex flex-col gap-2 flex-wrap">
+			<div class="flex flex-col flex-wrap gap-2">
 				<a class="link w-fit" target="_blank" rel="noreferrer" href="/publisher/{publisher.id}"
 					><span class="text-sm">#{publisher.id}:</span> <NameDisplay obj={publisher} /></a
 				>
-				<label class="flex gap-2 items-center"
+				<label class="flex items-center gap-2"
 					><span>Relation type: </span>
 					<select
 						name="publisher-role"

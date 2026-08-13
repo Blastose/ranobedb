@@ -79,7 +79,7 @@
 			placeholder="Name"
 			type="text"
 		/>
-		<div class="absolute right-2 top-1/2 z-10 -translate-y-1/2 text-magnum-900">
+		<div class="text-magnum-900 absolute right-2 top-1/2 z-10 -translate-y-1/2">
 			{#if $open && $inputValue.length > 0}
 				<Icon name="chevronUp" />
 			{:else}
@@ -96,11 +96,11 @@
 	>
 		<!-- svelte-ignore a11y-no-noninteractive-tabindex -->
 		<div
-			class="ring-1 ring-[#c2c1ca] dark:ring-[#686775] flex max-h-full flex-col gap-0 overflow-y-auto input reset-padding shadow-lg"
+			class="input reset-padding flex max-h-full flex-col gap-0 overflow-y-auto shadow-lg ring-1 ring-[#c2c1ca] dark:ring-[#686775]"
 			tabindex="0"
 		>
 			{#if loading}
-				<li class="h-[32px] flex items-center pl-4 pr-4">
+				<li class="flex h-[32px] items-center pl-4 pr-4">
 					<Icon class="animate-spin" name="loading" />
 				</li>
 			{:else}
@@ -110,10 +110,10 @@
 							value: item,
 							label: item.name,
 						})}
-						class="relative cursor-pointer scroll-my-2 rounded-md py-2 px-2
+						class="relative cursor-pointer scroll-my-2 rounded-md px-2 py-2
         data-[highlighted]:bg-gray-300 data-[highlighted]:text-gray-900
-				dark:data-[highlighted]:bg-neutral-600 dark:data-[highlighted]:text-white
-          data-[disabled]:opacity-50 {capitalize ? 'capitalize' : ''}"
+				data-[disabled]:opacity-50 dark:data-[highlighted]:bg-neutral-600
+          dark:data-[highlighted]:text-white {capitalize ? 'capitalize' : ''}"
 					>
 						{#if $isSelected(item)}
 							<!-- None -->
@@ -129,7 +129,7 @@
 					</li>
 				{:else}
 					<li
-						class="relative cursor-pointer rounded-md py-1 px-2
+						class="relative cursor-pointer rounded-md px-2 py-1
         data-[highlighted]:bg-gray-100 data-[highlighted]:text-gray-700"
 					>
 						No results found

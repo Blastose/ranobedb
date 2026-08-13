@@ -13,7 +13,7 @@
 	const displayPrefs = getDisplayPrefsContext();
 </script>
 
-<div class="bg-[var(--bg-light1)] dark:bg-[var(--bg-dark1)] p-2 rounded-lg shadow-sm">
+<div class="rounded-lg bg-[var(--bg-light1)] p-2 shadow-sm dark:bg-[var(--bg-dark1)]">
 	<div class="title-container">
 		{#if book.image}
 			<a href="/book/{book.id}">
@@ -30,7 +30,7 @@
 			<div></div>
 		{/if}
 		<h4 class="flex flex-col gap-2">
-			<a class="line-clamp-2 font-bold text-lg" href="/book/{book.id}"
+			<a class="line-clamp-2 text-lg font-bold" href="/book/{book.id}"
 				><TitleDisplay obj={book} /></a
 			>
 

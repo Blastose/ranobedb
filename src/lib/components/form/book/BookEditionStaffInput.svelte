@@ -22,7 +22,7 @@
 	{#each $values as edition, editionIndex}
 		<div class="flex flex-col gap-2">
 			<p class="font-bold">{edition.title}</p>
-			<div class="flex gap-x-4 gap-y-2 items-end flex-wrap">
+			<div class="flex flex-wrap items-end gap-x-4 gap-y-2">
 				<TextField
 					{form}
 					type="text"
@@ -67,7 +67,7 @@
 
 	<button
 		type="button"
-		class="primary-btn w-fit mt-2"
+		class="primary-btn mt-2 w-fit"
 		on:click={() => {
 			$values.push({
 				staff: [],

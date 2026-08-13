@@ -45,8 +45,7 @@
 				aria-invalid={$errors ? 'true' : undefined}
 				bind:value={$value}
 				{...$constraints}
-				{...$$restProps}
-			></textarea>
+				{...$$restProps}></textarea>
 		{:else if type === 'number'}
 			<input
 				type="number"

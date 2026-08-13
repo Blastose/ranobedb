@@ -65,13 +65,13 @@
 			<span
 				class="{hydration ? 'invisible opacity-0' : 'inline opacity-100'}
 					 {expandedDescription ? 'rotate-90' : '-rotate-90'}
-					 duration-500 chevron-icon"
+					 chevron-icon duration-500"
 			>
 				<Icon name="chevronLeft" />
 			</span>
 			<span
 				class="{hydration ? 'invisible opacity-0' : 'inline opacity-100'}
-					 duration-500 expand-description-text">{expandedDescription ? 'Show less' : 'Show more'}</span
+					 expand-description-text duration-500">{expandedDescription ? 'Show less' : 'Show more'}</span
 			>
 		</button>
 	{/if}

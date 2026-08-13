@@ -81,7 +81,7 @@
 			/>
 		</div>
 
-		<div class="flex gap-2 items-center">
+		<div class="flex items-center gap-2">
 			<span>Preview: </span>
 			<ReadingListBadge
 				badge="Reading"

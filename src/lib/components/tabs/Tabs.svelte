@@ -33,13 +33,13 @@
 					data-sveltekit-noscroll
 					class="{active
 						? 'link no-underline'
-						: 'tab-hover'} capitalize duration-[250ms] px-2 font-semibold flex items-center gap-2"
+						: 'tab-hover'} flex items-center gap-2 px-2 font-semibold capitalize duration-[250ms]"
 					href="{currentPage.pathname}?{tabParam}={tab}"
 					>{#if tabsIcons}<Icon name={tabsIcons[tab]} />{/if}{tab}</a
 				>
 				{#if active}
 					<div
-						class="h-[3px] w-full tab-underline bg-link"
+						class="tab-underline bg-link h-[3px] w-full"
 						in:send={{ key: 'trigger' }}
 						out:receive={{ key: 'trigger' }}
 					></div>

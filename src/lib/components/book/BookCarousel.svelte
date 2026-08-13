@@ -61,12 +61,12 @@
 <svelte:window onresize={onWindowResize} />
 
 <div class="flex flex-col gap-2">
-	<div class="flex justify-between items-center">
+	<div class="flex items-center justify-between">
 		{@render link?.()}
 
 		<div class="flex items-center">
 			{#if viewAllLink}
-				<p class="text-sm font-semibold sub-text-alt mr-4"><a href={viewAllLink}>View all</a></p>
+				<p class="sub-text-alt mr-4 text-sm font-semibold"><a href={viewAllLink}>View all</a></p>
 			{/if}
 			<button
 				type="button"

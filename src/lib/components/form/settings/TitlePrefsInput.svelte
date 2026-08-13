@@ -51,15 +51,15 @@
 						<p>#{index + 1} {languageNames[title.lang]}</p>
 
 						{#if !langsWithoutRomaji.includes(title.lang)}
-							<label class="flex gap-1 text-sm w-fit"
+							<label class="flex w-fit gap-1 text-sm"
 								><input type="checkbox" bind:checked={title.romaji} /><span>Romaji</span></label
 							>
 						{/if}
 					</div>
-					<div class="flex gap-2 items-center justify-self-end">
+					<div class="flex items-center gap-2 justify-self-end">
 						{#if title.lang !== 'ja'}
 							<label class="flex gap-1 text-sm">
-								<select class="input w-fit reset-padding" bind:value={title.official}>
+								<select class="input reset-padding w-fit" bind:value={title.official}>
 									<option value="official">Official only</option>
 									<option value="any">Any</option>
 								</select>
@@ -105,7 +105,7 @@
 	<select
 		aria-label="add title"
 		on:change={handleAddLangauge}
-		class="input w-fit reset-padding mt-2"
+		class="input reset-padding mt-2 w-fit"
 		name="add-titles"
 		id="add-titles"
 	>

@@ -35,9 +35,9 @@
 	}
 </script>
 
-<div class="flex gap-6 flex-wrap">
+<div class="flex flex-wrap gap-6">
 	{#each $values as staff, i}
-		<div class="flex flex-col gap-2 flex-wrap">
+		<div class="flex flex-col flex-wrap gap-2">
 			<a class="link w-fit" target="_blank" rel="noreferrer" href="/staff/{staff.staff_id}"
 				><span class="text-sm">#{staff.staff_id}:</span>
 				<NameDisplayBoth
@@ -45,7 +45,7 @@
 					size="small"
 				/></a
 			>
-			<label class="flex gap-2 items-center"
+			<label class="flex items-center gap-2"
 				><span>Role: </span>
 				<select name="staff-role" class="input reset-padding" bind:value={$values[i].role_type}>
 					{#each staffRolesArray as role}
@@ -53,7 +53,7 @@
 					{/each}
 				</select>
 			</label>
-			<label class="flex gap-2 items-center"
+			<label class="flex items-center gap-2"
 				><span>Note: </span><input
 					class="input reset-padding"
 					type="text"

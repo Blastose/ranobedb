@@ -150,7 +150,7 @@
 							</div>
 						</div>
 
-						<div class="flex flex-col sm:flex-row justify-end gap-2">
+						<div class="flex flex-col justify-end gap-2 sm:flex-row">
 							<SubmitButton
 								value={$form.type}
 								text={modalSubmitText}
@@ -162,7 +162,7 @@
 									disabled={$submitting}
 									type="button"
 									use:melt={$triggerNested}
-									class="whitespace-nowrap btn btn-pad">Unfollow</button
+									class="btn btn-pad whitespace-nowrap">Unfollow</button
 								>
 							{/if}
 						</div>

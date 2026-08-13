@@ -18,7 +18,7 @@
 <section>
 	<Collapsible open={false}>
 		{#snippet summary()}
-			<h2 class="font-bold text-lg">Titles</h2>
+			<h2 class="text-lg font-bold">Titles</h2>
 		{/snippet}
 		{#snippet details()}
 			{#each titles as title}

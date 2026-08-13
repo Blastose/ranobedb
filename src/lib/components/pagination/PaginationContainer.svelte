@@ -42,7 +42,7 @@
 		{#if results !== '0' && currentPage <= totalPages}
 			{@render children?.()}
 		{:else}
-			<p class="text-center sub-text">There are no results</p>
+			<p class="sub-text text-center">There are no results</p>
 		{/if}
 	</Fly>
 

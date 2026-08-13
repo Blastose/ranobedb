@@ -30,7 +30,7 @@
 								alt=""
 								width="240"
 								height="343"
-								class="rounded-lg w-[60px]"
+								class="w-[60px] rounded-lg"
 							/>
 						{:else}
 							<div class="flex items-center justify-center">
@@ -38,13 +38,13 @@
 							</div>
 						{/if}
 						<div class="flex flex-col">
-							<div class="flex justify-between items-center">
-								<div class="font-semibold flex gap-2 items-center">
+							<div class="flex items-center justify-between">
+								<div class="flex items-center gap-2 font-semibold">
 									<p>{notification.notification_type}</p>
 									{#if !notification.is_read}
 										<span
 											aria-label="Unread"
-											class="block w-2 h-2 bg-[#7c7bb4] dark:bg-[#c6c5ff] rounded-full"
+											class="block h-2 w-2 rounded-full bg-[#7c7bb4] dark:bg-[#c6c5ff]"
 										></span>
 									{/if}
 								</div>

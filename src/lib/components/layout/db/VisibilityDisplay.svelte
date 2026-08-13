@@ -37,15 +37,15 @@
 
 <div class="flex gap-2">
 	{#if item.locked && !hasVisibilityPerms(user)}
-		<p class="sub-btn loading w-fit flex items-center gap-2">
+		<p class="sub-btn loading flex w-fit items-center gap-2">
 			<Icon name="lock" height="16" width="16" />Locked
 		</p>
 	{:else}
-		<a class="sub-btn w-fit flex items-center gap-2" href={getHref(type, item)}
+		<a class="sub-btn flex w-fit items-center gap-2" href={getHref(type, item)}
 			><Icon name="pencil" height="16" width="16" />Edit</a
 		>
 	{/if}
-	<a class="sub-btn w-fit flex items-center gap-2" href="/{type}/{item.id}/history">
+	<a class="sub-btn flex w-fit items-center gap-2" href="/{type}/{item.id}/history">
 		<Icon name="history" height="16" width="16" />History</a
 	>
 	<VisibilityDisplayOverflow {item} {type} {copyTo} {revision} />

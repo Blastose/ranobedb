@@ -43,7 +43,7 @@
 
 <section class="flex flex-col gap-2">
 	<h2 class="text-lg font-bold">Book Relations</h2>
-	<div class="flex gap-2 flex-col">
+	<div class="flex flex-col gap-2">
 		<BookDragDrop {form} remove={handleRemoveBook} {updateSortOrder} />
 		<ComboboxInput
 			handleAdd={handleAddBook}

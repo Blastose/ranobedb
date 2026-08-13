@@ -10,7 +10,7 @@
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 	<StaffFilters {filtersForm} />
 	<SelectField
 		form={sForm}

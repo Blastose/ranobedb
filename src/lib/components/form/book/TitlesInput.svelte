@@ -42,7 +42,7 @@
 </script>
 
 <section class="flex flex-col gap-2">
-	<h2 class="font-bold text-lg">{label ?? 'Titles'}</h2>
+	<h2 class="text-lg font-bold">{label ?? 'Titles'}</h2>
 	{#each $values as title, i}
 		<div class="flex flex-col gap-2">
 			<label class="flex flex-col gap-2"
@@ -73,7 +73,7 @@
 				<span class="error-text-color">{$valueErrors[i]?.romaji}</span>
 			{/if}
 
-			<div class="flex flex-wrap gap-4 items-center">
+			<div class="flex flex-wrap items-center gap-4">
 				<button
 					type="button"
 					class="sub-btn"

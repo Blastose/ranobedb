@@ -185,7 +185,7 @@
 			</dl>
 
 			<div class="flex flex-col gap-2">
-				<div class="w-fit flex flex-wrap gap-4">
+				<div class="flex w-fit flex-wrap gap-4">
 					<LinkBox display="Reading list" href="/user/{data.listUser.id_numeric}/list" />
 					<LinkBox display="Edit history" href="/user/{data.listUser.id_numeric}/history" />
 					<LinkBox
@@ -194,7 +194,7 @@
 					/>
 					<LinkBox display="Reading log" href="/user/{data.listUser.id_numeric}/reading-log" />
 				</div>
-				<div class="w-fit flex flex-wrap gap-4">
+				<div class="flex w-fit flex-wrap gap-4">
 					<LinkBox display="Book reviews" href="/user/{data.listUser.id_numeric}/reviews/books" />
 					<LinkBox
 						display="Series reviews"
@@ -204,8 +204,8 @@
 			</div>
 
 			<section>
-				<h2 class="font-bold text-lg mb-2">Stats overview</h2>
-				<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+				<h2 class="mb-2 text-lg font-bold">Stats overview</h2>
+				<div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
 					{#if data.listCounts.book !== '0' || data.listCounts.series === '0'}
 						<div class="stat-card">
 							<div class="stat-value">{data.listCounts.book ?? '0'}</div>
@@ -255,10 +255,10 @@
 				</div>
 			</section>
 
-			<div class="grid grid-cols-1 sm:grid-cols-2 gap-x--2 gap-y-4">
+			<div class="gap-x--2 grid grid-cols-1 gap-y-4 sm:grid-cols-2">
 				{#if data.labelCounts.reduce((a, { count }) => a + Number(count), 0) > 0}
 					<section>
-						<h2 class="font-bold text-lg">Books by reading status:</h2>
+						<h2 class="text-lg font-bold">Books by reading status:</h2>
 
 						<div class="chart-container">
 							<canvas bind:this={booksByStatusChart}>
@@ -286,7 +286,7 @@
 
 				{#if data.seriesLabelCounts.reduce((a, { count }) => a + Number(count), 0) > 0}
 					<section>
-						<h2 class="font-bold text-lg">Series by reading status:</h2>
+						<h2 class="text-lg font-bold">Series by reading status:</h2>
 
 						<div class="chart-container">
 							<canvas bind:this={seriesByStatusChart}>
@@ -314,7 +314,7 @@
 
 				{#if data.finishedCounts > 0}
 					<section>
-						<h2 class="font-bold text-lg">Number of books read in the last 12 months by month:</h2>
+						<h2 class="text-lg font-bold">Number of books read in the last 12 months by month:</h2>
 
 						<div class="chart-container">
 							<canvas bind:this={booksPerMonthCanvas}>
@@ -341,14 +341,14 @@
 				{/if}
 
 				{#if data.scoreDistributionBook.some((d) => Number(d.count) > 0) || data.scoreDistributionSeries.some((d) => Number(d.count) > 0)}
-					<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+					<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
 						{#if data.scoreDistributionBook.some((d) => Number(d.count) > 0)}
 							{@const totalBookScores = data.scoreDistributionBook.reduce(
 								(a, c) => a + Number(c.count),
 								0,
 							)}
 							<section>
-								<h2 class="font-bold text-lg mb-2">Book score distribution</h2>
+								<h2 class="mb-2 text-lg font-bold">Book score distribution</h2>
 								<ScoresChart
 									user_stats_score={data.scoreDistributionBook}
 									rating={{ score: data.avgScoreBook, count: totalBookScores }}
@@ -361,7 +361,7 @@
 								0,
 							)}
 							<section>
-								<h2 class="font-bold text-lg mb-2">Series score distribution</h2>
+								<h2 class="mb-2 text-lg font-bold">Series score distribution</h2>
 								<ScoresChart
 									user_stats_score={data.scoreDistributionSeries}
 									rating={{ score: data.avgScoreSeries, count: totalSeriesScores }}
@@ -373,7 +373,7 @@
 			</div>
 
 			{#if data.recentBooks.length > 0 || data.recentSeries.length > 0}
-				<div class="grid grid-cols-1 @lg:grid-cols-2 gap-4">
+				<div class="grid grid-cols-1 gap-4 @lg:grid-cols-2">
 					<RecentListUpdates
 						title="Recent book updates"
 						items={{ items: data.recentBooks, type: 'book' }}

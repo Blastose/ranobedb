@@ -8,7 +8,7 @@
 	let { missingPerm }: Props = $props();
 </script>
 
-<h1 class="error-text-color font-bold text-xl">Access Denied</h1>
+<h1 class="error-text-color text-xl font-bold">Access Denied</h1>
 <p>You do not have the necessary permissions to access this page.</p>
 {#if missingPerm === 'add'}
 	<p>

@@ -34,9 +34,9 @@
 
 <section class="flex flex-col gap-2">
 	<h2 class="text-lg font-bold">Book Relations</h2>
-	<div class="flex gap-2 flex-col">
+	<div class="flex flex-col gap-2">
 		{#each $values as book, i}
-			<div class="flex flex-wrap gap-2 items-center">
+			<div class="flex flex-wrap items-center gap-2">
 				<a class="link w-fit" target="_blank" rel="noreferrer" href="/book/{book.id}"
 					><span class="text-sm">#{book.id}:</span>
 					<TitleDisplay
@@ -49,7 +49,7 @@
 						}}
 					/></a
 				>
-				<label class="flex gap-2 items-center"
+				<label class="flex items-center gap-2"
 					><span>Type: </span>
 					<select name="book-type" class="input reset-padding" bind:value={$values[i].rtype}>
 						{#each releaseTypeArray as rel_type (rel_type)}

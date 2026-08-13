@@ -89,7 +89,7 @@
 <div class="flex justify-center sm:justify-normal">
 	<button
 		use:melt={$trigger}
-		class="primary-btn w-full flex gap-1 items-center max-w-xs {defaultUserListLabelsCssClass(
+		class="primary-btn flex w-full max-w-xs items-center gap-1 {defaultUserListLabelsCssClass(
 			$form.labels.at(0)?.label,
 		)}"
 		><LabelIcon label={$form.labels.at(0)?.label} />{$form.labels.at(0)?.label ??
@@ -153,7 +153,7 @@
 							/>
 						</div>
 
-						<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-2 sm:gap-x-4">
+						<div class="grid grid-cols-1 gap-x-2 sm:grid-cols-2 sm:gap-x-4">
 							<div class="flex flex-col gap-1">
 								<TextField
 									form={sForm}
@@ -245,7 +245,7 @@
 							{/if}
 						</div>
 
-						<div class="flex flex-col sm:flex-row justify-end gap-2">
+						<div class="flex flex-col justify-end gap-2 sm:flex-row">
 							<SubmitButton
 								value={$form.type}
 								text={modalSubmitText}
@@ -257,7 +257,7 @@
 									disabled={$submitting}
 									type="button"
 									use:melt={$triggerNested}
-									class="whitespace-nowrap btn btn-pad">Remove from list</button
+									class="btn btn-pad whitespace-nowrap">Remove from list</button
 								>
 							{/if}
 						</div>

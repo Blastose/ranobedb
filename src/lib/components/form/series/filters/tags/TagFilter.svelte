@@ -39,7 +39,7 @@
 	<button
 		type="button"
 		on:click={toggle}
-		class="capitalize rounded-3xl pl-2 {removable ? 'pr-8' : 'pr-2'} 
+		class="rounded-3xl pl-2 capitalize {removable ? 'pr-8' : 'pr-2'} 
 		text-sm font-semibold"
 	>
 		{genre.name}

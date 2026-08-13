@@ -48,11 +48,11 @@
 
 <form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
 	{#if staff && type === 'edit'}
-		<h1 class="font-bold text-xl">
+		<h1 class="text-xl font-bold">
 			Editing <NameDisplay obj={staff} fallback="staff" />
 		</h1>
 	{:else}
-		<h1 class="font-bold text-xl">Add staff</h1>
+		<h1 class="text-xl font-bold">Add staff</h1>
 	{/if}
 
 	{#if user && hasVisibilityPerms(user)}

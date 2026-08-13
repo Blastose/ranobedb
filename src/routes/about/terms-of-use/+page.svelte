@@ -4,7 +4,7 @@
 
 <PageTitle title="Terms of Use" />
 
-<main class="container-rndb flex flex-col gap-2 markdown">
+<main class="container-rndb markdown flex flex-col gap-2">
 	<h1 class="text-4xl font-bold">Terms of Use</h1>
 	Last updated: 2024-07-08
 

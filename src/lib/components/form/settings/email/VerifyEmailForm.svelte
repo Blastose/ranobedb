@@ -47,8 +47,8 @@
 <!-- <SuperDebug data={$form} /> -->
 
 {#if !email_verified}
-	<div class="flex flex-col gap-2 max-w-lg">
-		<h2 class="font-bold text-lg">Verify email</h2>
+	<div class="flex max-w-lg flex-col gap-2">
+		<h2 class="text-lg font-bold">Verify email</h2>
 
 		<p>
 			You will receive a verification code in your email inbox. The code will be valid for 15
@@ -58,7 +58,7 @@
 		<form
 			method="post"
 			action="?/sendemailverificationcode"
-			class="flex flex-col gap-2 max-w-lg"
+			class="flex max-w-lg flex-col gap-2"
 			use:enhanceE
 		>
 			<PasswordField
@@ -80,7 +80,7 @@
 			/>
 		</form>
 
-		<form method="post" action="?/verifyemail" class="flex flex-col gap-2 max-w-lg" use:enhance>
+		<form method="post" action="?/verifyemail" class="flex max-w-lg flex-col gap-2" use:enhance>
 			<div class="flex flex-col gap-1">
 				<TextField form={sForm} field={'code'} type="text" placeholder="Code" label="Code" />
 			</div>
@@ -89,6 +89,6 @@
 		</form>
 	</div>
 {:else}
-	<h2 class="font-bold text-lg">Verify email</h2>
+	<h2 class="text-lg font-bold">Verify email</h2>
 	<p>Your email is verified</p>
 {/if}
