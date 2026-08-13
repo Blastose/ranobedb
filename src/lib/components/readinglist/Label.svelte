@@ -12,7 +12,7 @@
 </script>
 
 <div class="flex flex-col gap-1">
-	<a class="flex gap-1 font-bold reading-label" class:active href="?l={userLabel.label_id}">
+	<a class="reading-label flex gap-1 font-bold" class:active href="?l={userLabel.label_id}">
 		<LabelIcon label={userLabel.label} />{userLabel.label} ({userLabel.count})</a
 	>
 	<div class="box-underline" class:active></div>

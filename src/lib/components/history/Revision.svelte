@@ -18,7 +18,7 @@
 
 <div class="flex flex-col gap-2">
 	<div>
-		<p class="font-bold text-lg">Revision {changes.change.revision} of {title}</p>
+		<p class="text-lg font-bold">Revision {changes.change.revision} of {title}</p>
 		<div class="flex flex-wrap gap-4">
 			<a class="link" href="{buildBaseLink()}/history">View history</a>
 			<a class="link" href={buildBaseLink()}>View current</a>
@@ -71,7 +71,7 @@
 
 	{#if changes.change.revision !== 1}
 		<section class="flex flex-col gap-2">
-			<h2 class="font-bold text-lg">Changes:</h2>
+			<h2 class="text-lg font-bold">Changes:</h2>
 			{#each diffs as d, index}
 				<DiffDisplay changes={d} />
 				{#if index !== diffs.length - 1}

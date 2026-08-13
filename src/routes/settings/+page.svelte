@@ -11,7 +11,7 @@
 <NoIndex />
 
 <main class="container-rndb flex flex-col gap-4">
-	<h1 class="font-bold text-4xl">Settings</h1>
+	<h1 class="text-4xl font-bold">Settings</h1>
 
 	{#if data.type === 'user' && data.user}
 		<SettingsForm

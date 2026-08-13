@@ -24,7 +24,7 @@
 </script>
 
 <div class="flex flex-col">
-	<div class="flex justify-between items-center">
+	<div class="flex items-center justify-between">
 		<label for={labelId}>
 			<span class="dark:text-[var(--text-dark)]">{label || String(field)}</span>
 			{#if $constraints?.required && showRequiredSymbolIfRequired}
@@ -64,8 +64,7 @@
 			aria-invalid={$errors ? 'true' : undefined}
 			bind:value={$value}
 			{...$constraints}
-			{...$$restProps}
-		></textarea>
+			{...$$restProps}></textarea>
 	{:else}
 		<div class="markdown-output">
 			<MarkdownToHtml markdown={$value?.toString() || 'Nothing to preview'} type="full" />
@@ -73,7 +72,7 @@
 	{/if}
 	<p
 		class:error-text-color={$value?.length >= ($constraints?.maxlength ?? Infinity)}
-		class="text-sm pt-1 flex justify-end"
+		class="flex justify-end pt-1 text-sm"
 	>
 		{$value?.trim()?.length || 0} / {$constraints?.maxlength} characters
 	</p>

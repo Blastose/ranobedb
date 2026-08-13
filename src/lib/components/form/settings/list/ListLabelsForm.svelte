@@ -70,7 +70,7 @@
 <form method="post" action="?/listlabels" class="flex flex-col gap-4" use:enhance>
 	<div class="flex flex-col gap-2">
 		<div>
-			<h3 class="font-bold text-lg">Custom labels</h3>
+			<h3 class="text-lg font-bold">Custom labels</h3>
 			<p class="text-sm">(Max 50 custom labels)</p>
 		</div>
 
@@ -83,7 +83,7 @@
 					resetPadding={true}
 					showLabel={false}
 				/>
-				<div class="flex gap-1 text-sm items-center justify-between pt-[4px]">
+				<div class="flex items-center justify-between gap-1 pt-[4px] text-sm">
 					<div class="flex gap-4">
 						<div class="flex">
 							<button

@@ -53,7 +53,7 @@
 <form method="post" action="?/serieslistsettings" class="flex flex-col gap-4" use:enhance>
 	<div class="flex flex-col gap-2">
 		<div>
-			<h3 class="font-bold text-lg">Default series list preferences</h3>
+			<h3 class="text-lg font-bold">Default series list preferences</h3>
 			<p class="text-sm">
 				Used when automatically adding a series to your list or as the default when adding a series
 				to your list manually.
@@ -126,7 +126,7 @@
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Save preferences'} />
 </form>
 
-<div class="flex justify-center mt-2">
+<div class="mt-2 flex justify-center">
 	<button
 		use:melt={$trigger}
 		class="primary-btn w-full"

@@ -64,7 +64,7 @@
 			</div>
 		{/if}
 
-		<div class="w-fit flex flex-wrap gap-x-4 gap-y-2">
+		<div class="flex w-fit flex-wrap gap-x-4 gap-y-2">
 			<Keyed>
 				<MultiSelectField
 					form={sForm}
@@ -133,7 +133,7 @@
 		</div>
 
 		<div class="flex flex-col gap-2">
-			<div class="flex gap-2 w-fit flex-wrap">
+			<div class="flex w-fit flex-wrap gap-2">
 				<Keyed>
 					<MultiSelectField
 						form={sForm}

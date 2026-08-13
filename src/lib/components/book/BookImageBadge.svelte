@@ -26,8 +26,8 @@
 </script>
 
 <div
-	class="absolute flex flex-col gap-1 p-1 sm:p-[0.375rem] items-end {location === 'top-right'
-		? 'top-0 right-0'
+	class="absolute flex flex-col items-end gap-1 p-1 sm:p-[0.375rem] {location === 'top-right'
+		? 'right-0 top-0'
 		: 'bottom-0 right-0'}"
 >
 	{#each badges as badge}
@@ -36,7 +36,7 @@
 				<ReadingListBadge {badge} {score} />
 			{:else if !(badge.startsWith('Score: ') && !$displayPrefs.label_badge_display)}
 				<div
-					class="shadow-md dark-main-text w-fit text-sm sm:text-base rounded-full px-2 flex items-center gap-1"
+					class="dark-main-text flex w-fit items-center gap-1 rounded-full px-2 text-sm shadow-md sm:text-base"
 					style:background-color="#000000BF"
 				>
 					{#if badge.startsWith('Score: ')}

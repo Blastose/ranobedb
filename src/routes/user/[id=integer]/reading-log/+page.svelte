@@ -24,14 +24,14 @@
 <NoIndex />
 
 <main class="container-rndb flex flex-col gap-4">
-	<h1 class="font-bold text-4xl">{pageTitle}</h1>
+	<h1 class="text-4xl font-bold">{pageTitle}</h1>
 
-	<a href="/user/{data.listUser.id_numeric}" class="w-fit link px-2">To profile</a>
+	<a href="/user/{data.listUser.id_numeric}" class="link w-fit px-2">To profile</a>
 
 	<div class="flex flex-col gap-2">
-		<h2 class="font-bold text-2xl">{data.currentMonthName} {data.currentYearName}</h2>
+		<h2 class="text-2xl font-bold">{data.currentMonthName} {data.currentYearName}</h2>
 
-		<a href="/user/{data.listUser.id_numeric}/reading-log" class="text-sm w-fit tet-btn"
+		<a href="/user/{data.listUser.id_numeric}/reading-log" class="tet-btn w-fit text-sm"
 			>Jump to current month</a
 		>
 		<div class="flex justify-between">
@@ -46,12 +46,12 @@
 
 	<section class="flex flex-col gap-1">
 		<h2 class="font-bold">Books read by month</h2>
-		<div class="read-window gap-1 @md:gap-4 text-center">
+		<div class="read-window gap-1 text-center @md:gap-4">
 			{#each data.readPerMonthQuery.map((v) => ({ ...v, date: v.date.replace(/-01$/, '') })) as q}
 				<a class="flex flex-col" href="/user/{data.listUser.id_numeric}/reading-log?date={q.date}">
 					<div class="flex flex-col">
 						<div class="h-16">
-							<div class="h-full grid grid-rows-2">
+							<div class="grid h-full grid-rows-2">
 								<div class="text-center text-sm">{q.count}</div>
 								<div class="flex flex-col">
 									<div class="flex-grow"></div>
@@ -59,13 +59,13 @@
 										style="height: {(q.count /
 											Math.max(...data.readPerMonthQuery.map((v) => v.count))) *
 											100}%;"
-										class="bg-[var(--primary-500)] rounded-t-md"
+										class="rounded-t-md bg-[var(--primary-500)]"
 									></div>
 								</div>
 							</div>
 						</div>
 						<div
-							class="text-xs flex flex-col {data.currentMonth === q.date ? 'font-bold link' : ''}"
+							class="flex flex-col text-xs {data.currentMonth === q.date ? 'link font-bold' : ''}"
 						>
 							<span>
 								{q.monthName}
@@ -79,34 +79,34 @@
 	</section>
 
 	<div>
-		<p class="font-semibold sub-text-alt">Books read this month</p>
-		<p class="font-bold text-3xl">{data.books.length}</p>
+		<p class="sub-text-alt font-semibold">Books read this month</p>
+		<p class="text-3xl font-bold">{data.books.length}</p>
 	</div>
 
 	{#if data.books.length > 0}
 		<div class="flex flex-col gap-2">
-			<h3 class="font-bold text-lg">Books</h3>
+			<h3 class="text-lg font-bold">Books</h3>
 
-			<div class="grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 gap-4">
+			<div class="grid grid-cols-1 gap-4 @sm:grid-cols-2 @md:grid-cols-3">
 				{#each data.books as book}
 					<div class="grid grid-cols-[64px_1fr] gap-2">
 						<a href="/book/{book.id}">
 							<Cover obj={book} />
 						</a>
 						<div>
-							<div class="font-semibold text-sm">
+							<div class="text-sm font-semibold">
 								<a href="/book/{book.id}">
 									<TitleDisplay obj={book}></TitleDisplay>
 								</a>
 							</div>
 							{#if book.score}
-								<p class="flex items-center gap-1 text-sm sub-text-alt">
+								<p class="sub-text-alt flex items-center gap-1 text-sm">
 									<Icon class="text-[#ffa844]" name="star" height="18" width="18" />{Number(
 										book.score,
 									)} / 10
 								</p>
 							{/if}
-							<p class="flex items-center gap-1 text-sm sub-text-alt">
+							<p class="sub-text-alt flex items-center gap-1 text-sm">
 								<Icon name="clockOutline" height="18" width="18" />{book.finished}
 							</p>
 						</div>

@@ -16,7 +16,7 @@
 </script>
 
 <section class="auth-form-shell">
-	<h1 class="font-bold text-4xl">{headingText}</h1>
+	<h1 class="text-4xl font-bold">{headingText}</h1>
 
 	<slot name="alert" />
 

@@ -25,7 +25,7 @@
 </script>
 
 <section>
-	<h2 class="font-bold text-lg">Releases</h2>
+	<h2 class="text-lg font-bold">Releases</h2>
 	<div class="flex flex-col gap-1">
 		{#each sortByLangReleaseDates(Object.entries(groupedReleasesByLang), releaseDates, olang) as [key, releases]}
 			<section>

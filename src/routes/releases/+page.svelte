@@ -32,11 +32,11 @@
 	{/snippet}
 
 	{#snippet display()}
-		<div class="grid grid-cols-1 @sm:grid-cols-2 gap-2">
+		<div class="grid grid-cols-1 gap-2 @sm:grid-cols-2">
 			{#each data.releases as release (release.id)}
 				{@const imageUrl = buildImageUrl(release.image?.filename)}
 				<a class="release-wrapper" href="/release/{release.id}">
-					<div class="grid grid-cols-[64px_1fr] gap-2 h-full">
+					<div class="grid h-full grid-cols-[64px_1fr] gap-2">
 						{#if release.image}
 							<img
 								width={release.image.width}

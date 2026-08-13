@@ -19,7 +19,7 @@
 </script>
 
 {#if change}
-	<section class="flex flex-col text-center items-center">
+	<section class="flex flex-col items-center text-center">
 		<h2 class="font-semibold">
 			Revision {change.revision} (<a class="link font-normal" href={revisionEditLink}
 				>{revisionEditText}</a

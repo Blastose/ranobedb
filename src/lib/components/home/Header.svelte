@@ -12,9 +12,9 @@
 	let series_img_2 = $derived(data.mostPopularSeries.at(7));
 </script>
 
-<div class="mt-4 grid grid-cols-1 @md:grid-cols-[5fr_2fr] gap-8 items-center">
+<div class="mt-4 grid grid-cols-1 items-center gap-8 @md:grid-cols-[5fr_2fr]">
 	<div class="flex flex-col gap-2">
-		<h1 class="font-bold text-4xl">Welcome to RanobeDB</h1>
+		<h1 class="text-4xl font-bold">Welcome to RanobeDB</h1>
 
 		<div>
 			<p class="sub-text-alt">
@@ -27,16 +27,16 @@
 				The site is for tracking and data purposes only; we do not host or provide any reading material.
 			</p>
 
-			<div class="pt-4 flex gap-2 sub-text-alt">
+			<div class="sub-text-alt flex gap-2 pt-4">
 				<a href="/series" class="primary-btn">Browse series</a>
 				<a href="/about" class="tet-btn">About RanobeDB</a>
 			</div>
 
-			<div class="pt-4 flex gap-x-6 gap-y-2 flex-wrap sub-text-alt">
-				<div class="flex gap-1 text-sm items-center">
+			<div class="sub-text-alt flex flex-wrap gap-x-6 gap-y-2 pt-4">
+				<div class="flex items-center gap-1 text-sm">
 					<Icon name="book" /> 51K+ Total books
 				</div>
-				<div class="flex gap-1 text-sm items-center">
+				<div class="flex items-center gap-1 text-sm">
 					<Icon name="bookshelf" /> 20K+ Book series
 				</div>
 			</div>
@@ -44,14 +44,14 @@
 	</div>
 
 	<div class="hidden @md:block">
-		<div class="grid @md:grid-cols-1 @lg:grid-cols-2 gap-1 items-center">
+		<div class="grid items-center gap-1 @md:grid-cols-1 @lg:grid-cols-2">
 			{#if series_img_1}
 				<a href="/series/{series_img_1.id}"
 					><img
 						loading="lazy"
 						width={series_img_1.book?.image?.width}
 						height={series_img_1.book?.image?.height}
-						class="hidden @lg:block rounded-md rotate-[-3deg]"
+						class="hidden rotate-[-3deg] rounded-md @lg:block"
 						src="{PUBLIC_IMAGE_URL}{series_img_1.book?.image?.filename}"
 						alt="Cover image for {getTitleDisplay({
 							obj: series_img_1,
@@ -66,7 +66,7 @@
 						loading="lazy"
 						width={series_img_2.book?.image?.width}
 						height={series_img_2.book?.image?.height}
-						class="rounded-md rotate-[3deg]"
+						class="rotate-[3deg] rounded-md"
 						src="{PUBLIC_IMAGE_URL}{series_img_2.book?.image?.filename}"
 						alt="Cover image for {getTitleDisplay({
 							obj: series_img_2,

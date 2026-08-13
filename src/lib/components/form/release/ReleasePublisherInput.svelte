@@ -90,13 +90,13 @@
 	<h2 class="text-lg font-bold">Publisher Relations</h2>
 
 	<div class="flex flex-col gap-2">
-		<div class="flex gap-6 flex-wrap">
+		<div class="flex flex-wrap gap-6">
 			{#each $values as publisher, i}
-				<div class="flex flex-col gap-2 flex-wrap">
+				<div class="flex flex-col flex-wrap gap-2">
 					<a class="link w-fit" target="_blank" rel="noreferrer" href="/publisher/{publisher.id}"
 						><span class="text-sm">#{publisher.id}:</span> <NameDisplay obj={publisher} /></a
 					>
-					<label class="flex gap-2 items-center"
+					<label class="flex items-center gap-2"
 						><span>Type: </span>
 						<select
 							name="publisher-role"
@@ -132,7 +132,7 @@
 				<div class="flex items-center gap-2">
 					<span class="text-sm font-medium">Recently used publishers:</span>
 					{#if recentPublishersFiltered.length > 0}
-						<button type="button" onclick={clearRecent} class="sub-btn !text-xs !px-2 !py-0"
+						<button type="button" onclick={clearRecent} class="sub-btn !px-2 !py-0 !text-xs"
 							>Clear</button
 						>
 					{/if}
@@ -142,7 +142,7 @@
 						<button
 							type="button"
 							onclick={() => handleAddPublisher(publisher)}
-							class="flex gap-1 items-center rounded-2xl tag-chip px-2 text-sm"
+							class="tag-chip flex items-center gap-1 rounded-2xl px-2 text-sm"
 						>
 							<NameDisplay obj={publisher} />
 						</button>

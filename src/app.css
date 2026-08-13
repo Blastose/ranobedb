@@ -130,7 +130,7 @@ a {
 
 @layer components {
 	.container-rndb {
-		@apply container px-4 sm:px-6 pb-4 mx-auto;
+		@apply container mx-auto px-4 pb-4 sm:px-6;
 		transition: max-width 450ms;
 	}
 }
@@ -424,7 +424,7 @@ input[type='number'].input.reset-padding {
 }
 
 .tet-btn {
-	@apply ring-[var(--primary-500)] ring-1;
+	@apply ring-1 ring-[var(--primary-500)];
 	border-radius: 9999px;
 	padding: 0.375rem 1rem;
 	transition: background-color 150ms;

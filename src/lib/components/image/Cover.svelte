@@ -19,14 +19,14 @@
 	let { obj, blurTop = false, children }: Props = $props();
 </script>
 
-<div class="overflow-hidden rounded-md relative">
+<div class="relative overflow-hidden rounded-md">
 	{#if blurTop}
 		<div
 			class="absolute inset-x-0 top-0 h-1/5 bg-gradient-to-b
 			{$displayPrefs.label_badge_display
 				? 'from-[#303030]/20 dark:from-[#303030]/50'
 				: 'from-[#303030]/5 dark:from-[#303030]/10'}
-				     to-transparent pointer-events-none z-1"
+				     z-1 pointer-events-none to-transparent"
 		></div>
 	{/if}
 	{#if obj?.image}
@@ -43,10 +43,10 @@
 		{/key}
 	{:else}
 		<div
-			class="bg-neutral-500 w-full h-full @container"
+			class="h-full w-full bg-neutral-500 @container"
 			style="aspect-ratio: 0.70381231671554252199413489736072;"
 		>
-			<p class="hidden @md:block p-4">No cover</p>
+			<p class="hidden p-4 @md:block">No cover</p>
 		</div>
 	{/if}
 	{@render children?.()}

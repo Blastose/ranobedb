@@ -27,7 +27,7 @@
 			field="private"
 			showRequiredSymbolIfRequired={false}
 		/>
-		<p class="text-sm sub-text-alt">
+		<p class="sub-text-alt text-sm">
 			When enabled, only you can view your profile and reading list. Your edit history and reviews
 			will remain public.
 		</p>

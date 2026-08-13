@@ -114,11 +114,11 @@
 				}}
 				use:melt={$content}
 			>
-				<h2 use:melt={$title} class="text-lg font-bold mb-2">Saved filters</h2>
+				<h2 use:melt={$title} class="mb-2 text-lg font-bold">Saved filters</h2>
 
 				<div class=" flex flex-col gap-4">
 					{#if savedFilters.length > 0}
-						<div class="max-h-60 overflow-y-auto thin-scrollbar">
+						<div class="thin-scrollbar max-h-60 overflow-y-auto">
 							{#each savedFilters as sf (sf.name)}
 								<div class="flex items-center justify-between gap-2 rounded px-2 py-1">
 									<a
@@ -131,7 +131,7 @@
 									<div class="flex items-center gap-1 whitespace-nowrap">
 										<button
 											type="button"
-											class="text-sm btn rounded-full px-2"
+											class="btn rounded-full px-2 text-sm"
 											use:melt={$triggerNested}
 											onclick={() => (deleteTarget = sf.name)}
 										>
@@ -176,7 +176,7 @@
 								the list.
 							</p>
 							{#if nameExists}
-								<p class="text-xs error-text-color">
+								<p class="error-text-color text-xs">
 									Existing filter "{$nameValue}" will be overwritten if saved.
 								</p>
 							{:else}

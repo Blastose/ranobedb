@@ -148,11 +148,11 @@
 										}}>Invert selection</button
 									>
 								</div>
-								<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-1">
+								<div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-4">
 									{#each series.books as book}
 										{@const checked = $form.book_ids.includes(book.id)}
 										<button
-											class="book-select-item grid grid-cols-[48px_1fr] gap-2 p-2 rounded-md"
+											class="book-select-item grid grid-cols-[48px_1fr] gap-2 rounded-md p-2"
 											class:clicked={checked}
 											type="button"
 											onclick={() => {
@@ -165,7 +165,7 @@
 											}}
 										>
 											{#if book.image}
-												<span class="block relative">
+												<span class="relative block">
 													<img
 														width={book?.image?.width}
 														height={book?.image?.height}
@@ -187,7 +187,7 @@
 													{/if}
 												</span>
 											{:else}
-												<span class="flex items-center justify-center h-full"
+												<span class="flex h-full items-center justify-center"
 													><Icon name="book" height="24" width="24" /></span
 												>
 											{/if}
@@ -201,7 +201,7 @@
 							</div>
 						</div>
 
-						<div class="flex flex-col sm:flex-row justify-end gap-2">
+						<div class="flex flex-col justify-end gap-2 sm:flex-row">
 							<button
 								disabled={$submitting}
 								type="button"

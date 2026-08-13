@@ -18,9 +18,9 @@
 	<section>
 		<h4 class="font-bold">Staff not in DB (will be added)</h4>
 
-		<div class="flex gap-6 flex-wrap">
+		<div class="flex flex-wrap gap-6">
 			{#each $values as _, i}
-				<div class="flex flex-col gap-2 flex-wrap">
+				<div class="flex flex-col flex-wrap gap-2">
 					<TextField
 						{form}
 						type="text"
@@ -40,7 +40,7 @@
 						showRequiredSymbolIfRequired={false}
 					/>
 
-					<label class="flex gap-2 items-center"
+					<label class="flex items-center gap-2"
 						><span>Role: </span>
 						<select name="staff-role" class="input reset-padding" bind:value={$values[i].role_type}>
 							{#each staffRolesArray as role}
@@ -48,7 +48,7 @@
 							{/each}
 						</select>
 					</label>
-					<label class="flex gap-2 items-center"
+					<label class="flex items-center gap-2"
 						><span>Note: </span><input
 							class="input reset-padding"
 							type="text"

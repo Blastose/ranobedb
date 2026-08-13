@@ -42,7 +42,7 @@
 >
 	<div class="flex flex-col gap-1">
 		<div>
-			<h2 class="font-bold text-lg">Personal Access Token</h2>
+			<h2 class="text-lg font-bold">Personal Access Token</h2>
 			<p class="text-sm">
 				This token is used for external programs to be able to access your library. Keep it secret!
 			</p>
@@ -65,7 +65,7 @@
 
 			<div class="flex flex-col gap-1">
 				{#if token}
-					<label class="w-fit flex items-center gap-1">
+					<label class="flex w-fit items-center gap-1">
 						<input
 							type="checkbox"
 							onchange={() => (currentType = currentType === 'password' ? 'text' : 'password')}
@@ -73,7 +73,7 @@
 						<span>Show Token</span>
 					</label>
 				{:else}
-					<p class="text-xs sub-text-alt">
+					<p class="sub-text-alt text-xs">
 						Your token has not been generated yet, Press "Refresh Token" to generate one
 					</p>
 				{/if}

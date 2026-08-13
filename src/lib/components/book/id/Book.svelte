@@ -64,9 +64,9 @@
 		<div class="blur-image"></div>
 	</div>
 
-	<div class="-mt-32 z-10 flex flex-col gap-4">
+	<div class="z-10 -mt-32 flex flex-col gap-4">
 		<div
-			class="grid grid-cols-1 @sm:grid-cols-[168px_1fr] @md:grid-cols-[256px_1fr] gap-6 sm:gap-4 md:gap-8 pb-4"
+			class="grid grid-cols-1 gap-6 pb-4 @sm:grid-cols-[168px_1fr] @md:grid-cols-[256px_1fr] sm:gap-4 md:gap-8"
 		>
 			<div class="flex flex-col items-center gap-4">
 				{#if book.image}
@@ -74,14 +74,14 @@
 						<img
 							width={book.image.width}
 							height={book.image.height}
-							class="max-w-[196px] h-fit @sm:max-w-[150px] @md:max-w-[200px] rounded-md shadow-sm"
+							class="h-fit max-w-[196px] rounded-md shadow-sm @sm:max-w-[150px] @md:max-w-[200px]"
 							src={imageUrl}
 							alt=""
 							loading="lazy"
 						/>
 					{/key}
 				{:else}
-					<div class="bg-neutral-500 w-[240px] h-[320px] rounded-md">
+					<div class="h-[320px] w-[240px] rounded-md bg-neutral-500">
 						<p class="p-4">No cover</p>
 					</div>
 				{/if}
@@ -102,7 +102,7 @@
 			</div>
 
 			<div>
-				<h1 class="font-bold text-3xl sm:text-4xl">
+				<h1 class="text-3xl font-bold sm:text-4xl">
 					<TitleDisplay obj={book} />
 				</h1>
 				<p class="sub-text"><TitleDisplay obj={book} type="sub" /></p>
@@ -121,7 +121,7 @@
 					<VisibilityDisplayPerm item={book} {user} />
 				</section>
 
-				<div class="flex justify-between @sm:justify-normal gap-6 pt-4">
+				<div class="flex justify-between gap-6 pt-4 @sm:justify-normal">
 					{#if previousBook}
 						<a class="link" href="/book/{previousBook.id}">{'<-'} Previous book</a>
 					{/if}
@@ -130,7 +130,7 @@
 					{/if}
 				</div>
 
-				<div class="pt-3 pb-2">
+				<div class="pb-2 pt-3">
 					<Rating
 						rating={book.rating}
 						itemId={book.id}
@@ -140,7 +140,7 @@
 				</div>
 
 				<section>
-					<h2 class="font-bold text-lg">Description</h2>
+					<h2 class="text-lg font-bold">Description</h2>
 					{#if book.description || book.description_ja}
 						{#key book.id}
 							{#if $displayPrefs.descriptions === 'en'}
@@ -163,11 +163,11 @@
 		{/if}
 
 		<section>
-			<h2 class="font-bold text-lg">Staff</h2>
-			<div class="flex flex-col gap-y-2 gap-x-4">
+			<h2 class="text-lg font-bold">Staff</h2>
+			<div class="flex flex-col gap-x-4 gap-y-2">
 				{#each sortByLang(book.editions, book.olang) as edition (edition.eid)}
 					<div class="flex flex-col gap-2">
-						<div class="grid grid-cols-[24px_1fr] font-semibold gap-1">
+						<div class="grid grid-cols-[24px_1fr] gap-1 font-semibold">
 							<LangChip lang={edition.lang || book.olang} />
 							<p>{edition.title}</p>
 						</div>
@@ -189,7 +189,7 @@
 		{#if book_series}
 			{#key book_series.id}
 				<section>
-					<h2 class="font-bold text-lg">Series</h2>
+					<h2 class="text-lg font-bold">Series</h2>
 					<div class="flex flex-col gap-2">
 						<BookCarousel>
 							{#snippet link()}
@@ -201,7 +201,7 @@
 											style="outline-color: var(--{defaultUserListLabelsCssClass(
 												book_series.label?.label,
 											)});"
-											class="whitespace-nowrap outline rounded-full outline-2 text-xs font-bold px-2 ml-2"
+											class="ml-2 whitespace-nowrap rounded-full px-2 text-xs font-bold outline outline-2"
 											>{book_series.label?.label}</span
 										>{/if}
 								</span>

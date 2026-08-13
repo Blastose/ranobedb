@@ -29,9 +29,9 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" action="?/changeemail" class="flex flex-col gap-2 max-w-lg" use:enhance>
+<form method="post" action="?/changeemail" class="flex max-w-lg flex-col gap-2" use:enhance>
 	<div>
-		<h2 class="font-bold text-lg">Change email</h2>
+		<h2 class="text-lg font-bold">Change email</h2>
 		{#if !email_verified}
 			<p class="text-sm">Your current email is not verified.</p>
 		{/if}

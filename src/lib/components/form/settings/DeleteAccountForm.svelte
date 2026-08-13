@@ -19,9 +19,9 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" action="?/delete_account" class="flex flex-col gap-2 max-w-lg" use:enhance>
+<form method="post" action="?/delete_account" class="flex max-w-lg flex-col gap-2" use:enhance>
 	<div>
-		<h2 class="font-bold text-lg">Delete account</h2>
+		<h2 class="text-lg font-bold">Delete account</h2>
 		<p class="text-sm">
 			Warning: This action is permanent and will take effect immediately.
 			<br />

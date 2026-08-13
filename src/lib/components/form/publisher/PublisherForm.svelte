@@ -44,11 +44,11 @@
 
 <form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
 	{#if publisher && type === 'edit'}
-		<h1 class="font-bold text-xl">
+		<h1 class="text-xl font-bold">
 			Editing <NameDisplay obj={publisher} fallback={'publisher'} />
 		</h1>
 	{:else}
-		<h1 class="font-bold text-xl">Add publisher</h1>
+		<h1 class="text-xl font-bold">Add publisher</h1>
 	{/if}
 
 	{#if user && hasVisibilityPerms(user)}

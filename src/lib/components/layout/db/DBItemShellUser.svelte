@@ -14,9 +14,9 @@
 
 <section class="flex flex-col gap-2">
 	<section>
-		<p class="opacity-80 capitalize">User</p>
-		<div class="flex gap-2 sm:gap-8 justify-between">
-			<div class="flex gap-2 items-center">
+		<p class="capitalize opacity-80">User</p>
+		<div class="flex justify-between gap-2 sm:gap-8">
+			<div class="flex items-center gap-2">
 				{#if profile_image.filename}
 					<div class="profile-button">
 						<img src={buildAvatarImageUrl(profile_image.filename)} alt="" />

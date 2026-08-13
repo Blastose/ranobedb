@@ -64,11 +64,11 @@
 	<!-- svelte-ignore a11y-label-has-associated-control - $label contains the 'for' attribute -->
 	<label use:melt={$label}>{labelText}</label>
 	<button
-		class="flex input round multiselect-padding items-center justify-between"
+		class="input round multiselect-padding flex items-center justify-between"
 		use:melt={$trigger}
 		aria-label="Options"
 	>
-		<span class="flex flex-wrap gap-2 min-w-[220px]">
+		<span class="flex min-w-[220px] flex-wrap gap-2">
 			{#if $values.length === 0}
 				<span class="chip">{noneSelectedText ?? allSelectedText ?? 'None'}</span>
 			{:else if $values.length === dropdownOptions.length && allSelectedText !== undefined}
@@ -89,18 +89,18 @@
 	</button>
 	{#if $open}
 		<div
-			class="ring-1 ring-[#c2c1ca] dark:ring-[#686775] z-[99999] overflow-y-auto overflow-x-hidden flex gap-1 max-h-[300px] flex-col whitespace-nowrap rounded-lg p-1 input"
+			class="input z-[99999] flex max-h-[300px] flex-col gap-1 overflow-y-auto overflow-x-hidden whitespace-nowrap rounded-lg p-1 ring-1 ring-[#c2c1ca] dark:ring-[#686775]"
 			use:melt={$menu}
 			transition:fly={{ duration: 150, y: -5 }}
 		>
 			{#each dropdownOptions as dropdownOption}
 				<div
-					class="relative cursor-pointer scroll-my-2 rounded-full pr-2 pl-8
-        data-[highlighted]:bg-gray-300 data-[highlighted]:text-gray-900
-				dark:data-[highlighted]:bg-neutral-600 dark:data-[highlighted]:text-white
+					class="relative cursor-pointer scroll-my-2 rounded-full pl-8 pr-2
+        data-[highlighted]:bg-gray-300 data-[selected]:bg-[var(--primary-500)]
+				data-[highlighted]:text-gray-900 data-[selected]:text-white
           data-[disabled]:opacity-50
-          data-[selected]:bg-[var(--primary-500)] data-[selected]:text-white
-          dark:data-[selected]:bg-[var(--primary-500)] dark:data-[selected]:text-white"
+          dark:data-[highlighted]:bg-neutral-600 dark:data-[selected]:bg-[var(--primary-500)]
+          dark:data-[highlighted]:text-white dark:data-[selected]:text-white"
 					use:melt={$option({ value: dropdownOption.value, label: dropdownOption.display })}
 				>
 					<div class="check {$isSelected(dropdownOption.value) ? 'block' : 'hidden'}">

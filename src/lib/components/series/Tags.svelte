@@ -14,11 +14,11 @@
 <div class="flex flex-wrap gap-x-6 gap-y-2">
 	{#each Object.entries(groupedTags) as [key, tagss]}
 		<section>
-			<h2 class="font-bold text-lg capitalize">{key}s</h2>
+			<h2 class="text-lg font-bold capitalize">{key}s</h2>
 
-			<div class="flex flex-wrap gap-2 mt-1">
+			<div class="mt-1 flex flex-wrap gap-2">
 				{#each tagss as tag}
-					<a href="/series?tagsInclude={tag.id}" class="text-sm px-2 tag">{tag.name}</a>
+					<a href="/series?tagsInclude={tag.id}" class="tag px-2 text-sm">{tag.name}</a>
 				{/each}
 			</div>
 		</section>

@@ -56,9 +56,9 @@
 
 <form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
 	{#if release && type === 'edit'}
-		<h1 class="font-bold text-xl">Editing <NameDisplay obj={release} /></h1>
+		<h1 class="text-xl font-bold">Editing <NameDisplay obj={release} /></h1>
 	{:else}
-		<h1 class="font-bold text-xl">Add release</h1>
+		<h1 class="text-xl font-bold">Add release</h1>
 	{/if}
 
 	{#if user && hasVisibilityPerms(user)}
@@ -126,7 +126,7 @@
 			<p>Duration</p>
 
 			<div class="flex gap-2">
-				<label class="flex flex-col gap-1 max-w-24">
+				<label class="flex max-w-24 flex-col gap-1">
 					<span>Hours</span>
 					<input
 						type="number"
@@ -137,7 +137,7 @@
 						oninput={onDurationHoursInput}
 					/>
 				</label>
-				<label class="flex flex-col gap-1 max-w-20">
+				<label class="flex max-w-20 flex-col gap-1">
 					<span>Minutes</span>
 					<input
 						type="number"
@@ -159,7 +159,7 @@
 
 	<section>
 		<h2 class="text-lg font-bold">Links</h2>
-		<div class="flex flex-col gap-2 max-w-md">
+		<div class="flex max-w-md flex-col gap-2">
 			<LinkInput form={sForm} field="website" label="Website" resetPadding={true} />
 
 			<LinkInput form={sForm} field="amazon" label="Amazon" resetPadding={true} />

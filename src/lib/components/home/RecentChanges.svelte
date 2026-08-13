@@ -9,9 +9,9 @@
 </script>
 
 <section>
-	<div class="flex justify-between items-center">
+	<div class="flex items-center justify-between">
 		<h2 class="text-lg font-bold">Recent changes</h2>
-		<p class="text-sm font-semibold sub-text-alt"><a href="/history">View all</a></p>
+		<p class="sub-text-alt text-sm font-semibold"><a href="/history">View all</a></p>
 	</div>
 	<div class="flex flex-col gap-1">
 		{#each data.recentChanges as recentChange}
@@ -28,7 +28,7 @@
 						></span
 					>
 				</p>
-				<p class="text-sm sub-text-alt">
+				<p class="sub-text-alt text-sm">
 					<a href="/user/{recentChange.id_numeric}" class="link text-base"
 						>{recentChange.username}</a
 					>

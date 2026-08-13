@@ -25,7 +25,7 @@
 </script>
 
 <section>
-	<h2 class="font-bold text-lg">Publishers</h2>
+	<h2 class="text-lg font-bold">Publishers</h2>
 
 	<div class="flex flex-col gap-x-4 gap-y-1">
 		{#each sortByLangObjEntries(Object.entries(groupedPublishersByLang), olang) as [key, publishers]}

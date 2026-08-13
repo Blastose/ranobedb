@@ -31,8 +31,8 @@
 
 <section class="flex flex-col gap-2">
 	<section>
-		<p class="opacity-80 capitalize">{dbItem}</p>
-		<div class="flex flex-col sm:flex-row gap-2 sm:gap-8 justify-between">
+		<p class="capitalize opacity-80">{dbItem}</p>
+		<div class="flex flex-col justify-between gap-2 sm:flex-row sm:gap-8">
 			<div class="flex flex-col">
 				<h1 class="text-2xl font-bold">
 					{name}
@@ -42,7 +42,7 @@
 				{/if}
 			</div>
 
-			<section class="whitespace-nowrap w-min mt-1">
+			<section class="mt-1 w-min whitespace-nowrap">
 				<VisibilityDisplay {item} type={dbItem} {user} {copyTo} {revision} />
 			</section>
 		</div>

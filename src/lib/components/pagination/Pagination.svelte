@@ -87,7 +87,7 @@
 
 {#if currentPage > 0}
 	<nav class="pagination-container">
-		<div class="flex gap-2 flex-wrap">
+		<div class="flex flex-wrap gap-2">
 			{#if isPreviousDisabled}
 				<button
 					aria-label="Previous"

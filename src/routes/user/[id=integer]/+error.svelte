@@ -15,7 +15,7 @@
 		<PrivateProfile user={error.profilePrivate.user} hasChanges={error.profilePrivate.hasChanges} />
 	{:else}
 		<main class="container-rndb">
-			<h1 class="font-bold text-lg">{status} {error.message}</h1>
+			<h1 class="text-lg font-bold">{status} {error.message}</h1>
 		</main>
 	{/if}
 {/if}

@@ -60,9 +60,9 @@
 	use:enhance
 >
 	{#if book && type === 'edit'}
-		<h1 class="font-bold text-xl">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
+		<h1 class="text-xl font-bold">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
 	{:else}
-		<h1 class="font-bold text-xl">Add book</h1>
+		<h1 class="text-xl font-bold">Add book</h1>
 	{/if}
 
 	{#if user && hasVisibilityPerms(user)}
@@ -110,7 +110,7 @@
 	<Hr />
 
 	<section>
-		<p class="font-bold text-xl">Database relations:</p>
+		<p class="text-xl font-bold">Database relations:</p>
 		<BookEditionStaffInput form={sForm} />
 	</section>
 
@@ -118,7 +118,7 @@
 
 	<section class="flex flex-col gap-2">
 		<div>
-			<h2 class="font-bold text-xl">Cover image</h2>
+			<h2 class="text-xl font-bold">Cover image</h2>
 			{#if book?.image_obj}
 				<p>Current image</p>
 				<p>Image ID: {book.image_obj.filename?.replace('.jpg', '')}</p>

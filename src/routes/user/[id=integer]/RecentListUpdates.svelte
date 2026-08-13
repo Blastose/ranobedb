@@ -19,16 +19,16 @@
 
 {#if items.items.length > 0}
 	<section>
-		<div class="flex gap-2 items-center">
-			<h2 class="font-bold text-lg">
+		<div class="flex items-center gap-2">
+			<h2 class="text-lg font-bold">
 				{title}
 			</h2>
-			<a href={viewAllHref} class="text-xs ml-6">View all</a>
+			<a href={viewAllHref} class="ml-6 text-xs">View all</a>
 		</div>
 
 		<div class="flex flex-col gap-1">
 			{#each items.items as item, idx (item.id)}
-				<div class="rounded-lg px-2 py-1 grid grid-cols-[60px_1fr] gap-2">
+				<div class="grid grid-cols-[60px_1fr] gap-2 rounded-lg px-2 py-1">
 					<div class="pt-1">
 						<a href="/{itemType}/{item.id}">
 							{#if items.type === 'book'}
@@ -42,7 +42,7 @@
 						<a class="link line-clamp-2 w-fit" href="/{itemType}/{item.id}"
 							><TitleDisplay obj={item} /></a
 						>
-						<div class="flex gap-2 items-center">
+						<div class="flex items-center gap-2">
 							<ReadingListBadge
 								badge={item.label?.label ?? ''}
 								textSize={'compact'}
@@ -51,11 +51,11 @@
 							{#if item.score}
 								<div class="flex items-center gap-1">
 									<Icon name="star" height="16" width="16" />
-									<p class="text-xs sub-text-alt">Score: {Number(item.score)}</p>
+									<p class="sub-text-alt text-xs">Score: {Number(item.score)}</p>
 								</div>
 							{/if}
 						</div>
-						<div class="px-1 sub-text-alt text-xs">
+						<div class="sub-text-alt px-1 text-xs">
 							{#if items.type === 'series'}
 								{@const vols_read = Number(
 									items.items[idx].vols_read?.volumes_read ?? items.items[idx].c_vols_read?.count,

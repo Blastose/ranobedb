@@ -61,7 +61,7 @@
 		{#if publisher.description}
 			<MarkdownToHtml markdown={publisher.description} type="full" />
 		{:else}
-			<p class="italic mb-2">No biography added</p>
+			<p class="mb-2 italic">No biography added</p>
 		{/if}
 	</section>
 
@@ -69,7 +69,7 @@
 		<section>
 			<Collapsible open={false}>
 				{#snippet summary()}
-					<h2 class="font-bold text-lg">Aliases</h2>
+					<h2 class="text-lg font-bold">Aliases</h2>
 				{/snippet}
 				{#snippet details()}
 					<p>{publisher.aliases.split('\n').join(', ')}</p>
@@ -102,7 +102,7 @@
 
 	{#if Object.entries(child_publishers).length > 0}
 		<section>
-			<h2 class="font-bold text-lg">Related publishers</h2>
+			<h2 class="text-lg font-bold">Related publishers</h2>
 			{#each Object.entries(child_publishers) as [key, publishers]}
 				<div class="flex flex-wrap gap-x-4">
 					<h3 class="font-semibold capitalize">{key}:</h3>

@@ -1,5 +1,5 @@
 <p
-	class="ring-red-600 font-semibold text-red-600 dark:ring-red-400 dark:text-red-400 ring-1 w-fit text-xs px-2 py-1 mt-2 rounded-full"
+	class="mt-2 w-fit rounded-full px-2 py-1 text-xs font-semibold text-red-600 ring-1 ring-red-600 dark:text-red-400 dark:ring-red-400"
 >
 	Contains spoilers
 </p>

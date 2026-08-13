@@ -20,7 +20,7 @@
 		{:else if status === 403}
 			<AccessDenied missingPerm={error.missingPerm} />
 		{:else}
-			<h1 class="font-bold text-lg">{status} {error.message}</h1>
+			<h1 class="text-lg font-bold">{status} {error.message}</h1>
 		{/if}
 	</main>
 {/if}

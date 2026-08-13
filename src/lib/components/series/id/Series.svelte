@@ -76,11 +76,11 @@
 	copyTo={{ to: ['book'], langs: series.titles.map((t) => t.lang) }}
 >
 	<div>
-		<p class="text-sm font-bold -mt-2">
+		<p class="-mt-2 text-sm font-bold">
 			{series.books.filter((v) => v.book_type === 'main').length} main books • {series.books.length}
 			total books
 		</p>
-		<div class="pt-2 pb-1">
+		<div class="pb-1 pt-2">
 			<Rating
 				rating={series.rating}
 				itemId={series.id}
@@ -107,7 +107,7 @@
 	{#if series.book_description && (series.book_description?.description?.length > 0 || series.book_description?.description_ja?.length > 0)}
 		{#key series.id}
 			<section>
-				<h2 class="font-bold text-lg">Description</h2>
+				<h2 class="text-lg font-bold">Description</h2>
 				{#if $displayPrefs.descriptions === 'en'}
 					<Description
 						description={series.book_description?.description ||
@@ -163,7 +163,7 @@
 		<section>
 			<Collapsible open={false}>
 				{#snippet summary()}
-					<h2 class="font-bold text-lg">Aliases</h2>
+					<h2 class="text-lg font-bold">Aliases</h2>
 				{/snippet}
 				{#snippet details()}
 					<p>{series.aliases.split('\n').join(', ')}</p>
@@ -175,7 +175,7 @@
 	<Tags tags={series.tags} />
 
 	<section class="flex flex-col gap-1">
-		<h2 class="font-bold text-lg">Links</h2>
+		<h2 class="text-lg font-bold">Links</h2>
 		{#if series.website || series.web_novel || series.bookwalker_id || series.anidb_id || series.wikidata_id || series.mal_id || series.anilist_id}
 			<div class="flex flex-wrap gap-x-2 gap-y-2">
 				{#if series.website}
@@ -209,7 +209,7 @@
 
 	{#if Object.entries(child_series).length > 0}
 		<section>
-			<h2 class="font-bold text-lg">Related series</h2>
+			<h2 class="text-lg font-bold">Related series</h2>
 			<div class="flex flex-col gap-1">
 				{#each Object.entries(child_series) as [key, series]}
 					<div class="flex flex-col">
@@ -224,7 +224,7 @@
 											style="outline-color: var(--{defaultUserListLabelsCssClass(
 												serie.label?.label,
 											)});"
-											class="outline rounded-full outline-2 text-xs font-bold px-2 ml-2"
+											class="ml-2 rounded-full px-2 text-xs font-bold outline outline-2"
 											>{serie.label?.label}</span
 										>{/if}
 								</li>
