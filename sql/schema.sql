@@ -159,6 +159,13 @@ CREATE TABLE public.auth_session (
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id)
 );
 
+CREATE TABLE public.auth_user_personal_access_token (
+    regenerated_at timestamptz NOT NULL DEFAULT NOW(),
+    user_id text NOT NULL PRIMARY KEY,
+    personal_access_token text NOT NULL UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES public.auth_user(id) ON DELETE CASCADE
+);
+
 CREATE TABLE public.email_verification_code (
     expires_at timestamptz NOT NULL,
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
