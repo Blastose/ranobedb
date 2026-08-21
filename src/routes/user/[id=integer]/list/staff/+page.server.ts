@@ -3,7 +3,7 @@ import { getStaff } from '$lib/server/db/staff/query';
 import { getUserListCounts } from '$lib/server/db/user/list.js';
 import { profilePrivateError } from '$lib/server/db/user/profile-private-error.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
-import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
+import { pageSchema, qSchema, staffFiltersSchema } from '$lib/server/zod/schema.js';
 import { error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -14,6 +14,7 @@ export const load = async ({ params, locals, url }) => {
 	const currentPage = page.data.page;
 	const qS = await superValidate(url, zod4(qSchema));
 	const q = qS.data.q;
+	const form = await superValidate(url, zod4(staffFiltersSchema));
 
 	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
 
@@ -32,6 +33,7 @@ export const load = async ({ params, locals, url }) => {
 			currentUser: locals.user,
 			listUser: listUser,
 			limit: 40,
+			form,
 		}),
 		getUserListCounts({ userId: listUser.id }),
 	]);
@@ -44,5 +46,6 @@ export const load = async ({ params, locals, url }) => {
 		currentPage: res.currentPage,
 		totalPages: res.totalPages,
 		listCounts,
+		filtersFormObj: form,
 	};
 };

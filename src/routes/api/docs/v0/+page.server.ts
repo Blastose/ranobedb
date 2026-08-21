@@ -126,6 +126,7 @@ export const load = async () => {
         id: number;
         name: string;
         romaji: string | null;
+        lang: Language;
     }[];
     count: string;
     currentPage: number;
@@ -139,6 +140,7 @@ export const load = async () => {
         description: string;
         hidden: boolean;
         locked: boolean;
+        lang: Language;
         name: string;
         romaji: string | null;
         twitter_id: string | null;
@@ -158,6 +160,7 @@ export const load = async () => {
         id: number;
         name: string;
         romaji: string | null;
+        lang: Language;
     }[];
     count: string;
     currentPage: number;
@@ -170,6 +173,7 @@ export const load = async () => {
         description: string;
         hidden: boolean;
         locked: boolean;
+        lang: Language;
         bookwalker_id: number | null;
         pixiv_id: number | null;
         twitter_id: string | null;
@@ -204,12 +208,12 @@ export const load = async () => {
             count: string | number | bigint;
         } | null;
         id: number;
-        lang: "id" | "ja" | "en" | "zh-Hans" | "zh-Hant" | "fr" | "es" | "ko" | "ar" | "bg" | "ca" | "cs" | "ck" | "da" | "de" | ... 35 more
+        lang: Language;
         romaji: string | null;
         hidden: boolean;
         locked: boolean;
         title: string;
-        olang: "id" | "ja" | "en" | "zh-Hans" | "zh-Hant" | "fr" | "es" | "ko" | "ar" | "bg" | "ca" | "cs" | "ck" | "da" | "de" | ... 35 more
+        olang: Language;
         c_num_books: number;
         title_orig: string | null;
         romaji_orig: string | null;

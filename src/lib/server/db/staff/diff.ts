@@ -21,6 +21,14 @@ export function getStaffDiffs(params: { prevStaffHistEdit: StaffEdit; staffHistE
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
+			name: 'Primary language',
+			words1: prevStaffHistEdit.lang,
+			words2: staffHistEdit.lang,
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
 			name: 'Hidden',
 			words1: prevStaffHistEdit.hidden.toString(),
 			words2: staffHistEdit.hidden.toString(),

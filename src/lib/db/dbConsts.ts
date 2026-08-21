@@ -128,6 +128,59 @@ export const languageNamesShort: Record<Language, string> = {
 	'zh-Hans': 'Chinese (S.)',
 };
 
+export const languageCountryCode: Record<Language, string> = {
+	ar: 'sa',
+	bg: 'bg',
+	ca: 'ad',
+	ck: 'ru',
+	cs: 'cz',
+	da: 'dk',
+	de: 'de',
+	el: 'gr',
+	en: 'gb',
+	eo: 'un',
+	es: 'es',
+	eu: 'es',
+	fa: 'ir',
+	fi: 'fi',
+	fr: 'fr',
+	ga: 'ie',
+	gd: 'gb-sct',
+	he: 'il',
+	hi: 'in',
+	hr: 'hr',
+	hu: 'hu',
+	id: 'id',
+	it: 'it',
+	iu: 'ca',
+	ja: 'jp',
+	ko: 'kr',
+	la: 'va',
+	lt: 'lt',
+	lv: 'lv',
+	mk: 'mk',
+	ms: 'my',
+	nl: 'nl',
+	no: 'no',
+	pl: 'pl',
+	'pt-br': 'br',
+	'pt-pt': 'pt',
+	ro: 'ro',
+	ru: 'ru',
+	sk: 'sk',
+	sl: 'si',
+	sr: 'rs',
+	sv: 'se',
+	ta: 'in',
+	th: 'th',
+	tr: 'tr',
+	uk: 'ua',
+	ur: 'pk',
+	vi: 'vn',
+	'zh-Hans': 'cn',
+	'zh-Hant': 'tw',
+};
+
 export const langsWithoutRomaji = [
 	'en',
 	'fr',
@@ -393,5 +446,9 @@ export const statsFiltersSortArray = [
 	'Reading status asc',
 	'Reading status desc',
 ] as const;
+
+export const staffSortArray = ['Name asc', 'Name desc'] as const;
+
+export const publishersSortArray = ['Name asc', 'Name desc'] as const;
 
 export const avatarUrlPrefix = 'avatar';

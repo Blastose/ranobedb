@@ -7,6 +7,7 @@
 	import { groupBy } from '$lib/db/array';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { getDisplayPrefsContext, getNameDisplay, getNameDisplaySub } from '$lib/display/prefs';
+	import LangFlag from '$lib/components/titles/LangFlag.svelte';
 	import Works from './Works.svelte';
 	import DbExtLinkShort from '$lib/components/db-links/DbExtLinkShort.svelte';
 	import { twitterLink, wikidataLink } from '$lib/components/db-links/db-ext-links';
@@ -14,6 +15,7 @@
 	import type { userListPublisherSchema } from '$lib/server/zod/schema';
 	import FavoritePublisher from '$lib/components/form/publisher/FavoritePublisher.svelte';
 	import Collapsible from '$lib/components/display/Collapsible.svelte';
+	import { languageNames } from '$lib/db/dbConsts';
 
 	interface Props {
 		publisher: Publisher;
@@ -55,6 +57,12 @@
 	{#if user && userListPublisherForm}
 		<FavoritePublisher {publisher} {userListPublisherForm}></FavoritePublisher>
 	{/if}
+
+	<div class="flex items-center gap-2 pt-1 text-sm">
+		<span class="font-semibold">Primary language:</span>
+		<LangFlag lang={publisher.lang} />
+		<span>{languageNames[publisher.lang]}</span>
+	</div>
 
 	<section>
 		<h2 class="text-lg font-bold">Biography</h2>

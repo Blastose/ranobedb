@@ -27,6 +27,11 @@
 		</section>
 
 		<section>
+			<h2>Primary language</h2>
+			<p>The language that the publisher mainly releases in.</p>
+		</section>
+
+		<section>
 			<h2>Links</h2>
 			<section>
 				<h3>Website</h3>

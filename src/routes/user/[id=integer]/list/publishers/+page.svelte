@@ -1,11 +1,12 @@
 <script lang="ts">
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
-	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import NoIndex from '$lib/components/layout/NoIndex.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DisplayBoxContainer from '$lib/components/layout/db/DisplayBoxContainer.svelte';
 	import LinkBox from '$lib/components/layout/db/LinkBox.svelte';
 	import ListTabs from '$lib/components/layout/list/ListTabs.svelte';
+	import LangNameDisplay from '$lib/components/display/LangNameDisplay.svelte';
+	import PublishersFilters from '$lib/components/form/filters/publisher/PublishersFilters.svelte';
 
 	let { data } = $props();
 
@@ -29,10 +30,16 @@
 		<ListTabs userIdNum={data.listUser.id_numeric} listCounts={data.listCounts} />
 	{/snippet}
 
+	{#snippet filters()}
+		<PublishersFilters filtersForm={data.filtersFormObj} />
+	{/snippet}
+
 	{#snippet display()}
 		<DisplayBoxContainer>
 			{#each data.publishers as publisher (publisher.id)}
-				<LinkBox href="/publisher/{publisher.id}"><NameDisplay obj={publisher} /></LinkBox>
+				<LinkBox href="/publisher/{publisher.id}">
+					<LangNameDisplay lang={publisher.lang} obj={publisher} />
+				</LinkBox>
 			{/each}
 		</DisplayBoxContainer>
 	{/snippet}

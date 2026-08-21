@@ -73,6 +73,7 @@ export async function addFromScrapedBookData(params: {
 							comment,
 							hidden: false,
 							locked: false,
+							lang: 'ja',
 							aliases: [
 								{
 									main_alias: true,
@@ -158,6 +159,7 @@ export async function addFromScrapedBookData(params: {
 							comment,
 							hidden: false,
 							locked: false,
+							lang: 'ja',
 							name: publisher.name,
 							romaji: publisher.romaji,
 							bookwalker: publisher.bw_url,

@@ -12,6 +12,8 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import TextFieldLink from '../TextFieldLink.svelte';
+	import SelectField from '../SelectField.svelte';
+	import { languageNames, languagesArray } from '$lib/db/dbConsts';
 	import {
 		bookwalkerAuthorLink,
 		bookwalkerGlobalAuthorLink,
@@ -60,6 +62,20 @@
 	{/if}
 
 	<StaffNamesInput form={sForm} />
+
+	<SelectField
+		form={sForm}
+		field="lang"
+		dropdownOptions={languagesArray.map((item) => ({
+			display: languageNames[item],
+			value: item,
+		}))}
+		selectedValue={$form.lang}
+		label="Primary language"
+		showRequiredSymbolIfRequired={false}
+		resetPadding={true}
+		fit={true}
+	/>
 
 	<Hr />
 

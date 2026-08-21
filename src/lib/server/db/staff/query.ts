@@ -3,6 +3,8 @@ import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { DBStaff } from './staff';
+import type { staffFiltersSchema } from '$lib/server/zod/schema';
+import type { Infer, SuperValidated } from 'sveltekit-superforms';
 
 export async function getStaff(params: {
 	currentPage: number;
@@ -11,8 +13,9 @@ export async function getStaff(params: {
 	currentUser: User | null;
 	listUser: Pick<User, 'id'> | null;
 	limit: number;
+	form: SuperValidated<Infer<typeof staffFiltersSchema>>;
 }) {
-	const { currentPage, q, db, currentUser, limit, listUser } = params;
+	const { currentPage, q, db, currentUser, limit, listUser, form } = params;
 
 	const dbStaff = DBStaff.fromDB(db, currentUser);
 
@@ -54,11 +57,23 @@ export async function getStaff(params: {
 				'>',
 				0.3,
 			)
-			.groupBy(['staff.id', 'staff_alias.name', 'staff_alias.romaji'])
+			.groupBy(['staff.id', 'staff.lang', 'staff_alias.name', 'staff_alias.romaji'])
 			.orderBy('sim_score', 'desc');
 	}
 
-	query = query.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'));
+	const useLangFilters = form.data.lang.length > 0;
+	if (useLangFilters) {
+		query = query.where((eb) => {
+			const filters = form.data.lang.map((lang) => eb('staff.lang', '=', lang));
+			return eb.or(filters);
+		});
+	}
+
+	if (form.data.sort === 'Name desc') {
+		query = query.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'), 'desc');
+	} else {
+		query = query.orderBy((eb) => eb.fn.coalesce('staff_alias.romaji', 'staff_alias.name'), 'asc');
+	}
 
 	const {
 		result: staff,

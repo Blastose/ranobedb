@@ -301,6 +301,12 @@
 
 							<span>limit</span>
 							<span>number (max 100)</span>
+
+							<span>lang</span>
+							<span>Language[] <span>Staff language</span></span>
+
+							<span>sort</span>
+							<span>'Name asc' | 'Name desc'</span>
 						</div>
 					</section>
 					<section>
@@ -331,6 +337,12 @@
 
 							<span>limit</span>
 							<span>number (max 100)</span>
+
+							<span>lang</span>
+							<span>Language[] <span>Publisher language</span></span>
+
+							<span>sort</span>
+							<span>'Name asc' | 'Name desc'</span>
 						</div>
 					</section>
 					<section>

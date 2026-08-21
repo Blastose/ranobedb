@@ -318,7 +318,8 @@ CREATE TABLE public.staff (
     kakuyomu_id text,
     bsky_id text,
     website text,
-    description text NOT NULL
+    description text NOT NULL,
+    lang public.language NOT NULL
 );
 
 CREATE TABLE public.staff_hist (
@@ -334,6 +335,7 @@ CREATE TABLE public.staff_hist (
     bsky_id text,
     website text,
     description text NOT NULL,
+    lang public.language NOT NULL,
     FOREIGN KEY (change_id) REFERENCES public.change(id),
     PRIMARY KEY (change_id)
 );
@@ -393,7 +395,8 @@ CREATE TABLE public.publisher (
     description text NOT NULL,
     bookwalker text,
     twitter_id text,
-    website text
+    website text,
+    lang public.language NOT NULL
 );
 
 CREATE TABLE public.publisher_hist (
@@ -406,6 +409,7 @@ CREATE TABLE public.publisher_hist (
     bookwalker text,
     twitter_id text,
     website text,
+    lang public.language NOT NULL,
     FOREIGN KEY (change_id) REFERENCES public.change(id),
     PRIMARY KEY (change_id)
 );

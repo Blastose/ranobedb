@@ -68,6 +68,7 @@ export class DBPublisherActions {
 				'publisher.twitter_id',
 				'publisher.website',
 				'publisher.wikidata_id',
+				'publisher.lang',
 			])
 			.where('publisher.id', 'in', params.publisher_ids)
 			.execute();
@@ -142,6 +143,7 @@ export class DBPublisherActions {
 					twitter_id: publisher_to_update.twitter_id,
 					website: publisher_to_update.website,
 					wikidata_id: publisher_to_update.wikidata_id,
+					lang: publisher_to_update.lang,
 				})
 				.execute();
 			if (batch_add.length > 0) {
@@ -198,6 +200,7 @@ export class DBPublisherActions {
 					twitter_id: publisher_to_remove.twitter_id,
 					website: publisher_to_remove.website,
 					wikidata_id: publisher_to_remove.wikidata_id,
+					lang: publisher_to_remove.lang,
 				})
 				.execute();
 			current = current.filter((item) => item.id_child !== params.main_id);
@@ -283,6 +286,7 @@ export class DBPublisherActions {
 					twitter_id: publisher_to_add.twitter_id,
 					website: publisher_to_add.website,
 					wikidata_id: publisher_to_add.wikidata_id,
+					lang: publisher_to_add.lang,
 				})
 				.execute();
 			if (batch_add.length > 0) {
@@ -346,6 +350,7 @@ export class DBPublisherActions {
 					twitter_id: data.publisher.twitter_id ?? null,
 					website: data.publisher.website ?? null,
 					wikidata_id: data.publisher.wikidata_id ?? null,
+					lang: data.publisher.lang ?? null,
 				})
 				.where('publisher.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -362,6 +367,7 @@ export class DBPublisherActions {
 					twitter_id: data.publisher.twitter_id,
 					website: data.publisher.website,
 					wikidata_id: data.publisher.wikidata_id,
+					lang: data.publisher.lang,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -468,6 +474,7 @@ export class DBPublisherActions {
 					twitter_id: data.publisher.twitter_id,
 					website: data.publisher.website,
 					wikidata_id: data.publisher.wikidata_id,
+					lang: data.publisher.lang,
 				})
 				.returning('publisher.id')
 				.executeTakeFirstOrThrow();
@@ -496,6 +503,7 @@ export class DBPublisherActions {
 					twitter_id: data.publisher.twitter_id,
 					website: data.publisher.website,
 					wikidata_id: data.publisher.wikidata_id,
+					lang: data.publisher.lang,
 				})
 				.executeTakeFirstOrThrow();
 			const publisher_relations = data.publisher.child_publishers.map((item) => {
