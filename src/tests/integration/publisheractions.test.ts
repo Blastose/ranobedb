@@ -45,6 +45,7 @@ describe('publisher actions', () => {
 					comment: 'Test',
 					hidden: false,
 					locked: false,
+					lang: 'de',
 					child_publishers: [
 						{ id: otherPublisher.id, name: otherPublisher.name, relation_type: 'imprint' },
 					],
@@ -149,6 +150,7 @@ describe('publisher actions', () => {
 					comment: 'Test',
 					hidden: false,
 					locked: false,
+					lang: 'ja',
 					child_publishers: [
 						{ id: otherPublisher.id, name: otherPublisher.name, relation_type: 'imprint' },
 					],

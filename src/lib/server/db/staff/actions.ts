@@ -77,6 +77,7 @@ export class DBStaffActions {
 					syosetu_id: data.staff.syosetu_id ?? null,
 					kakuyomu_id: data.staff.kakuyomu_id ?? null,
 					bsky_id: data.staff.bsky_id ?? null,
+					lang: data.staff.lang ?? null,
 				})
 				.where('staff.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -95,6 +96,7 @@ export class DBStaffActions {
 					syosetu_id: data.staff.syosetu_id,
 					kakuyomu_id: data.staff.kakuyomu_id,
 					bsky_id: data.staff.bsky_id,
+					lang: data.staff.lang,
 				})
 				.executeTakeFirstOrThrow();
 
@@ -236,6 +238,7 @@ export class DBStaffActions {
 					syosetu_id: data.staff.syosetu_id,
 					kakuyomu_id: data.staff.kakuyomu_id,
 					bsky_id: data.staff.bsky_id,
+					lang: data.staff.lang,
 				})
 				.returning('staff.id')
 				.executeTakeFirstOrThrow();
@@ -266,6 +269,7 @@ export class DBStaffActions {
 					syosetu_id: data.staff.syosetu_id,
 					kakuyomu_id: data.staff.kakuyomu_id,
 					bsky_id: data.staff.bsky_id,
+					lang: data.staff.lang,
 				})
 				.executeTakeFirstOrThrow();
 

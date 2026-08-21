@@ -14,6 +14,8 @@
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import TextFieldLink from '../TextFieldLink.svelte';
 	import LinkInput from '../LinkInput.svelte';
+	import SelectField from '../SelectField.svelte';
+	import { languageNames, languagesArray } from '$lib/db/dbConsts';
 	import {
 		bookwalkerAuthorLink,
 		twitterLink,
@@ -72,6 +74,20 @@
 		showRequiredSymbolIfRequired={false}
 		placeholder="Aliases separated by new lines"
 		textareaRows={3}
+	/>
+
+	<SelectField
+		form={sForm}
+		field="lang"
+		dropdownOptions={languagesArray.map((item) => ({
+			display: languageNames[item],
+			value: item,
+		}))}
+		selectedValue={$form.lang}
+		label="Primary language"
+		showRequiredSymbolIfRequired={false}
+		resetPadding={true}
+		fit={true}
 	/>
 
 	<section>

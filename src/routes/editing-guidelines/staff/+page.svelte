@@ -17,6 +17,11 @@
 		</section>
 
 		<section>
+			<h2>Primary language</h2>
+			<p>The primary language of the staff member.</p>
+		</section>
+
+		<section>
 			<h2>Links</h2>
 			<section>
 				<h3>Website</h3>

@@ -22,6 +22,8 @@
 	import type { userListStaffSchema } from '$lib/server/zod/schema';
 	import NameDisplayBoth from '$lib/components/display/NameDisplayBoth.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
+	import LangFlag from '$lib/components/titles/LangFlag.svelte';
+	import { languageNames } from '$lib/db/dbConsts';
 
 	interface Props {
 		staff: Staff;
@@ -70,6 +72,21 @@
 		</div>
 	</section>
 
+	<div class="flex items-center gap-2 text-sm pt-1">
+		<span class="font-semibold">Primary language:</span>
+		<LangFlag lang={staff.lang} />
+		<span>{languageNames[staff.lang]}</span>
+	</div>
+
+	<section>
+		<h2 class="text-lg font-bold">Biography</h2>
+		{#if staff.description}
+			<MarkdownToHtml markdown={staff.description} type="full" />
+		{:else}
+			<p class="italic mb-2">No biography added</p>
+		{/if}
+	</section>
+
 	{#if aliases.length > 0}
 		<section>
 			<h2 class="text-lg font-bold">Other names</h2>
@@ -81,15 +98,6 @@
 			{/each}
 		</section>
 	{/if}
-
-	<section>
-		<h2 class="text-lg font-bold">Biography</h2>
-		{#if staff.description}
-			<MarkdownToHtml markdown={staff.description} type="full" />
-		{:else}
-			<p class="italic mb-2">No biography added</p>
-		{/if}
-	</section>
 
 	<section class="flex flex-col gap-1">
 		<h2 class="text-lg font-bold">Links</h2>

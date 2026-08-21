@@ -34,6 +34,14 @@ export function getPublisherDiffs(params: {
 	);
 	pushIfNotUndefined(
 		diffs,
+		getDiffWords({
+			name: 'Primary language',
+			words1: prevPublisherHistEdit.lang,
+			words2: publisherHistEdit.lang,
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
 		getDiffLines({
 			name: 'Aliases',
 			lines1: prevPublisherHistEdit.aliases,

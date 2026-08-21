@@ -516,6 +516,7 @@ export const staffSchema = z.object({
 	kakuyomu_id: z.string().trim().max(2000).nullish(),
 	bsky_id: z.string().trim().max(2000).nullish(),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
+	lang: z.enum(languagesArray),
 
 	aliases: z
 		.array(
@@ -579,6 +580,7 @@ export const publisherSchema = z.object({
 	twitter_id: z.string().trim().max(maxTextLength).nullish(),
 	website: zLink([]),
 	wikidata_id: z.number().max(maxNumberValue).nullish(),
+	lang: z.enum(languagesArray),
 
 	comment: zComment,
 });
@@ -1084,6 +1086,26 @@ export const releaseFiltersObjCalendarSchema = z.object({
 	...releaseFiltersCalendarSchema.shape,
 	date: z.array(z.number()),
 	p: zPublishers,
+});
+
+export const publishersFiltersSchema = z.object({
+	lang: z.array(z.enum(languagesArray)).catch([]),
+	sort: z.enum(['Name asc', 'Name desc'] as const).catch('Name asc'),
+});
+
+export const publishersFiltersObjSchema = z.object({
+	lang: z.array(z.enum(languagesArray)).catch([]),
+	sort: z.enum(['Name asc', 'Name desc'] as const).catch('Name asc'),
+});
+
+export const staffFiltersSchema = z.object({
+	lang: z.array(z.enum(languagesArray)).catch([]),
+	sort: z.enum(['Name asc', 'Name desc'] as const).catch('Name asc'),
+});
+
+export const staffFiltersObjSchema = z.object({
+	lang: z.array(z.enum(languagesArray)).catch([]),
+	sort: z.enum(['Name asc', 'Name desc'] as const).catch('Name asc'),
 });
 
 export const readingLogSchema = z.object({

@@ -85,7 +85,7 @@ test.describe('add publisher mod', () => {
 
 	test('Mod can add publisher', async ({ page }) => {
 		await page.goto('/publishers/add');
-		await page.getByLabel('Name').fill('にゃんこ');
+		await page.getByLabel('Name *', { exact: true }).fill('にゃんこ');
 		await page.getByLabel('Romanization').fill('Nyanko');
 		await page.getByLabel('Biography').fill('Nyanko is a fictional publisher.');
 		await page.getByLabel('Edit summary').fill('Add Nyanko');

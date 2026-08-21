@@ -244,6 +244,7 @@ export interface Publisher {
 	description: string;
 	hidden: boolean;
 	id: Generated<number>;
+	lang: Language;
 	locked: boolean;
 	name: string;
 	romaji: string | null;
@@ -257,6 +258,7 @@ export interface PublisherHist {
 	bookwalker: string | null;
 	change_id: number;
 	description: string;
+	lang: Language;
 	name: string;
 	romaji: string | null;
 	twitter_id: string | null;
@@ -452,6 +454,7 @@ export interface Staff {
 	hidden: boolean;
 	id: Generated<number>;
 	kakuyomu_id: string | null;
+	lang: Language;
 	locked: boolean;
 	pixiv_id: number | null;
 	syosetu_id: number | null;
@@ -476,6 +479,7 @@ export interface StaffHist {
 	change_id: number;
 	description: string;
 	kakuyomu_id: string | null;
+	lang: Language;
 	pixiv_id: number | null;
 	syosetu_id: number | null;
 	twitter_id: string | null;

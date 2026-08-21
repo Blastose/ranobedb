@@ -1,6 +1,6 @@
 import { db } from '$lib/server/db/db.js';
 import { getStaff } from '$lib/server/db/staff/query.js';
-import { pageSchema, qSchema } from '$lib/server/zod/schema.js';
+import { pageSchema, qSchema, staffFiltersSchema } from '$lib/server/zod/schema.js';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
@@ -9,6 +9,7 @@ export const load = async ({ url, locals }) => {
 	const currentPage = page.data.page;
 	const qS = await superValidate(url, zod4(qSchema));
 	const q = qS.data.q;
+	const form = await superValidate(url, zod4(staffFiltersSchema));
 
 	const res = await getStaff({
 		currentPage,
@@ -17,6 +18,7 @@ export const load = async ({ url, locals }) => {
 		currentUser: locals.user,
 		listUser: null,
 		limit: 40,
+		form,
 	});
 
 	return {
@@ -24,5 +26,6 @@ export const load = async ({ url, locals }) => {
 		count: res.count,
 		currentPage: res.currentPage,
 		totalPages: res.totalPages,
+		filtersFormObj: form,
 	};
 };

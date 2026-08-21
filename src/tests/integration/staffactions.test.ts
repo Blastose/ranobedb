@@ -37,6 +37,7 @@ describe('staff actions', () => {
 					comment: 'Test',
 					hidden: false,
 					locked: false,
+					lang: 'ja',
 					aliases: [
 						{ main_alias: false, name: 'Mary' },
 						{ main_alias: false, name: 'Steve' },
@@ -70,6 +71,7 @@ describe('staff actions', () => {
 					comment: 'Test',
 					hidden: false,
 					locked: false,
+					lang: 'en',
 					aliases: [
 						{
 							main_alias: false,
@@ -124,6 +126,7 @@ describe('staff actions', () => {
 					comment: 'Test',
 					hidden: false,
 					locked: false,
+					lang: 'ja',
 					aliases: [{ main_alias: true, name: 'Jimmy' }],
 				},
 			},

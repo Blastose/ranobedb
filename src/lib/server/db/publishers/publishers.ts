@@ -66,6 +66,7 @@ export class DBPublishers {
 				'publisher_hist.twitter_id',
 				'publisher_hist.website',
 				'publisher_hist.wikidata_id',
+				'publisher_hist.lang',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) => [
@@ -132,6 +133,7 @@ export class DBPublishers {
 				'publisher.twitter_id',
 				'publisher.website',
 				'publisher.wikidata_id',
+				'publisher.lang',
 			])
 			.select((eb) =>
 				jsonArrayFrom(
@@ -167,6 +169,7 @@ export class DBPublishers {
 				'publisher_hist.twitter_id',
 				'publisher_hist.website',
 				'publisher_hist.wikidata_id',
+				'publisher_hist.lang',
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) =>

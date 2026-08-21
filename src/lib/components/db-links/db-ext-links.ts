@@ -97,6 +97,10 @@ export function faviconUrl(domain: string): string {
 	return `/external-links/favicon?domain=${domain}`;
 }
 
+export function flagUrl(code: string): string {
+	return `/external-links/flag?code=${code}`;
+}
+
 // Override domains for favicon lookup to avoid caching for similar domains (e.g. amazon.co.jp, amazon.com, etc.)
 export const faviconDomains: Record<string, string | undefined> = {
 	Amazon: 'www.amazon.com',

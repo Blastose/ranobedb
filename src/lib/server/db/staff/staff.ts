@@ -26,7 +26,7 @@ export class DBStaff {
 			.innerJoin('staff_alias', (join) =>
 				join.onRef('staff_alias.staff_id', '=', 'staff.id').on('staff_alias.main_alias', '=', true),
 			)
-			.select(['staff.id'])
+			.select(['staff.id', 'staff.lang'])
 			.select(['staff_alias.name', 'staff_alias.romaji']);
 	}
 
@@ -81,6 +81,7 @@ export class DBStaff {
 				'staff_hist.syosetu_id',
 				'staff_hist.kakuyomu_id',
 				'staff_hist.bsky_id',
+				'staff_hist.lang',
 			])
 			.select(['staff_alias_hist.name', 'staff_alias_hist.romaji'])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
@@ -171,6 +172,7 @@ export class DBStaff {
 				'staff_hist.syosetu_id',
 				'staff_hist.kakuyomu_id',
 				'staff_hist.bsky_id',
+				'staff_hist.lang',
 			])
 			.select(['staff_alias_hist.name', 'staff_alias_hist.romaji'])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])

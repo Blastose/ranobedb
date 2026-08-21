@@ -90,7 +90,14 @@ export async function initDatabase(db: Kysely<DB>) {
 		.execute();
 	const publisher = await db
 		.insertInto('publisher')
-		.values({ aliases: 'BB', description: '', hidden: false, locked: false, name: 'BestBooks' })
+		.values({
+			aliases: 'BB',
+			description: '',
+			hidden: false,
+			locked: false,
+			name: 'BestBooks',
+			lang: 'en',
+		})
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changePublisher = await db
@@ -108,11 +115,24 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('publisher_hist')
-		.values({ change_id: changePublisher.id, aliases: 'BB', description: '', name: 'BestBooks' })
+		.values({
+			change_id: changePublisher.id,
+			aliases: 'BB',
+			description: '',
+			name: 'BestBooks',
+			lang: 'en',
+		})
 		.execute();
 	const publisher2 = await db
 		.insertInto('publisher')
-		.values({ aliases: 'GB', description: '', hidden: false, locked: false, name: 'GoodBooks' })
+		.values({
+			aliases: 'GB',
+			description: '',
+			hidden: false,
+			locked: false,
+			name: 'GoodBooks',
+			lang: 'ja',
+		})
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changePublisher2 = await db
@@ -130,7 +150,13 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('publisher_hist')
-		.values({ change_id: changePublisher2.id, aliases: 'GB', description: '', name: 'GoodBooks' })
+		.values({
+			change_id: changePublisher2.id,
+			aliases: 'GB',
+			description: '',
+			name: 'GoodBooks',
+			lang: 'ja',
+		})
 		.execute();
 	const release = await db
 		.insertInto('release')
@@ -283,7 +309,7 @@ export async function initDatabase(db: Kysely<DB>) {
 		.execute();
 	const staff = await db
 		.insertInto('staff')
-		.values({ description: '', hidden: false, locked: false })
+		.values({ description: '', hidden: false, locked: false, lang: 'ja' })
 		.returning('id')
 		.executeTakeFirstOrThrow();
 	const changeStaff = await db
@@ -301,7 +327,7 @@ export async function initDatabase(db: Kysely<DB>) {
 		.executeTakeFirstOrThrow();
 	await db
 		.insertInto('staff_hist')
-		.values({ change_id: changeStaff.id, description: '' })
+		.values({ change_id: changeStaff.id, description: '', lang: 'ja' })
 		.execute();
 	await db
 		.insertInto('staff_alias')

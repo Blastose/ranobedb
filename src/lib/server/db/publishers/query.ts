@@ -4,6 +4,8 @@ import type { User } from '$lib/server/lucia/lucia';
 import { paginationBuilderExecuteWithCount } from '../dbHelpers';
 import { DBPublishers } from './publishers';
 import { escapeRegex } from '$lib/db/match';
+import type { publishersFiltersSchema } from '$lib/server/zod/schema';
+import type { Infer, SuperValidated } from 'sveltekit-superforms';
 
 export async function getPublishers(params: {
 	currentPage: number;
@@ -12,8 +14,9 @@ export async function getPublishers(params: {
 	currentUser: User | null;
 	listUser: Pick<User, 'id'> | null;
 	limit: number;
+	form: SuperValidated<Infer<typeof publishersFiltersSchema>>;
 }) {
-	const { currentPage, q, db, currentUser, limit, listUser } = params;
+	const { currentPage, q, db, currentUser, limit, listUser, form } = params;
 
 	const dbPublishers = DBPublishers.fromDB(db, currentUser);
 
@@ -21,7 +24,7 @@ export async function getPublishers(params: {
 		.getPublishers()
 		.clearSelect()
 		.where('publisher.hidden', '=', false)
-		.select(['publisher.id', 'publisher.name', 'publisher.romaji']);
+		.select(['publisher.id', 'publisher.name', 'publisher.romaji', 'publisher.lang']);
 
 	if (listUser) {
 		query = query
@@ -77,7 +80,19 @@ export async function getPublishers(params: {
 			.orderBy('sim_score', 'desc');
 	}
 
-	query = query.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'));
+	const useLangFilters = form.data.lang.length > 0;
+	if (useLangFilters) {
+		query = query.where((eb) => {
+			const filters = form.data.lang.map((lang) => eb('publisher.lang', '=', lang));
+			return eb.or(filters);
+		});
+	}
+
+	if (form.data.sort === 'Name desc') {
+		query = query.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'), 'desc');
+	} else {
+		query = query.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'), 'asc');
+	}
 
 	const {
 		result: publishers,
