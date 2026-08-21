@@ -25,7 +25,7 @@
 			<div class="flex items-center gap-1">
 				{#if pct / 1.4 > 0}
 					<div
-						class="bg-[var(--primary-500)] h-[80%] rounded-sm"
+						class="h-[80%] rounded-sm bg-[var(--primary-500)]"
 						style="width: {pct / 1.4}%;"
 					></div>
 				{/if}
@@ -35,7 +35,7 @@
 			</div>
 		{/each}
 	</div>
-	<div class="text-sm flex flex-col items-center">
+	<div class="flex flex-col items-center text-sm">
 		<p class="text-center">
 			{Number(rating?.score).toFixed(2)} average from {scoreCount} total scores
 		</p>

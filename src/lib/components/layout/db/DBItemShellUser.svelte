@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { buildAvatarImageUrl, buildImageUrl } from '$lib/components/book/book';
+	import { buildAvatarImageUrl } from '$lib/components/book/book';
 
 	// This is a copy of DBItemShell.svelte, but for users only, since it's hard to refactor it for users
-	import type { SafeUser } from '$lib/server/db/user/user';
 
 	interface Props {
-		user: SafeUser;
+		user: { username: string };
 		profile_image: { filename: string | null };
 		children?: import('svelte').Snippet;
 	}
@@ -15,9 +14,9 @@
 
 <section class="flex flex-col gap-2">
 	<section>
-		<p class="opacity-80 capitalize">User</p>
-		<div class="flex gap-2 sm:gap-8 justify-between">
-			<div class="flex gap-2 items-center">
+		<p class="capitalize opacity-80">User</p>
+		<div class="flex justify-between gap-2 sm:gap-8">
+			<div class="flex items-center gap-2">
 				{#if profile_image.filename}
 					<div class="profile-button">
 						<img src={buildAvatarImageUrl(profile_image.filename)} alt="" />

@@ -36,9 +36,9 @@
 
 <section class="flex flex-col gap-2">
 	<h2 class="text-lg font-bold">Series Relations</h2>
-	<div class="flex flex-col gap-2 flex-wrap">
+	<div class="flex flex-col flex-wrap gap-2">
 		{#each $values as series, i}
-			<div class="flex flex-col gap-2 flex-wrap">
+			<div class="flex flex-col flex-wrap gap-2">
 				<a class="link w-fit" target="_blank" rel="noreferrer" href="/series/{series.id}"
 					><span class="text-sm">#{series.id}:</span>
 					<TitleDisplay
@@ -51,7 +51,7 @@
 						}}
 					/></a
 				>
-				<label class="flex gap-2 items-center"
+				<label class="flex items-center gap-2"
 					><span>Relation type: </span>
 					<select
 						name="series-role"

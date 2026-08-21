@@ -126,6 +126,7 @@ export interface AuthUser {
 	id: string;
 	id_numeric: Generated<number>;
 	joined: Generated<Timestamp>;
+	private: Generated<boolean>;
 	profile_image_id: number | null;
 	role: Generated<UserRole>;
 	username: string;
@@ -136,6 +137,12 @@ export interface AuthUserCredentials {
 	email: string;
 	email_verified: Generated<boolean>;
 	hashed_password: string;
+	user_id: string;
+}
+
+export interface AuthUserPersonalAccessToken {
+	personal_access_token: string;
+	regenerated_at: Generated<Timestamp>;
 	user_id: string;
 }
 
@@ -281,7 +288,7 @@ export interface ProfileImage {
 }
 
 export interface Publisher {
-	aliases: Generated<string>;
+	aliases: string;
 	bookwalker: string | null;
 	description: string;
 	hidden: boolean;
@@ -296,7 +303,7 @@ export interface Publisher {
 }
 
 export interface PublisherHist {
-	aliases: Generated<string>;
+	aliases: string;
 	bookwalker: string | null;
 	change_id: number;
 	description: string;
@@ -324,6 +331,7 @@ export interface Release {
 	amazon: string | null;
 	bookwalker: string | null;
 	description: string;
+	duration: number | null;
 	format: ReleaseFormat;
 	hidden: boolean;
 	id: Generated<number>;
@@ -356,6 +364,7 @@ export interface ReleaseHist {
 	bookwalker: string | null;
 	change_id: number;
 	description: string;
+	duration: number | null;
 	format: ReleaseFormat;
 	isbn13: string | null;
 	lang: Language;
@@ -673,6 +682,7 @@ export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
 	auth_user_credentials: AuthUserCredentials;
+	auth_user_personal_access_token: AuthUserPersonalAccessToken;
 	book: Book;
 	book_edition: BookEdition;
 	book_edition_hist: BookEditionHist;

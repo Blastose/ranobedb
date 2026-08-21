@@ -40,12 +40,12 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" class="flex flex-col gap-4 mt-2" action={actionUrl} use:enhance>
-	<h2 class="font-bold text-2xl">{type === 'add' ? 'Submit' : 'Edit'} {itemType} review</h2>
+<form method="post" class="mt-2 flex flex-col gap-4" action={actionUrl} use:enhance>
+	<h2 class="text-2xl font-bold">{type === 'add' ? 'Submit' : 'Edit'} {itemType} review</h2>
 
 	<div>
 		<p>You are {type === 'add' ? 'writing a' : 'editing your'} review for the {itemType}:</p>
-		<a target="_blank" class="link font-bold text-xl" href="/{itemType}/{itemId}">{title}</a>
+		<a target="_blank" class="link text-xl font-bold" href="/{itemType}/{itemId}">{title}</a>
 	</div>
 
 	<div class="flex flex-col gap-y-1">
@@ -61,7 +61,7 @@
 						resetPadding={true}
 					/>
 				</div>
-				<p class="text-sm sub-text">
+				<p class="sub-text text-sm">
 					How many volumes you have read at the time of the review. Pre-filled from your list data,
 					but it can be changed if needed.
 				</p>
@@ -78,7 +78,7 @@
 					resetPadding={true}
 				/>
 			</div>
-			<p class="text-sm sub-text">
+			<p class="sub-text text-sm">
 				This score is pre-filled with your list score, but it can be changed if needed.
 			</p>
 		</div>
@@ -86,7 +86,7 @@
 
 	<div>
 		<CheckboxField form={sForm} field="spoiler" label="This review contains unmarked spoilers" />
-		<div class="text-sm sub-text markdown">
+		<div class="sub-text markdown text-sm">
 			You do not need to check this box if all spoilers in your review are marked with spoiler tags <code
 				>{'>!!<'}</code
 			>
@@ -107,7 +107,7 @@
 	<div class="flex gap-2">
 		<SubmitButton delayed={$delayed} submitting={$submitting} text={submitButtonText} />
 		{#if type === 'update'}
-			<button use:melt={$trigger} class="btn btn-pad whitespace-nowrap max-w-xs"
+			<button use:melt={$trigger} class="btn btn-pad max-w-xs whitespace-nowrap"
 				>Delete review</button
 			>
 		{/if}

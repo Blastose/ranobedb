@@ -33,18 +33,18 @@
 	{#each $values as value}
 		<HiddenInput name="staff" value={String(value.id)} />
 	{/each}
-	<div class="flex gap-2 flex-col">
+	<div class="flex flex-col gap-2">
 		<div class="flex flex-wrap gap-2">
 			{#each $values as staff, i (staff.id)}
 				<button
-					class="flex gap-1 items-center rounded-2xl tag-chip px-2 text-sm"
+					class="tag-chip flex items-center gap-1 rounded-2xl px-2 text-sm"
 					type="button"
 					on:click={() => {
 						handleRemoveStaff(i);
 					}}><NameDisplay obj={staff} /><Icon name="close" height="18" width="18"></Icon></button
 				>
 			{:else}
-				<p class="italic text-sm">No staff selected</p>
+				<p class="text-sm italic">No staff selected</p>
 			{/each}
 		</div>
 		<ComboboxInput

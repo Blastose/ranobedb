@@ -17,9 +17,9 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" action="?/password" class="flex flex-col gap-2 max-w-lg" use:enhance>
+<form method="post" action="?/password" class="flex max-w-lg flex-col gap-2" use:enhance>
 	<div>
-		<h2 class="font-bold text-lg">Update password</h2>
+		<h2 class="text-lg font-bold">Update password</h2>
 		<p class="text-sm">Changing your password will log you out of all other sessions</p>
 	</div>
 

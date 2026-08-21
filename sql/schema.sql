@@ -140,6 +140,7 @@ CREATE TABLE public.auth_user (
     display_prefs JSONB NOT NULL default '{"names": "romaji","title_prefs": [ { "lang": "en", "romaji": false, "official": "official" }, { "lang": "ja", "romaji": true, "official": "official" } ],"descriptions": "en","label_badge_display": true}'::jsonb,
     profile_image_id integer,
     home_display_settings JSONB NOT NULL DEFAULT '{"header": true, "popular_series": true, "reviews": true, "upcoming_releases": true, "recently_released": true, "seasonal_anime": true, "annoucements": true, "recent_changes": true, "newly_licensed_en": true}'::jsonb,
+    private boolean NOT NULL DEFAULT false,
     FOREIGN KEY (profile_image_id) REFERENCES public.profile_image(id)
 );
 
@@ -156,6 +157,13 @@ CREATE TABLE public.auth_session (
     id text NOT NULL PRIMARY KEY,
     user_id text NOT NULL,
     FOREIGN KEY (user_id) REFERENCES public.auth_user(id)
+);
+
+CREATE TABLE public.auth_user_personal_access_token (
+    regenerated_at timestamptz NOT NULL DEFAULT NOW(),
+    user_id text NOT NULL PRIMARY KEY,
+    personal_access_token text NOT NULL UNIQUE,
+    FOREIGN KEY (user_id) REFERENCES public.auth_user(id) ON DELETE CASCADE
 );
 
 CREATE TABLE public.email_verification_code (
@@ -428,6 +436,7 @@ CREATE TABLE public.release (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     release_date integer NOT NULL,
     pages integer,
+    duration integer,
     format release_format NOT NULL,
     lang public.language NOT NULL,
     locked boolean NOT NULL,
@@ -446,6 +455,7 @@ CREATE TABLE public.release_hist (
     change_id integer NOT NULL,
     release_date integer NOT NULL,
     pages integer,
+    duration integer,
     format release_format NOT NULL,
     lang public.language NOT NULL,
     description text NOT NULL,

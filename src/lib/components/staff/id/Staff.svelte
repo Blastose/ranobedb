@@ -60,7 +60,7 @@
 	{user}
 	item={staff}
 >
-	<section class="flex gap-4 items-center">
+	<section class="flex items-center gap-4">
 		{#if user && userListStaffForm}
 			<FollowStaff {staff} {userListStaffForm}></FollowStaff>
 		{/if}

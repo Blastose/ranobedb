@@ -17,7 +17,7 @@
 	<h2 class="text-lg font-bold">Filters</h2>
 
 	<div class="flex flex-col gap-4">
-		<div class="w-fit flex flex-wrap gap-x-8 gap-y-2 items-end">
+		<div class="flex w-fit flex-wrap items-end gap-x-8 gap-y-2">
 			<Keyed>
 				<MultiSelectField
 					form={sForm}

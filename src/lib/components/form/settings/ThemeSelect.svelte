@@ -7,7 +7,7 @@
 	}
 </script>
 
-<label class="flex gap-2 items-center">
+<label class="flex items-center gap-2">
 	<span>Theme</span>
 	<select on:change={handleThemeChange} class="input reset-padding capitalize" name="theme">
 		{#each themes as theme}

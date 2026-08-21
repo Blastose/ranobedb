@@ -19,7 +19,7 @@
 <!-- <SuperDebug data={$form} /> -->
 
 <form method="post" action="?/username" class="flex flex-col gap-2" use:enhance>
-	<h2 class="font-bold text-lg">Update username</h2>
+	<h2 class="text-lg font-bold">Update username</h2>
 
 	<div class="flex flex-col gap-1">
 		<TextField form={sForm} field={'username'} placeholder="Username" label="New username" />

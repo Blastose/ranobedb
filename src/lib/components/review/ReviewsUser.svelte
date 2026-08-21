@@ -22,12 +22,12 @@
 
 <main class="container-rndb flex flex-col gap-4">
 	<div class="flex flex-col gap-4">
-		<h1 class="font-bold text-4xl">{heading}</h1>
-		<a href="/user/{userIdNum}" class="w-fit link px-2">To profile</a>
+		<h1 class="text-4xl font-bold">{heading}</h1>
+		<a href="/user/{userIdNum}" class="link w-fit px-2">To profile</a>
 	</div>
 
 	<PaginationContainer {currentPage} {totalPages} {results} showTopPages={false}>
-		<div class="grid grid-cols-1 gap-4 @sm:gap-6 max-w-4xl">
+		<div class="grid max-w-4xl grid-cols-1 gap-4 @sm:gap-6">
 			{#each reviews as review (review.review_id)}
 				{#if review.obj}
 					{@const imageUrl = buildImageUrl(review.obj.image?.filename)}

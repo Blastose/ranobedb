@@ -18,9 +18,6 @@
 <PageTitle title={pageTitle} />
 <NoIndex />
 
-<PageTitle title={pageTitle} />
-<NoIndex />
-
 <DbShell
 	name={pageTitle}
 	customName={true}

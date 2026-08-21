@@ -9,7 +9,7 @@
 </script>
 
 <details {open}>
-	<summary class="cursor-pointer w-fit">{@render summary?.()}</summary>
+	<summary class="w-fit cursor-pointer">{@render summary?.()}</summary>
 	{@render details?.()}
 </details>
 

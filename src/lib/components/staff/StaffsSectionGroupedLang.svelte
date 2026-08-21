@@ -17,7 +17,7 @@
 </script>
 
 <section>
-	<h2 class="font-bold text-lg">Staff</h2>
+	<h2 class="text-lg font-bold">Staff</h2>
 
 	<div class="flex flex-col gap-1">
 		{#each sortByLangObjEntries(Object.entries(groupedStaffsByLang), olang) as [key, staffs]}

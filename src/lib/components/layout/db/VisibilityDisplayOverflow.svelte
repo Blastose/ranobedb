@@ -78,7 +78,7 @@
 			{#each copyTo.to as toType}
 				{#if toType === 'release'}
 					{#if copyTo.langs}
-						<div use:melt={$subTrigger} class="cursor-pointer sidebar-item items-center">
+						<div use:melt={$subTrigger} class="sidebar-item cursor-pointer items-center">
 							Copy as {toType}
 							<div>
 								<Icon name="chevronRight" width="20" height="20" />

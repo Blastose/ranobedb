@@ -82,6 +82,7 @@ export interface AuthUser {
 	role: Generated<UserRole>;
 	display_prefs: Generated<Json<DisplayPrefs>>;
 	home_display_settings: Generated<Json<HomeDisplaySettings>>;
+	private: Generated<boolean>;
 	username: string;
 	username_lowercase: string;
 }
@@ -90,6 +91,12 @@ export interface AuthUserCredentials {
 	email: string;
 	email_verified: Generated<boolean>;
 	hashed_password: string;
+	user_id: string;
+}
+
+export interface AuthUserPersonalAccessToken {
+	personal_access_token: string;
+	regenerated_at: Generated<Timestamp>;
 	user_id: string;
 }
 
@@ -282,6 +289,7 @@ export interface Release {
 	amazon: string | null;
 	bookwalker: string | null;
 	description: string;
+	duration: number | null;
 	format: ReleaseFormat;
 	hidden: boolean;
 	id: Generated<number>;
@@ -314,6 +322,7 @@ export interface ReleaseHist {
 	bookwalker: string | null;
 	change_id: number;
 	description: string;
+	duration: number | null;
 	format: ReleaseFormat;
 	isbn13: string | null;
 	lang: Language;
@@ -630,6 +639,7 @@ export interface DB {
 	auth_session: AuthSession;
 	auth_user: AuthUser;
 	auth_user_credentials: AuthUserCredentials;
+	auth_user_personal_access_token: AuthUserPersonalAccessToken;
 	book: Book;
 	book_edition: BookEdition;
 	book_edition_hist: BookEditionHist;

@@ -31,9 +31,9 @@
 </script>
 
 <DbRouteShell theme={$theme} {bgImageStyle}>
-	<div class="flex flex-col gap-4 mt-4">
+	<div class="mt-4 flex flex-col gap-4">
 		<div>
-			<h1 class="font-bold text-xl">Review{!singleReview ? 's' : ''} for {reviewSubjectTitle}</h1>
+			<h1 class="text-xl font-bold">Review{!singleReview ? 's' : ''} for {reviewSubjectTitle}</h1>
 			<div class="flex flex-wrap gap-6">
 				<a class="link" href="/{itemType}/{itemId}">View main {itemType} page</a>
 				{#if singleReview}
@@ -45,7 +45,7 @@
 		</div>
 
 		{#if showWriteReviewLink}
-			<a class="sub-btn w-fit flex items-center gap-2" href="/{itemType}/{itemId}/reviews/add"
+			<a class="sub-btn flex w-fit items-center gap-2" href="/{itemType}/{itemId}/reviews/add"
 				><Icon name="pencil" height="20" width="20" />{userHasReview ? 'Edit your' : 'Write a'} review</a
 			>
 		{/if}

@@ -48,7 +48,7 @@
 		<div class="flex flex-col gap-2">
 			{#each data.bookWithReleasesInList as book}
 				<div>
-					<div class="grid grid-cols-[48px_1fr] sm:grid-cols-[72px_1fr] gap-2 sm:gap-4">
+					<div class="grid grid-cols-[48px_1fr] gap-2 sm:grid-cols-[72px_1fr] sm:gap-4">
 						{#if book.image}
 							<a class="mt-1" href="/book/{book.id}">
 								{#key book.id}
@@ -64,7 +64,7 @@
 							</a>
 						{:else}
 							<a
-								class="bg-neutral-500 rounded-md flex items-center justify-center"
+								class="flex items-center justify-center rounded-md bg-neutral-500"
 								href="/book/{book.id}"
 							>
 								<Icon name="book" height="24" width="24" />

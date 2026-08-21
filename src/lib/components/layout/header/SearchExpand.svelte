@@ -91,7 +91,7 @@
 		<Icon name="search" />
 	</div>
 	{#if inputValue}
-		<button class="absolute top-0 right-0 p-2" aria-label="Clear input" onclick={clearInput}>
+		<button class="absolute right-0 top-0 p-2" aria-label="Clear input" onclick={clearInput}>
 			<Icon name="close"></Icon>
 		</button>
 	{/if}
@@ -113,7 +113,7 @@
 											<img
 												width={series.book.image.width}
 												height={series.book.image.height}
-												class="max-w-[48px] sm:max-w-[56px] h-fit rounded-md shadow-sm"
+												class="h-fit max-w-[48px] rounded-md shadow-sm sm:max-w-[56px]"
 												src={imageUrl}
 												alt=""
 												loading="lazy"
@@ -121,7 +121,7 @@
 										{/key}
 									{/if}
 									<div class="flex flex-col text-sm sm:text-base">
-										<p class="font-bold line-clamp-2">
+										<p class="line-clamp-2 font-bold">
 											<TitleDisplay obj={series} />
 										</p>
 										<p>{series.c_num_books} books</p>
@@ -144,7 +144,7 @@
 											<img
 												width={book.image.width}
 												height={book.image.height}
-												class="max-w-[48px] sm:max-w-[56px] h-fit rounded-md shadow-sm"
+												class="h-fit max-w-[48px] rounded-md shadow-sm sm:max-w-[56px]"
 												src={imageUrl}
 												alt=""
 												loading="lazy"
@@ -152,7 +152,7 @@
 										{/key}
 									{/if}
 									<div class="flex flex-col text-sm sm:text-base">
-										<p class="font-bold line-clamp-2">
+										<p class="line-clamp-2 font-bold">
 											<TitleDisplay obj={book} />
 										</p>
 										<p>{new DateNumber(book.c_release_date).getDateFormatted()}</p>
@@ -175,7 +175,7 @@
 											<img
 												width={release.image.width}
 												height={release.image.height}
-												class="max-w-[48px] sm:max-w-[56px] h-fit rounded-md shadow-sm"
+												class="h-fit max-w-[48px] rounded-md shadow-sm sm:max-w-[56px]"
 												src={imageUrl}
 												alt=""
 												loading="lazy"
@@ -183,7 +183,7 @@
 										{/key}
 									{/if}
 									<div class="flex flex-col text-sm sm:text-base">
-										<p class="font-bold line-clamp-2">
+										<p class="line-clamp-2 font-bold">
 											<NameDisplay obj={release} />
 										</p>
 										<p>{new DateNumber(release.release_date).getDateFormatted()}</p>
@@ -201,7 +201,7 @@
 							{#each items.publishers.publishers as publisher}
 								<a href="/publisher/{publisher.id}" class="results-item">
 									<div class="flex flex-col text-sm sm:text-base">
-										<p class="font-bold line-clamp-2">
+										<p class="line-clamp-2 font-bold">
 											<NameDisplay obj={publisher} />
 										</p>
 									</div>
@@ -218,7 +218,7 @@
 							{#each items.staff.staff as staff}
 								<a href="/staff/{staff.id}" class="results-item">
 									<div class="flex flex-col text-sm sm:text-base">
-										<p class="font-bold line-clamp-2">
+										<p class="line-clamp-2 font-bold">
 											<NameDisplay obj={staff} />
 										</p>
 									</div>
@@ -230,7 +230,7 @@
 						<p>No results found</p>
 					{/if}
 				{:else}
-					<p class="flex gap-2 items-center">
+					<p class="flex items-center gap-2">
 						<Icon class="animate-spin" name="loading"></Icon>Loading...
 					</p>
 				{/if}

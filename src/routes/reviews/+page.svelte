@@ -20,7 +20,7 @@
 
 <main class="container-rndb">
 	<div class="flex flex-col gap-4">
-		<h1 class="font-bold text-4xl">{title}</h1>
+		<h1 class="text-4xl font-bold">{title}</h1>
 
 		<PaginationContainer
 			currentPage={data.currentPage}
@@ -29,7 +29,7 @@
 			results={data.count}
 		>
 			{#each data.reviews as review}
-				<div class="grid grid-cols-[64px_1fr] @md:grid-cols-[72px_1fr] gap-4">
+				<div class="grid grid-cols-[64px_1fr] gap-4 @md:grid-cols-[72px_1fr]">
 					<a
 						href="/{review.item_type}/{review.item_id}"
 						aria-label={getTitleDisplay({ obj: review.obj!, prefs: $displayPrefs.title_prefs })}
@@ -44,9 +44,9 @@
 							>
 							({review.item_type})
 						</p>
-						<div class="flex gap-2 items-center text-sm">
+						<div class="flex items-center gap-2 text-sm">
 							{#if review.score}
-								<p class="flex gap-1 items-center">
+								<p class="flex items-center gap-1">
 									<Icon class="text-[#ffa844]" name="star" height="18" width="18" />{Number(
 										review.score,
 									)} / 10

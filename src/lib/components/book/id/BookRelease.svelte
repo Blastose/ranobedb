@@ -26,10 +26,10 @@
 	const size = '24';
 </script>
 
-<div class="flex flex-col sm:grid sm:grid-cols-[92px_1fr] gap-x-2">
+<div class="flex flex-col gap-x-2 sm:grid sm:grid-cols-[92px_1fr]">
 	<time class={release.release_date > today ? '' : ''} datetime={releaseDate}>{releaseDate}</time>
 
-	<div class="flex justify-between items-start">
+	<div class="flex items-start justify-between">
 		<div class="flex gap-2">
 			<div title={release.format}>
 				{#if release.format === 'print'}

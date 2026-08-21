@@ -51,11 +51,11 @@
 </script>
 
 <aside use:watchNavigation class="sidebar thin-scrollbar" class:drawer={isDrawer}>
-	<div class="flex justify-between items-center">
+	<div class="flex items-center justify-between">
 		<RanobeDb {user} hideTextWhenWidthSmall={false} />
 		{#if !isDrawer}
 			<button
-				class="relative btn left-2 rounded-full inline-flex items-center justify-center w-8 h-8"
+				class="btn relative left-2 inline-flex h-8 w-8 items-center justify-center rounded-full"
 				type="button"
 				aria-label="Close sidebar"
 				onclick={closeSidebar}><Icon name="close" /></button
@@ -194,7 +194,7 @@
 
 		<Hr />
 
-		<div class="flex flex-col gap-2 items-center text-sm">
+		<div class="flex flex-col items-center gap-2 text-sm">
 			<div class="flex flex-wrap justify-center px-2">
 				<a
 					href="https://github.com/Blastose/ranobedb"

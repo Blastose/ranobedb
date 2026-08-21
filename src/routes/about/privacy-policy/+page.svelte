@@ -4,7 +4,7 @@
 
 <PageTitle title="Privacy Policy" />
 
-<main class="container-rndb flex flex-col gap-2 markdown">
+<main class="container-rndb markdown flex flex-col gap-2">
 	<h1 class="text-4xl font-bold">Privacy Policy</h1>
 	Effective date: 2024-06-29
 

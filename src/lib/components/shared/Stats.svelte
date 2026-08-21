@@ -31,7 +31,7 @@
 
 <div class="flex flex-col gap-4">
 	<div>
-		<h1 class="font-bold text-2xl">{title}</h1>
+		<h1 class="text-2xl font-bold">{title}</h1>
 		<div>
 			<a class="link" href="/{type}/{id}">View main {type} page</a>
 		</div>
@@ -45,7 +45,7 @@
 				<div class="flex justify-between">
 					<div class="flex gap-2">
 						<a
-							class="bg-[var(--primary-500)] overflow-hidden rounded-full w-10 h-10 flex items-center justify-center font-bold text-white"
+							class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-[var(--primary-500)] font-bold text-white"
 							href="/user/{change.id_numeric}"
 						>
 							{#if change.filename}
@@ -62,7 +62,7 @@
 								<a class="link" href="/user/{change.id_numeric}">{change.username}</a>
 							</p>
 							<div class="grid grid-cols-[96px_1fr] gap-2">
-								<p class="border w-fit rounded-lg text-sm px-2 flex items-center">
+								<p class="flex w-fit items-center rounded-lg border px-2 text-sm">
 									{defaultUserListLabelsArray.at(change.label_id - 1)}
 								</p>
 								{#if change.score}

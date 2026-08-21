@@ -80,7 +80,7 @@
 					class="h-[1px] w-full rounded-full duration-75"
 					class:divider={dragging && currentHoverIndex === index}
 				></div>
-				<div class="rounded-md grid grid-cols-[min-content_1fr_min-content] gap-2">
+				<div class="grid grid-cols-[min-content_1fr_min-content] gap-2 rounded-md">
 					<div class="flex cursor-grab" aria-label="drag">
 						<span class="whitespace-nowrap">#{index + 1}</span>
 						<Icon name="drag" />

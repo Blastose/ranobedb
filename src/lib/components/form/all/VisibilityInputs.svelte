@@ -44,7 +44,7 @@
 </script>
 
 <section>
-	<h2 class="font-bold text-lg">Visibility</h2>
+	<h2 class="text-lg font-bold">Visibility</h2>
 	<label class="flex gap-1"
 		><input type="checkbox" bind:checked={$hiddenValue} on:change={handleHiddenChange} /><span
 			>Hidden</span

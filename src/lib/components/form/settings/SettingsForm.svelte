@@ -15,6 +15,7 @@
 		userListSeriesSettingsSchema,
 		usernameSchema,
 		verifyEmailSchema,
+		privacySettingsSchema,
 	} from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import PasswordForm from './PasswordForm.svelte';
@@ -30,6 +31,8 @@
 	import RemoveProfilePictureForm from './picture/RemoveProfilePictureForm.svelte';
 	import HomeDisplayForm from './HomeDisplayForm.svelte';
 	import DeleteAccountForm from './DeleteAccountForm.svelte';
+	import PersonalAccessTokenForm from './PersonalAccessTokenForm.svelte';
+	import PrivacySettingsForm from './PrivacySettingsForm.svelte';
 
 	export let email_verified: boolean;
 	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
@@ -44,8 +47,10 @@
 	export let removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
 	export let homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
 	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
+	export let privacySettingsForm: SuperValidated<Infer<typeof privacySettingsSchema>>;
 
 	export let view: SettingsTab;
+	export let personalAccessToken: string;
 </script>
 
 <div class="grid gap-4">
@@ -56,6 +61,12 @@
 				href="{page.url.pathname}?view=account"
 				text="Account"
 				icon="profile"
+			/>
+			<SidebarListItem
+				active={view === 'privacy'}
+				href="{page.url.pathname}?view=privacy"
+				text="Privacy"
+				icon="lock"
 			/>
 			<SidebarListItem
 				active={view === 'display'}
@@ -85,8 +96,8 @@
 	</div>
 
 	{#if view === 'account' || !view}
-		<h2 class="font-bold text-2xl">Account preferences</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">Account preferences</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<UsernameForm {usernameForm} />
 			</section>
@@ -96,14 +107,19 @@
 			</section>
 			<Hr />
 			<section>
-				<p class="font-bold error-text-color">Danger zone</p>
+				<!-- No superform used because we dont need to validate inputs -->
+				<PersonalAccessTokenForm bind:token={personalAccessToken} />
+			</section>
+			<Hr />
+			<section>
+				<p class="error-text-color font-bold">Danger zone</p>
 				<DeleteAccountForm {deleteAccountForm} />
 			</section>
 		</div>
 	{:else if view === 'display'}
-		<h2 class="font-bold text-2xl">Display preferences</h2>
+		<h2 class="text-2xl font-bold">Display preferences</h2>
 
-		<div class="flex flex-col gap-4 max-w-lg">
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<h3 class="text-lg font-bold">Theme</h3>
 				<ThemeSelect />
@@ -120,8 +136,8 @@
 			</section>
 		</div>
 	{:else if view === 'list'}
-		<h2 class="font-bold text-2xl">List settings</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">List settings</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<SeriesListSettingsForm {userListSeriesSettingsForm} />
 			</section>
@@ -131,8 +147,8 @@
 			</section>
 		</div>
 	{:else if view === 'email'}
-		<h2 class="font-bold text-2xl">Email settings</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">Email settings</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<VerifyEmailForm {verifyEmailForm} {sendEmailVerificationForm} {email_verified} />
 			</section>
@@ -144,10 +160,17 @@
 			</section>
 		</div>
 	{:else if view === 'picture'}
-		<h2 class="font-bold text-2xl">Profile picture</h2>
-		<div class="flex flex-col gap-4 max-w-lg">
+		<h2 class="text-2xl font-bold">Profile picture</h2>
+		<div class="flex max-w-lg flex-col gap-4">
 			<ProfilePictureForm {profilePictureForm} />
 			<RemoveProfilePictureForm {removeProfilePictureForm} />
+		</div>
+	{:else if view === 'privacy'}
+		<h2 class="text-2xl font-bold">Privacy settings</h2>
+		<div class="flex max-w-lg flex-col gap-4">
+			<section>
+				<PrivacySettingsForm {privacySettingsForm} />
+			</section>
 		</div>
 	{/if}
 </div>

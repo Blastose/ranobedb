@@ -49,7 +49,7 @@
 </script>
 
 <div class="flex flex-col gap-2">
-	<a href="/user/{userIdNum}" class="w-fit link px-2">To profile</a>
+	<a href="/user/{userIdNum}" class="link w-fit px-2">To profile</a>
 
 	<div class="grid overflow-x-auto overflow-y-hidden whitespace-nowrap">
 		<nav class="flex gap-4">
@@ -59,12 +59,12 @@
 					<a
 						class="{active
 							? 'link no-underline'
-							: 'tab-hover'} capitalize duration-[250ms] px-2 font-semibold flex items-center gap-2"
+							: 'tab-hover'} flex items-center gap-2 px-2 font-semibold capitalize duration-[250ms]"
 						href="/user/{userIdNum}/list/{tab.url}">{tab.type} ({listCounts[tab.key]})</a
 					>
 					{#if active}
 						<div
-							class="h-[3px] w-full tab-underline bg-link"
+							class="tab-underline bg-link h-[3px] w-full"
 							in:send={{ key: 'trigger' }}
 							out:receive={{ key: 'trigger' }}
 						></div>

@@ -61,7 +61,7 @@
 
 <div class="flex flex-col gap-1">
 	<h2>Tags</h2>
-	<div class="flex gap-2 flex-col">
+	<div class="flex flex-col gap-2">
 		<div class="flex flex-wrap gap-2">
 			{#each $values as tag, i (tag.id)}
 				<TagFilter
@@ -88,7 +88,7 @@
 			<div class="flex flex-col gap-1">
 				<div class="flex items-center gap-2">
 					<span class="text-sm font-medium">Recently used tags:</span>
-					<button type="button" onclick={clearRecent} class="sub-btn !text-xs !px-2 !py-0"
+					<button type="button" onclick={clearRecent} class="sub-btn !px-2 !py-0 !text-xs"
 						>Clear</button
 					>
 				</div>
@@ -97,7 +97,7 @@
 						<button
 							type="button"
 							onclick={() => handleAddTag(tag)}
-							class="rounded-2xl tag-chip px-2 text-sm capitalize"
+							class="tag-chip rounded-2xl px-2 text-sm capitalize"
 						>
 							{tag.name}
 						</button>

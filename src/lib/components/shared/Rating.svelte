@@ -15,14 +15,14 @@
 </script>
 
 <section>
-	<div class="flex gap-4 items-center">
+	<div class="flex items-center gap-4">
 		<div class="flex items-center gap-1">
 			<Icon class="text-[#ffa844]" name="star" height="24" width="24" />
 			<span>{Number(rating?.score ?? '0').toFixed(1)} from {rating?.count ?? 0} scores</span>
 		</div>
 
 		<p class="font-semibold">
-			<a class="flex items-center link" href="/{itemType}/{itemId}/reviews"
+			<a class="link flex items-center" href="/{itemType}/{itemId}/reviews"
 				>{numReviews ?? 0} reviews</a
 			>
 		</p>

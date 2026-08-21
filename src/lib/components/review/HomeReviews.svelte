@@ -21,13 +21,13 @@
 </script>
 
 <section class="flex flex-col gap-2">
-	<div class="flex justify-between items-center">
-		<h2 class="font-bold text-lg">Latest {reviews.type} reviews</h2>
-		<p class="text-sm font-semibold sub-text-alt"><a href="/reviews">View all</a></p>
+	<div class="flex items-center justify-between">
+		<h2 class="text-lg font-bold">Latest {reviews.type} reviews</h2>
+		<p class="sub-text-alt text-sm font-semibold"><a href="/reviews">View all</a></p>
 	</div>
-	<div class="grid grid-cols-1 @md:grid-cols-2 gap-4">
+	<div class="grid grid-cols-1 gap-4 @md:grid-cols-2">
 		{#each reviews.reviews as review}
-			<div class="grid grid-cols-[64px_1fr] @md:grid-cols-[72px_1fr] gap-4">
+			<div class="grid grid-cols-[64px_1fr] gap-4 @md:grid-cols-[72px_1fr]">
 				<a
 					href="/{reviews.type}/{review.item_id}"
 					aria-label={getTitleDisplay({ obj: review.obj!, prefs: $displayPrefs.title_prefs })}
@@ -41,7 +41,7 @@
 							><TitleDisplay obj={review.obj!} /></a
 						>
 					</p>
-					<div class="flex gap-2 items-center text-sm">
+					<div class="flex items-center gap-2 text-sm">
 						{#if review.score}
 							<p class="flex items-center gap-1">
 								<Icon class="text-[#ffa844]" name="star" height="18" width="18" />{Number(

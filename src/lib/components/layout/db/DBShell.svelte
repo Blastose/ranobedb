@@ -46,7 +46,7 @@
 
 <main class="container-rndb flex flex-col gap-4">
 	<div class="db-filters">
-		<h1 class="font-bold text-4xl">{heading}</h1>
+		<h1 class="text-4xl font-bold">{heading}</h1>
 
 		{@render underHeading?.()}
 

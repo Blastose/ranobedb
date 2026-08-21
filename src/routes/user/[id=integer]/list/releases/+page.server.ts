@@ -2,6 +2,7 @@ import { DBBooks } from '$lib/server/db/books/books.js';
 import { db } from '$lib/server/db/db';
 import { paginationBuilderExecuteWithCount } from '$lib/server/db/dbHelpers.js';
 import { getUserListCounts } from '$lib/server/db/user/list.js';
+import { profilePrivateError } from '$lib/server/db/user/profile-private-error.js';
 import { DBUsers } from '$lib/server/db/user/user.js';
 import {
 	pageSchema,
@@ -18,12 +19,23 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 
 export const load = async ({ params, locals, url }) => {
+	const user = locals.user;
+	const userIdNumeric = Number(params.id);
+
+	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
+
+	if (!listUser) {
+		error(404);
+	}
+
+	const isMyList = user?.id_numeric === userIdNumeric;
+	await profilePrivateError({ routeUser: listUser, currentUser: user });
+
 	const page = await superValidate(url, zod4(pageSchema));
 	const qS = await superValidate(url, zod4(qSchema));
 
 	const currentPage = page.data.page;
 	const q = normalizeTitle(qS.data.q);
-	const user = locals.user;
 	const form = await superValidate(url, zod4(releaseFiltersSchema));
 	const [publishers] = await Promise.all([
 		await db
@@ -42,14 +54,6 @@ export const load = async ({ params, locals, url }) => {
 	);
 
 	const userListReleaseForm = await superValidate(zod4(userListReleaseSchema));
-	const userIdNumeric = Number(params.id);
-	const isMyList = user?.id_numeric === userIdNumeric;
-
-	const listUser = await new DBUsers(db).getUserByIdNumbericSafe(userIdNumeric);
-
-	if (!listUser) {
-		error(404);
-	}
 
 	const dbBooks = DBBooks.fromDB(db);
 

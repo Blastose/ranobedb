@@ -68,7 +68,7 @@
 	use:melt={$trigger}
 	type="button"
 	disabled={$submitting}
-	class="flex items-center gap-2 h-fit"
+	class="flex h-fit items-center gap-2"
 	aria-label="Open release options"
 >
 	{#if $delayed}

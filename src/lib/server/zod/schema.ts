@@ -240,7 +240,7 @@ export const userListSeriesSchema = z.object({
 	notes: z
 		.string()
 		.trim()
-		.max(2000, { message: 'Note must between less than 2000 characters' })
+		.max(2000, { message: 'Note must be less than 2000 characters' })
 		.nullish(),
 	type: z.enum(userListFormTypes),
 });
@@ -629,35 +629,44 @@ const zIsbn13 = z
 	.transform((v) => (v === '' ? null : v))
 	.optional();
 
-export const releaseSchema = z.object({
-	hidden: z.boolean(),
-	locked: z.boolean(),
-
-	title: z.string().trim().max(2000),
-	romaji: zRomaji,
-	description: zDescription,
-
-	format: z.enum(releaseFormatArray),
-	lang: z.enum(languagesArray),
-	release_date: zReleaseDate,
-	pages: z.number().min(1).max(200000).nullish(),
-	isbn13: zIsbn13,
-	amazon: zLinkAmazon,
-	bookwalker: zLink([
-		'bookwalker.jp',
-		'global.bookwalker.jp',
-		'bookwalker.com',
-		'www.bookwalker.com.tw',
-		'bookwalker.in.th',
-	]),
-	rakuten: zLink(['books.rakuten.co.jp']),
-	website: zLink([]),
-
-	books: zReleaseBooks,
-	publishers: zReleasePublishers,
-
-	comment: zComment,
-});
+export const releaseSchema = z
+	.object({
+		hidden: z.boolean(),
+		locked: z.boolean(),
+		title: z.string().trim().max(2000),
+		romaji: zRomaji,
+		description: zDescription,
+		format: z.enum(releaseFormatArray),
+		lang: z.enum(languagesArray),
+		release_date: zReleaseDate,
+		pages: z.number().min(1).max(200000).nullish(),
+		duration: z
+			.number()
+			.min(1)
+			.max(6000, { message: 'Duration too large (max 100 hrs)' })
+			.nullish(),
+		isbn13: zIsbn13,
+		amazon: zLinkAmazon,
+		bookwalker: zLink([
+			'bookwalker.jp',
+			'global.bookwalker.jp',
+			'bookwalker.com',
+			'www.bookwalker.com.tw',
+			'bookwalker.in.th',
+		]),
+		rakuten: zLink(['books.rakuten.co.jp']),
+		website: zLink([]),
+		books: zReleaseBooks,
+		publishers: zReleasePublishers,
+		comment: zComment,
+	})
+	.superRefine((data) => {
+		if (data.format === 'audio') {
+			data.pages = null;
+		} else {
+			data.duration = null;
+		}
+	});
 
 export const seriesSchema = z.object({
 	hidden: z.boolean(),
@@ -771,6 +780,7 @@ export const scrapedBookDataSchema = z.object({
 	lang: z.enum(languagesArray),
 	release_date: zReleaseDate,
 	pages: z.number().min(1).max(200000).nullish(),
+	duration: z.number().min(1).max(6000).nullish(),
 	isbn13: zIsbn13,
 	website: zLink([]),
 	amazon: zLinkAmazon,
@@ -862,6 +872,11 @@ export const homeDisplaySettingsSchema = z.object({
 	newly_licensed_en: z.boolean().default(true),
 });
 export type HomeDisplaySettings = z.infer<typeof homeDisplaySettingsSchema>;
+
+export const privacySettingsSchema = z.object({
+	private: z.boolean().default(false),
+});
+export type PrivacySettings = z.infer<typeof privacySettingsSchema>;
 
 // Url searchparams schemas
 export const historyFiltersSchema = z.object({

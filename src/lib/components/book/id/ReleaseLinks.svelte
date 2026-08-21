@@ -49,7 +49,7 @@
 >
 	<Icon name="link" />
 	<div
-		class="rounded-full bg-[var(--primary-500)] text-xs w-4 h-4 text-white absolute -top-1 -right-2"
+		class="absolute -right-2 -top-1 h-4 w-4 rounded-full bg-[var(--primary-500)] text-xs text-white"
 	>
 		{links.length}
 	</div>

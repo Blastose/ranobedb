@@ -52,9 +52,9 @@
 
 <form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
 	{#if series && type === 'edit'}
-		<h1 class="font-bold text-xl">Editing <TitleDisplay obj={series} /></h1>
+		<h1 class="text-xl font-bold">Editing <TitleDisplay obj={series} /></h1>
 	{:else}
-		<h1 class="font-bold text-xl">Add series</h1>
+		<h1 class="text-xl font-bold">Add series</h1>
 	{/if}
 
 	{#if user && hasVisibilityPerms(user)}

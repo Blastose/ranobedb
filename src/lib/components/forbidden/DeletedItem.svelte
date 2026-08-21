@@ -15,10 +15,10 @@
 <NoIndex />
 
 <main class="container-rndb flex flex-col gap-2">
-	<h1 class="font-bold text-lg">{title}</h1>
+	<h1 class="text-lg font-bold">{title}</h1>
 
 	<section class="flex flex-col gap-2">
-		<h2 class="font-bold text-lg error-text-color">Item deleted</h2>
+		<h2 class="error-text-color text-lg font-bold">Item deleted</h2>
 
 		<p>
 			This item has been deleted from the database.
