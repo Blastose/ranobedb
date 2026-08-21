@@ -72,7 +72,7 @@
 		</div>
 	</section>
 
-	<div class="flex items-center gap-2 text-sm pt-1">
+	<div class="flex items-center gap-2 pt-1 text-sm">
 		<span class="font-semibold">Primary language:</span>
 		<LangFlag lang={staff.lang} />
 		<span>{languageNames[staff.lang]}</span>
@@ -83,7 +83,7 @@
 		{#if staff.description}
 			<MarkdownToHtml markdown={staff.description} type="full" />
 		{:else}
-			<p class="italic mb-2">No biography added</p>
+			<p class="mb-2 italic">No biography added</p>
 		{/if}
 	</section>
 

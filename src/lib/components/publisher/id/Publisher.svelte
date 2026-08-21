@@ -58,7 +58,7 @@
 		<FavoritePublisher {publisher} {userListPublisherForm}></FavoritePublisher>
 	{/if}
 
-	<div class="flex items-center gap-2 text-sm pt-1">
+	<div class="flex items-center gap-2 pt-1 text-sm">
 		<span class="font-semibold">Primary language:</span>
 		<LangFlag lang={publisher.lang} />
 		<span>{languageNames[publisher.lang]}</span>

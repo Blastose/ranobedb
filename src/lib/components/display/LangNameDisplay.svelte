@@ -14,7 +14,7 @@
 
 <div class="grid grid-cols-[24px_1fr] items-center gap-2">
 	<LangFlag {lang} />
-	<p class="truncate min-w-0">
+	<p class="min-w-0 truncate">
 		<NameDisplay {obj} />
 	</p>
 </div>
