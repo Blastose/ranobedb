@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { publishersFiltersObjSchema } from '$lib/server/zod/schema';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
-	import { languageNames, languagesArray } from '$lib/db/dbConsts';
+	import { languageNames, languagesArray, publishersSortArray } from '$lib/db/dbConsts';
 	import Keyed from '../../Keyed.svelte';
 	import SelectField from '../../SelectField.svelte';
 	import MultiSelectField from '../../MultiSelectField.svelte';
@@ -9,8 +9,6 @@
 
 	export let filtersForm: SuperValidated<Infer<typeof publishersFiltersObjSchema>>;
 	const sForm = superForm(filtersForm, { dataType: 'json' });
-
-	const sortArray = ['Name asc', 'Name desc'] as const;
 </script>
 
 <FiltersWrapper>
@@ -30,7 +28,7 @@
 			<SelectField
 				form={sForm}
 				field="sort"
-				dropdownOptions={sortArray.map((v) => ({ display: v, value: v }))}
+				dropdownOptions={publishersSortArray.map((v) => ({ display: v, value: v }))}
 				selectedValue={filtersForm.data.sort}
 				label="Sort by"
 				resetPadding={true}

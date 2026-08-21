@@ -447,4 +447,8 @@ export const statsFiltersSortArray = [
 	'Reading status desc',
 ] as const;
 
+export const staffSortArray = ['Name asc', 'Name desc'] as const;
+
+export const publishersSortArray = ['Name asc', 'Name desc'] as const;
+
 export const avatarUrlPrefix = 'avatar';

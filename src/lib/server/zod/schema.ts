@@ -7,6 +7,7 @@ import {
 	historyFilterChangeType,
 	historyFilterVisibilitys,
 	logicalOps,
+	publishersSortArray,
 	publisherTabs,
 	releasePublisherTypeArray,
 	releaseSortArray,
@@ -17,6 +18,7 @@ import {
 	seriesUserListSortArray,
 	settingsTabs,
 	staffRolesArray,
+	staffSortArray,
 	staffTabs,
 	statsFiltersSortArray,
 	tagTypeArray,
@@ -1105,22 +1107,22 @@ export const releaseFiltersObjCalendarSchema = z.object({
 
 export const publishersFiltersSchema = z.object({
 	lang: z.array(z.enum(languagesArray)).catch([]),
-	sort: z.enum(['Name asc', 'Name desc'] as const).catch('Name asc'),
+	sort: z.enum(publishersSortArray).catch('Name asc'),
 });
 
 export const publishersFiltersObjSchema = z.object({
 	lang: z.array(z.enum(languagesArray)).catch([]),
-	sort: z.enum(['Name asc', 'Name desc'] as const).catch('Name asc'),
+	sort: z.enum(publishersSortArray).catch('Name asc'),
 });
 
 export const staffFiltersSchema = z.object({
 	lang: z.array(z.enum(languagesArray)).catch([]),
-	sort: z.enum(['Name asc', 'Name desc'] as const).catch('Name asc'),
+	sort: z.enum(staffSortArray).catch('Name asc'),
 });
 
 export const staffFiltersObjSchema = z.object({
 	lang: z.array(z.enum(languagesArray)).catch([]),
-	sort: z.enum(['Name asc', 'Name desc'] as const).catch('Name asc'),
+	sort: z.enum(staffSortArray).catch('Name asc'),
 });
 
 export const readingLogSchema = z.object({
