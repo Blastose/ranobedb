@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createDropdownMenu, melt } from '@melt-ui/svelte';
+	import { DropdownMenu } from 'bits-ui';
 	import type { User } from '$lib/server/lucia/lucia';
 	import { fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
@@ -13,42 +13,13 @@
 	}
 
 	let { user }: Props = $props();
-
-	const {
-		elements: { trigger, menu, item, separator, arrow },
-		states: { open },
-	} = createDropdownMenu({
-		forceVisible: true,
-		preventScroll: false,
-		positioning: { placement: 'bottom-end', gutter: 16 },
-	});
 </script>
 
-<button
-	use:melt={$trigger}
-	type="button"
-	aria-label="Open profile"
-	class="profile-button"
-	class:logged-in={user}
->
-	{#if user}
-		{#if user.profile_image_filename}
-			{#key user.profile_image_filename}
-				<img src={buildAvatarImageUrl(user.profile_image_filename)} alt="" />
-			{/key}
-		{:else}
-			{user.username.at(0)}
-		{/if}
-	{:else}
-		<Icon name="profile" />
-	{/if}
-</button>
-
-{#if $open}
-	<section class="profile-menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
-		{#if user}
-			<a use:melt={$item} href="/user/{user.id_numeric}" class="flex items-center px-2">
-				<div class="profile-button" class:logged-in={user}>
+<DropdownMenu.Root>
+	<DropdownMenu.Trigger>
+		{#snippet child({ props })}
+			<button {...props} class="profile-button" class:logged-in={user} aria-label="Open profile">
+				{#if user}
 					{#if user.profile_image_filename}
 						{#key user.profile_image_filename}
 							<img src={buildAvatarImageUrl(user.profile_image_filename)} alt="" />
@@ -56,65 +27,97 @@
 					{:else}
 						{user.username.at(0)}
 					{/if}
-				</div>
-				<h2 class="p-2 text-lg font-semibold">{user.username}</h2>
-			</a>
+				{:else}
+					<Icon name="profile" />
+				{/if}
+			</button>
+		{/snippet}
+	</DropdownMenu.Trigger>
 
-			<Hr />
-			<nav>
-				<ul class="flex flex-col gap-2">
-					<li>
-						<ProfileItem href="/user/{user.id_numeric}/list" {item} text="My List">
-							<Icon name="bookMultiple" />
-						</ProfileItem>
-					</li>
-					<li>
-						<ProfileItem href="/user/{user.id_numeric}/list/upcoming" {item} text="Upcoming">
-							<Icon name="calendar" />
-						</ProfileItem>
-					</li>
-					<li>
-						<ProfileItem href="/user/{user.id_numeric}" {item} text="Profile">
-							<Icon name="profile" />
-						</ProfileItem>
-					</li>
-					<li>
-						<ProfileItem href="/settings" {item} text="Settings">
-							<Icon name="settings" />
-						</ProfileItem>
-					</li>
-					<Hr />
-					<li>
-						<ProfileFormButton {item} action="/logout" text="Sign out">
-							<Icon name="logout" />
-						</ProfileFormButton>
-					</li>
-				</ul>
-			</nav>
-		{:else}
-			<nav>
-				<ul class="flex flex-col gap-2">
-					<li>
-						<ProfileItem href="/login" {item} text="Log in">
-							<Icon name="login" />
-						</ProfileItem>
-					</li>
-					<li>
-						<ProfileItem href="/signup" {item} text="Sign up">
-							<Icon name="signup" />
-						</ProfileItem>
-					</li>
-					<Hr />
-					<li>
-						<ProfileItem href="/settings" {item} text="Settings">
-							<Icon name="settings" />
-						</ProfileItem>
-					</li>
-				</ul>
-			</nav>
-		{/if}
-	</section>
-{/if}
+	<DropdownMenu.Portal>
+		<DropdownMenu.Content forceMount side="bottom" align="end" sideOffset={16}>
+			{#snippet child({ wrapperProps, props, open: contentOpen })}
+				{#if contentOpen}
+					<div {...wrapperProps}>
+						<div {...props} class="profile-menu" transition:fly={{ duration: 150, y: -10 }}>
+							{#if user}
+								<DropdownMenu.Item>
+									{#snippet child({ props: itemProps })}
+										<a href="/user/{user.id_numeric}" class="flex items-center px-2" {...itemProps}>
+											<div class="profile-button" class:logged-in={user}>
+												{#if user.profile_image_filename}
+													{#key user.profile_image_filename}
+														<img src={buildAvatarImageUrl(user.profile_image_filename)} alt="" />
+													{/key}
+												{:else}
+													{user.username.at(0)}
+												{/if}
+											</div>
+											<h2 class="p-2 text-lg font-semibold">{user.username}</h2>
+										</a>
+									{/snippet}
+								</DropdownMenu.Item>
+
+								<Hr />
+								<nav>
+									<ul class="flex flex-col gap-2">
+										<li>
+											<ProfileItem href="/user/{user.id_numeric}/list" text="My List">
+												<Icon name="bookMultiple" />
+											</ProfileItem>
+										</li>
+										<li>
+											<ProfileItem href="/user/{user.id_numeric}/list/upcoming" text="Upcoming">
+												<Icon name="calendar" />
+											</ProfileItem>
+										</li>
+										<li>
+											<ProfileItem href="/user/{user.id_numeric}" text="Profile">
+												<Icon name="profile" />
+											</ProfileItem>
+										</li>
+										<li>
+											<ProfileItem href="/settings" text="Settings">
+												<Icon name="settings" />
+											</ProfileItem>
+										</li>
+										<Hr />
+										<li>
+											<ProfileFormButton action="/logout" text="Sign out">
+												<Icon name="logout" />
+											</ProfileFormButton>
+										</li>
+									</ul>
+								</nav>
+							{:else}
+								<nav>
+									<ul class="flex flex-col gap-2">
+										<li>
+											<ProfileItem href="/login" text="Log in">
+												<Icon name="login" />
+											</ProfileItem>
+										</li>
+										<li>
+											<ProfileItem href="/signup" text="Sign up">
+												<Icon name="signup" />
+											</ProfileItem>
+										</li>
+										<Hr />
+										<li>
+											<ProfileItem href="/settings" text="Settings">
+												<Icon name="settings" />
+											</ProfileItem>
+										</li>
+									</ul>
+								</nav>
+							{/if}
+						</div>
+					</div>
+				{/if}
+			{/snippet}
+		</DropdownMenu.Content>
+	</DropdownMenu.Portal>
+</DropdownMenu.Root>
 
 <style>
 	:global(.profile-button) {

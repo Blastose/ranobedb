@@ -1,20 +1,23 @@
 <script lang="ts">
-	import { melt } from '@melt-ui/svelte';
-	import type { DropdownMenu } from '@melt-ui/svelte';
+	import { DropdownMenu } from 'bits-ui';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		text: string;
 		href: string;
-		item: DropdownMenu['elements']['item'];
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
-	let { text, href, item, children }: Props = $props();
+	let { text, href, children }: Props = $props();
 </script>
 
-<a {href} use:melt={$item}>
-	<span class="sidebar-item">
-		{@render children?.()}
-		{text}
-	</span>
-</a>
+<DropdownMenu.Item>
+	{#snippet child({ props })}
+		<a {href} {...props}>
+			<span class="sidebar-item">
+				{@render children?.()}
+				{text}
+			</span>
+		</a>
+	{/snippet}
+</DropdownMenu.Item>
