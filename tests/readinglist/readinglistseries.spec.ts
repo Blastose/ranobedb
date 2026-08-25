@@ -11,11 +11,11 @@ test.describe('add/edit/remove series from reading list', () => {
 		await page.getByLabel('Notes').fill('My cool note here');
 		await page.getByLabel('Started').fill('2024-08-22');
 		await page.getByLabel('Finished', { exact: true }).fill('');
-		await page.getByLabel('Release language is one of').click();
+		await page.getByRole('combobox', { name: 'Release language is one of' }).click();
 		await page.getByRole('option', { name: 'Japanese' }).click();
-		await page.getByLabel('Release format is one of').click();
+		await page.getByRole('combobox', { name: 'Release format is one of' }).click();
 		await page.getByRole('option', { name: 'print' }).click();
-		await page.getByLabel('Release format is one of').click();
+		await page.getByRole('combobox', { name: 'Release format is one of' }).click();
 		await page
 			.getByLabel('Add series to reading list')
 			.getByRole('button', { name: 'Add to reading list' })
