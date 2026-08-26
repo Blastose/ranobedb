@@ -28,12 +28,17 @@
 	} from '$lib/components/db-links/db-ext-links';
 	import SeriesTagInput from './SeriesTagInput.svelte';
 
-	export let series: SeriesEdit | undefined;
-	export let seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
-	export let type: 'add' | 'edit';
-	export let user: User | null;
-	export let actionUrl: string | undefined = undefined;
+	interface Props {
+		series: SeriesEdit | undefined;
+		seriesForm: SuperValidated<Infer<typeof seriesSchema>>;
+		type: 'add' | 'edit';
+		user: User | null;
+		actionUrl?: string | undefined;
+	}
 
+	let { series, seriesForm, type, user, actionUrl = undefined }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(seriesForm, {
 		dataType: 'json',
 		onUpdated({ form: f }) {
@@ -45,7 +50,7 @@
 	});
 	const { form, enhance, delayed, submitting } = sForm;
 
-	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
+	let submitButtonText = $derived(type === 'add' ? 'Submit' : 'Submit edit');
 </script>
 
 <!-- <SuperDebug data={$form} /> -->

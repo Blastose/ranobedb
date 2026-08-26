@@ -5,17 +5,26 @@
 	import SubmitButton from '../SubmitButton.svelte';
 	import CheckboxField from '../CheckboxField.svelte';
 
-	export let homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
+	interface Props {
+		homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
+	}
 
+	let { homeDisplaySettingsForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(homeDisplaySettingsForm, {
 		dataType: 'json',
+		onUpdated({ form }) {
+			addToast({
+				data: {
+					title: form.message?.text || 'An unknown error has occurred.',
+					type: form.message?.type ?? 'error',
+				},
+			});
+		},
 		invalidateAll: 'force',
 	});
 	const { form, enhance, delayed, submitting, message } = sForm;
-
-	$: if (!$delayed && $message) {
-		addToast({ data: { title: $message.text, type: $message.type } });
-	}
 </script>
 
 <form method="post" action="?/homedisplaysettings" class="flex flex-col gap-2" use:enhance>

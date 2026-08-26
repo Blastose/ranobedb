@@ -4,12 +4,16 @@
 	import type { bookSchema } from '$lib/server/zod/schema';
 	import type { ApiStaff } from '../../../../routes/api/i/staff/+server';
 	import ComboboxInput from '../ComboboxInput.svelte';
-
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 
-	export let form: SuperForm<Infer<typeof bookSchema>, App.Superforms.Message>;
-	export let index: number;
+	interface Props {
+		form: SuperForm<Infer<typeof bookSchema>, App.Superforms.Message>;
+		index: number;
+	}
 
+	let { form, index }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, `editions[${index}].staff`);
 	function handleRemoveStaff(index: number) {
 		$values.splice(index, 1);
@@ -64,7 +68,7 @@
 				<p class="error-text-color">{$valueErrors[i]?.note}</p>
 			{/if}
 			<button
-				on:click={() => {
+				onclick={() => {
 					handleRemoveStaff(i);
 				}}
 				type="button"

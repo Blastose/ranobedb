@@ -6,10 +6,14 @@
 	import type { loginSchema } from '$lib/server/zod/schema';
 	import PasswordField from '../PasswordField.svelte';
 
-	export let loginForm: SuperValidated<Infer<typeof loginSchema>>;
+	interface Props {
+		loginForm: SuperValidated<Infer<typeof loginSchema>>;
+	}
 
-	let turnstileKey = 0;
+	let { loginForm }: Props = $props();
+	let turnstileKey = $state(0);
 
+	// svelte-ignore state_referenced_locally
 	const form = superForm(loginForm, {
 		onUpdated({ form: f }) {
 			if (!f.valid) {
@@ -29,7 +33,7 @@
 	{turnstileKey}
 	{enhance}
 >
-	<svelte:fragment slot="form">
+	{#snippet form_shell()}
 		<TextField
 			{form}
 			field={'usernameemail'}
@@ -44,14 +48,14 @@
 			label="Password"
 			showRequiredSymbolIfRequired={false}
 		/>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="bottom">
+	{#snippet bottom()}
 		<div class="flex flex-col gap-1">
 			<p>
 				Don't have an account? <a href="/signup" class="link">Sign up</a> now!
 			</p>
 			<p><a href="/forgot-password" class="link">Forgot password?</a></p>
 		</div>
-	</svelte:fragment>
+	{/snippet}
 </AuthFormShell>

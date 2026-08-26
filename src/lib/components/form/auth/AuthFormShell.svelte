@@ -3,26 +3,45 @@
 	import SubmitButton from '../SubmitButton.svelte';
 	import Turnstile from '../cf/Turnstile.svelte';
 
-	export let enhance: (e: HTMLFormElement) => {};
-	export let headingText: string;
-	export let submitText: string;
-	export let submitting: boolean;
-	export let delayed: boolean;
-	export let turnstileKey: number;
-	export let useTurnstile: boolean = true;
+	interface Props {
+		enhance: (e: HTMLFormElement) => {};
+		headingText: string;
+		submitText: string;
+		submitting: boolean;
+		delayed: boolean;
+		turnstileKey: number;
+		useTurnstile?: boolean;
+		alert?: import('svelte').Snippet;
+		form_shell?: import('svelte').Snippet;
+		bottom?: import('svelte').Snippet;
+	}
 
-	let cfValid: boolean =
-		!useTurnstile || PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA';
+	let {
+		enhance,
+		headingText,
+		submitText,
+		submitting,
+		delayed,
+		turnstileKey,
+		useTurnstile = true,
+		alert,
+		form_shell,
+		bottom,
+	}: Props = $props();
+
+	let cfValid: boolean = $derived(
+		!useTurnstile || PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA',
+	);
 </script>
 
 <section class="auth-form-shell">
 	<h1 class="text-4xl font-bold">{headingText}</h1>
 
-	<slot name="alert" />
+	{@render alert?.()}
 
 	<form class="auth-form" method="post" use:enhance>
 		<section class="flex flex-col gap-2">
-			<slot name="form" />
+			{@render form_shell?.()}
 		</section>
 
 		{#if useTurnstile}
@@ -34,7 +53,7 @@
 		<SubmitButton {submitting} {delayed} text={submitText} disabled={!cfValid} />
 	</form>
 
-	<slot name="bottom" />
+	{@render bottom?.()}
 </section>
 
 <style>

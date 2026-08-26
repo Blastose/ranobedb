@@ -9,7 +9,7 @@
 
 <label class="flex items-center gap-2">
 	<span>Theme</span>
-	<select on:change={handleThemeChange} class="input reset-padding capitalize" name="theme">
+	<select onchange={handleThemeChange} class="input reset-padding capitalize" name="theme">
 		{#each themes as theme}
 			<option value={theme} selected={theme === $currentTheme}>{theme}</option>
 		{/each}

@@ -10,7 +10,13 @@
 	import SubmitButton from '../SubmitButton.svelte';
 	import { page } from '$app/state';
 
-	export let filtersForm: SuperValidated<Infer<typeof statsFiltersSchema>>;
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof statsFiltersSchema>>;
+	}
+
+	let { filtersForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 

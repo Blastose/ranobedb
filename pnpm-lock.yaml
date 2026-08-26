@@ -12,10 +12,10 @@ importers:
         specifier: ^3.1041.0
         version: 3.1041.0
       '@floating-ui/core':
-        specifier: ^1.7.1
+        specifier: ^1.7.5
         version: 1.7.5
       '@floating-ui/dom':
-        specifier: ^1.7.1
+        specifier: ^1.7.6
         version: 1.7.6
       '@node-rs/argon2':
         specifier: ^2.0.2

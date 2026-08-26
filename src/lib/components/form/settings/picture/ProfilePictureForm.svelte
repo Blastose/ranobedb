@@ -10,15 +10,27 @@
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import { buildAvatarImageUrl } from '$lib/components/book/book';
 
-	export let profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
+	interface Props {
+		profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
+	}
 
-	const sForm = superForm(profilePictureForm);
+	let { profilePictureForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
+	const sForm = superForm(profilePictureForm, {
+		dataType: 'json',
+		onUpdated: async ({ form }) => {
+			addToast({
+				data: {
+					title: form.message?.text || 'An unknown error has occurred.',
+					type: form.message?.type ?? 'error',
+				},
+			});
+		},
+		invalidateAll: 'force',
+	});
 
 	const { form, enhance, delayed, submitting, message } = sForm;
-
-	$: if (!$delayed && $message) {
-		addToast({ data: { title: $message.text, type: $message.type } });
-	}
 
 	const file = fileProxy(form, 'image');
 
@@ -79,7 +91,7 @@
 					<button
 						class="sub-btn h-fit"
 						type="button"
-						on:click={() => {
+						onclick={() => {
 							$file = new DataTransfer().files;
 							clearFileInput();
 						}}>Remove uploaded file</button

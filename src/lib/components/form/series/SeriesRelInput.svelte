@@ -2,14 +2,18 @@
 	import type { seriesSchema } from '$lib/server/zod/schema';
 	import { seriesRelTypeArray } from '$lib/db/dbConsts';
 	import ComboboxInput from '../ComboboxInput.svelte';
-
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import type { ApiSeries } from '../../../../routes/api/i/series/+server';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
-	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
-	export let seriesId: number | undefined;
+	interface Props {
+		form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+		seriesId: number | undefined;
+	}
 
+	let { form, seriesId }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'child_series');
 	function handleRemoveSeries(index: number) {
 		$values.splice(index, 1);
@@ -66,7 +70,7 @@
 					</select>
 				</label>
 				<button
-					on:click={() => {
+					onclick={() => {
 						handleRemoveSeries(i);
 					}}
 					type="button"

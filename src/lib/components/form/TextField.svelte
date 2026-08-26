@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = Record<string, unknown>;
 	type InputType = 'text' | 'password' | 'email' | 'date' | 'number' | 'textarea';
 </script>
@@ -6,19 +6,38 @@
 <script lang="ts" generics="T extends Rec">
 	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathLeaves<T>;
-	export let label: string = '';
-	export let placeholder: string = '';
-	export let type: InputType = 'text';
-	export let showRequiredSymbolIfRequired: boolean = true;
-	export let textareaRows: number = 10;
-	export let textareaCols: number = 30;
-	export let resetPadding: boolean = false;
-	export let disabled: boolean = false;
-	export let showLabel: boolean = true;
-	export let autocomplete: 'on' | 'off' | undefined = undefined;
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathLeaves<T>;
+		label?: string;
+		placeholder?: string;
+		type?: InputType;
+		showRequiredSymbolIfRequired?: boolean;
+		textareaRows?: number;
+		textareaCols?: number;
+		resetPadding?: boolean;
+		disabled?: boolean;
+		showLabel?: boolean;
+		autocomplete?: 'on' | 'off' | undefined;
+	}
 
+	let {
+		form,
+		field,
+		label = '',
+		placeholder = '',
+		type = 'text',
+		showRequiredSymbolIfRequired = true,
+		textareaRows = 10,
+		textareaCols = 30,
+		resetPadding = false,
+		disabled = false,
+		showLabel = true,
+		autocomplete = undefined,
+		...rest
+	}: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { value, errors, constraints } = formFieldProxy(form, field);
 </script>
 
@@ -45,7 +64,7 @@
 				aria-invalid={$errors ? 'true' : undefined}
 				bind:value={$value}
 				{...$constraints}
-				{...$$restProps}></textarea>
+				{...rest}></textarea>
 		{:else if type === 'number'}
 			<input
 				type="number"
@@ -59,7 +78,7 @@
 				aria-invalid={$errors ? 'true' : undefined}
 				bind:value={$value}
 				{...$constraints}
-				{...$$restProps}
+				{...rest}
 			/>
 		{:else}
 			<input
@@ -74,7 +93,7 @@
 				aria-invalid={$errors ? 'true' : undefined}
 				bind:value={$value}
 				{...$constraints}
-				{...$$restProps}
+				{...rest}
 				pattern={undefined}
 			/>
 		{/if}

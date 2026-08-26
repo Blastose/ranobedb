@@ -24,7 +24,7 @@ export const username = async ({ request, locals }: RequestEvent) => {
 	const usernameForm = await superValidate(request, zod4(usernameSchema));
 
 	if (!usernameForm.valid) {
-		return fail(400, { usernameForm });
+		return message(usernameForm, { type: 'error', text: 'Invalid form entries' }, { status: 400 });
 	}
 
 	const newUsername = usernameForm.data.username;
@@ -87,7 +87,7 @@ export const password = async (event: RequestEvent) => {
 
 	const passwordForm = await superValidate(request, zod4(passwordSchema));
 	if (!passwordForm.valid) {
-		return fail(400, { passwordForm });
+		return message(passwordForm, { type: 'error', text: 'Error' }, { status: 400 });
 	}
 
 	const dbUsers = new DBUsers(db);
@@ -133,7 +133,7 @@ export const delete_account = async (event: RequestEvent) => {
 
 	const deleteAccountForm = await superValidate(request, zod4(deleteAccountSchema));
 	if (!deleteAccountForm.valid) {
-		return fail(400, { deleteAccountForm });
+		return message(deleteAccountForm, { type: 'error', text: 'Error' }, { status: 400 });
 	}
 
 	const dbUsers = new DBUsers(db);

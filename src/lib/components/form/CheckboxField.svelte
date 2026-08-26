@@ -1,8 +1,9 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = Record<string, unknown>;
 </script>
 
 <script lang="ts" generics="T extends Rec">
+	import type { Snippet } from 'svelte';
 	import {
 		formFieldProxy,
 		type SuperForm,
@@ -10,16 +11,30 @@
 		type FormFieldProxy,
 	} from 'sveltekit-superforms';
 
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathLeaves<T, boolean>;
-	export let showRequiredSymbolIfRequired: boolean = true;
-	export let disabled: boolean = false;
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathLeaves<T, boolean>;
+		showRequiredSymbolIfRequired?: boolean;
+		disabled?: boolean;
+		label?: string;
+		children?: Snippet;
+	}
 
+	let {
+		form,
+		field,
+		showRequiredSymbolIfRequired = true,
+		disabled = false,
+		label = '',
+		children,
+		...rest
+	}: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { value, errors, constraints } = formFieldProxy(
 		form,
 		field,
 	) satisfies FormFieldProxy<boolean>;
-	export let label: string = '';
 </script>
 
 <div class="flex w-fit flex-col gap-1">
@@ -31,9 +46,9 @@
 			bind:checked={$value}
 			{disabled}
 			{...$constraints}
-			{...$$restProps}
+			{...rest}
 		/><span class={disabled ? 'italic' : ''} style="line-height: normal;"
-			>{label}<slot />{#if $constraints?.required && showRequiredSymbolIfRequired}
+			>{label}{@render children?.()}{#if $constraints?.required && showRequiredSymbolIfRequired}
 				<span class="error-text-color">*</span>
 			{/if}</span
 		>

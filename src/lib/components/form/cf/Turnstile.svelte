@@ -1,15 +1,21 @@
 <script lang="ts">
 	// Adapted from https://github.com/ghostdevv/svelte-turnstile/blob/main/src/lib/Turnstile.svelte
-
 	import { PUBLIC_CF_TURNSTILE_SITE_KEY } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import type { Action } from 'svelte/action';
 
-	export let callback: (token: string) => void = () => {};
-	export let validToken = PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA';
+	interface Props {
+		callback?: (token: string) => void;
+		validToken?: any;
+	}
 
-	let loaded = hasTurnstile();
-	let mounted = false;
+	let {
+		callback = () => {},
+		validToken = $bindable(PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA'),
+	}: Props = $props();
+
+	let loaded = $state(hasTurnstile());
+	let mounted = $state(false);
 	let widgetId: string | HTMLElement | undefined;
 
 	onMount(() => {
@@ -58,7 +64,7 @@
 	{#if mounted && !loaded && PUBLIC_CF_TURNSTILE_SITE_KEY !== '1x00000000000000000000AA'}
 		<script
 			src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"
-			on:load={loadCallback}
+			onload={loadCallback}
 			async
 		></script>
 	{/if}

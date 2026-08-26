@@ -1,9 +1,21 @@
 <script lang="ts">
-	export let arrayIndex: number;
-	export let dragging = false;
-	export let currentDragIndex = 0;
-	export let currentHoverIndex = 0;
-	export let currentHover: HTMLElement;
+	interface Props {
+		arrayIndex: number;
+		dragging?: boolean;
+		currentDragIndex?: number;
+		currentHoverIndex?: number;
+		currentHover: HTMLElement | undefined;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		arrayIndex,
+		dragging = $bindable(false),
+		currentDragIndex = $bindable(0),
+		currentHoverIndex = $bindable(0),
+		currentHover = $bindable(),
+		children,
+	}: Props = $props();
 
 	function drag(node: HTMLElement) {
 		function dragStart(e: DragEvent) {
@@ -39,5 +51,5 @@
 </script>
 
 <div use:drag draggable="true" class="flex flex-col">
-	<slot />
+	{@render children?.()}
 </div>

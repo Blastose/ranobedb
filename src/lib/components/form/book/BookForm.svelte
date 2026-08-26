@@ -21,12 +21,18 @@
 	import TextField from '../TextField.svelte';
 	import TitlesInput from './TitlesInput.svelte';
 
-	export let book: BookEdit | undefined;
-	export let bookForm: SuperValidated<Infer<typeof bookSchema>>;
-	export let type: 'add' | 'edit';
-	export let user: User | null;
-	export let actionUrl: string | undefined = undefined;
+	interface Props {
+		book: BookEdit | undefined;
+		bookForm: SuperValidated<Infer<typeof bookSchema>>;
 
+		type: 'add' | 'edit';
+		user: User | null;
+		actionUrl?: string | undefined;
+	}
+
+	let { book, bookForm, type, user, actionUrl = undefined }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(bookForm, {
 		dataType: 'json',
 		onUpdated({ form: f }) {
@@ -38,7 +44,7 @@
 	});
 	const { form, enhance, delayed, submitting, errors } = sForm;
 
-	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
+	let submitButtonText = $derived(type === 'add' ? 'Submit' : 'Submit edit');
 
 	const file = fileProxy(form, 'image');
 
@@ -150,7 +156,7 @@
 					<button
 						class="sub-btn h-fit"
 						type="button"
-						on:click={() => {
+						onclick={() => {
 							$file = new DataTransfer().files;
 							clearFileInput();
 						}}>Remove uploaded file</button

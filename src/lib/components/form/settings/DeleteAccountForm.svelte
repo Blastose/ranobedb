@@ -7,14 +7,26 @@
 	import TextField from '../TextField.svelte';
 	import { accountDeletionPhrase } from '$lib/db/dbConsts';
 
-	export let deleteAccountForm: SuperValidated<Infer<typeof deleteAccountSchema>>;
-
-	const sForm = superForm(deleteAccountForm);
-	const { form, enhance, delayed, submitting, message } = sForm;
-
-	$: if (!$delayed && $message) {
-		addToast({ data: { title: $message.text, type: $message.type } });
+	interface Props {
+		deleteAccountForm: SuperValidated<Infer<typeof deleteAccountSchema>>;
 	}
+
+	let { deleteAccountForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
+	const sForm = superForm(deleteAccountForm, {
+		onUpdated({ form }) {
+			if (form.message)
+				addToast({
+					data: {
+						title: form.message?.text || 'An error has occurred.',
+						type: form.message?.type ?? 'error',
+					},
+				});
+		},
+		invalidateAll: true,
+	});
+	const { form, enhance, delayed, submitting, message } = sForm;
 </script>
 
 <!-- <SuperDebug data={$form} /> -->

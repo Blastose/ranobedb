@@ -4,8 +4,13 @@
 	import { releasePublisherTypeArray } from '$lib/db/dbConsts';
 	import TextField from '$lib/components/form/TextField.svelte';
 
-	export let form: SuperForm<Infer<typeof scrapedBookDataSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof scrapedBookDataSchema>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'publishers_not_in_db');
 
 	function handleRemovePublisher(index: number) {
@@ -58,7 +63,7 @@
 						<p class="error-text-color">{$valueErrors[i]?.note}</p>
 					{/if}
 					<button
-						on:click={() => {
+						onclick={() => {
 							handleRemovePublisher(i);
 						}}
 						type="button"

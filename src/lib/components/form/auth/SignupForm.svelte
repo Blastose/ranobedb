@@ -7,10 +7,14 @@
 	import CheckboxField from '../CheckboxField.svelte';
 	import PasswordField from '../PasswordField.svelte';
 
-	export let signupForm: SuperValidated<Infer<typeof signupSchema>>;
+	interface Props {
+		signupForm: SuperValidated<Infer<typeof signupSchema>>;
+	}
 
-	let turnstileKey = 0;
+	let { signupForm }: Props = $props();
+	let turnstileKey = $state(0);
 
+	// svelte-ignore state_referenced_locally
 	const form = superForm(signupForm, {
 		onUpdated({ form: f }) {
 			if (!f.valid) {
@@ -30,7 +34,7 @@
 	{turnstileKey}
 	{enhance}
 >
-	<svelte:fragment slot="form">
+	{#snippet form_shell()}
 		<TextField {form} field={'email'} placeholder="Email" label="Email" />
 		<TextField {form} field={'username'} placeholder="Username" label="Username" />
 		<PasswordField
@@ -58,11 +62,11 @@
 				label="I understand that RanobeDB DOES NOT provide books for reading and is primarily a database and tracking tool."
 			></CheckboxField>
 		</section>
-	</svelte:fragment>
+	{/snippet}
 
-	<svelte:fragment slot="bottom">
+	{#snippet bottom()}
 		<p>
 			Already have an account? <a href="/login" class="link">Log in</a> now!
 		</p>
-	</svelte:fragment>
+	{/snippet}
 </AuthFormShell>

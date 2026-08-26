@@ -1,21 +1,35 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = Record<string, unknown>;
 </script>
 
 <script lang="ts" generics="T extends Rec">
 	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathLeaves<T>;
-	export let label: string = '';
-	export let placeholder: string = '';
-	export let showRequiredSymbolIfRequired: boolean = true;
-	export let resetPadding: boolean = false;
-	export let disabled: boolean = false;
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathLeaves<T>;
+		label?: string;
+		placeholder?: string;
+		showRequiredSymbolIfRequired?: boolean;
+		resetPadding?: boolean;
+		disabled?: boolean;
+	}
 
+	let {
+		form,
+		field,
+		label = '',
+		placeholder = '',
+		showRequiredSymbolIfRequired = true,
+		resetPadding = false,
+		disabled = false,
+		...rest
+	}: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { value, errors, constraints } = formFieldProxy(form, field);
 
-	let currentType: 'password' | 'text' = 'password';
+	let currentType: 'password' | 'text' = $state('password');
 
 	function toggleType() {
 		if (currentType === 'password') {
@@ -51,11 +65,11 @@
 			aria-invalid={$errors ? 'true' : undefined}
 			bind:value={$value}
 			{...$constraints}
-			{...$$restProps}
+			{...rest}
 		/>
 	</label>
 	<label class="w-fit">
-		<input type="checkbox" on:click={handleShowPasswordCheck} />
+		<input type="checkbox" onclick={handleShowPasswordCheck} />
 		<span>Show password</span>
 	</label>
 	{#if $errors}

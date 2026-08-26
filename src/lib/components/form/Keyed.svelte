@@ -1,8 +1,14 @@
 <script lang="ts">
-	// TODO - Using page store because Snippet doesn't work in Rune mode when mixing Legacy and Rune mode
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		children?: Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
-{#key $page.url.search}
-	<slot></slot>
+{#key page.url.search}
+	{@render children?.()}
 {/key}

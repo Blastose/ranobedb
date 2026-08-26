@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = { hidden: boolean; locked: boolean };
 </script>
 
@@ -10,8 +10,13 @@
 		type FormPathLeaves,
 	} from 'sveltekit-superforms';
 
-	export let form: SuperForm<T>;
+	interface Props {
+		form: SuperForm<T>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const {
 		value: hiddenValue,
 		errors: hiddenErrors,
@@ -21,6 +26,7 @@
 		'hidden' as FormPathLeaves<T, boolean>,
 	) satisfies FormFieldProxy<boolean>;
 
+	// svelte-ignore state_referenced_locally
 	const {
 		value: lockedValue,
 		errors: lockedErrors,
@@ -46,7 +52,7 @@
 <section>
 	<h2 class="text-lg font-bold">Visibility</h2>
 	<label class="flex gap-1"
-		><input type="checkbox" bind:checked={$hiddenValue} on:change={handleHiddenChange} /><span
+		><input type="checkbox" bind:checked={$hiddenValue} onchange={handleHiddenChange} /><span
 			>Hidden</span
 		></label
 	>
@@ -55,7 +61,7 @@
 	{/if}
 
 	<label class="flex gap-1"
-		><input type="checkbox" bind:checked={$lockedValue} on:change={handleLockChange} /><span
+		><input type="checkbox" bind:checked={$lockedValue} onchange={handleLockChange} /><span
 			>Locked</span
 		></label
 	>

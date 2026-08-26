@@ -3,8 +3,13 @@
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import StaffFiltersInput from './StaffFiltersInput.svelte';
 
-	export let filtersForm: SuperValidated<Infer<typeof staffFilters>>;
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof staffFilters>>;
+	}
 
+	let { filtersForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 

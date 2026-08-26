@@ -1,25 +1,46 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = Record<string, unknown>;
 </script>
 
 <script lang="ts" generics="T extends Rec">
+	import { run } from 'svelte/legacy';
 	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
 	type DropdownOption = { display: string; value: string };
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathLeaves<T>;
-	export let label: string = '';
-	export let selectedValue: string;
-	export let dropdownOptions: ReadonlyArray<DropdownOption>;
-	export let showRequiredSymbolIfRequired: boolean = true;
-	export let resetPadding: boolean = false;
-	export let fit: boolean;
-	export let column: boolean = true;
-	export let onChange: (newValue: unknown) => void = () => {};
 
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathLeaves<T>;
+		label?: string;
+		selectedValue: string;
+		dropdownOptions: ReadonlyArray<DropdownOption>;
+		showRequiredSymbolIfRequired?: boolean;
+		resetPadding?: boolean;
+		fit: boolean;
+		column?: boolean;
+		onChange?: (newValue: unknown) => void;
+	}
+
+	let {
+		form,
+		field,
+		label = '',
+		selectedValue,
+		dropdownOptions,
+		showRequiredSymbolIfRequired = true,
+		resetPadding = false,
+		fit,
+		column = true,
+		onChange = () => {},
+		...rest
+	}: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { value, errors, constraints } = formFieldProxy(form, field);
 
-	$: onChange($value);
+	run(() => {
+		onChange($value);
+	});
 </script>
 
 <div class="flex flex-col gap-1 {fit ? 'w-fit' : ''}">
@@ -38,7 +59,7 @@
 			aria-invalid={$errors ? 'true' : undefined}
 			bind:value={$value}
 			{...$constraints}
-			{...$$restProps}
+			{...rest}
 		>
 			{#each dropdownOptions as dropdownOption}
 				<option selected={selectedValue === dropdownOption.value} value={dropdownOption.value}

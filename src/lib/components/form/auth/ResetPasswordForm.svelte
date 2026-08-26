@@ -1,13 +1,17 @@
 <script lang="ts">
-	import TextField from '$lib/components/form/TextField.svelte';
 	import AuthFormShell from '$lib/components/form/auth/AuthFormShell.svelte';
 	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import type { resetPasswordSchema } from '$lib/server/zod/schema';
 	import PasswordField from '../PasswordField.svelte';
 
-	export let resetPasswordForm: SuperValidated<Infer<typeof resetPasswordSchema>>;
+	interface Props {
+		resetPasswordForm: SuperValidated<Infer<typeof resetPasswordSchema>>;
+	}
 
+	let { resetPasswordForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const form = superForm(resetPasswordForm, {
 		onUpdated({ form: f }) {
 			if (!f.valid) {
@@ -27,7 +31,7 @@
 	useTurnstile={false}
 	{enhance}
 >
-	<svelte:fragment slot="form">
+	{#snippet form_shell()}
 		<p class="text-sm">Resetting your password will log you out of all sessions</p>
 		<PasswordField
 			{form}
@@ -44,5 +48,5 @@
 			label="Confirm password"
 			showRequiredSymbolIfRequired={true}
 		/>
-	</svelte:fragment>
+	{/snippet}
 </AuthFormShell>

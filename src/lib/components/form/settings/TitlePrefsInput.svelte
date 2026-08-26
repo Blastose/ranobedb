@@ -7,8 +7,13 @@
 	import Hr from '$lib/components/layout/Hr.svelte';
 	import { flip } from 'svelte/animate';
 	import { quintOut } from 'svelte/easing';
-	export let form: SuperForm<Infer<typeof displayPrefsSchema>, App.Superforms.Message>;
 
+	interface Props {
+		form: SuperForm<Infer<typeof displayPrefsSchema>, App.Superforms.Message>;
+	}
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'title_prefs');
 
 	function handleRemoveLanguage(index: number) {
@@ -68,7 +73,7 @@
 						<button
 							class="btn rounded-full"
 							disabled={index === 0}
-							on:click={() => {
+							onclick={() => {
 								swap($values, index, index - 1);
 							}}
 							type="button"
@@ -77,7 +82,7 @@
 						<button
 							class="btn rounded-full"
 							disabled={index === $values.length - 1}
-							on:click={() => {
+							onclick={() => {
 								swap($values, index, index + 1);
 							}}
 							type="button"
@@ -85,7 +90,7 @@
 						>
 						<button
 							class="btn rounded-full"
-							on:click={() => {
+							onclick={() => {
 								handleRemoveLanguage(index);
 							}}
 							type="button"
@@ -104,7 +109,7 @@
 	{/if}
 	<select
 		aria-label="add title"
-		on:change={handleAddLangauge}
+		onchange={handleAddLangauge}
 		class="input reset-padding mt-2 w-fit"
 		name="add-titles"
 		id="add-titles"

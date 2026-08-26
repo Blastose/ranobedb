@@ -2,8 +2,12 @@
 	import type { staffSchema } from '$lib/server/zod/schema';
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 
-	export let form: SuperForm<Infer<typeof staffSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof staffSchema>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'aliases');
 
 	function handleRemoveAlias(index: number) {
@@ -85,7 +89,7 @@
 								><input
 									name="main-alias"
 									checked={$values[i].main_alias}
-									on:change={handleCheckboxClick}
+									onchange={handleCheckboxClick}
 									type="radio"
 								/></span
 							>
@@ -97,7 +101,7 @@
 								class="sub-btn h-fit"
 								class:loading={Boolean($values[i].ref_book_id) || $values[i].main_alias}
 								type="button"
-								on:click={() => {
+								onclick={() => {
 									handleRemoveAlias(i);
 								}}
 								>{$values[i].main_alias
@@ -109,7 +113,7 @@
 						</div>
 					</div>
 				{/each}
-				<button class="primary-btn mt-2 w-fit" type="button" on:click={handleAddAlias}
+				<button class="primary-btn mt-2 w-fit" type="button" onclick={handleAddAlias}
 					>Add alias</button
 				>
 			</div>

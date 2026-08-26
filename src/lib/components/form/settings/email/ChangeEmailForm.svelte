@@ -7,24 +7,31 @@
 	import Turnstile from '../../cf/Turnstile.svelte';
 	import PasswordField from '../../PasswordField.svelte';
 
-	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
-	export let email_verified: boolean;
+	interface Props {
+		changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
+		email_verified: boolean;
+	}
+	let { changeEmailForm, email_verified }: Props = $props();
+	let turnstileKey = $state(0);
 
-	let turnstileKey = 0;
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(changeEmailForm, {
 		onUpdated({ form: f }) {
 			if (!f.valid) {
 				turnstileKey++;
 			}
+			addToast({
+				data: {
+					title: f.message?.text || 'An unknown error has occurred.',
+					type: f.message?.type ?? 'error',
+				},
+			});
 		},
+		invalidateAll: 'force',
 	});
 	const { form, enhance, delayed, submitting, message } = sForm;
 
-	$: if (!$delayed && $message) {
-		addToast({ data: { title: $message.text, type: $message.type } });
-	}
-
-	let validToken: boolean;
+	let validToken: boolean = $state(false);
 </script>
 
 <!-- <SuperDebug data={$form} /> -->

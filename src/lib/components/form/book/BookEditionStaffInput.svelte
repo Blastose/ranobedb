@@ -7,8 +7,13 @@
 	import type { bookSchema } from '$lib/server/zod/schema';
 	import { languageNames, languagesArray } from '$lib/db/dbConsts';
 
-	export let form: SuperForm<Infer<typeof bookSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof bookSchema>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'editions');
 
 	function handleRemoveEdition(index: number) {
@@ -48,7 +53,7 @@
 						fit={true}
 					/>
 					<button
-						on:click={() => {
+						onclick={() => {
 							handleRemoveEdition(editionIndex);
 						}}
 						type="button"
@@ -68,7 +73,7 @@
 	<button
 		type="button"
 		class="primary-btn mt-2 w-fit"
-		on:click={() => {
+		onclick={() => {
 			$values.push({
 				staff: [],
 				lang: 'ja',

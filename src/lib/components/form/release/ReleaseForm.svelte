@@ -19,12 +19,17 @@
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import LinkInput from '../LinkInput.svelte';
 
-	export let release: ReleaseEdit | undefined;
-	export let releaseForm: SuperValidated<Infer<typeof releaseSchema>>;
-	export let type: 'add' | 'edit';
-	export let user: User | null;
-	export let actionUrl: string | undefined = undefined;
+	interface Props {
+		release: ReleaseEdit | undefined;
+		releaseForm: SuperValidated<Infer<typeof releaseSchema>>;
+		type: 'add' | 'edit';
+		user: User | null;
+		actionUrl?: string | undefined;
+	}
 
+	let { release, releaseForm, type, user, actionUrl = undefined }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(releaseForm, {
 		dataType: 'json',
 		onUpdated({ form: f }) {
@@ -37,7 +42,7 @@
 	const { form, enhance, delayed, submitting } = sForm;
 	const { errors: durationErrors } = formFieldProxy(sForm, 'duration');
 
-	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
+	let submitButtonText = $derived(type === 'add' ? 'Submit' : 'Submit edit');
 
 	function onDurationHoursInput(e: Event) {
 		const hours = parseInt((e.target as HTMLInputElement).value) || 0;

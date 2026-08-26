@@ -1,10 +1,19 @@
 <script lang="ts">
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let genre: { id: number; name?: string | null; mode?: 'incl' | 'excl' | 'none' };
-	export let removable: boolean;
-	export let handleRemove: (() => void) | undefined = undefined;
-	export let handleUpdate: (() => void) | undefined = undefined;
+	interface Props {
+		genre: { id: number; name?: string | null; mode?: 'incl' | 'excl' | 'none' };
+		removable: boolean;
+		handleRemove?: (() => void) | undefined;
+		handleUpdate?: (() => void) | undefined;
+	}
+
+	let {
+		genre = $bindable(),
+		removable,
+		handleRemove = undefined,
+		handleUpdate = undefined,
+	}: Props = $props();
 
 	function toggle() {
 		if (!removable) {
@@ -38,7 +47,7 @@
 >
 	<button
 		type="button"
-		on:click={toggle}
+		onclick={toggle}
 		class="rounded-3xl pl-2 capitalize {removable ? 'pr-8' : 'pr-2'} 
 		text-sm font-semibold"
 	>
@@ -46,7 +55,7 @@
 	</button>
 	{#if removable}
 		<button
-			on:click={handleRemove}
+			onclick={handleRemove}
 			type="button"
 			aria-label="remove tag"
 			class="absolute right-1 rounded-full"

@@ -5,8 +5,13 @@
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import type { bookWalkerScraperUrlSchema } from '$lib/server/scraper/bookwalker/bookwalker-scraper';
 
-	export let urlForm: SuperValidated<Infer<typeof bookWalkerScraperUrlSchema>>;
+	interface Props {
+		urlForm: SuperValidated<Infer<typeof bookWalkerScraperUrlSchema>>;
+	}
 
+	let { urlForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const form = superForm(urlForm, {
 		onUpdated({ form: f }) {
 			if (!f.valid) {

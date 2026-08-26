@@ -2,8 +2,12 @@
 	import { page } from '$app/state';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
-	export let ariaLabel: string;
-	export let inputPlaceholder: string;
+	interface Props {
+		ariaLabel: string;
+		inputPlaceholder: string;
+	}
+
+	let { ariaLabel, inputPlaceholder }: Props = $props();
 </script>
 
 <div class="search-input-container">

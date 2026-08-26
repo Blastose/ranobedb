@@ -1,13 +1,17 @@
 <script lang="ts">
 	import type { seriesSchema } from '$lib/server/zod/schema';
 	import ComboboxInput from '../ComboboxInput.svelte';
-
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import BookDragDrop from './BookDragDrop.svelte';
 	import type { ApiBook } from '../../../../routes/api/i/book/+server';
 
-	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'books');
 	function handleRemoveBook(index: number) {
 		$values.splice(index, 1);
