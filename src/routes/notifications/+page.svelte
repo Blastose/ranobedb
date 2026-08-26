@@ -25,13 +25,15 @@
 					{@const date = new Date(notification.sent * 1000)}
 					<a class="notif" href={notification.url}>
 						{#if notification.image}
-							<img
-								src="https://images.ranobedb.org/{notification.image.filename}"
-								alt=""
-								width="240"
-								height="343"
-								class="w-[60px] rounded-lg"
-							/>
+							{#key notification.image}
+								<img
+									src="https://images.ranobedb.org/{notification.image.filename}"
+									alt=""
+									width="240"
+									height="343"
+									class="w-[60px] rounded-lg"
+								/>
+							{/key}
 						{:else}
 							<div class="flex items-center justify-center">
 								<Icon name="book" width="24" height="24" />

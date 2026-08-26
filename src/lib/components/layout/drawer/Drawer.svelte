@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { createDialog, melt } from '@melt-ui/svelte';
+	import { Dialog } from 'bits-ui';
 	import { fade, fly } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import Sidebar from '$lib/components/layout/sidebar/Sidebar.svelte';
 	import type { User } from '$lib/server/lucia/lucia';
-	import { writable } from 'svelte/store';
-	import { quintOut } from 'svelte/easing';
 	import { getSidebarStoreContext } from '$lib/stores/sidebarStore';
 
 	interface Props {
@@ -13,18 +12,11 @@
 	}
 
 	let { user }: Props = $props();
-	const customOpen = writable(false);
 
-	const {
-		elements: { trigger, overlay, content, close, portalled, title },
-	} = createDialog({
-		forceVisible: true,
-		preventScroll: false,
-		open: customOpen,
-	});
+	let open = $state(false);
 
 	function handleNavigation() {
-		customOpen.set(false);
+		open = false;
 	}
 
 	const sidebarStore = getSidebarStoreContext();
@@ -34,44 +26,56 @@
 	}
 </script>
 
-<div class="flex items-center pr-4 lg:hidden">
-	<button type="button" use:melt={$trigger} class="btn rounded-full p-1" aria-label="Open sidebar">
-		<Icon name="menu" />
-	</button>
-</div>
-<div class="hidden items-center pr-4 lg:flex">
-	<button
-		type="button"
-		onclick={openSidebar}
-		class="btn rounded-full p-1"
-		aria-label="Open sidebar"
-	>
-		<Icon name="menu" />
-	</button>
-</div>
-
-<div use:melt={$portalled}>
-	{#if $customOpen}
-		<div use:melt={$overlay} class="modal-bg" transition:fade={{ duration: 150 }}></div>
-		<div
-			use:melt={$content}
-			class="modal-drawer"
-			transition:fly={{
-				x: -240,
-				duration: 450,
-				opacity: 1,
-				easing: quintOut,
-			}}
+<Dialog.Root bind:open>
+	<div class="flex items-center pr-4 lg:hidden">
+		<Dialog.Trigger type="button" class="btn rounded-full p-1" aria-label="Open sidebar">
+			<Icon name="menu" />
+		</Dialog.Trigger>
+	</div>
+	<div class="hidden items-center pr-4 lg:flex">
+		<button
+			type="button"
+			onclick={openSidebar}
+			class="btn rounded-full p-1"
+			aria-label="Open sidebar"
 		>
-			<button use:melt={$close} aria-label="Close" class="drawer close-btn btn">
-				<Icon name="close" />
-			</button>
+			<Icon name="menu" />
+		</button>
+	</div>
 
-			<p class="hidden" use:melt={$title}>Sidebar</p>
-			<Sidebar {user} {handleNavigation} isDrawer={true} />
-		</div>
-	{/if}
-</div>
+	<Dialog.Portal>
+		<Dialog.Overlay forceMount>
+			{#snippet child({ props, open: overlayOpen })}
+				{#if overlayOpen}
+					<div {...props} class="modal-bg" transition:fade={{ duration: 150 }}></div>
+				{/if}
+			{/snippet}
+		</Dialog.Overlay>
+		<Dialog.Content forceMount preventScroll={false} onOpenAutoFocus={(e) => e.preventDefault()}>
+			{#snippet child({ props, open: contentOpen })}
+				{#if contentOpen}
+					<div
+						{...props}
+						class="modal-drawer"
+						transition:fly={{
+							x: -240,
+							duration: 450,
+							opacity: 1,
+							easing: quintOut,
+						}}
+					>
+						<Dialog.Close type="button" aria-label="Close" class="drawer close-btn btn">
+							<Icon name="close" />
+						</Dialog.Close>
+
+						<Dialog.Title class="hidden">Sidebar</Dialog.Title>
+						<Sidebar {user} {handleNavigation} isDrawer={true} />
+					</div>
+				{/if}
+			{/snippet}
+		</Dialog.Content>
+	</Dialog.Portal>
+</Dialog.Root>
 
 <style>
 	.modal-drawer {

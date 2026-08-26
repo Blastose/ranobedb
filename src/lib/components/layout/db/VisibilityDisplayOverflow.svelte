@@ -6,7 +6,7 @@
 	import { languageNames } from '$lib/db/dbConsts';
 	import type { CopyTo } from './VisibilityDisplay.svelte';
 	import type { DbItem, Language } from '$lib/server/db/dbTypes';
-	import { createDropdownMenu, melt } from '@melt-ui/svelte';
+	import { DropdownMenu } from 'bits-ui';
 	import { fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 
@@ -18,20 +18,6 @@
 	}
 
 	let { item, type, copyTo = undefined, revision }: Props = $props();
-
-	const {
-		elements: { trigger, menu, item: itm },
-		builders: { createSubmenu },
-		states: { open },
-	} = createDropdownMenu({
-		forceVisible: true,
-		preventScroll: false,
-	});
-
-	const {
-		elements: { subMenu, subTrigger },
-		states: { subOpen },
-	} = createSubmenu();
 
 	function buildBaseUrl(toType?: CopyTo['to'][number]) {
 		let base = `/${type}/${item.id}/copy`;
@@ -57,52 +43,95 @@
 		// We only need the relative part of the url so we use localhost as a dummy base
 		let url = new URL(buildBaseUrl(toType), 'http://localhost:5173');
 		url = addRevisionParams(url);
-		console.log(url.search);
 		if (lang) {
 			url = addLangParams(url, lang);
 		}
-		console.log(url.search);
 		return url.pathname + url.search;
 	}
 </script>
 
-<button use:melt={$trigger} class="open-menu-btn btn" type="button" aria-label="Open more options">
-	<Icon name="dotsHorizontal" />
-</button>
+<DropdownMenu.Root>
+	<DropdownMenu.Trigger>
+		{#snippet child({ props })}
+			<button {...props} type="button" class="open-menu-btn btn" aria-label="Open more options">
+				<Icon name="dotsHorizontal" />
+			</button>
+		{/snippet}
+	</DropdownMenu.Trigger>
 
-{#if $open}
-	<section class="menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
-		<a class="sidebar-item" use:melt={$itm} href={getHref()}>Copy</a>
+	<DropdownMenu.Content forceMount side="bottom" align="center" sideOffset={6}>
+		{#snippet child({ props, wrapperProps, open })}
+			{#if open}
+				<div {...wrapperProps}>
+					<div {...props} class="menu" transition:fly={{ duration: 150, y: -10 }}>
+						<DropdownMenu.Item>
+							{#snippet child({ props })}
+								<a {...props} class="sidebar-item" href={getHref()}>Copy</a>
+							{/snippet}
+						</DropdownMenu.Item>
 
-		{#if copyTo}
-			{#each copyTo.to as toType}
-				{#if toType === 'release'}
-					{#if copyTo.langs}
-						<div use:melt={$subTrigger} class="sidebar-item cursor-pointer items-center">
-							Copy as {toType}
-							<div>
-								<Icon name="chevronRight" width="20" height="20" />
-							</div>
-						</div>
-						{#if $subOpen}
-							<div class="menu" use:melt={$subMenu} transition:fly={{ duration: 150, x: -50 }}>
-								{#each copyTo.langs as lang}
-									<a class="sidebar-item" use:melt={$itm} href={getHref(toType, lang)}
-										>Use {languageNames[lang]} title</a
-									>
-								{/each}
-							</div>
+						{#if copyTo}
+							{#each copyTo.to as toType}
+								{#if toType === 'release'}
+									{#if copyTo.langs}
+										<DropdownMenu.Sub>
+											<DropdownMenu.SubTrigger class="sidebar-item cursor-pointer items-center">
+												Copy as {toType}
+												<div>
+													<Icon name="chevronRight" width="20" height="20" />
+												</div>
+											</DropdownMenu.SubTrigger>
+											<DropdownMenu.SubContent forceMount side="right" align="start" sideOffset={8}>
+												{#snippet child({ props, wrapperProps, open: subOpen })}
+													{#if subOpen}
+														<div {...wrapperProps}>
+															<div
+																{...props}
+																class="menu"
+																transition:fly={{ duration: 150, x: -50 }}
+															>
+																{#each copyTo.langs as lang}
+																	<DropdownMenu.Item>
+																		{#snippet child({ props })}
+																			<a
+																				{...props}
+																				class="sidebar-item"
+																				href={getHref(toType, lang)}
+																				>Use {languageNames[lang]} title</a
+																			>
+																		{/snippet}
+																	</DropdownMenu.Item>
+																{/each}
+															</div>
+														</div>
+													{/if}
+												{/snippet}
+											</DropdownMenu.SubContent>
+										</DropdownMenu.Sub>
+									{:else}
+										<DropdownMenu.Item>
+											{#snippet child({ props })}
+												<a {...props} class="sidebar-item" href={getHref(toType)}
+													>Copy as {toType}</a
+												>
+											{/snippet}
+										</DropdownMenu.Item>
+									{/if}
+								{:else}
+									<DropdownMenu.Item>
+										{#snippet child({ props })}
+											<a {...props} class="sidebar-item" href={getHref(toType)}>Copy as {toType}</a>
+										{/snippet}
+									</DropdownMenu.Item>
+								{/if}
+							{/each}
 						{/if}
-					{:else}
-						<a class="sidebar-item" href={getHref(toType)}>Copy as {toType}</a>
-					{/if}
-				{:else}
-					<a class="sidebar-item" href={getHref(toType)}>Copy as {toType}</a>
-				{/if}
-			{/each}
-		{/if}
-	</section>
-{/if}
+					</div>
+				</div>
+			{/if}
+		{/snippet}
+	</DropdownMenu.Content>
+</DropdownMenu.Root>
 
 <style>
 	.open-menu-btn {

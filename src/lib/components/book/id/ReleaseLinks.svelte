@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { BookOne } from '$lib/server/db/books/books';
-	import { createDropdownMenu, melt } from '@melt-ui/svelte';
+	import { DropdownMenu } from 'bits-ui';
 	import { fly } from 'svelte/transition';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { getDomain } from '$lib/components/db-links/db-ext-links';
@@ -28,46 +28,53 @@
 			}));
 	}
 
-	const {
-		elements: { trigger, menu, item, overlay },
-		states: { open },
-	} = createDropdownMenu({
-		forceVisible: true,
-		preventScroll: false,
-		positioning: { placement: 'left-start' },
-	});
-
 	let links = $derived(collectLinks(release));
 </script>
 
-<button
-	disabled={links.length === 0}
-	use:melt={$trigger}
-	type="button"
-	aria-label="Open release options"
-	class="relative"
->
-	<Icon name="link" />
-	<div
-		class="absolute -right-2 -top-1 h-4 w-4 rounded-full bg-[var(--primary-500)] text-xs text-white"
-	>
-		{links.length}
-	</div>
-</button>
+<DropdownMenu.Root>
+	<DropdownMenu.Trigger disabled={links.length === 0}>
+		{#snippet child({ props })}
+			<button {...props} type="button" aria-label="Open release options" class="relative">
+				<Icon name="link" />
+				<div
+					class="absolute -right-2 -top-1 h-4 w-4 rounded-full bg-[var(--primary-500)] text-xs text-white"
+				>
+					{links.length}
+				</div>
+			</button>
+		{/snippet}
+	</DropdownMenu.Trigger>
 
-{#if $open}
-	<div use:melt={$overlay} class="fixed inset-0 z-40"></div>
-	<section class="menu" use:melt={$menu} transition:fly={{ duration: 150, y: -10 }}>
-		{#each links as link}
-			<a use:melt={$item} class="sidebar-item items-center" href={link.url} target="_blank">
-				{#if link.domain}
-					<Favicon domain={link.domain} name={link.display} />
+	<DropdownMenu.Portal>
+		<DropdownMenu.Content forceMount side="left" align="start" sideOffset={6} preventScroll={false}>
+			{#snippet child({ wrapperProps, props, open: contentOpen })}
+				{#if contentOpen}
+					<div {...wrapperProps}>
+						<div {...props} class="menu" transition:fly={{ duration: 150, y: -10 }}>
+							{#each links as link}
+								<DropdownMenu.Item>
+									{#snippet child({ props: itemProps })}
+										<a
+											{...itemProps}
+											class="sidebar-item items-center"
+											href={link.url}
+											target="_blank"
+										>
+											{#if link.domain}
+												<Favicon domain={link.domain} name={link.display} />
+											{/if}
+											{link.display}
+										</a>
+									{/snippet}
+								</DropdownMenu.Item>
+							{/each}
+						</div>
+					</div>
 				{/if}
-				{link.display}
-			</a>
-		{/each}
-	</section>
-{/if}
+			{/snippet}
+		</DropdownMenu.Content>
+	</DropdownMenu.Portal>
+</DropdownMenu.Root>
 
 <!-- TODO refactor styles with other dropdown menus -->
 <style>

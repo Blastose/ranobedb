@@ -50,7 +50,8 @@
 						{release}
 						{userListReleaseForm}
 						showStatus={true}
-						placement={'bottom-start'}
+						side="bottom"
+						align="start"
 					/>
 				</dd>
 			</div>

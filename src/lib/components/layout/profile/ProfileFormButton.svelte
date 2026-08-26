@@ -1,21 +1,24 @@
 <script lang="ts">
-	import { melt } from '@melt-ui/svelte';
-	import type { DropdownMenu } from '@melt-ui/svelte';
+	import { DropdownMenu } from 'bits-ui';
 	import { enhance } from '$app/forms';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		text: string;
-		item: DropdownMenu['elements']['item'];
 		action: string;
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
-	let { text, item, action, children }: Props = $props();
+	let { text, action, children }: Props = $props();
 </script>
 
-<form method="post" {action} use:enhance>
-	<button type="submit" class="sidebar-item" use:melt={$item}>
-		{@render children?.()}
-		{text}
-	</button>
-</form>
+<DropdownMenu.Item>
+	{#snippet child({ props })}
+		<form method="post" {action} use:enhance>
+			<button type="submit" class="sidebar-item" {...props}>
+				{@render children?.()}
+				{text}
+			</button>
+		</form>
+	{/snippet}
+</DropdownMenu.Item>
