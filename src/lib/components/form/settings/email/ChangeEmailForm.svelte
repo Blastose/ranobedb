@@ -6,6 +6,7 @@
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Turnstile from '../../cf/Turnstile.svelte';
 	import PasswordField from '../../PasswordField.svelte';
+	import { PUBLIC_CF_TURNSTILE_SITE_KEY } from '$env/static/public';
 
 	interface Props {
 		changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
@@ -31,7 +32,7 @@
 	});
 	const { form, enhance, delayed, submitting, message } = sForm;
 
-	let validToken: boolean = $state(false);
+	let validToken: boolean = $derived(PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA');
 </script>
 
 <!-- <SuperDebug data={$form} /> -->

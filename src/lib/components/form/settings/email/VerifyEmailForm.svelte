@@ -6,6 +6,7 @@
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Turnstile from '../../cf/Turnstile.svelte';
 	import PasswordField from '../../PasswordField.svelte';
+	import { PUBLIC_CF_TURNSTILE_SITE_KEY } from '$env/static/public';
 
 	interface Props {
 		sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
@@ -15,7 +16,7 @@
 
 	let { sendEmailVerificationForm, verifyEmailForm, email_verified }: Props = $props();
 	let turnstileKeyE = $state(0);
-	let validToken: boolean = $state(false);
+	let validToken: boolean = $derived(PUBLIC_CF_TURNSTILE_SITE_KEY === '1x00000000000000000000AA');
 
 	// svelte-ignore state_referenced_locally
 	const sFormEmailVerify = superForm(sendEmailVerificationForm, {
