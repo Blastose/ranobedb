@@ -8,7 +8,13 @@
 	import Keyed from '../Keyed.svelte';
 	import MultiSelectField from '../MultiSelectField.svelte';
 
-	export let filtersForm: SuperValidated<Infer<typeof historyFiltersSchema>>;
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof historyFiltersSchema>>;
+	}
+
+	let { filtersForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm);
 	const { form, enhance, delayed, submitting } = sForm;
 </script>

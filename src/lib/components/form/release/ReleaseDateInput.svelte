@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = Record<string, unknown>;
 </script>
 
@@ -12,11 +12,17 @@
 	} from 'sveltekit-superforms';
 	import { DateNumber } from './releaseDate';
 
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathLeaves<T>;
-	export let label: string;
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathLeaves<T>;
+		label: string;
+	}
 
+	let { form, field, label }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { value, errors, constraints } = formFieldProxy(form, field);
+	// svelte-ignore state_referenced_locally
 	const proxy = numberProxy(form, field);
 
 	const years = ['TBA', ...Array.from({ length: 81 }, (_, index) => 2030 - index)] as const;
@@ -38,7 +44,8 @@
 	const days = ['-day-', ...Array.from({ length: 31 }, (_, index) => index + 1)] as const;
 
 	function resetMonthOptions() {
-		const monthOptions = selectContainer.querySelectorAll<HTMLOptionElement>('.month-option');
+		const monthOptions = selectContainer?.querySelectorAll<HTMLOptionElement>('.month-option');
+		if (!monthOptions) return;
 		for (const item of monthOptions) {
 			if (item.value === '0') {
 				item.selected = true;
@@ -47,7 +54,8 @@
 		}
 	}
 	function resetDayOptions() {
-		const dayOptions = selectContainer.querySelectorAll<HTMLOptionElement>('.day-option');
+		const dayOptions = selectContainer?.querySelectorAll<HTMLOptionElement>('.day-option');
+		if (!dayOptions) return;
 		for (const item of dayOptions) {
 			if (item.value === '-day-') {
 				item.selected = true;
@@ -57,8 +65,8 @@
 	}
 
 	const initalDate = new DateNumber(Number($proxy));
-	let hideMonth = initalDate.getYear() === 9999;
-	let hideDay = initalDate.getYear() === 9999 || initalDate.getMonth() === 99;
+	let hideMonth = $state(initalDate.getYear() === 9999);
+	let hideDay = $state(initalDate.getYear() === 9999 || initalDate.getMonth() === 99);
 	function handleYearChange(e: Event & { currentTarget: EventTarget & HTMLSelectElement }) {
 		const inputValue = e.currentTarget.value;
 		if (inputValue === 'TBA') {
@@ -102,14 +110,14 @@
 		}
 	}
 
-	let selectContainer: HTMLDivElement;
+	let selectContainer: HTMLDivElement | undefined = $state();
 </script>
 
 <div class="flex flex-col gap-1">
 	<label class="flex flex-col gap-1">
 		<span>{label}</span>
 		<div class="flex gap-2" bind:this={selectContainer}>
-			<select on:change={handleYearChange} class="input reset-padding" name="" id="">
+			<select onchange={handleYearChange} class="input reset-padding" name="" id="">
 				{#each years as year (year)}
 					<option
 						value={year}
@@ -119,7 +127,7 @@
 				{/each}
 			</select>
 			{#if !hideMonth}
-				<select on:change={handleMonthChange} class="input reset-padding" name="" id="">
+				<select onchange={handleMonthChange} class="input reset-padding" name="" id="">
 					{#each months as month, index (month)}
 						<option
 							class="month-option"
@@ -132,7 +140,7 @@
 				</select>
 			{/if}
 			{#if !hideDay}
-				<select on:change={handleDayChange} class="input reset-padding" name="" id="">
+				<select onchange={handleDayChange} class="input reset-padding" name="" id="">
 					{#each days as day, index (day)}
 						{@const currentDateNumber = new DateNumber(Number($proxy))}
 						{@const maxNumberOfDays = new Date(

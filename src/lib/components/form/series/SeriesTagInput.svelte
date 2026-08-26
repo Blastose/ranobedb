@@ -1,20 +1,24 @@
 <script lang="ts">
 	import type { seriesSchema } from '$lib/server/zod/schema';
 	import ComboboxInput from '$lib/components/form/ComboboxInput.svelte';
-
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import type { ApiTag } from '../../../../routes/api/i/tags/+server';
 	import TagFilter from './filters/tags/TagFilter.svelte';
 	import { onMount } from 'svelte';
 
-	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+	}
+
+	let { form }: Props = $props();
 
 	const STORAGE_KEY = 'seriesTagInput:recentTags';
 	const MAX_RECENT = 10;
 
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'tags');
 
-	let recentTags: ApiTag = [];
+	let recentTags: ApiTag = $state([]);
 
 	onMount(() => {
 		const stored = localStorage.getItem(STORAGE_KEY);
@@ -25,7 +29,9 @@
 		}
 	});
 
-	$: recentTagsFiltered = recentTags.filter((rt) => !$values.some((v) => v.id === rt.id));
+	let recentTagsFiltered = $derived(
+		recentTags.filter((rt) => !$values.some((v) => v.id === rt.id)),
+	);
 
 	function saveRecent() {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(recentTags));
@@ -65,7 +71,7 @@
 		<div class="flex flex-wrap gap-2">
 			{#each $values as tag, i (tag.id)}
 				<TagFilter
-					bind:genre={tag}
+					bind:genre={$values[i]}
 					removable={true}
 					handleRemove={() => {
 						handleRemoveTag(i);

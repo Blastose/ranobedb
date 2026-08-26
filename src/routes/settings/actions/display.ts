@@ -14,7 +14,7 @@ export const displayprefs = async ({ request, locals }: RequestEvent) => {
 
 	const displayPrefsForm = await superValidate(request, zod4(displayPrefsSchema));
 	if (!displayPrefsForm.valid) {
-		return fail(400, { displayPrefsForm });
+		return message(displayPrefsForm, { type: 'error', text: 'Error' }, { status: 400 });
 	}
 
 	const dbUsers = new DBUsers(db);

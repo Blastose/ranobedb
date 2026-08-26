@@ -1,15 +1,19 @@
 <script lang="ts">
 	import type { publisherFilters } from '$lib/server/zod/schema';
 	import ComboboxInput from '$lib/components/form/ComboboxInput.svelte';
-
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import HiddenInput from '../../HiddenInput.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import type { ApiPublisher } from '../../../../../routes/api/i/publisher/+server';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
-	export let form: SuperForm<Infer<typeof publisherFilters>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof publisherFilters>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'p');
 	function handleRemovePublisher(index: number) {
 		$values.splice(index, 1);
@@ -39,7 +43,7 @@
 				<button
 					class="tag-chip flex items-center gap-1 rounded-2xl px-2 text-sm"
 					type="button"
-					on:click={() => {
+					onclick={() => {
 						handleRemovePublisher(i);
 					}}
 					><NameDisplay obj={publisher} /><Icon name="close" height="18" width="18"></Icon></button

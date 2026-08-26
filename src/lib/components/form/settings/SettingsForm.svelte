@@ -34,23 +34,43 @@
 	import PersonalAccessTokenForm from './PersonalAccessTokenForm.svelte';
 	import PrivacySettingsForm from './PrivacySettingsForm.svelte';
 
-	export let email_verified: boolean;
-	export let usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
-	export let passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
-	export let deleteAccountForm: SuperValidated<Infer<typeof deleteAccountSchema>>;
-	export let verifyEmailForm: SuperValidated<Infer<typeof verifyEmailSchema>>;
-	export let sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
-	export let changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
-	export let displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
-	export let userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
-	export let profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
-	export let removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
-	export let homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
-	export let listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
-	export let privacySettingsForm: SuperValidated<Infer<typeof privacySettingsSchema>>;
+	interface Props {
+		email_verified: boolean;
+		usernameForm: SuperValidated<Infer<typeof usernameSchema>>;
+		passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
+		deleteAccountForm: SuperValidated<Infer<typeof deleteAccountSchema>>;
+		verifyEmailForm: SuperValidated<Infer<typeof verifyEmailSchema>>;
+		sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
+		changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
+		displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
+		userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
+		profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
+		removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
+		homeDisplaySettingsForm: SuperValidated<Infer<typeof homeDisplaySettingsSchema>>;
+		listLabelsForm: SuperValidated<Infer<typeof userListLabelsSchema>>;
+		privacySettingsForm: SuperValidated<Infer<typeof privacySettingsSchema>>;
+		view: SettingsTab;
+		personalAccessToken: string;
+	}
 
-	export let view: SettingsTab;
-	export let personalAccessToken: string;
+	let {
+		email_verified,
+		usernameForm,
+		passwordForm,
+		deleteAccountForm,
+		verifyEmailForm,
+		sendEmailVerificationForm,
+		changeEmailForm,
+		displayPrefsForm,
+		userListSeriesSettingsForm,
+		profilePictureForm,
+		removeProfilePictureForm,
+		homeDisplaySettingsForm,
+		listLabelsForm,
+		privacySettingsForm,
+		view,
+		personalAccessToken = $bindable(),
+	}: Props = $props();
 </script>
 
 <div class="grid gap-4">

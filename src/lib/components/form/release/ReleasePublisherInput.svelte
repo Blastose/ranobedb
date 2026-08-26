@@ -13,8 +13,12 @@
 	import type { ReleasePublisherType } from '$lib/server/db/dbTypes';
 	import { onMount } from 'svelte';
 
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathType<T, F> extends Publisher[] ? F : never;
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathType<T, F> extends Publisher[] ? F : never;
+	}
+
+	let { form, field }: Props = $props();
 
 	type Publisher = {
 		name: string;
@@ -26,12 +30,13 @@
 	const STORAGE_KEY = 'releasePublisherInput:recentPublishers';
 	const MAX_RECENT = 10;
 
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(
 		form,
 		field,
 	) as unknown as ArrayProxy<Publisher>;
 
-	let recentPublishers: ApiPublisher = [];
+	let recentPublishers: ApiPublisher = $state([]);
 
 	onMount(() => {
 		const stored = localStorage.getItem(STORAGE_KEY);
@@ -42,8 +47,8 @@
 		}
 	});
 
-	$: recentPublishersFiltered = recentPublishers.filter(
-		(rp) => !$values.some((v) => v.id === rp.id),
+	let recentPublishersFiltered = $derived(
+		recentPublishers.filter((rp) => !$values.some((v) => v.id === rp.id)),
 	);
 
 	function saveRecent() {

@@ -16,18 +16,19 @@
 	import LinkInput from '../LinkInput.svelte';
 	import SelectField from '../SelectField.svelte';
 	import { languageNames, languagesArray } from '$lib/db/dbConsts';
-	import {
-		bookwalkerAuthorLink,
-		twitterLink,
-		wikidataLink,
-	} from '$lib/components/db-links/db-ext-links';
+	import { twitterLink, wikidataLink } from '$lib/components/db-links/db-ext-links';
 
-	export let publisher: PublisherEdit | undefined;
-	export let publisherForm: SuperValidated<Infer<typeof publisherSchema>>;
-	export let type: 'add' | 'edit';
-	export let user: User | null;
-	export let actionUrl: string | undefined = undefined;
+	interface Props {
+		publisher: PublisherEdit | undefined;
+		publisherForm: SuperValidated<Infer<typeof publisherSchema>>;
+		type: 'add' | 'edit';
+		user: User | null;
+		actionUrl?: string | undefined;
+	}
 
+	let { publisher, publisherForm, type, user, actionUrl = undefined }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(publisherForm, {
 		dataType: 'json',
 		onUpdated({ form: f }) {
@@ -39,7 +40,7 @@
 	});
 	const { form, enhance, delayed, submitting } = sForm;
 
-	$: submitButtonText = type === 'add' ? 'Submit' : 'Submit edit';
+	let submitButtonText = $derived(type === 'add' ? 'Submit' : 'Submit edit');
 </script>
 
 <!-- <SuperDebug data={$form} /> -->
@@ -120,7 +121,6 @@
 
 	<TextareaFieldMarkdown
 		form={sForm}
-		type="textarea"
 		field="description"
 		label="Biography"
 		textareaRows={4}
@@ -134,7 +134,6 @@
 
 	<TextareaFieldMarkdown
 		form={sForm}
-		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}

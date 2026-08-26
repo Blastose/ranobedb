@@ -29,7 +29,7 @@
 			addToast({
 				data: {
 					title: form.message?.text || 'An unknown error has occurred.',
-					type: form.message?.type ?? 'success',
+					type: form.message?.type ?? 'error',
 				},
 			});
 		},

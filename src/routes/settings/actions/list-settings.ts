@@ -50,7 +50,7 @@ export const serieslistsettings = async ({ request, locals }: RequestEvent) => {
 		zod4(userListSeriesSettingsSchema),
 	);
 	if (!userListSeriesSettingsForm.valid) {
-		return fail(400, { userListSeriesSettingsForm });
+		return message(userListSeriesSettingsForm, { type: 'error', text: 'Error' }, { status: 400 });
 	}
 
 	await db
@@ -74,7 +74,7 @@ export const serieslistsettingsapplyall = async ({ request, locals }: RequestEve
 		zod4(userListSeriesSettingsSchema),
 	);
 	if (!userListSeriesSettingsForm.valid) {
-		return fail(400, { userListSeriesSettingsForm });
+		return message(userListSeriesSettingsForm, { type: 'error', text: 'Error' }, { status: 400 });
 	}
 
 	const user = locals.user;

@@ -5,10 +5,14 @@
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
 	import type { forgotPasswordSchema } from '$lib/server/zod/schema';
 
-	export let forgotPasswordForm: SuperValidated<Infer<typeof forgotPasswordSchema>>;
+	interface Props {
+		forgotPasswordForm: SuperValidated<Infer<typeof forgotPasswordSchema>>;
+	}
 
-	let turnstileKey = 0;
+	let { forgotPasswordForm }: Props = $props();
+	let turnstileKey = $state(0);
 
+	// svelte-ignore state_referenced_locally
 	const form = superForm(forgotPasswordForm, {
 		onUpdated({ form: f }) {
 			if (!f.valid) {
@@ -28,7 +32,7 @@
 	{turnstileKey}
 	{enhance}
 >
-	<svelte:fragment slot="form">
+	{#snippet form_shell()}
 		<p>Enter your email and we'll send you a link to reset your password.</p>
 
 		<TextField
@@ -38,5 +42,5 @@
 			label="Email"
 			showRequiredSymbolIfRequired={true}
 		/>
-	</svelte:fragment>
+	{/snippet}
 </AuthFormShell>

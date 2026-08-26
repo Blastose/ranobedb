@@ -20,16 +20,22 @@
 	import StaffPublisherFilters from '../../filters/StaffPublisherFilters.svelte';
 	import TextField from '../../TextField.svelte';
 
-	export let filtersForm: SuperValidated<Infer<typeof seriesFiltersObjSchema>>;
-	export let genres: { id: number; name: string; ttype: TagType; mode: 'incl' | 'excl' | 'none' }[];
-	export let isUser: boolean;
-	export let isList: boolean;
-	export let allCustLabels: {
-		id: number;
-		label: string;
-	}[] = [];
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof seriesFiltersObjSchema>>;
+		genres: { id: number; name: string; ttype: TagType; mode: 'incl' | 'excl' | 'none' }[];
+		isUser: boolean;
+		isList: boolean;
+		allCustLabels?: {
+			id: number;
+			label: string;
+		}[];
+	}
+
+	let { filtersForm, genres, isUser, isList, allCustLabels = [] }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm, { dataType: 'json' });
-	$: sortFiltersToUse = isList ? seriesUserListSortArray : seriesSortArray;
+	let sortFiltersToUse = $derived(isList ? seriesUserListSortArray : seriesSortArray);
 </script>
 
 <FiltersWrapper>

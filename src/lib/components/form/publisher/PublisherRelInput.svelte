@@ -6,8 +6,13 @@
 	import type { ApiPublisher } from '../../../../routes/api/i/publisher/+server';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
-	export let form: SuperForm<Infer<typeof publisherSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof publisherSchema>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'child_publishers');
 	function handleRemovePublisher(index: number) {
 		$values.splice(index, 1);
@@ -54,7 +59,7 @@
 					</select>
 				</label>
 				<button
-					on:click={() => {
+					onclick={() => {
 						handleRemovePublisher(i);
 					}}
 					type="button"

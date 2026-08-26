@@ -1,15 +1,19 @@
 <script lang="ts">
 	import type { staffFilters } from '$lib/server/zod/schema';
 	import ComboboxInput from '$lib/components/form/ComboboxInput.svelte';
-
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import type { ApiStaff } from '../../../../../routes/api/i/staff/+server';
 	import HiddenInput from '../../HiddenInput.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 
-	export let form: SuperForm<Infer<typeof staffFilters>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof staffFilters>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'staff');
 	function handleRemoveStaff(index: number) {
 		$values.splice(index, 1);
@@ -39,7 +43,7 @@
 				<button
 					class="tag-chip flex items-center gap-1 rounded-2xl px-2 text-sm"
 					type="button"
-					on:click={() => {
+					onclick={() => {
 						handleRemoveStaff(i);
 					}}><NameDisplay obj={staff} /><Icon name="close" height="18" width="18"></Icon></button
 				>

@@ -5,14 +5,25 @@
 	import SubmitButton from '../SubmitButton.svelte';
 	import PasswordField from '../PasswordField.svelte';
 
-	export let passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
-
-	const sForm = superForm(passwordForm);
-	const { form, enhance, delayed, submitting, message } = sForm;
-
-	$: if (!$delayed && $message) {
-		addToast({ data: { title: $message.text, type: $message.type } });
+	interface Props {
+		passwordForm: SuperValidated<Infer<typeof passwordSchema>>;
 	}
+
+	let { passwordForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
+	const sForm = superForm(passwordForm, {
+		onUpdated({ form }) {
+			addToast({
+				data: {
+					title: form.message?.text || 'An unknown error has occurred.',
+					type: form.message?.type ?? 'error',
+				},
+			});
+		},
+		invalidateAll: 'force',
+	});
+	const { form, enhance, delayed, submitting, message } = sForm;
 </script>
 
 <!-- <SuperDebug data={$form} /> -->

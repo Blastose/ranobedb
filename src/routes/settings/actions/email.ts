@@ -28,7 +28,7 @@ export const sendemailverificationcode = async (event: RequestEvent) => {
 
 	const form = await superValidate(formData, zod4(sendEmailVerificationSchema));
 	if (!form.valid) {
-		return fail(400, { form });
+		return message(form, { type: 'error', text: 'Error' }, { status: 400 });
 	}
 
 	const turnstileSuccess = await validateTurnstile({ request, body: formData });
@@ -82,7 +82,7 @@ export const verifyemail = async (event: RequestEvent) => {
 
 	const verifyEmailForm = await superValidate(request, zod4(verifyEmailSchema));
 	if (!verifyEmailForm.valid) {
-		return fail(400, { verifyEmailForm });
+		return message(verifyEmailForm, { type: 'error', text: 'Error' }, { status: 400 });
 	}
 
 	if (await isLimited(verifyCodeLimiter, event)) {
@@ -124,7 +124,7 @@ export const changeemail = async (event: RequestEvent) => {
 	}
 
 	if (!changeEmailForm.valid) {
-		return fail(400, { changeEmailForm });
+		return message(changeEmailForm, { type: 'error', text: 'Error' }, { status: 400 });
 	}
 
 	const dbUsers = new DBUsers(db);

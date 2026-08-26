@@ -7,7 +7,13 @@
 	import MultiSelectField from '../../MultiSelectField.svelte';
 	import FiltersWrapper from '$lib/components/form/filters/FiltersWrapper.svelte';
 
-	export let filtersForm: SuperValidated<Infer<typeof staffFiltersObjSchema>>;
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof staffFiltersObjSchema>>;
+	}
+
+	let { filtersForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 

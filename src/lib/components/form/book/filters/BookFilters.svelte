@@ -17,16 +17,22 @@
 	import StaffPublisherFilters from '../../filters/StaffPublisherFilters.svelte';
 	import TextField from '../../TextField.svelte';
 
-	export let filtersForm: SuperValidated<Infer<typeof bookFiltersObjSchema>>;
-	export let isUser: boolean;
-	export let isList: boolean;
-	export let allCustLabels: {
-		id: number;
-		label: string;
-	}[] = [];
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof bookFiltersObjSchema>>;
+		isUser: boolean;
+		isList: boolean;
+		allCustLabels?: {
+			id: number;
+			label: string;
+		}[];
+	}
+
+	let { filtersForm, isUser, isList, allCustLabels = [] }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 
-	$: sortFiltersToUse = isList ? booksUserListSortArray : booksSortArray;
+	let sortFiltersToUse = $derived(isList ? booksUserListSortArray : booksSortArray);
 </script>
 
 <FiltersWrapper>

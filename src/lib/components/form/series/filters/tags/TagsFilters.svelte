@@ -6,9 +6,14 @@
 	import SeriesTagInput from './SeriesFiltersTagInput.svelte';
 	import HiddenInput from '$lib/components/form/HiddenInput.svelte';
 
-	export let filtersForm: SuperValidated<Infer<typeof seriesFiltersObjSchema>>;
-	export let genres: { id: number; name: string; ttype: TagType; mode: 'incl' | 'excl' | 'none' }[];
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof seriesFiltersObjSchema>>;
+		genres: { id: number; name: string; ttype: TagType; mode: 'incl' | 'excl' | 'none' }[];
+	}
 
+	let { filtersForm, genres = $bindable() }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 
 	function updateGenres() {

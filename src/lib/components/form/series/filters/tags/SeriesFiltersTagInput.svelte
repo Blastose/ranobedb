@@ -1,14 +1,18 @@
 <script lang="ts">
 	import type { seriesFiltersObjSchema } from '$lib/server/zod/schema';
 	import ComboboxInput from '$lib/components/form/ComboboxInput.svelte';
-
 	import { type SuperForm, arrayProxy, type Infer } from 'sveltekit-superforms';
 	import type { ApiTag } from '../../../../../../routes/api/i/tags/+server';
 	import TagFilter from './TagFilter.svelte';
 	import HiddenInput from '$lib/components/form/HiddenInput.svelte';
 
-	export let form: SuperForm<Infer<typeof seriesFiltersObjSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof seriesFiltersObjSchema>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'tags');
 	function handleRemoveTag(index: number) {
 		$values.splice(index, 1);
@@ -40,7 +44,7 @@
 		<div class="flex flex-wrap gap-2">
 			{#each $values as tag, i (tag.id)}
 				<TagFilter
-					bind:genre={tag}
+					bind:genre={$values[i]}
 					removable={true}
 					handleRemove={() => {
 						handleRemoveTag(i);

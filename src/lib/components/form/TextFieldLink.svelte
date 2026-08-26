@@ -1,26 +1,40 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = Record<string, unknown>;
 	type InputType = 'text' | 'number';
 </script>
 
 <script lang="ts" generics="T extends Rec">
 	import { buildLink, type LinkBeforeAfter } from '$lib/components/db-links/db-ext-links';
-
 	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathLeaves<T>;
-	export let label: string = '';
-	export let type: InputType;
-	export let placeholder: string = '';
-	export let showRequiredSymbolIfRequired: boolean = true;
-	export let resetPadding: boolean = false;
-	export let disabled: boolean = false;
-	export let linkBeforeAfter: LinkBeforeAfter;
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathLeaves<T>;
+		label?: string;
+		type: InputType;
+		placeholder?: string;
+		showRequiredSymbolIfRequired?: boolean;
+		resetPadding?: boolean;
+		disabled?: boolean;
+		linkBeforeAfter: LinkBeforeAfter;
+	}
 
+	let {
+		form,
+		field,
+		label = '',
+		type,
+		placeholder = '',
+		showRequiredSymbolIfRequired = true,
+		resetPadding = false,
+		disabled = false,
+		linkBeforeAfter,
+		...rest
+	}: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { value, errors, constraints } = formFieldProxy(form, field);
-
-	$: link = buildLink({ ...linkBeforeAfter, value: String($value) });
+	let link = $derived(buildLink({ ...linkBeforeAfter, value: String($value) }));
 </script>
 
 <div class="flex flex-col gap-1">
@@ -45,7 +59,7 @@
 					aria-invalid={$errors ? 'true' : undefined}
 					bind:value={$value}
 					{...$constraints}
-					{...$$restProps}
+					{...rest}
 				/>
 			{:else}
 				<input
@@ -59,7 +73,7 @@
 					aria-invalid={$errors ? 'true' : undefined}
 					bind:value={$value}
 					{...$constraints}
-					{...$$restProps}
+					{...rest}
 				/>
 			{/if}
 			<span>{linkBeforeAfter.after}</span>

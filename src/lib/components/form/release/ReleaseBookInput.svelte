@@ -6,8 +6,13 @@
 	import type { ApiBook } from '../../../../routes/api/i/book/+server';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 
-	export let form: SuperForm<Infer<typeof releaseSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof releaseSchema>, App.Superforms.Message>;
+	}
 
+	let { form }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'books');
 	function handleRemoveBook(index: number) {
 		$values.splice(index, 1);
@@ -58,7 +63,7 @@
 					</select>
 				</label>
 				<button
-					on:click={() => {
+					onclick={() => {
 						handleRemoveBook(i);
 					}}
 					type="button"

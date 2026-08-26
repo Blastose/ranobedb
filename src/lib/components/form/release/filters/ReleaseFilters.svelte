@@ -18,12 +18,25 @@
 	import CheckboxField from '../../CheckboxField.svelte';
 	import TextField from '../../TextField.svelte';
 
-	export let filtersForm: SuperValidated<Infer<typeof releaseFiltersObjSchema>>;
-	export let showSort: boolean = true;
-	export let isUser: boolean;
-	export let isList: boolean;
-	export let allowPublisherFiltersLogic: boolean = true;
-	export let isCalendar: boolean = false;
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof releaseFiltersObjSchema>>;
+		showSort?: boolean;
+		isUser: boolean;
+		isList: boolean;
+		allowPublisherFiltersLogic?: boolean;
+		isCalendar?: boolean;
+		children?: import('svelte').Snippet;
+	}
+	let {
+		filtersForm,
+		showSort = true,
+		isUser,
+		isList,
+		allowPublisherFiltersLogic = true,
+		isCalendar = false,
+		children,
+	}: Props = $props();
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 
@@ -145,6 +158,6 @@
 			{/if}
 		</div>
 
-		<slot />
+		{@render children?.()}
 	</div>
 </FiltersWrapper>

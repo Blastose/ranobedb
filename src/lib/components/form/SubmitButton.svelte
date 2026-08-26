@@ -1,13 +1,25 @@
 <script lang="ts">
 	import Icon from '../icon/Icon.svelte';
 
-	export let disabled: boolean = false;
-	export let text: string;
-	export let submitting: boolean;
-	export let delayed: boolean;
-	export let name: string | undefined = undefined;
-	export let value: string | undefined = undefined;
-	export let wFull: boolean = true;
+	interface Props {
+		disabled?: boolean;
+		text: string;
+		submitting: boolean;
+		delayed: boolean;
+		name?: string | undefined;
+		value?: string | undefined;
+		wFull?: boolean;
+	}
+
+	let {
+		disabled = false,
+		text,
+		submitting,
+		delayed,
+		name = undefined,
+		value = undefined,
+		wFull = true,
+	}: Props = $props();
 </script>
 
 <button

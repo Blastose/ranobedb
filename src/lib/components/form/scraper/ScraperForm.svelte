@@ -22,9 +22,15 @@
 	import PublishersNotInDbInput from './PublishersNotInDbInput.svelte';
 	import ReleasePublisherInput from '$lib/components/form/release/ReleasePublisherInput.svelte';
 	import TitlesInput from '$lib/components/form/book/TitlesInput.svelte';
+	import { run } from 'svelte/legacy';
 
-	export let addForm: SuperValidated<Infer<typeof scrapedBookDataSchema>>;
+	interface Props {
+		addForm: SuperValidated<Infer<typeof scrapedBookDataSchema>>;
+	}
 
+	let { addForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(addForm, {
 		dataType: 'json',
 		onUpdate({ form: f }) {
@@ -37,11 +43,11 @@
 
 	const { form, enhance, message, delayed, submitting, errors } = sForm;
 
-	$: {
+	run(() => {
 		if ($form.create_book === false) {
 			$form.create_series = false;
 		}
-	}
+	});
 </script>
 
 <!-- <SuperDebug data={$form} /> -->
@@ -100,7 +106,6 @@
 
 				<TextareaFieldMarkdown
 					form={sForm}
-					type="textarea"
 					field="description"
 					label="Description"
 					textareaRows={4}
@@ -110,7 +115,6 @@
 
 				<TextareaFieldMarkdown
 					form={sForm}
-					type="textarea"
 					field="description_ja"
 					label="Description (Japanese)"
 					textareaRows={4}
@@ -228,7 +232,6 @@
 
 	<TextareaFieldMarkdown
 		form={sForm}
-		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}

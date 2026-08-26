@@ -16,10 +16,15 @@
 		romaji?: string | null;
 	};
 
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathType<T, F> extends Title[] ? F : never;
-	export let label: string | null = null;
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathType<T, F> extends Title[] ? F : never;
+		label?: string | null;
+	}
 
+	let { form, field, label = null }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, field) as unknown as ArrayProxy<Title>;
 
 	function handleRemoveTitle(index: number) {
@@ -77,7 +82,7 @@
 				<button
 					type="button"
 					class="sub-btn"
-					on:click={() => {
+					onclick={() => {
 						handleRemoveTitle(i);
 					}}>Remove title</button
 				>
@@ -92,7 +97,7 @@
 	{/each}
 	<select
 		aria-label="add title"
-		on:change={handleAddTitle}
+		onchange={handleAddTitle}
 		class="input w-fit"
 		name="add-titles"
 		id="add-titles"

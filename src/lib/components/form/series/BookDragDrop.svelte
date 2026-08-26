@@ -9,12 +9,16 @@
 	import { seriesBookTypeArray } from '$lib/db/dbConsts';
 	import { arrayProxy, type Infer, type SuperForm } from 'sveltekit-superforms';
 
-	export let form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+	interface Props {
+		form: SuperForm<Infer<typeof seriesSchema>, App.Superforms.Message>;
+		remove: (index: number) => void;
+		updateSortOrder: () => void;
+	}
 
+	let { form, remove, updateSortOrder }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { values, errors, valueErrors } = arrayProxy(form, 'books');
-
-	export let remove: (index: number) => void;
-	export let updateSortOrder: () => void;
 
 	async function swap<T>(arr: T[], indexL: number, indexR: number, direction: 'up' | 'down') {
 		if (indexL < 0 || indexR < 0) return;
@@ -28,7 +32,7 @@
 		// so we need to manually focus the button
 		if (direction === 'up') {
 			await tick();
-			const button = bookList.querySelector<HTMLButtonElement>(
+			const button = bookList?.querySelector<HTMLButtonElement>(
 				`button[data-index="${indexL - 1}"]`,
 			);
 			if (button) {
@@ -37,10 +41,10 @@
 		}
 	}
 
-	let dragging = false;
-	let currentDragIndex = 0;
-	let currentHoverIndex = 0;
-	let currentHover: HTMLElement;
+	let dragging = $state(false);
+	let currentDragIndex = $state(0);
+	let currentHoverIndex = $state(0);
+	let currentHover: HTMLElement | undefined = $state();
 
 	function dragList(node: HTMLDivElement) {
 		function reorderItem() {
@@ -63,7 +67,7 @@
 			},
 		};
 	}
-	let bookList: HTMLDivElement;
+	let bookList: HTMLDivElement | undefined = $state();
 </script>
 
 <div use:dragList class="flex flex-col gap-2" bind:this={bookList}>
@@ -101,7 +105,7 @@
 						<button
 							class="btn rounded-full"
 							disabled={index === 0}
-							on:click={() => {
+							onclick={() => {
 								swap($values, index, index - 1, 'up');
 							}}
 							type="button"
@@ -111,7 +115,7 @@
 						<button
 							class="btn rounded-full"
 							disabled={index === $values.length - 1}
-							on:click={() => {
+							onclick={() => {
 								swap($values, index, index + 1, 'down');
 							}}
 							type="button"
@@ -120,7 +124,7 @@
 
 						<button
 							class="btn rounded-full"
-							on:click={() => {
+							onclick={() => {
 								remove(index);
 								updateSortOrder();
 							}}

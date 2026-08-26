@@ -6,7 +6,13 @@
 	import StaffFilters from './staff/StaffFilters.svelte';
 	import type { staffPublisherFilters } from '$lib/server/zod/schema';
 
-	export let filtersForm: SuperValidated<Infer<typeof staffPublisherFilters>>;
+	interface Props {
+		filtersForm: SuperValidated<Infer<typeof staffPublisherFilters>>;
+	}
+
+	let { filtersForm }: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const sForm = superForm(filtersForm, { dataType: 'json' });
 </script>
 

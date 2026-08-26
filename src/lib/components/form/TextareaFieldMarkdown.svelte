@@ -1,26 +1,41 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	type Rec = Record<string, unknown>;
 </script>
 
 <script lang="ts" generics="T extends Rec">
 	import MarkdownToHtml from '../markdown/MarkdownToHtml.svelte';
-
 	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
-	export let form: SuperForm<T, App.Superforms.Message>;
-	export let field: FormPathLeaves<T>;
-	export let label: string = '';
-	export let placeholder: string = '';
-	export let showRequiredSymbolIfRequired: boolean = true;
-	export let textareaRows: number = 10;
-	export let textareaCols: number = 30;
-	export let resetPadding: boolean = false;
-	export let disabled: boolean = false;
-	export let labelId: string;
+	interface Props {
+		form: SuperForm<T, App.Superforms.Message>;
+		field: FormPathLeaves<T>;
+		label?: string;
+		placeholder?: string;
+		showRequiredSymbolIfRequired?: boolean;
+		textareaRows?: number;
+		textareaCols?: number;
+		resetPadding?: boolean;
+		disabled?: boolean;
+		labelId: string;
+	}
 
+	let {
+		form,
+		field,
+		label = '',
+		placeholder = '',
+		showRequiredSymbolIfRequired = true,
+		textareaRows = 10,
+		textareaCols = 30,
+		resetPadding = false,
+		disabled = false,
+		labelId,
+		...rest
+	}: Props = $props();
+
+	// svelte-ignore state_referenced_locally
 	const { value, errors, constraints } = formFieldProxy(form, field);
-
-	let view: 'edit' | 'preview' = 'edit';
+	let view: 'edit' | 'preview' = $state('edit');
 </script>
 
 <div class="flex flex-col">
@@ -36,7 +51,7 @@
 				class:active={view === 'edit'}
 				type="button"
 				class="view-button"
-				on:click={() => {
+				onclick={() => {
 					view = 'edit';
 				}}>Markdown</button
 			>
@@ -44,7 +59,7 @@
 				class:active={view === 'preview'}
 				type="button"
 				class="view-button"
-				on:click={() => {
+				onclick={() => {
 					view = 'preview';
 				}}>Preview</button
 			>
@@ -64,7 +79,7 @@
 			aria-invalid={$errors ? 'true' : undefined}
 			bind:value={$value}
 			{...$constraints}
-			{...$$restProps}></textarea>
+			{...rest}></textarea>
 	{:else}
 		<div class="markdown-output">
 			<MarkdownToHtml markdown={$value?.toString() || 'Nothing to preview'} type="full" />
