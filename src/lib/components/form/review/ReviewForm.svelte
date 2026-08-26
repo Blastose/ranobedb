@@ -94,7 +94,6 @@
 
 		<TextareaFieldMarkdown
 			form={sForm}
-			type="textarea"
 			field="review_text"
 			label="Review"
 			textareaRows={12}

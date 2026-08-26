@@ -177,7 +177,6 @@
 
 	<TextareaFieldMarkdown
 		form={sForm}
-		type="textarea"
 		field="description"
 		label="Note"
 		textareaRows={4}
@@ -194,7 +193,6 @@
 
 	<TextareaFieldMarkdown
 		form={sForm}
-		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}

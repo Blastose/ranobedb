@@ -106,7 +106,6 @@
 
 				<TextareaFieldMarkdown
 					form={sForm}
-					type="textarea"
 					field="description"
 					label="Description"
 					textareaRows={4}
@@ -116,7 +115,6 @@
 
 				<TextareaFieldMarkdown
 					form={sForm}
-					type="textarea"
 					field="description_ja"
 					label="Description (Japanese)"
 					textareaRows={4}
@@ -234,7 +232,6 @@
 
 	<TextareaFieldMarkdown
 		form={sForm}
-		type="textarea"
 		field="comment"
 		label="Edit summary"
 		textareaRows={4}
