@@ -90,7 +90,7 @@
 					{#if user}
 						<!-- This div is needed to prevent the flex from above because the BookModal component has a portal -->
 						<!-- so it will generate an empty gap space before hydration -->
-						<div class="w-full">
+						<div class="flex w-full justify-center">
 							<BookModal {userListForm} {book} allCustLabels={allCustLabels ?? []} />
 						</div>
 					{:else}

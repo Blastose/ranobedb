@@ -95,7 +95,9 @@
 			<SeriesModal {series} {userListSeriesForm} allCustLabels={allCustLabels ?? []} />
 
 			{#if userListBookBatchForm && userListSeriesForm.data.labels.at(0)?.id}
-				<SeriesBatchBookModal {series} {userListBookBatchForm} />
+				<div class="flex justify-center sm:justify-normal">
+					<SeriesBatchBookModal {series} {userListBookBatchForm} />
+				</div>
 			{/if}
 		{:else}
 			<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl(page.url, '/login')}
