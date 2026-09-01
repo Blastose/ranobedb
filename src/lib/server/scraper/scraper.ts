@@ -38,7 +38,7 @@ export abstract class BookScraper {
 		});
 
 		if (response.status !== 200) {
-			throw new Error('URL is not valid');
+			throw new Error(`Failed to fetch BookWalker page (HTTP ${response.status})`);
 		}
 
 		return await response.text();

@@ -1,5 +1,6 @@
 import { BookScraper, type BookData } from '../scraper';
 import { scrapeBW } from './scraper';
+import { fromBwApi } from './scraper-api';
 import { db } from '$lib/server/db/db';
 import { scrapedBookDataSchema } from '$lib/server/zod/schema';
 import { z } from 'zod/v4';
@@ -13,7 +14,7 @@ export const bookWalkerScraperUrlSchema = z.object({
 				// We use .refine instead of .regex because SuperForms passes in the pattern to the input component and we don't want that since
 				// the browser now handles the regex condition and is not consistent across browsers
 				return v.match(
-					/^https:\/\/bookwalker\.jp\/de[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\/?$/,
+					/^https:\/\/(?:r18\.)?bookwalker\.jp\/de[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}\/?$/,
 				);
 			},
 			{ error: 'URL must match https://bookwalker.jp/de{BookWalker ID}/' },
@@ -22,7 +23,20 @@ export const bookWalkerScraperUrlSchema = z.object({
 
 export class BookWalkerScraper extends BookScraper {
 	protected async parse(html: string): Promise<BookData> {
-		const data = scrapeBW(html);
+		let data;
+		try {
+			data = scrapeBW(html);
+		} catch (e) {
+			if (e instanceof Error && !e.message.startsWith('Book category')) {
+				const id = this.url.match(/\/de([a-z0-9-]+)\/?$/)?.[1];
+				if (!id) {
+					throw new Error('Could not extract BookWalker ID from URL');
+				}
+				data = await fromBwApi(id);
+			} else {
+				throw e;
+			}
+		}
 
 		const editions: BookData['editions'] = [
 			{

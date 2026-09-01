@@ -774,7 +774,11 @@ export const scrapedBookDataSchema = z.object({
 	description: zDescription,
 	description_ja: zDescription,
 	use_img: z.boolean().default(true).optional(),
-	img_url: zLink(['rimg.bookwalker.jp', 'www.amazon.co.jp']),
+	img_url: zLink([
+		'rimg.bookwalker.jp',
+		'www.amazon.co.jp',
+		'bwcommercial-external-images.s3.amazonaws.com',
+	]),
 
 	title: z.string().trim().max(2000),
 	romaji: zRomaji,
