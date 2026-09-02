@@ -49,6 +49,9 @@
 					handleRemove={() => {
 						handleRemoveTag(i);
 					}}
+					handleUpdate={() => {
+						$values = $values;
+					}}
 				/>
 			{:else}
 				<p class="text-sm italic">No tags selected</p>
