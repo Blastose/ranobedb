@@ -137,7 +137,7 @@ CREATE TABLE public.auth_user (
     id text NOT NULL PRIMARY KEY,
     username text NOT NULL UNIQUE,
     username_lowercase text NOT NULL UNIQUE,
-    display_prefs JSONB NOT NULL DEFAULT '{"names": "romaji","title_prefs": [ { "lang": "en", "romaji": false, "official": "official" }, { "lang": "ja", "romaji": true, "official": "official" } ],"descriptions": "en","label_badge_display": true}'::jsonb,
+    display_prefs JSONB NOT NULL DEFAULT '{"names": "romaji","title_prefs": [ { "lang": "en", "romaji": false, "official": "official" }, { "lang": "ja", "romaji": true, "official": "official" } ],"descriptions": "en","label_badge_display": true,"show_nsfw": false}'::jsonb,
     behavior_settings JSONB NOT NULL DEFAULT '{"reading_dates":{"auto_fill_finished_date":false,"auto_fill_started_date":false,"clear_dates_plan_to_read":false,"clear_dates_stalled_dropped_other":false}}'::jsonb,
     profile_image_id integer,
     home_display_settings JSONB NOT NULL DEFAULT '{"header": true, "popular_series": true, "reviews": true, "upcoming_releases": true, "recently_released": true, "seasonal_anime": true, "annoucements": true, "recent_changes": true, "newly_licensed_en": true}'::jsonb,

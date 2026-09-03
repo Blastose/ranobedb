@@ -1,30 +1,20 @@
 <script lang="ts">
 	import type { Book } from '$lib/server/db/books/books';
-	import { PUBLIC_IMAGE_URL } from '$env/static/public';
 	import TitleDisplay from '../display/TitleDisplay.svelte';
-	import { getDisplayPrefsContext } from '$lib/display/prefs';
+	import Cover from '$lib/components/image/Cover.svelte';
 
 	interface Props {
 		book: Book;
 	}
 
 	let { book }: Props = $props();
-
-	const displayPrefs = getDisplayPrefsContext();
 </script>
 
 <div class="rounded-lg bg-[var(--bg-light1)] p-2 shadow-sm dark:bg-[var(--bg-dark1)]">
 	<div class="title-container">
 		{#if book.image}
 			<a href="/book/{book.id}">
-				<img
-					width={book.image.width}
-					height={book.image.height}
-					class="img rounded-md shadow-sm"
-					src="{PUBLIC_IMAGE_URL}{book.image.filename}"
-					alt=""
-					loading="lazy"
-				/>
+				<Cover image={book.image} useDefaultCoverAspectRatio={true} />
 			</a>
 		{:else}
 			<div></div>

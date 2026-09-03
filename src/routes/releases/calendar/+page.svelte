@@ -104,7 +104,7 @@
 						{#each releases as release}
 							{@const releaseDate = new DateNumber(release.release_date).getDateFormatted()}
 							<a href="/release/{release.id}" class="flex flex-col gap-1">
-								<Cover obj={release}>
+								<Cover image={release.image} useDefaultCoverAspectRatio={true}>
 									<BookImageBadge badges={[releaseDate]} />
 									<BookImageBadge badges={[release.format]} location="bottom-right" />
 								</Cover>

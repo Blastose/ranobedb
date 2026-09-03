@@ -32,9 +32,9 @@
 					<div class="pt-1">
 						<a href="/{itemType}/{item.id}">
 							{#if items.type === 'book'}
-								<Cover obj={items.items[idx]} />
+								<Cover image={items.items[idx].image} />
 							{:else}
-								<Cover obj={items.items[idx].book} />
+								<Cover image={items.items[idx].book?.image} />
 							{/if}
 						</a>
 					</div>

@@ -8,7 +8,7 @@ import { staffRolesArray } from '$lib/db/dbConsts';
 
 const zStaffRole = z.enum(staffRolesArray).catch('staff');
 
-const zBwBook = z.object({
+export const zBwBook = z.object({
 	id: z.string(),
 	url: z.string(),
 	title: z.string(),
@@ -362,7 +362,7 @@ function parseOneStaff(staff: { text: string; url: string | null }): BwStaff[] {
 		...ps,
 	];
 }
-function parseStaff(
+export function parseStaff(
 	strs: {
 		text: string;
 		url: string | null;
@@ -397,10 +397,10 @@ function parseBwDate(date: string | null) {
 	return `${year}-${formatMonthDay(month)}-${formatMonthDay(day)}`;
 }
 
-function convertDateToDateNumber(date: string): number;
-function convertDateToDateNumber(date: null): null;
-function convertDateToDateNumber(date: string | null): number | null;
-function convertDateToDateNumber(date: string | null): number | null {
+export function convertDateToDateNumber(date: string): number;
+export function convertDateToDateNumber(date: null): null;
+export function convertDateToDateNumber(date: string | null): number | null;
+export function convertDateToDateNumber(date: string | null): number | null {
 	if (!date) return null;
 	return parseInt(date.split('-').join('') ?? '');
 }
@@ -521,7 +521,9 @@ export function scrapeBW(text: string) {
 
 	const goodCategories = ['ライトノベル', '新文芸', '文芸・小説', 'マンガ'];
 	if (category && !goodCategories.includes(category)) {
-		throw new Error('Book category is not valid');
+		throw new Error(
+			`Book category ${category} is not valid; must be one of ${goodCategories.join(', ')}`,
+		);
 	}
 
 	haishinkaishi = parseBwDate(haishinkaishi);

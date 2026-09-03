@@ -501,6 +501,7 @@ export const bookSchema = z.object({
 		// }, 'Image dimensions must be less than 10000 x 10000')
 		.nullish(),
 	image_id_manual: z.string().max(20).optional(),
+	image_nsfw: z.boolean().optional(),
 	comment: zComment,
 });
 
@@ -774,7 +775,12 @@ export const scrapedBookDataSchema = z.object({
 	description: zDescription,
 	description_ja: zDescription,
 	use_img: z.boolean().default(true).optional(),
-	img_url: zLink(['rimg.bookwalker.jp', 'www.amazon.co.jp']),
+	image_nsfw: z.boolean().optional(),
+	img_url: zLink([
+		'rimg.bookwalker.jp',
+		'www.amazon.co.jp',
+		'bwcommercial-external-images.s3.amazonaws.com',
+	]),
 
 	title: z.string().trim().max(2000),
 	romaji: zRomaji,
@@ -832,6 +838,7 @@ export const displayPrefsSchema = z.object({
 	names: z.enum(['romaji', 'native'] as const),
 	descriptions: z.enum(['en', 'ja'] as const),
 	label_badge_display: z.boolean().default(true),
+	show_nsfw: z.boolean().default(false),
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
 
@@ -889,6 +896,10 @@ export const privacySettingsSchema = z.object({
 	private: z.boolean().default(false),
 });
 export type PrivacySettings = z.infer<typeof privacySettingsSchema>;
+
+export const imageContentsSchema = z.object({
+	nsfw: z.boolean().default(false),
+});
 
 // Url searchparams schemas
 export const historyFiltersSchema = z.object({

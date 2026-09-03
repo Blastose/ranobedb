@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onNavigate } from '$app/navigation';
-	import { buildImageUrl } from '$lib/components/book/book';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { clickOutside } from '$lib/utils/actions';
 	import { search } from '$lib/components/layout/header/search.js';
@@ -9,6 +8,7 @@
 	import { DateNumber } from '$lib/components/form/release/releaseDate';
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import { onMount } from 'svelte';
+	import Cover from '$lib/components/image/Cover.svelte';
 
 	let debounceTimer: ReturnType<typeof setTimeout>;
 	let loading = $state(false);
@@ -106,18 +106,12 @@
 								<a href="/series?q={encodeURIComponent(inputValue)}" class="link">View all</a>
 							</div>
 							{#each items.series.series as series}
-								{@const imageUrl = buildImageUrl(series.book?.image?.filename)}
 								<a href="/series/{series.id}" class="results-item">
 									{#if series.book?.image}
 										{#key series.book.image.id}
-											<img
-												width={series.book.image.width}
-												height={series.book.image.height}
-												class="h-fit max-w-[48px] rounded-md shadow-sm sm:max-w-[56px]"
-												src={imageUrl}
-												alt=""
-												loading="lazy"
-											/>
+											<div class="w-[48px] shrink-0 sm:w-[56px]">
+												<Cover image={series.book.image} />
+											</div>
 										{/key}
 									{/if}
 									<div class="flex flex-col text-sm sm:text-base">
@@ -137,18 +131,12 @@
 								<a href="/books?q={encodeURIComponent(inputValue)}" class="link">View all</a>
 							</div>
 							{#each items.books.books as book}
-								{@const imageUrl = buildImageUrl(book.image?.filename)}
 								<a href="/book/{book.id}" class="results-item">
 									{#if book.image}
 										{#key book.image.id}
-											<img
-												width={book.image.width}
-												height={book.image.height}
-												class="h-fit max-w-[48px] rounded-md shadow-sm sm:max-w-[56px]"
-												src={imageUrl}
-												alt=""
-												loading="lazy"
-											/>
+											<div class="w-[48px] shrink-0 sm:w-[56px]">
+												<Cover image={book.image} />
+											</div>
 										{/key}
 									{/if}
 									<div class="flex flex-col text-sm sm:text-base">
@@ -168,18 +156,12 @@
 								<a href="/releases?q={encodeURIComponent(inputValue)}" class="link">View all</a>
 							</div>
 							{#each items.releases.releases as release}
-								{@const imageUrl = buildImageUrl(release.image?.filename)}
 								<a href="/release/{release.id}" class="results-item">
 									{#if release.image}
 										{#key release.image.id}
-											<img
-												width={release.image.width}
-												height={release.image.height}
-												class="h-fit max-w-[48px] rounded-md shadow-sm sm:max-w-[56px]"
-												src={imageUrl}
-												alt=""
-												loading="lazy"
-											/>
+											<div class="w-[48px] shrink-0 sm:w-[56px]">
+												<Cover image={release.image} />
+											</div>
 										{/key}
 									{/if}
 									<div class="flex flex-col text-sm sm:text-base">

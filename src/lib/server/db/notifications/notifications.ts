@@ -47,7 +47,7 @@ export class Notifications {
 				jsonObjectFrom(
 					eb
 						.selectFrom('image')
-						.select(['image.filename'])
+						.select(['image.filename', 'image.nsfw', 'image.width', 'image.height'])
 						.innerJoin('release_book', 'notification.item_id', 'release_book.release_id')
 						.innerJoin('book', 'book.id', 'release_book.book_id')
 						.whereRef('image.id', '=', 'book.image_id')

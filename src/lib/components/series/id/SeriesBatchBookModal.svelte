@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import Cover from '$lib/components/image/Cover.svelte';
 	import { Dialog } from 'bits-ui';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { fade, fly } from 'svelte/transition';
@@ -145,16 +145,7 @@
 															}}
 														>
 															{#if book.image}
-																<span class="relative block">
-																	<img
-																		width={book?.image?.width}
-																		height={book?.image?.height}
-																		src="{PUBLIC_IMAGE_URL}{book?.image?.filename}"
-																		alt=""
-																		class="rounded-md object-cover"
-																		style="aspect-ratio: 0.70381231671554252199413489736072;"
-																		loading="lazy"
-																	/>
+																<Cover image={book.image}>
 																	{#if checked}
 																		<span class="absolute top-0 block">
 																			<Icon
@@ -165,7 +156,7 @@
 																			/>
 																		</span>
 																	{/if}
-																</span>
+																</Cover>
 															{:else}
 																<span class="flex h-full items-center justify-center"
 																	><Icon name="book" height="24" width="24" /></span

@@ -130,6 +130,7 @@ export async function addFromScrapedBookData(params: {
 						c_release_date: data.release_date,
 						olang: 'ja',
 						image: img_buffer,
+						image_nsfw: data.image_nsfw,
 					} satisfies z.infer<typeof bookSchema>),
 				},
 				params.user,

@@ -2,6 +2,7 @@
 	import Description from '$lib/components/book/Description.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import type { BookReview } from '$lib/server/db/reviews/reviews';
+	import Cover from '$lib/components/image/Cover.svelte';
 	import MarkdownToHtml from '../markdown/MarkdownToHtml.svelte';
 
 	interface Props {
@@ -9,7 +10,7 @@
 		itemType: 'book' | 'series';
 		singleReview?: boolean;
 		itemTitle?: string | undefined;
-		imageUrl?: string | null;
+		image?: { width: number; height: number; filename: string; nsfw: boolean } | null;
 	}
 
 	let {
@@ -17,16 +18,16 @@
 		itemType,
 		singleReview = false,
 		itemTitle = undefined,
-		imageUrl = null,
+		image = null,
 	}: Props = $props();
 
 	let showReview: boolean = $state(false);
 </script>
 
-<div class={imageUrl ? 'grid grid-cols-[64px_1fr] gap-x-4' : ''}>
-	{#if imageUrl}
+<div class={image ? 'grid grid-cols-[64px_1fr] gap-x-4' : ''}>
+	{#if image}
 		<div class="pt-1">
-			<img class="rounded-md" src={imageUrl} height="340" width="200" alt="" />
+			<Cover {image} />
 		</div>
 	{/if}
 	<div class="flex flex-col gap-2">

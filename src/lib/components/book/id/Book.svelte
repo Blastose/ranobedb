@@ -26,6 +26,8 @@
 	import UserStats from '$lib/components/shared/UserStats.svelte';
 	import Rating from '$lib/components/shared/Rating.svelte';
 	import { defaultUserListLabelsCssClass } from '$lib/utils/colors';
+	import { hasEditPerms } from '$lib/db/permissions';
+	import Cover from '$lib/components/image/Cover.svelte';
 
 	interface Props {
 		book: BookOne;
@@ -71,14 +73,18 @@
 			<div class="flex flex-col items-center gap-4">
 				{#if book.image}
 					{#key book.image.id}
-						<img
-							width={book.image.width}
-							height={book.image.height}
-							class="h-fit max-w-[196px] rounded-md shadow-sm @sm:max-w-[150px] @md:max-w-[200px]"
-							src={imageUrl}
-							alt=""
-							loading="lazy"
-						/>
+						<div class="w-full max-w-[196px] @sm:max-w-[150px] @md:max-w-[200px]">
+							<Cover image={book.image} revealable={true}>
+								{#if hasEditPerms(user)}
+									<a
+										href="/image/{book.image.id}"
+										class="absolute bottom-2 left-2 rounded-md bg-black/50 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100"
+									>
+										Edit image
+									</a>
+								{/if}
+							</Cover>
+						</div>
 					{/key}
 				{:else}
 					<div class="h-[320px] w-[240px] rounded-md bg-neutral-500">

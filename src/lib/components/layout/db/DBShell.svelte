@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import Keyed from '$lib/components/form/Keyed.svelte';
 	import SearchInput from '$lib/components/form/SearchInput.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
@@ -54,7 +55,9 @@
 			<div class="flex flex-col gap-2">
 				<SearchInput {inputPlaceholder} ariaLabel={inputPlaceholder} />
 
-				{@render filters?.()}
+				<Keyed>
+					{@render filters?.()}
+				</Keyed>
 
 				<div class="flex gap-4">
 					<div class="w-fit">

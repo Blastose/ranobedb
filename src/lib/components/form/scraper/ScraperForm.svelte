@@ -134,6 +134,14 @@
 					<div class="flex flex-col gap-2">
 						<img src={$form.img_url} alt="" width="120" />
 						<CheckboxField form={sForm} field={'use_img'} label="Use image" />
+						{#if $form.use_img}
+							<CheckboxField
+								form={sForm}
+								field={'image_nsfw'}
+								label="Mark image as NSFW"
+								showRequiredSymbolIfRequired={false}
+							/>
+						{/if}
 					</div>
 				</section>
 			</div>
