@@ -348,6 +348,7 @@ export const defaultDisplayPrefs: DisplayPrefs = {
 	title_prefs: defaultLangPrio,
 	descriptions: 'en',
 	label_badge_display: true,
+	show_nsfw: false,
 };
 
 export const staffTabs = ['series', 'books'] as const;

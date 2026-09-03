@@ -95,7 +95,7 @@ export class DBBookActions {
 					.values({
 						filename: generateNanoid() + '.jpg',
 						height: height,
-						nsfw: false,
+						nsfw: data.book.image_nsfw ?? false,
 						spoiler: true,
 						width: width,
 					})
@@ -263,7 +263,7 @@ export class DBBookActions {
 					.values({
 						filename: generateNanoid() + '.jpg',
 						height: height,
-						nsfw: false,
+						nsfw: data.book.image_nsfw ?? false,
 						spoiler: true,
 						width: width,
 					})

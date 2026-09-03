@@ -32,7 +32,7 @@
 					href="/{reviews.type}/{review.item_id}"
 					aria-label={getTitleDisplay({ obj: review.obj!, prefs: $displayPrefs.title_prefs })}
 				>
-					<Cover obj={review.obj!}></Cover>
+					<Cover image={review.obj!.image} useDefaultCoverAspectRatio={true}></Cover>
 				</a>
 				<div>
 					<p>

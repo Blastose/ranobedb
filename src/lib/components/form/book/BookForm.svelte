@@ -20,6 +20,7 @@
 	import { buildImageUrl } from '$lib/components/book/book';
 	import TextField from '../TextField.svelte';
 	import TitlesInput from './TitlesInput.svelte';
+	import CheckboxField from '../CheckboxField.svelte';
 
 	interface Props {
 		book: BookEdit | undefined;
@@ -159,6 +160,14 @@
 							clearFileInput();
 						}}>Remove uploaded file</button
 					>
+				</div>
+				<div class="pt-1">
+					<CheckboxField
+						form={sForm}
+						field="image_nsfw"
+						label="Mark image as NSFW"
+						showRequiredSymbolIfRequired={false}
+					/>
 				</div>
 			{/if}
 

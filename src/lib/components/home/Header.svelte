@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import Cover from '$lib/components/image/Cover.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs';
 	import type { PageProps } from '../../../routes/$types';
@@ -45,34 +45,18 @@
 
 	<div class="hidden @md:block">
 		<div class="grid items-center gap-1 @md:grid-cols-1 @lg:grid-cols-2">
-			{#if series_img_1}
-				<a href="/series/{series_img_1.id}"
-					><img
-						loading="lazy"
-						width={series_img_1.book?.image?.width}
-						height={series_img_1.book?.image?.height}
-						class="hidden rotate-[-3deg] rounded-md @lg:block"
-						src="{PUBLIC_IMAGE_URL}{series_img_1.book?.image?.filename}"
-						alt="Cover image for {getTitleDisplay({
-							obj: series_img_1,
-							prefs: $displayPrefs.title_prefs,
-						})}"
-					/>
+			{#if series_img_1?.book?.image}
+				<a href="/series/{series_img_1.id}">
+					<div class="hidden rotate-[-3deg] @lg:block">
+						<Cover image={series_img_1.book.image} />
+					</div>
 				</a>
 			{/if}
-			{#if series_img_2}
+			{#if series_img_2?.book?.image}
 				<a href="/series/{series_img_2.id}">
-					<img
-						loading="lazy"
-						width={series_img_2.book?.image?.width}
-						height={series_img_2.book?.image?.height}
-						class="rotate-[3deg] rounded-md"
-						src="{PUBLIC_IMAGE_URL}{series_img_2.book?.image?.filename}"
-						alt="Cover image for {getTitleDisplay({
-							obj: series_img_2,
-							prefs: $displayPrefs.title_prefs,
-						})}"
-					/>
+					<div class="rotate-[3deg]">
+						<Cover image={series_img_2.book.image} />
+					</div>
 				</a>
 			{/if}
 		</div>

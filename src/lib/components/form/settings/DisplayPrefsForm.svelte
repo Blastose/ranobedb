@@ -99,5 +99,22 @@
 		</div>
 	</div>
 
+	<div>
+		<h3 class="text-lg font-bold">NSFW images</h3>
+		<p class="text-sm">
+			When disabled, NSFW images will be blurred by default. You can click to reveal them on the
+			book detail page.
+		</p>
+
+		<div class="w-fit">
+			<CheckboxField
+				form={sForm}
+				field={'show_nsfw'}
+				label="Show NSFW images by default"
+				showRequiredSymbolIfRequired={false}
+			/>
+		</div>
+	</div>
+
 	<SubmitButton delayed={$delayed} submitting={$submitting} text={'Save preferences'} />
 </form>

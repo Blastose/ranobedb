@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_IMAGE_URL } from '$env/static/public';
+	import Cover from '$lib/components/image/Cover.svelte';
 	import ReleaseOptions from '$lib/components/book/id/ReleaseOptions.svelte';
 	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
@@ -52,14 +52,7 @@
 						{#if book.image}
 							<a class="mt-1" href="/book/{book.id}">
 								{#key book.id}
-									<img
-										width={book.image.width}
-										height={book.image.height}
-										class="img rounded-md shadow-sm"
-										src="{PUBLIC_IMAGE_URL}{book.image.filename}"
-										alt=""
-										loading="lazy"
-									/>
+									<Cover image={book.image} />
 								{/key}
 							</a>
 						{:else}
