@@ -122,6 +122,7 @@ export interface AuthSession {
 
 export interface AuthUser {
 	display_prefs: Generated<Json>;
+	behavior_settings: Generated<Json>;
 	home_display_settings: Generated<Json>;
 	id: string;
 	id_numeric: Generated<number>;

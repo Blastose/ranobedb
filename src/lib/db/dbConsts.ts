@@ -5,7 +5,11 @@ import type {
 	PublisherRelType,
 	SeriesRelType,
 } from '$lib/server/db/dbTypes';
-import type { DisplayPrefs, UserListSeriesSettings } from '$lib/server/zod/schema';
+import type {
+	BehaviorSettings,
+	DisplayPrefs,
+	UserListSeriesSettings,
+} from '$lib/server/zod/schema';
 import type { LanguagePriority } from '$lib/server/zod/schema';
 
 export const languagesArray = [
@@ -351,6 +355,15 @@ export const defaultDisplayPrefs: DisplayPrefs = {
 	show_nsfw: false,
 };
 
+export const defaultBehaviorSettings: BehaviorSettings = {
+	reading_dates: {
+		auto_fill_finished_date: false,
+		auto_fill_started_date: false,
+		clear_dates_plan_to_read: false,
+		clear_dates_stalled_dropped_other: false,
+	},
+};
+
 export const staffTabs = ['series', 'books'] as const;
 export const staffTabsIconsMap: Record<(typeof staffTabs)[number], IconType> = {
 	books: 'book',
@@ -362,7 +375,15 @@ export const publisherTabsIconsMap: Record<(typeof publisherTabs)[number], IconT
 	series: 'bookshelf',
 	releases: 'file',
 };
-export const settingsTabs = ['account', 'privacy', 'display', 'list', 'email', 'picture'] as const;
+export const settingsTabs = [
+	'account',
+	'privacy',
+	'display',
+	'list',
+	'behavior',
+	'email',
+	'picture',
+] as const;
 export type SettingsTab = (typeof settingsTabs)[number];
 
 export const historyFilterChangeType = ['all', 'edit', 'add'] as const;

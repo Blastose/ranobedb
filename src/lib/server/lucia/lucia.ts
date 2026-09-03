@@ -3,7 +3,7 @@ import type { DB, UserRole } from '$lib/server/db/dbTypes';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import { sha256 } from '@oslojs/crypto/sha2';
 import type { RequestEvent } from '@sveltejs/kit';
-import type { DisplayPrefs } from '../zod/schema';
+import type { BehaviorSettings, DisplayPrefs } from '../zod/schema';
 import { getMode } from '$lib/mode/mode';
 import { generateRandomString } from '@oslojs/crypto/random';
 
@@ -82,6 +82,7 @@ export class Lucia {
 				'auth_session.user_id',
 				'auth_session.expires_at',
 				'auth_user.display_prefs',
+				'auth_user.behavior_settings',
 				'auth_user.username',
 				'auth_user.role',
 				'auth_user.private',
@@ -101,6 +102,7 @@ export class Lucia {
 		const user: User = {
 			id: auth_session_res.user_id,
 			display_prefs: auth_session_res.display_prefs,
+			behavior_settings: auth_session_res.behavior_settings,
 			id_numeric: auth_session_res.user_id_numeric,
 			role: auth_session_res.role,
 			username: auth_session_res.username,
@@ -164,6 +166,7 @@ export interface User {
 	id_numeric: number;
 	role: UserRole;
 	display_prefs: DisplayPrefs;
+	behavior_settings: BehaviorSettings;
 	profile_image_filename?: string | null;
 	private: boolean;
 }

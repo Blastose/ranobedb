@@ -1,6 +1,6 @@
-import { defaultDisplayPrefs } from '$lib/db/dbConsts';
+import { defaultBehaviorSettings, defaultDisplayPrefs } from '$lib/db/dbConsts';
 import type { Language } from '$lib/server/db/dbTypes';
-import type { DisplayPrefs, Nullish } from '$lib/server/zod/schema';
+import type { BehaviorSettings, DisplayPrefs, Nullish } from '$lib/server/zod/schema';
 import type { User } from '$lib/server/lucia/lucia';
 import { getContext } from 'svelte';
 import type { Writable } from 'svelte/store';
@@ -10,6 +10,13 @@ export function getDisplayPrefsContext() {
 }
 export function getDisplayPrefsUser(user: User | null) {
 	return user?.display_prefs ?? defaultDisplayPrefs;
+}
+
+export function getBehaviorSettingsContext() {
+	return getContext<Writable<BehaviorSettings>>('behaviorSettings');
+}
+export function getBehaviorSettingsUser(user: User | null) {
+	return user?.behavior_settings ?? defaultBehaviorSettings;
 }
 
 export type ReleaseTitle = {

@@ -5,7 +5,7 @@
 	import type { BookOne } from '$lib/server/db/books/books';
 	import type { userListBookSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
-	import { superForm } from 'sveltekit-superforms';
+	import { superForm, formFieldProxy } from 'sveltekit-superforms';
 	import TextField from '$lib/components/form/TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import { tick } from 'svelte';
@@ -16,6 +16,9 @@
 	import MultiSelectField from '$lib/components/form/MultiSelectField.svelte';
 	import { defaultUserListLabelsCssClass } from '$lib/utils/colors';
 	import LabelIcon from '$lib/components/icon/LabelIcon.svelte';
+	import type { ReadingStatus } from '$lib/server/db/dbTypes';
+	import { getBehaviorSettingsContext } from '$lib/display/prefs';
+	import { applyReadingStatusToForm } from '$lib/utils/autoFillDates';
 
 	interface Props {
 		book: BookOne;
@@ -54,6 +57,34 @@
 	});
 
 	const { form, enhance, delayed, submitting } = sForm;
+
+	const behaviorSettings = getBehaviorSettingsContext();
+
+	const startedField = formFieldProxy(sForm, 'started');
+	const finishedField = formFieldProxy(sForm, 'finished');
+
+	if ($form.type === 'add') {
+		applyReadingStatusToForm(
+			startedField,
+			finishedField,
+			$form.readingStatus,
+			false,
+			$behaviorSettings,
+		);
+	}
+
+	let prevStatus = $form.readingStatus;
+	function handleStatusChange(newStatus: ReadingStatus) {
+		if (newStatus === prevStatus) return;
+		prevStatus = newStatus;
+		applyReadingStatusToForm(
+			startedField,
+			finishedField,
+			newStatus,
+			$form.type === 'update',
+			$behaviorSettings,
+		);
+	}
 
 	let modalTitle = $derived(
 		$form.type === 'add' ? 'Add book to reading list' : 'Update book in reading list',
@@ -105,6 +136,7 @@
 													showRequiredSymbolIfRequired={false}
 													selectedValue={$form.readingStatus}
 													fit={false}
+													onChange={handleStatusChange}
 												/>
 												<TextField form={sForm} type="date" field="started" label="Started" />
 												<TextField form={sForm} type="date" field="finished" label="Finished" />

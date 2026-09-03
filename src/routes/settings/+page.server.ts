@@ -7,6 +7,7 @@ import {
 	changeEmailSchema,
 	deleteAccountSchema,
 	displayPrefsSchema,
+	behaviorSettingsSchema,
 	homeDisplaySettingsSchema,
 	passwordSchema,
 	privacySettingsSchema,
@@ -21,6 +22,7 @@ import {
 } from '$lib/server/zod/schema.js';
 import { username, password, delete_account } from './actions/account';
 import { displayprefs, homedisplaysettings, privacysettings } from './actions/display';
+import { behaviorprefs } from './actions/behavior';
 import { sendemailverificationcode, verifyemail, changeemail } from './actions/email';
 import {
 	serieslistsettings,
@@ -44,6 +46,7 @@ type SettingsWithUser = {
 	sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 	changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 	displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
+	behaviorPrefsForm: SuperValidated<Infer<typeof behaviorSettingsSchema>>;
 	profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
 	removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
 	userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
@@ -87,6 +90,10 @@ export const load = async ({ locals, url }) => {
 	const verifyEmailForm = await superValidate(zod4(verifyEmailSchema));
 	const sendEmailVerificationForm = await superValidate(zod4(sendEmailVerificationSchema));
 	const displayPrefsForm = await superValidate(locals.user.display_prefs, zod4(displayPrefsSchema));
+	const behaviorPrefsForm = await superValidate(
+		locals.user.behavior_settings,
+		zod4(behaviorSettingsSchema),
+	);
 	const profilePictureForm = await superValidate(
 		{ current_filename: locals.user.profile_image_filename },
 		zod4(profilePictureSchema),
@@ -149,6 +156,7 @@ export const load = async ({ locals, url }) => {
 		verifyEmailForm,
 		sendEmailVerificationForm,
 		displayPrefsForm,
+		behaviorPrefsForm,
 		userListSeriesSettingsForm,
 		profilePictureForm,
 		removeProfilePictureForm,
@@ -176,4 +184,5 @@ export const actions = {
 	homedisplaysettings,
 	refreshpat,
 	privacysettings,
+	behaviorprefs,
 } satisfies Actions;

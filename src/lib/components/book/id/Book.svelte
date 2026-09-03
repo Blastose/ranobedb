@@ -97,7 +97,9 @@
 						<!-- This div is needed to prevent the flex from above because the BookModal component has a portal -->
 						<!-- so it will generate an empty gap space before hydration -->
 						<div class="flex w-full justify-center">
-							<BookModal {userListForm} {book} allCustLabels={allCustLabels ?? []} />
+							{#key book.id}
+								<BookModal {userListForm} {book} allCustLabels={allCustLabels ?? []} />
+							{/key}
 						</div>
 					{:else}
 						<a class="primary-btn w-full max-w-xs" href={buildRedirectUrl(page.url, '/login')}

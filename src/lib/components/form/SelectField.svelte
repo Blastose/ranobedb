@@ -2,23 +2,23 @@
 	type Rec = Record<string, unknown>;
 </script>
 
-<script lang="ts" generics="T extends Rec">
+<script lang="ts" generics="T extends Rec, V extends string">
 	import { run } from 'svelte/legacy';
 	import { formFieldProxy, type SuperForm, type FormPathLeaves } from 'sveltekit-superforms';
 
-	type DropdownOption = { display: string; value: string };
+	type DropdownOption = { display: string; value: V };
 
 	interface Props {
 		form: SuperForm<T, App.Superforms.Message>;
 		field: FormPathLeaves<T>;
 		label?: string;
-		selectedValue: string;
+		selectedValue: V;
 		dropdownOptions: ReadonlyArray<DropdownOption>;
 		showRequiredSymbolIfRequired?: boolean;
 		resetPadding?: boolean;
 		fit: boolean;
 		column?: boolean;
-		onChange?: (newValue: unknown) => void;
+		onChange?: (newValue: V) => void;
 	}
 
 	let {
@@ -39,7 +39,7 @@
 	const { value, errors, constraints } = formFieldProxy(form, field);
 
 	run(() => {
-		onChange($value);
+		onChange($value as V);
 	});
 </script>
 
