@@ -9,7 +9,7 @@
 	import { page } from '$app/state';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import { getDisplayPrefsUser } from '$lib/display/prefs';
+	import { getBehaviorSettingsUser, getDisplayPrefsUser } from '$lib/display/prefs';
 	import Progress from '$lib/components/layout/Progress.svelte';
 	import { beforeNavigate } from '$app/navigation';
 	import { updated } from '$app/state';
@@ -53,6 +53,12 @@
 		displayPrefs.set(getDisplayPrefsUser(data.user));
 	});
 	setContext('displayPrefs', displayPrefs);
+
+	const behaviorSettings = writable();
+	run(() => {
+		behaviorSettings.set(getBehaviorSettingsUser(data.user));
+	});
+	setContext('behaviorSettings', behaviorSettings);
 
 	const sidebarOpen = writable<'open' | 'closed'>();
 	run(() => {

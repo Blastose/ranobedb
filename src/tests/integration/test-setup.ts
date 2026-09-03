@@ -3,7 +3,7 @@ import { sql, Kysely, PostgresDialect } from 'kysely';
 import type { User } from '$lib/server/lucia/lucia';
 import dotenv from 'dotenv';
 import pkg from 'pg';
-import { defaultDisplayPrefs } from '$lib/db/dbConsts';
+import { defaultBehaviorSettings, defaultDisplayPrefs } from '$lib/db/dbConsts';
 const { Pool } = pkg;
 
 dotenv.config({ path: '.env.testing' });
@@ -344,6 +344,7 @@ export const ranobeBot = {
 	id_numeric: 1,
 	role: 'admin',
 	display_prefs: defaultDisplayPrefs,
+	behavior_settings: defaultBehaviorSettings,
 	username: 'RanobeBot',
 	private: false,
 } satisfies User;

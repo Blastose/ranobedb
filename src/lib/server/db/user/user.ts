@@ -1,7 +1,11 @@
 import type { DB, UserListLabel } from '$lib/server/db/dbTypes';
-import { defaultDisplayPrefs, defaultUserListLabels } from '$lib/db/dbConsts';
+import {
+	defaultBehaviorSettings,
+	defaultDisplayPrefs,
+	defaultUserListLabels,
+} from '$lib/db/dbConsts';
 import type { Insertable, Kysely, Transaction } from 'kysely';
-import type { DisplayPrefs } from '$lib/server/zod/schema';
+import type { BehaviorSettings, DisplayPrefs } from '$lib/server/zod/schema';
 import { deletedUser } from './ranobebot';
 import type { User } from '$lib/server/lucia/lucia';
 import { hashPassword } from '$lib/server/password/hash';
@@ -100,6 +104,7 @@ export class DBUsers {
 				'auth_user.id_numeric',
 				'auth_user.role',
 				'auth_user.display_prefs',
+				'auth_user.behavior_settings',
 				'profile_image.filename as profile_image_filename',
 				'auth_user.private',
 			])
@@ -116,6 +121,7 @@ export class DBUsers {
 			id_numeric: record.id_numeric,
 			role: record.role,
 			display_prefs: record.display_prefs,
+			behavior_settings: record.behavior_settings,
 			profile_image_filename: record.profile_image_filename,
 			private: record.private,
 		};
@@ -190,6 +196,16 @@ export class DBUsers {
 			.execute();
 	}
 
+	async updateBehaviorSettings(params: { userId: string; behaviorSettings: BehaviorSettings }) {
+		await this.db
+			.updateTable('auth_user')
+			.set({
+				behavior_settings: JSON.stringify(params.behaviorSettings),
+			})
+			.where('auth_user.id', '=', params.userId)
+			.execute();
+	}
+
 	async getListPrefs(userId: string, trx?: Transaction<DB>) {
 		if (trx) {
 			return await trx
@@ -257,6 +273,7 @@ export const ranobeBot = {
 	id_numeric: 1,
 	role: 'admin',
 	display_prefs: defaultDisplayPrefs,
+	behavior_settings: defaultBehaviorSettings,
 	username: 'RanobeBot',
 	private: false,
 } satisfies User;

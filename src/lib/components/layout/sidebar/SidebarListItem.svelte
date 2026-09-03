@@ -28,7 +28,8 @@
 			| 'bell'
 			| 'post'
 			| 'imageFrame'
-			| 'lock';
+			| 'lock'
+			| 'behavior';
 	}
 
 	let { active, href, text, icon }: Props = $props();
@@ -80,6 +81,8 @@
 			<Icon name="imageFrame" />
 		{:else if icon === 'lock'}
 			<Icon name="lock" />
+		{:else if icon === 'behavior'}
+			<Icon name="tuneVariant" />
 		{/if}
 	</SidebarItem>
 </li>

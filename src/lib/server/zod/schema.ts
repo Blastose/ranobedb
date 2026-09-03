@@ -835,6 +835,16 @@ export const displayPrefsSchema = z.object({
 });
 export type DisplayPrefs = z.infer<typeof displayPrefsSchema>;
 
+export const behaviorSettingsSchema = z.object({
+	reading_dates: z.object({
+		auto_fill_finished_date: z.boolean().default(false),
+		auto_fill_started_date: z.boolean().default(false),
+		clear_dates_plan_to_read: z.boolean().default(false),
+		clear_dates_stalled_dropped_other: z.boolean().default(false),
+	}),
+});
+export type BehaviorSettings = z.infer<typeof behaviorSettingsSchema>;
+
 export const userListLabelsSchema = z.object({
 	labels: z
 		.array(

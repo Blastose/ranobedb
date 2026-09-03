@@ -92,7 +92,9 @@
 
 	{#if userListSeriesForm}
 		{#if user}
-			<SeriesModal {series} {userListSeriesForm} allCustLabels={allCustLabels ?? []} />
+			{#key series.id}
+				<SeriesModal {series} {userListSeriesForm} allCustLabels={allCustLabels ?? []} />
+			{/key}
 
 			{#if userListBookBatchForm && userListSeriesForm.data.labels.at(0)?.id}
 				<div class="flex justify-center sm:justify-normal">

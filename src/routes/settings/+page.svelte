@@ -22,6 +22,7 @@
 			verifyEmailForm={data.verifyEmailForm}
 			sendEmailVerificationForm={data.sendEmailVerificationForm}
 			displayPrefsForm={data.displayPrefsForm}
+			behaviorPrefsForm={data.behaviorPrefsForm}
 			userListSeriesSettingsForm={data.userListSeriesSettingsForm}
 			profilePictureForm={data.profilePictureForm}
 			removeProfilePictureForm={data.removeProfilePictureForm}

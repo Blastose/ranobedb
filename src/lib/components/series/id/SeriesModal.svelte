@@ -4,7 +4,7 @@
 	import { fade, fly } from 'svelte/transition';
 	import type { userListSeriesSchema } from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
-	import { superForm } from 'sveltekit-superforms';
+	import { superForm, formFieldProxy } from 'sveltekit-superforms';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import { tick } from 'svelte';
 	import { addToast } from '$lib/components/toast/Toaster.svelte';
@@ -23,6 +23,9 @@
 	import CheckboxField from '$lib/components/form/CheckboxField.svelte';
 	import LabelIcon from '$lib/components/icon/LabelIcon.svelte';
 	import { defaultUserListLabelsCssClass } from '$lib/utils/colors';
+	import type { ReadingStatus } from '$lib/server/db/dbTypes';
+	import { applyReadingStatusToForm } from '$lib/utils/autoFillDates';
+	import { getBehaviorSettingsContext } from '$lib/display/prefs';
 
 	interface Props {
 		series: Series;
@@ -61,6 +64,35 @@
 	});
 
 	const { form, enhance, delayed, submitting } = sForm;
+
+	const behaviorSettings = getBehaviorSettingsContext();
+
+	const startedField = formFieldProxy(sForm, 'started');
+	const finishedField = formFieldProxy(sForm, 'finished');
+
+	if ($form.type === 'add') {
+		applyReadingStatusToForm(
+			startedField,
+			finishedField,
+			$form.readingStatus,
+			false,
+			$behaviorSettings,
+		);
+	}
+
+	let prevStatus = $form.readingStatus;
+	function handleStatusChange(newStatus: ReadingStatus) {
+		if (newStatus === prevStatus) return;
+		prevStatus = newStatus;
+
+		applyReadingStatusToForm(
+			startedField,
+			finishedField,
+			newStatus,
+			$form.type === 'update',
+			$behaviorSettings,
+		);
+	}
 
 	let modalTitle = $derived(
 		$form.type === 'add' ? 'Add series to reading list' : 'Update series in reading list',
@@ -116,6 +148,7 @@
 												selectedValue={$form.readingStatus}
 												resetPadding={true}
 												fit={true}
+												onChange={handleStatusChange}
 											/>
 
 											<div class="series-modal-volumes-read">

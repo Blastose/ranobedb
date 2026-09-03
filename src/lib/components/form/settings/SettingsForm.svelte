@@ -16,6 +16,7 @@
 		usernameSchema,
 		verifyEmailSchema,
 		privacySettingsSchema,
+		behaviorSettingsSchema,
 	} from '$lib/server/zod/schema';
 	import type { Infer, SuperValidated } from 'sveltekit-superforms';
 	import PasswordForm from './PasswordForm.svelte';
@@ -33,6 +34,7 @@
 	import DeleteAccountForm from './DeleteAccountForm.svelte';
 	import PersonalAccessTokenForm from './PersonalAccessTokenForm.svelte';
 	import PrivacySettingsForm from './PrivacySettingsForm.svelte';
+	import BehaviorPrefsForm from './BehaviorPrefsForm.svelte';
 
 	interface Props {
 		email_verified: boolean;
@@ -43,6 +45,7 @@
 		sendEmailVerificationForm: SuperValidated<Infer<typeof sendEmailVerificationSchema>>;
 		changeEmailForm: SuperValidated<Infer<typeof changeEmailSchema>>;
 		displayPrefsForm: SuperValidated<Infer<typeof displayPrefsSchema>>;
+		behaviorPrefsForm: SuperValidated<Infer<typeof behaviorSettingsSchema>>;
 		userListSeriesSettingsForm: SuperValidated<Infer<typeof userListSeriesSettingsSchema>>;
 		profilePictureForm: SuperValidated<Infer<typeof profilePictureSchema>>;
 		removeProfilePictureForm: SuperValidated<Infer<typeof removeProfilePictureSchema>>;
@@ -62,6 +65,7 @@
 		sendEmailVerificationForm,
 		changeEmailForm,
 		displayPrefsForm,
+		behaviorPrefsForm,
 		userListSeriesSettingsForm,
 		profilePictureForm,
 		removeProfilePictureForm,
@@ -99,6 +103,12 @@
 				href="{page.url.pathname}?view=list"
 				text="List"
 				icon="series"
+			/>
+			<SidebarListItem
+				active={view === 'behavior'}
+				href="{page.url.pathname}?view=behavior"
+				text="Behavior"
+				icon="behavior"
 			/>
 			<SidebarListItem
 				active={view === 'email'}
@@ -190,6 +200,13 @@
 		<div class="flex max-w-lg flex-col gap-4">
 			<section>
 				<PrivacySettingsForm {privacySettingsForm} />
+			</section>
+		</div>
+	{:else if view === 'behavior'}
+		<h2 class="text-2xl font-bold">Behavior preferences</h2>
+		<div class="flex max-w-xl flex-col gap-4">
+			<section>
+				<BehaviorPrefsForm {behaviorPrefsForm} />
 			</section>
 		</div>
 	{/if}

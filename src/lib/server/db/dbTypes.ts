@@ -16,6 +16,7 @@ import {
 } from '$lib/db/dbConsts';
 import { languagesArray } from '$lib/db/dbConsts';
 import type {
+	BehaviorSettings,
 	DisplayPrefs,
 	HomeDisplaySettings,
 	UserListSeriesSettings,
@@ -81,6 +82,7 @@ export interface AuthUser {
 	profile_image_id: number | null;
 	role: Generated<UserRole>;
 	display_prefs: Generated<Json<DisplayPrefs>>;
+	behavior_settings: Generated<Json<BehaviorSettings>>;
 	home_display_settings: Generated<Json<HomeDisplaySettings>>;
 	private: Generated<boolean>;
 	username: string;
