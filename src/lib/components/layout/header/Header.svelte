@@ -21,7 +21,8 @@
 			pathname.startsWith('/staff/') ||
 			pathname.startsWith('/publisher/') ||
 			pathname.startsWith('/user/') ||
-			pathname.startsWith('/review/')
+			pathname.startsWith('/review/') ||
+			pathname.startsWith('/image/')
 		) {
 			return true;
 		}

@@ -7,6 +7,7 @@
 	import type { Notification } from '$lib/server/db/notifications/notifications';
 	import { relativeTime } from '$lib/utils/relative-time';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
+	import Cover from '$lib/components/image/Cover.svelte';
 
 	let hasNotifs = $state(false);
 	let notifications = $state<Notification[] | undefined>(undefined);
@@ -100,13 +101,11 @@
 												<a {...props} class="notif" href={notification.url}>
 													{#if notification.image}
 														{#key notification.image.filename}
-															<img
-																src="https://images.ranobedb.org/{notification.image.filename}"
-																alt=""
-																width="240"
-																height="343"
-																class="w-[48px] rounded-lg"
-															/>
+															<div class="w-[48px]">
+																<Cover
+																	image={notification.image}
+																/>
+															</div>
 														{/key}
 													{:else}
 														<div class="flex items-center justify-center">

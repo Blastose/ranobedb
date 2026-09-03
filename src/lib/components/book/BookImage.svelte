@@ -16,6 +16,7 @@
 				width: number;
 				height: number;
 				filename: string;
+				nsfw: boolean;
 			}>;
 		};
 		urlPrefix: string;
@@ -27,7 +28,7 @@
 </script>
 
 <a href="{urlPrefix}{book.id}" class="flex flex-col gap-1">
-	<Cover obj={book} {blurTop}>
+	<Cover image={book.image} {blurTop} useDefaultCoverAspectRatio={true}>
 		{@render children?.()}
 	</Cover>
 	<p class="line-clamp-2 text-sm sm:text-base">

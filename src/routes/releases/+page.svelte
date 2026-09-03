@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { buildImageUrl } from '$lib/components/book/book';
 	import ReleaseTitleDisplay from '$lib/components/display/ReleaseTitleDisplay.svelte';
 	import ListFilters from '$lib/components/form/book/ListFilters.svelte';
 	import ReleaseFilters from '$lib/components/form/release/filters/ReleaseFilters.svelte';
@@ -8,6 +7,7 @@
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import DbShell from '$lib/components/layout/db/DBShell.svelte';
 	import { languageNames } from '$lib/db/dbConsts';
+	import Cover from '$lib/components/image/Cover.svelte';
 
 	let { data } = $props();
 </script>
@@ -34,18 +34,10 @@
 	{#snippet display()}
 		<div class="grid grid-cols-1 gap-2 @sm:grid-cols-2">
 			{#each data.releases as release (release.id)}
-				{@const imageUrl = buildImageUrl(release.image?.filename)}
 				<a class="release-wrapper" href="/release/{release.id}">
 					<div class="grid h-full grid-cols-[64px_1fr] gap-2">
 						{#if release.image}
-							<img
-								width={release.image.width}
-								height={release.image.height}
-								class="rounded-md shadow-sm"
-								src={imageUrl}
-								alt=""
-								loading="lazy"
-							/>
+							<Cover image={release.image} useDefaultCoverAspectRatio />
 						{:else}
 							<div></div>
 						{/if}

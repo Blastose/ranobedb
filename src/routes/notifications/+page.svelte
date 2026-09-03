@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Cover from '$lib/components/image/Cover.svelte';
 	import Icon from '$lib/components/icon/Icon.svelte';
 	import PageTitle from '$lib/components/layout/PageTitle.svelte';
 	import MarkdownToHtml from '$lib/components/markdown/MarkdownToHtml.svelte';
@@ -25,14 +26,10 @@
 					{@const date = new Date(notification.sent * 1000)}
 					<a class="notif" href={notification.url}>
 						{#if notification.image}
-							{#key notification.image}
-								<img
-									src="https://images.ranobedb.org/{notification.image.filename}"
-									alt=""
-									width="240"
-									height="343"
-									class="w-[60px] rounded-lg"
-								/>
+							{#key notification.image.filename}
+								<div class="w-[60px]">
+									<Cover image={notification.image} />
+								</div>
 							{/key}
 						{:else}
 							<div class="flex items-center justify-center">

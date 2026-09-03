@@ -2,7 +2,6 @@
 	import PaginationContainer from '$lib/components/pagination/PaginationContainer.svelte';
 	import { getDisplayPrefsContext, getTitleDisplay } from '$lib/display/prefs';
 	import type { SeriesReviewWithSeriesObj } from '$lib/server/db/reviews/reviews';
-	import { buildImageUrl } from '../book/book';
 	import Review from './Review.svelte';
 
 	interface Props {
@@ -30,9 +29,8 @@
 		<div class="grid max-w-4xl grid-cols-1 gap-4 @sm:gap-6">
 			{#each reviews as review (review.review_id)}
 				{#if review.obj}
-					{@const imageUrl = buildImageUrl(review.obj.image?.filename)}
 					{@const title = getTitleDisplay({ obj: review.obj, prefs: $displayPrefs.title_prefs })}
-					<Review {review} {itemType} itemTitle={title} {imageUrl} />
+					<Review {review} {itemType} itemTitle={title} image={review.obj.image} />
 				{/if}
 			{/each}
 		</div>

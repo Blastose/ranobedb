@@ -91,7 +91,7 @@
 				{#each data.books as book}
 					<div class="grid grid-cols-[64px_1fr] gap-2">
 						<a href="/book/{book.id}">
-							<Cover obj={book} />
+							<Cover image={book.image} useDefaultCoverAspectRatio={true} />
 						</a>
 						<div>
 							<div class="text-sm font-semibold">
