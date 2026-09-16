@@ -70,6 +70,7 @@
 
 	<TextField
 		form={sForm}
+		type="textarea"
 		field="aliases"
 		label="Aliases"
 		showRequiredSymbolIfRequired={false}
