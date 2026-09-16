@@ -435,6 +435,7 @@ CREATE TABLE public.publisher_relation_hist (
 
 CREATE TABLE public.release (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    image_id integer,
     release_date integer NOT NULL,
     pages integer,
     duration integer,
@@ -449,11 +450,13 @@ CREATE TABLE public.release (
     website text,
     amazon text,
     bookwalker text,
-    rakuten text
+    rakuten text,
+    FOREIGN KEY (image_id) REFERENCES public.image(id)
 );
 
 CREATE TABLE public.release_hist (
     change_id integer NOT NULL,
+    image_id integer,
     release_date integer NOT NULL,
     pages integer,
     duration integer,
@@ -467,6 +470,7 @@ CREATE TABLE public.release_hist (
     amazon text,
     bookwalker text,
     rakuten text,
+    FOREIGN KEY (image_id) REFERENCES public.image(id),
     FOREIGN KEY (change_id) REFERENCES public.change(id),
     PRIMARY KEY (change_id)
 );

@@ -82,6 +82,14 @@ export function getReleaseDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
+			name: 'Image',
+			words1: prevReleaseHistEdit.image_obj?.id?.toString(),
+			words2: releaseHistEdit.image_obj?.id?.toString(),
+		}),
+	);
+	pushIfNotUndefined(
+		diffs,
+		getDiffWords({
 			name: 'Format',
 			words1: prevReleaseHistEdit.format,
 			words2: releaseHistEdit.format,

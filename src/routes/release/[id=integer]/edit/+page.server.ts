@@ -55,11 +55,18 @@ export const load = async ({ params, locals, url }) => {
 		? revertedRevisionMarkdown('release', releaseId, revision.data.revision)
 		: undefined;
 
+	const bookIds = release.books.map((book) => book.id);
+	const relatedReleaseImages = await dbReleases.getRelatedReleaseImages({
+		bookIds,
+		excludeReleaseId: releaseId,
+		excludeImageId: release.image_id,
+	});
+
 	const form = await superValidate({ ...release, comment: prefilledComment }, zod4(releaseSchema), {
 		errors: false,
 	});
 
-	return { release, form };
+	return { release, form, relatedReleaseImages };
 };
 
 export const actions = {
@@ -93,6 +100,9 @@ export const actions = {
 			success = true;
 		} catch (e) {
 			console.log(e);
+			if (e instanceof Error && e.message === 'Invalid image id') {
+				return setError(form, 'image_id_manual', 'Invalid image id');
+			}
 			if (e instanceof DatabaseError) {
 				if (
 					e.code === '23505' &&

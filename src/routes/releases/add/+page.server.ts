@@ -60,6 +60,9 @@ export const actions = {
 		try {
 			newReleaseId = await dbReleaseActions.addRelease({ release: form.data }, locals.user);
 		} catch (e) {
+			if (e instanceof Error && e.message === 'Invalid image id') {
+				return setError(form, 'image_id_manual', 'Invalid image id');
+			}
 			if (e instanceof DatabaseError) {
 				if (
 					e.code === '23505' &&

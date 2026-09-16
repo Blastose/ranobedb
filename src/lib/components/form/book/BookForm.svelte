@@ -124,76 +124,7 @@
 	<section class="flex flex-col gap-2">
 		<div>
 			<h2 class="text-xl font-bold">Cover image</h2>
-			{#if book?.image_obj}
-				<p>Current image</p>
-				<p>Image ID: {book.image_obj.filename?.replace('.jpg', '')}</p>
-				<div class="max-w-36">
-					<img src={buildImageUrl(book.image_obj.filename)} alt="" />
-				</div>
-			{:else}
-				<p>Currently no cover image for this book</p>
-			{/if}
-		</div>
-
-		<div>
-			<label class="flex flex-col gap-1">
-				<span>Upload new image (JPEG, PNG, WEBP; max 10MB)</span>
-				<input
-					type="file"
-					name="image"
-					accept="image/png, image/jpeg, image/webp"
-					bind:files={$file}
-					disabled={Boolean($form.image_id_manual)}
-				/>
-			</label>
-			{#if $file && $file.item && $file.item(0)}
-				<p>New image preview</p>
-				<div class="flex gap-2">
-					<div class="max-w-36">
-						<img src={URL.createObjectURL($file.item(0) ?? new Blob())} alt="" />
-					</div>
-					<button
-						class="sub-btn h-fit"
-						type="button"
-						onclick={() => {
-							$file = new DataTransfer().files;
-							clearFileInput();
-						}}>Remove uploaded file</button
-					>
-				</div>
-				<div class="pt-1">
-					<CheckboxField
-						form={sForm}
-						field="image_nsfw"
-						label="Mark image as NSFW"
-						showRequiredSymbolIfRequired={false}
-					/>
-				</div>
-			{/if}
-
-			{#if $errors.image}<span class="error-text-color">{$errors.image}</span>{/if}
-
-			{#if !Boolean($file && $file.item && $file.item(0))}
-				<p>or</p>
-
-				<div class="w-fit">
-					<TextField
-						form={sForm}
-						type="text"
-						field="image_id_manual"
-						label="Use exisiting image from image ID"
-						disabled={Boolean($file && $file.item && $file.item(0))}
-						resetPadding={true}
-					/>
-				</div>
-
-				{#if $form.image_id_manual}
-					<p>Image</p>
-					<div class="max-w-36">
-						<img src={buildImageUrl(`${$form.image_id_manual}.jpg`)} alt="" />
-					</div>
-				{/if}
-			{/if}
+			<p class="text-sm">Cover images had been moved to releases</p>
 		</div>
 	</section>
 

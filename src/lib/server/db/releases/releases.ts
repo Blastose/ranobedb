@@ -21,6 +21,48 @@ export class DBReleases {
 		return this.ranobeDB.db.selectFrom('release').selectAll('release');
 	}
 
+	async getRelatedReleaseImages(params: {
+		bookIds: number[];
+		excludeReleaseId?: number;
+		excludeImageId?: number | null;
+	}) {
+		if (params.bookIds.length === 0) return [];
+
+		let query = this.ranobeDB.db
+			.selectFrom('release')
+			.innerJoin('release_book', 'release.id', 'release_book.release_id')
+			.innerJoin('image', 'image.id', 'release.image_id')
+			.select([
+				'release.id as release_id',
+				'release.title',
+				'release.romaji',
+				'release.lang',
+				'release.format',
+				'release.release_date',
+				'image.id',
+				'image.filename',
+				'image.width',
+				'image.height',
+				'image.nsfw',
+				'image.spoiler',
+			])
+			.where('release_book.book_id', 'in', params.bookIds)
+			.where('release.hidden', '=', false)
+			.distinctOn('image.id')
+			.orderBy('image.id')
+			.orderBy('release.release_date', 'asc')
+			.orderBy('release.id', 'asc');
+
+		if (params.excludeReleaseId) {
+			query = query.where('release.id', '!=', params.excludeReleaseId);
+		}
+		if (params.excludeImageId) {
+			query = query.where('image.id', '!=', params.excludeImageId);
+		}
+
+		return await query.execute();
+	}
+
 	getReleasesWithImage() {
 		return this.ranobeDB.db
 			.selectFrom('release')
@@ -30,11 +72,22 @@ export class DBReleases {
 					eb
 						.selectFrom('image')
 						.selectAll('image')
-						.innerJoin('release_book', 'release.id', 'release_book.release_id')
-						.innerJoin('book', 'book.id', 'release_book.book_id')
-						.select('book.id')
-						.whereRef('image.id', '=', 'book.image_id')
-						.where('book.hidden', '=', false)
+						.where(
+							'image.id',
+							'=',
+							eb.fn.coalesce(
+								'release.image_id',
+								eb
+									.selectFrom('release_book')
+									.innerJoin('book', 'book.id', 'release_book.book_id')
+									.whereRef('release_book.release_id', '=', 'release.id')
+									.where('book.hidden', '=', false)
+									.where('book.image_id', 'is not', null)
+									.select('book.image_id')
+									.orderBy('release_book.book_id')
+									.limit(1),
+							),
+						)
 						.limit(1),
 				).as('image'),
 			]);
@@ -46,6 +99,13 @@ export class DBReleases {
 			.selectFrom('release')
 			.selectAll('release')
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'release.image_id')
+						.limit(1),
+				).as('image'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('publisher')
@@ -73,6 +133,7 @@ export class DBReleases {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.lang',
+							'release_book.rtype',
 							'series_book.sort_order',
 						])
 						.select((eb) =>
@@ -126,6 +187,7 @@ export class DBReleases {
 				'release_hist.change_id as id',
 				'release_hist.description',
 				'release_hist.format',
+				'release_hist.image_id',
 				'release_hist.isbn13',
 				'release_hist.lang',
 				'release_hist.pages',
@@ -141,6 +203,13 @@ export class DBReleases {
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'release_hist.image_id')
+						.limit(1),
+				).as('image'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('publisher')
@@ -172,6 +241,7 @@ export class DBReleases {
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
 							'cte_book.lang',
+							'release_book_hist.rtype',
 							'series_book.sort_order',
 						])
 						.select((eb) =>
@@ -212,6 +282,7 @@ export class DBReleases {
 			.selectFrom('release')
 			.select([
 				'release.id',
+				'release.image_id',
 				'release.description',
 				'release.format',
 				'release.isbn13',
@@ -229,6 +300,13 @@ export class DBReleases {
 				'release.locked',
 			])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'release.image_id')
+						.limit(1),
+				).as('image_obj'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('publisher')
@@ -269,6 +347,7 @@ export class DBReleases {
 			.innerJoin('change', 'change.id', 'release_hist.change_id')
 			.select([
 				'release_hist.change_id as id',
+				'release_hist.image_id',
 				'release_hist.description',
 				'release_hist.format',
 				'release_hist.isbn13',
@@ -285,6 +364,13 @@ export class DBReleases {
 			])
 			.select(['change.ihid as hidden', 'change.ilock as locked'])
 			.select((eb) => [
+				jsonObjectFrom(
+					eb
+						.selectFrom('image')
+						.selectAll('image')
+						.whereRef('image.id', '=', 'release_hist.image_id')
+						.limit(1),
+				).as('image_obj'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('publisher')

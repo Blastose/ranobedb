@@ -44,9 +44,15 @@ export const load = async ({ params, locals, url }) => {
 		error(403, { missingPerm: 'add' });
 	}
 
+	const relatedReleaseImages = await dbReleases.getRelatedReleaseImages({
+		bookIds: release.books.map((book) => book.id),
+		excludeReleaseId: releaseId,
+		excludeImageId: release.image_id,
+	});
+
 	const form = await superValidate({ ...release }, zod4(releaseSchema), {
 		errors: false,
 	});
 
-	return { release, form };
+	return { release, form, relatedReleaseImages };
 };

@@ -11,7 +11,6 @@ export async function sendRecentlyReleasedNotifications() {
 				.innerJoin('auth_user', 'auth_user.id', 'user_list_release.user_id')
 				.innerJoin('release_book', 'release_book.release_id', 'release.id')
 				.innerJoin('book', 'book.id', 'release_book.book_id')
-				.leftJoin('image', 'image.id', 'book.image_id')
 				.where(
 					'release.release_date',
 					'=',
@@ -29,7 +28,6 @@ export async function sendRecentlyReleasedNotifications() {
 					'release.id as release_id',
 					'release.release_date',
 					'auth_user.display_prefs',
-					'image.filename',
 				]),
 		)
 		.insertInto('notification')
@@ -104,7 +102,6 @@ export async function sendRecentlyReleasedNotifications() {
 				.innerJoin('series', 'series.id', 'series_book.series_id')
 				.innerJoin('book', 'book.id', 'release_book.book_id')
 				.innerJoin('auth_user', 'auth_user.id', 'user_list_series.user_id')
-				.leftJoin('image', 'image.id', 'book.image_id')
 				.where('release.hidden', '=', false)
 				.where('book.hidden', '=', false)
 				.where('series.hidden', '=', false)
@@ -168,7 +165,6 @@ export async function sendRecentlyReleasedNotifications() {
 					'release.id as release_id',
 					'release.release_date',
 					'auth_user.display_prefs',
-					'image.filename',
 				]),
 		)
 		.insertInto('notification')

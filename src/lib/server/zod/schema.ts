@@ -639,6 +639,7 @@ export const releaseSchema = z
 		title: z.string().trim().max(2000),
 		romaji: zRomaji,
 		description: zDescription,
+		image_id: z.number().max(2000000).nullish(),
 		format: z.enum(releaseFormatArray),
 		lang: z.enum(languagesArray),
 		release_date: zReleaseDate,
@@ -661,9 +662,24 @@ export const releaseSchema = z
 		website: zLink([]),
 		books: zReleaseBooks,
 		publishers: zReleasePublishers,
+		image: z
+			.instanceof(File, { message: 'Please upload a file.' })
+			.refine((f) => f.size < 10_000_000, 'Max 10 MB upload size.')
+			.nullish(),
+		image_id_manual: z.number().int().min(1).max(2_000_000).nullish(),
+		image_nsfw: z.boolean().optional(),
+		remove_image: z.boolean().optional(),
+
 		comment: zComment,
 	})
-	.superRefine((data) => {
+	.superRefine((data, ctx) => {
+		if (data.remove_image && (data.image || data.image_id_manual)) {
+			ctx.addIssue({
+				code: 'custom',
+				message: 'Cannot remove and replace the cover at the same time.',
+				path: ['remove_image'],
+			});
+		}
 		if (data.format === 'audio') {
 			data.pages = null;
 		} else {

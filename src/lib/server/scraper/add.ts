@@ -41,6 +41,21 @@ export async function addFromScrapedBookData(params: {
 		}
 		const data = params.scrapedBookData;
 
+		let img_buffer;
+		if (data.use_img && data.img_url) {
+			const maxSizeBytes = 1024 * 1024; // 1,048,576 bytes or 1MB
+			const headResponse = await fetch(data.img_url, { method: 'HEAD' });
+			const contentLength = headResponse.headers.get('content-length');
+			if (contentLength) {
+				const size = parseInt(contentLength, 10);
+				if (!(size > maxSizeBytes)) {
+					const response = await fetch(data.img_url);
+					const arrayBuffer = await response.arrayBuffer();
+					img_buffer = new File([Buffer.from(arrayBuffer)], '');
+				}
+			}
+		}
+
 		if (data.create_book) {
 			const newly_added_staff = [];
 			const book_editions = structuredClone(data.editions);
@@ -102,21 +117,6 @@ export async function addFromScrapedBookData(params: {
 				});
 			}
 
-			let img_buffer;
-			if (data.use_img && data.img_url) {
-				const maxSizeBytes = 1024 * 1024; // 1,048,576 bytes or 1MB
-				const headResponse = await fetch(data.img_url, { method: 'HEAD' });
-				const contentLength = headResponse.headers.get('content-length');
-				if (contentLength) {
-					const size = parseInt(contentLength, 10);
-					if (!(size > maxSizeBytes)) {
-						const response = await fetch(data.img_url);
-						const arrayBuffer = await response.arrayBuffer();
-						img_buffer = new File([Buffer.from(arrayBuffer)], '');
-					}
-				}
-			}
-
 			addedBookId = await dbBookActions.addBook(
 				{
 					book: bookSchema.parse({
@@ -129,8 +129,6 @@ export async function addFromScrapedBookData(params: {
 						description_ja: data.description_ja,
 						c_release_date: data.release_date,
 						olang: 'ja',
-						image: img_buffer,
-						image_nsfw: data.image_nsfw,
 					} satisfies z.infer<typeof bookSchema>),
 				},
 				params.user,
@@ -234,6 +232,8 @@ export async function addFromScrapedBookData(params: {
 					website: data.website,
 					amazon: data.amazon,
 					rakuten: data.rakuten,
+					image: img_buffer,
+					image_nsfw: data.image_nsfw,
 				} satisfies z.infer<typeof releaseSchema>),
 			},
 			params.user,

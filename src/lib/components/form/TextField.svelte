@@ -19,6 +19,7 @@
 		disabled?: boolean;
 		showLabel?: boolean;
 		autocomplete?: 'on' | 'off' | undefined;
+		oninput?: (e: Event) => void;
 	}
 
 	let {

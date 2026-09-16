@@ -14,7 +14,7 @@
 	let { data } = $props();
 
 	let image = $derived(data.image);
-	let books = $derived(data.books);
+	let releases = $derived(data.releases);
 	let user = $derived(data.user);
 	let canEdit = $derived(hasEditPerms(user));
 	let imageUrl = $derived(buildImageUrl(image?.filename));
@@ -66,13 +66,13 @@
 						<dt>Dimensions</dt>
 						<dd>{image.width} x {image.height}</dd>
 					</div>
-					{#if books.length > 0}
+					{#if releases.length > 0}
 						<div>
-							<dt>Books</dt>
+							<dt>Releases</dt>
 							<dd>
-								{#each books as book, index (book.id)}
-									<a class="link" href="/book/{book.id}">#{book.id}</a
-									>{#if index < books.length - 1}{','}{/if}
+								{#each releases as release, index (release.id)}
+									<a class="link" href="/release/{release.id}">r{release.id}</a
+									>{#if index < releases.length - 1}{', '}{/if}
 								{/each}
 							</dd>
 						</div>

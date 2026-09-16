@@ -16,7 +16,9 @@
 	let title = $derived(getReleaseTitleDisplay({ obj: release, prefs: $diplayPrefs }));
 
 	let firstBookInReleases = $derived(release.books.at(0));
-	let imageUrl = $derived(buildImageUrl(firstBookInReleases?.image?.filename));
+	let imageUrl = $derived(
+		buildImageUrl(release.image?.filename ?? firstBookInReleases?.image?.filename),
+	);
 	let bgImageStyle = $derived(getBgImageStyle($theme, imageUrl));
 </script>
 

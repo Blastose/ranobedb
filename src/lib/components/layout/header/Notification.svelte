@@ -102,9 +102,7 @@
 													{#if notification.image}
 														{#key notification.image.filename}
 															<div class="w-[48px]">
-																<Cover
-																	image={notification.image}
-																/>
+																<Cover image={notification.image} />
 															</div>
 														{/key}
 													{:else}

@@ -48,10 +48,25 @@ export class Notifications {
 					eb
 						.selectFrom('image')
 						.select(['image.filename', 'image.nsfw', 'image.width', 'image.height'])
-						.innerJoin('release_book', 'notification.item_id', 'release_book.release_id')
-						.innerJoin('book', 'book.id', 'release_book.book_id')
-						.whereRef('image.id', '=', 'book.image_id')
-						.where('book.hidden', '=', false)
+						.innerJoin('release', 'release.id', 'notification.item_id')
+						.where((eb) =>
+							eb(
+								'image.id',
+								'=',
+								eb.fn.coalesce(
+									'release.image_id',
+									eb
+										.selectFrom('release_book')
+										.leftJoin('book', 'book.id', 'release_book.book_id')
+										.whereRef('release_book.release_id', '=', 'release.id')
+										.where('book.hidden', '=', false)
+										.where('book.image_id', 'is not', null)
+										.select('book.image_id')
+										.orderBy('release_book.book_id')
+										.limit(1),
+								),
+							),
+						)
 						.limit(1),
 				).as('image'),
 			)
