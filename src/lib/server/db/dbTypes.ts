@@ -108,6 +108,7 @@ export interface Book {
 	hidden: boolean;
 	id: Generated<number>;
 	image_id: number | null;
+	c_image_id: number | null;
 	olang: Language;
 	locked: boolean;
 	release_date: number;

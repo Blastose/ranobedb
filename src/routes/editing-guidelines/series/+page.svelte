@@ -60,14 +60,6 @@
 		</section>
 
 		<section>
-			<h2>Language</h2>
-			<p>
-				Lanuage that the book was originally written in. You should only add books that were
-				originally written in Japanese, so this field should always be Japanese.
-			</p>
-		</section>
-
-		<section>
 			<h2>Start date</h2>
 			<p>The date the first book in the series was published.</p>
 		</section>

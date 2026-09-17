@@ -474,34 +474,9 @@ export const bookSchema = z.object({
 	locked: z.boolean(),
 	description: zDescription,
 	description_ja: zDescription,
-	image_id: z.number().max(2000000).nullish(),
-	olang: z.enum(languagesArray),
-
 	c_release_date: zReleaseDate.nullish(),
-
 	titles: zTitles,
-
 	editions: zBookEditions,
-	image: z
-		.instanceof(File, { message: 'Please upload a file.' })
-		.refine((f) => f.size < 10_000_000, 'Max 10 MB upload size.')
-		// .refine(async (f) => {
-		// 	console.log(f);
-		// 	console.log(f.bytes);
-		// 	const blob = await f.bytes();
-		// 	const { height, width } = imageSize(new Uint8Array(blob));
-		// 	if (!height || !width) {
-		// 		return false;
-		// 	}
-		// 	if (height > 10000 || width > 10000) {
-		// 		return false;
-		// 	}
-
-		// 	return true;
-		// }, 'Image dimensions must be less than 10000 x 10000')
-		.nullish(),
-	image_id_manual: z.string().max(20).optional(),
-	image_nsfw: z.boolean().optional(),
 	comment: zComment,
 });
 
@@ -705,7 +680,6 @@ export const seriesSchema = z.object({
 				.join('\n'),
 		)
 		.nullish(),
-	olang: z.enum(languagesArray),
 	anidb_id: z.number().max(maxNumberValue).nullish(),
 	start_date: zReleaseDate,
 	end_date: zReleaseDate,

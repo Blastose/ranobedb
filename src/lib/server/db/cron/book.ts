@@ -1,4 +1,6 @@
 import { db } from '$lib/server/db/db';
+import type { DB } from '$lib/server/db/dbTypes';
+import type { Transaction } from 'kysely';
 import type { Language } from '../dbTypes';
 
 export async function updateBookReleaseDate() {
@@ -59,4 +61,65 @@ export async function updateBookReleaseDates() {
 		}))
 		.whereRef('book.id', '=', 'b.id')
 		.execute();
+}
+
+export async function updateBookImageCache(trx: Transaction<DB>, bookIds: number[] | 'all') {
+	const uniqueBookIds = bookIds === 'all' ? [] : [...new Set(bookIds)];
+
+	if (bookIds !== 'all' && uniqueBookIds.length === 0) {
+		return;
+	}
+
+	let query = trx.updateTable('book').set((eb) => ({
+		c_image_id: eb
+			.selectFrom('release_book')
+			.innerJoin('release', 'release.id', 'release_book.release_id')
+			.select('release.image_id')
+			.whereRef('release_book.book_id', '=', 'book.id')
+			.where('release.hidden', '=', false)
+			.where('release.image_id', 'is not', null)
+			.orderBy((eb) =>
+				eb
+					.case('release_book.rtype')
+					.when('complete')
+					.then(0)
+					.when('omnibus')
+					.then(1)
+					.when('partial')
+					.then(2)
+					.else(3)
+					.end(),
+			)
+			.orderBy((eb) =>
+				eb.case().when('release.lang', '=', eb.ref('book.olang')).then(0).else(1).end(),
+			)
+			.orderBy((eb) => eb.case().when('release.release_date', '=', 99999999).then(1).else(0).end())
+			.orderBy('release.release_date')
+			.orderBy((eb) =>
+				eb
+					.case('release.format')
+					.when('print')
+					.then(0)
+					.when('digital')
+					.then(1)
+					.when('audio')
+					.then(2)
+					.else(3)
+					.end(),
+			)
+			.orderBy('release.id')
+			.limit(1),
+	}));
+
+	if (bookIds !== 'all') {
+		query = query.where('book.id', 'in', uniqueBookIds);
+	}
+
+	await query.execute();
+}
+
+export async function updateBookImageCacheAll() {
+	await db.transaction().execute(async (trx) => {
+		await updateBookImageCache(trx, 'all');
+	});
 }

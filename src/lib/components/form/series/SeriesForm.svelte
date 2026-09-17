@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { seriesSchema } from '$lib/server/zod/schema';
-	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
@@ -13,7 +13,7 @@
 	import SeriesBookInput from './SeriesBookInput.svelte';
 	import SeriesRelInput from './SeriesRelInput.svelte';
 	import SelectField from '../SelectField.svelte';
-	import { languageNames, languagesArray, seriesStatusArray } from '$lib/db/dbConsts';
+	import { seriesStatusArray } from '$lib/db/dbConsts';
 	import TitleDisplay from '$lib/components/display/TitleDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import TextFieldLink from '../TextFieldLink.svelte';
@@ -106,20 +106,6 @@
 				$form.end_date = 99999999;
 			}
 		}}
-	/>
-
-	<SelectField
-		form={sForm}
-		field="olang"
-		dropdownOptions={languagesArray.map((item) => ({
-			display: languageNames[item],
-			value: item,
-		}))}
-		selectedValue={seriesForm.data.olang}
-		label="Language"
-		showRequiredSymbolIfRequired={false}
-		resetPadding={true}
-		fit={true}
 	/>
 
 	<div class="flex flex-wrap gap-x-4">

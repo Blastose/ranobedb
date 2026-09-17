@@ -128,7 +128,6 @@ export async function addFromScrapedBookData(params: {
 						description: data.description,
 						description_ja: data.description_ja,
 						c_release_date: data.release_date,
-						olang: 'ja',
 					} satisfies z.infer<typeof bookSchema>),
 				},
 				params.user,
@@ -255,7 +254,6 @@ export async function addFromScrapedBookData(params: {
 							child_series: [],
 							start_date: data.series.start_date,
 							end_date: data.series.end_date,
-							olang: 'ja',
 							publication_status: data.series.publication_status,
 							tags: [],
 							books: addedBookId

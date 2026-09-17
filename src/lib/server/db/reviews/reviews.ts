@@ -130,7 +130,7 @@ export class DBReviews {
 							eb
 								.selectFrom('image')
 								.selectAll('image')
-								.whereRef('image.id', '=', 'cte_book.image_id')
+								.whereRef('image.id', '=', 'cte_book.c_image_id')
 								.limit(1),
 						).as('image'),
 					])
@@ -166,7 +166,7 @@ export class DBReviews {
 							eb
 								.selectFrom('image')
 								.selectAll('image')
-								.innerJoin('book', 'book.image_id', 'image.id')
+								.innerJoin('book', 'book.c_image_id', 'image.id')
 								.innerJoin('series_book', 'series_book.book_id', 'book.id')
 								.whereRef('series_book.series_id', '=', 'cte_series.id')
 								.where('book.hidden', '=', false)
@@ -220,7 +220,7 @@ export class DBReviews {
 								eb
 									.selectFrom('image')
 									.selectAll('image')
-									.whereRef('image.id', '=', 'cte_book.image_id')
+									.whereRef('image.id', '=', 'cte_book.c_image_id')
 									.limit(1),
 							).as('image'),
 						])
@@ -266,7 +266,7 @@ export class DBReviews {
 										eb
 											.selectFrom('image')
 											.selectAll('image')
-											.innerJoin('book', 'book.image_id', 'image.id')
+											.innerJoin('book', 'book.c_image_id', 'image.id')
 											.innerJoin('series_book', 'series_book.book_id', 'book.id')
 											.whereRef('series_book.series_id', '=', 'cte_series.id')
 											.where('book.hidden', '=', false)

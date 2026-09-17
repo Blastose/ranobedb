@@ -5,7 +5,7 @@ export const load = async () => {
         title: string;
         lang: Language;
         romaji: string | null;
-        image_id: number | null;
+        c_image_id: number | null;
         olang: Language;
         c_release_date: number;
         title_orig: string | null;
@@ -30,7 +30,7 @@ export const load = async () => {
     romaji: string | null;
     description_ja: string;
     hidden: boolean;
-    image_id: number | null;
+    c_image_id: number | null;
     olang: Language;
     locked: boolean;
     c_release_date: number;
@@ -253,7 +253,7 @@ export const load = async () => {
         lang: Language;
         romaji: string | null;
         title: string;
-        image_id: number | null;
+        c_image_id: number | null;
         c_release_date: number;
         c_release_dates: {
             [K in Language]?: number;

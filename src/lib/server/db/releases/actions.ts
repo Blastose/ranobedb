@@ -18,6 +18,7 @@ import type {
 import { getTodayAsDateNumber } from '$lib/components/form/release/releaseDate';
 import { generateNanoid, resizeImage, saveImageToR2 } from '../images/upload';
 import sizeOf from 'image-size';
+import { updateBookImageCache } from '../cron/book';
 
 type PendingImageUpload = {
 	buff: Buffer<ArrayBufferLike>;
@@ -614,6 +615,11 @@ export class DBReleaseActions {
 				await trx.insertInto('release_publisher').values(release_publisher_add).execute();
 			}
 
+			await updateBookImageCache(trx, [
+				...currentRelease.books.map((book) => book.id),
+				...data.release.books.map((book) => book.id),
+			]);
+
 			return uploadImage;
 		});
 
@@ -731,6 +737,11 @@ export class DBReleaseActions {
 			if (release_publisher_add.length > 0) {
 				await trx.insertInto('release_publisher_hist').values(release_publisher_add_hist).execute();
 			}
+
+			await updateBookImageCache(
+				trx,
+				data.release.books.map((book) => book.id),
+			);
 
 			return { id: insertedRelease.id, uploadImage };
 		});

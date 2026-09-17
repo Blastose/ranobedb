@@ -141,7 +141,7 @@ export async function getBooks(params: {
 		if (isList) {
 			query = query.groupBy([
 				'cte_book.id',
-				'cte_book.image_id',
+				'cte_book.c_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -158,7 +158,7 @@ export async function getBooks(params: {
 		} else {
 			query = query.groupBy([
 				'cte_book.id',
-				'cte_book.image_id',
+				'cte_book.c_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',

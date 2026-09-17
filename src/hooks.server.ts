@@ -3,7 +3,11 @@ import { error, type Handle } from '@sveltejs/kit';
 import { getMode } from '$lib/mode/mode';
 import schedule from 'node-schedule';
 import { sendRecentlyReleasedNotifications } from '$lib/server/db/cron/release';
-import { updateBookReleaseDate, updateBookReleaseDates } from '$lib/server/db/cron/book';
+import {
+	updateBookImageCacheAll,
+	updateBookReleaseDate,
+	updateBookReleaseDates,
+} from '$lib/server/db/cron/book';
 import {
 	updateNewlyLicensedEnglishSeries,
 	updateSeriesAverage,
@@ -20,6 +24,7 @@ schedule.scheduleJob('0 0 * * *', async function () {
 	await sendRecentlyReleasedNotifications();
 	await updateBookReleaseDate();
 	await updateBookReleaseDates();
+	await updateBookImageCacheAll();
 	await updateSeriesStartEndDates();
 	await updateSeriesPopularity();
 	await updateSeriesAverage();

@@ -7,5 +7,8 @@ ADD COLUMN image_id integer REFERENCES public.image(id);
 
 ALTER TABLE public.release_hist
 ADD COLUMN image_id integer REFERENCES public.image(id);
+
+ALTER TABLE public.book
+ADD COLUMN c_image_id integer REFERENCES public.image(id);
 `.execute(db);
 }

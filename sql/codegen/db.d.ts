@@ -121,8 +121,8 @@ export interface AuthSession {
 }
 
 export interface AuthUser {
-	display_prefs: Generated<Json>;
 	behavior_settings: Generated<Json>;
+	display_prefs: Generated<Json>;
 	home_display_settings: Generated<Json>;
 	id: string;
 	id_numeric: Generated<number>;
@@ -148,6 +148,7 @@ export interface AuthUserPersonalAccessToken {
 }
 
 export interface Book {
+	c_image_id: number | null;
 	c_release_date: number;
 	c_release_dates: Generated<Json>;
 	description: string;

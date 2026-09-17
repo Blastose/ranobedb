@@ -433,7 +433,7 @@ export class DBSeriesActions {
 					wikidata_id: data.series.wikidata_id ?? null,
 					anilist_id: data.series.anilist_id,
 					mal_id: data.series.mal_id,
-					olang: data.series.olang,
+					olang: 'ja',
 				})
 				.where('series.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -457,7 +457,7 @@ export class DBSeriesActions {
 					wikidata_id: data.series.wikidata_id,
 					anilist_id: data.series.anilist_id,
 					mal_id: data.series.mal_id,
-					olang: data.series.olang,
+					olang: 'ja',
 				})
 				.executeTakeFirstOrThrow();
 
@@ -665,7 +665,7 @@ export class DBSeriesActions {
 					wikidata_id: data.series.wikidata_id,
 					anilist_id: data.series.anilist_id,
 					mal_id: data.series.mal_id,
-					olang: data.series.olang,
+					olang: 'ja',
 				})
 				.returning('series.id')
 				.executeTakeFirstOrThrow();
@@ -701,7 +701,7 @@ export class DBSeriesActions {
 					wikidata_id: data.series.wikidata_id,
 					anilist_id: data.series.anilist_id,
 					mal_id: data.series.mal_id,
-					olang: data.series.olang,
+					olang: 'ja',
 				})
 				.executeTakeFirstOrThrow();
 			const series_relations = data.series.child_series.map((item) => {

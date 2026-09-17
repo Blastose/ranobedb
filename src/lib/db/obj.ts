@@ -1,4 +1,4 @@
-import type { BookEdit } from '$lib/server/db/books/books';
+import type { BookEdit, BookHistEdit } from '$lib/server/db/books/books';
 import type { PublisherEdit } from '$lib/server/db/publishers/publishers';
 import type { ReleaseEdit } from '$lib/server/db/releases/releases';
 import type { SeriesEdit } from '$lib/server/db/series/series';
@@ -16,15 +16,18 @@ function deleteObjKeyInArray<T extends Record<K, unknown>, K extends keyof T>(ob
 	return obj;
 }
 
-function deleteKeysFromBookEdit(book: BookEdit) {
+function deleteKeysFromBookEdit(book: BookEdit | BookHistEdit) {
 	deleteObjKey(book, 'id');
 	deleteObjKeyInArray(book['titles'], 'book_id');
 	deleteObjKeyInArray(book['editions'], 'book_id');
+	if ('legacy_image_id' in book) {
+		deleteObjKey(book, 'legacy_image_id');
+	}
 }
 
 export function setupBookEditObjsForEqualityTest(
-	book1: BookEdit,
-	book2: BookEdit,
+	book1: BookEdit | BookHistEdit,
+	book2: BookEdit | BookHistEdit,
 ): [unknown, unknown] {
 	deleteKeysFromBookEdit(book1);
 	deleteKeysFromBookEdit(book2);

@@ -1,11 +1,6 @@
 <script lang="ts">
 	import type { bookSchema } from '$lib/server/zod/schema';
-	import SuperDebug, {
-		fileProxy,
-		superForm,
-		type Infer,
-		type SuperValidated,
-	} from 'sveltekit-superforms';
+	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import type { BookEdit } from '$lib/server/db/books/books';
 	import Hr from '$lib/components/layout/Hr.svelte';
@@ -15,12 +10,7 @@
 	import type { User } from '$lib/server/lucia/lucia';
 	import BookEditionStaffInput from './BookEditionStaffInput.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
-	import { languageNames, languagesArray } from '$lib/db/dbConsts';
-	import SelectField from '../SelectField.svelte';
-	import { buildImageUrl } from '$lib/components/book/book';
-	import TextField from '../TextField.svelte';
 	import TitlesInput from './TitlesInput.svelte';
-	import CheckboxField from '../CheckboxField.svelte';
 
 	interface Props {
 		book: BookEdit | undefined;
@@ -46,26 +36,9 @@
 	const { form, enhance, delayed, submitting, errors } = sForm;
 
 	let submitButtonText = $derived(type === 'add' ? 'Submit' : 'Submit edit');
-
-	const file = fileProxy(form, 'image');
-
-	function clearFileInput() {
-		const el = document.querySelector("input[type='file']") as HTMLInputElement | null;
-		if (el) {
-			el.value = '';
-		}
-	}
 </script>
 
-<!-- <SuperDebug data={$form} /> -->
-
-<form
-	method="post"
-	class="flex flex-col gap-4"
-	enctype="multipart/form-data"
-	action={actionUrl}
-	use:enhance
->
+<form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
 	{#if book && type === 'edit'}
 		<h1 class="text-xl font-bold">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
 	{:else}
@@ -96,20 +69,6 @@
 		textareaRows={4}
 		placeholder="Description (Japanese)"
 		labelId="descriptionjp-md"
-	/>
-
-	<SelectField
-		form={sForm}
-		field="olang"
-		dropdownOptions={languagesArray.map((item) => ({
-			display: languageNames[item],
-			value: item,
-		}))}
-		selectedValue={bookForm.data.olang}
-		label="Language"
-		showRequiredSymbolIfRequired={false}
-		resetPadding={true}
-		fit={true}
 	/>
 
 	<Hr />

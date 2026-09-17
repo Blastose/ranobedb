@@ -9,11 +9,11 @@ import {
 	type Diff,
 } from '$lib/components/history/utils.js';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
-import type { BookEdit } from './books';
+import type { BookHistEdit } from './books';
 
 export function getBookDiffs(params: {
-	prevBookHistEdit: BookEdit;
-	bookHistEdit: BookEdit;
+	prevBookHistEdit: BookHistEdit;
+	bookHistEdit: BookHistEdit;
 	displayPrefs: DisplayPrefs;
 }) {
 	const { prevBookHistEdit, bookHistEdit, displayPrefs } = params;
@@ -88,9 +88,9 @@ export function getBookDiffs(params: {
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
-			words1: prevBookHistEdit.image_obj?.filename?.replace('.jpg', '')?.toString(),
-			words2: bookHistEdit.image_obj?.filename?.replace('.jpg', '')?.toString(),
-			name: 'Image',
+			words1: prevBookHistEdit.legacy_image_id?.toString(),
+			words2: bookHistEdit.legacy_image_id?.toString(),
+			name: 'Image (legacy; unused)',
 		}),
 	);
 	pushIfNotUndefined(

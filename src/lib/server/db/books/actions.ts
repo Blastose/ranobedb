@@ -16,8 +16,6 @@ import type {
 import { hasVisibilityPerms, permissions } from '$lib/db/permissions';
 import { ChangePermissionError } from '../errors/errors';
 import { jsonArrayFrom } from 'kysely/helpers/postgres';
-import { generateNanoid, resizeImage, saveImageToR2 } from '../images/upload';
-import sizeOf from 'image-size';
 
 export class DBBookActions {
 	ranobeDB: RanobeDB;
@@ -32,11 +30,11 @@ export class DBBookActions {
 	}
 
 	async editBook(data: { book: Infer<typeof bookSchema>; id: number }, user: User) {
-		const uploadImage = await this.ranobeDB.runTransaction(async (trx) => {
+		await this.ranobeDB.runTransaction(async (trx) => {
 			const currentBook = await trx
 				.selectFrom('book')
 				.where('book.id', '=', data.id)
-				.select(['book.hidden', 'book.locked'])
+				.select(['book.hidden', 'book.locked', 'book.image_id'])
 				.select((eb) => [
 					jsonArrayFrom(
 						eb
@@ -73,52 +71,6 @@ export class DBBookActions {
 				user,
 			);
 
-			// If data.book.image_id_manual then get id (int) and use that
-			// else if data.book.image (user uploaded image) then add image and use that
-			// else use the old image_id
-			let uploadImage: {
-				buff: Buffer<ArrayBufferLike>;
-				filename: string;
-			} | null = null;
-			let image_id = data.book.image_id;
-			let resized_img_buff: Buffer<ArrayBufferLike> | null = null;
-			if (data.book.image) {
-				const img_buff = new Uint8Array(await data.book.image.arrayBuffer());
-				resized_img_buff = await resizeImage(img_buff);
-
-				const { height, width } = sizeOf(resized_img_buff);
-				if (!height || !width || height > 2000) {
-					throw new Error('Bad image uploaded');
-				}
-				const insertedImg = await trx
-					.insertInto('image')
-					.values({
-						filename: generateNanoid() + '.jpg',
-						height: height,
-						nsfw: data.book.image_nsfw ?? false,
-						spoiler: true,
-						width: width,
-					})
-					.returning(['image.id', 'image.filename'])
-					.executeTakeFirstOrThrow();
-				image_id = insertedImg.id;
-
-				uploadImage = {
-					buff: resized_img_buff,
-					filename: insertedImg.filename,
-				};
-			} else if (data.book.image_id_manual) {
-				const existing_image = await trx
-					.selectFrom('image')
-					.where('image.filename', '=', `${data.book.image_id_manual}.jpg`)
-					.select('image.id')
-					.executeTakeFirst();
-				if (!existing_image) {
-					throw new Error('Invalid image id');
-				}
-				image_id = existing_image.id;
-			}
-
 			await trx
 				.updateTable('book')
 				.set({
@@ -126,8 +78,7 @@ export class DBBookActions {
 					description_ja: data.book.description_ja ?? '',
 					hidden,
 					locked,
-					image_id: image_id,
-					olang: data.book.olang,
+					olang: 'ja',
 				})
 				.where('book.id', '=', data.id)
 				.executeTakeFirstOrThrow();
@@ -138,10 +89,10 @@ export class DBBookActions {
 					description: data.book.description ?? '',
 					description_ja: data.book.description_ja ?? '',
 					change_id: change.change_id,
-					image_id: image_id,
+					image_id: currentBook.image_id,
 					release_date: 99999999,
 					c_release_date: 99999999,
-					olang: data.book.olang,
+					olang: 'ja',
 				})
 				.executeTakeFirstOrThrow();
 
@@ -225,67 +176,14 @@ export class DBBookActions {
 			if (bookStaffAliasesHist.length > 0) {
 				await trx.insertInto('book_staff_alias_hist').values(bookStaffAliasesHist).execute();
 			}
-
-			return uploadImage;
 		});
-
-		if (uploadImage) {
-			await saveImageToR2(uploadImage.filename, uploadImage.buff);
-		}
 	}
 
 	async addBook(data: { book: Infer<typeof bookSchema> }, user: User) {
-		const res = await this.ranobeDB.runTransaction(async (trx) => {
+		return await this.ranobeDB.runTransaction(async (trx) => {
 			const canChangeVisibility = permissions[user.role].includes('visibility');
 			const hidden = canChangeVisibility ? data.book.hidden : false;
 			const locked = canChangeVisibility ? data.book.hidden || data.book.locked : false;
-
-			// TODO Copied from above; can refactor
-			// If data.book.image_id_manual then get id (int) and use that
-			// else if data.book.image (user uploaded image) then add image and use that
-			// else use the old image_id
-			let uploadImage: {
-				buff: Buffer<ArrayBufferLike>;
-				filename: string;
-			} | null = null;
-			let image_id = data.book.image_id;
-			let resized_img_buff: Buffer<ArrayBufferLike> | null = null;
-			if (data.book.image) {
-				const img_buff = new Uint8Array(await data.book.image.arrayBuffer());
-				resized_img_buff = await resizeImage(img_buff);
-
-				const { height, width } = sizeOf(resized_img_buff);
-				if (!height || !width || height > 2000) {
-					throw new Error('Bad image uploaded');
-				}
-				const insertedImg = await trx
-					.insertInto('image')
-					.values({
-						filename: generateNanoid() + '.jpg',
-						height: height,
-						nsfw: data.book.image_nsfw ?? false,
-						spoiler: true,
-						width: width,
-					})
-					.returning(['image.id', 'image.filename'])
-					.executeTakeFirstOrThrow();
-				image_id = insertedImg.id;
-
-				uploadImage = {
-					buff: resized_img_buff,
-					filename: insertedImg.filename,
-				};
-			} else if (data.book.image_id_manual) {
-				const existing_image = await trx
-					.selectFrom('image')
-					.where('image.filename', '=', `${data.book.image_id_manual}.jpg`)
-					.select('image.id')
-					.executeTakeFirst();
-				if (!existing_image) {
-					throw new Error('Invalid image id');
-				}
-				image_id = existing_image.id;
-			}
 
 			const insertedBook = await trx
 				.insertInto('book')
@@ -294,10 +192,9 @@ export class DBBookActions {
 					locked,
 					description: data.book.description ?? '',
 					description_ja: data.book.description_ja ?? '',
-					image_id: image_id,
 					release_date: 99999999,
 					c_release_date: data.book.c_release_date ?? 99999999,
-					olang: data.book.olang,
+					olang: 'ja',
 				})
 				.returning('book.id')
 				.executeTakeFirstOrThrow();
@@ -320,10 +217,9 @@ export class DBBookActions {
 					change_id: change.change_id,
 					description: data.book.description ?? '',
 					description_ja: data.book.description_ja ?? '',
-					image_id: image_id,
 					release_date: 99999999,
 					c_release_date: 99999999,
-					olang: data.book.olang,
+					olang: 'ja',
 				})
 				.executeTakeFirstOrThrow();
 			const bookTitleInsert = data.book.titles.map((item) => {
@@ -401,13 +297,7 @@ export class DBBookActions {
 				await trx.insertInto('book_staff_alias_hist').values(bookStaffAliasesHist).execute();
 			}
 
-			return { id: insertedBook.id, uploadImage };
+			return insertedBook.id;
 		});
-
-		if (res.uploadImage) {
-			await saveImageToR2(res.uploadImage.filename, res.uploadImage.buff);
-		}
-
-		return res.id;
 	}
 }

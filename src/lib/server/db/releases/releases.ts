@@ -82,8 +82,8 @@ export class DBReleases {
 									.innerJoin('book', 'book.id', 'release_book.book_id')
 									.whereRef('release_book.release_id', '=', 'release.id')
 									.where('book.hidden', '=', false)
-									.where('book.image_id', 'is not', null)
-									.select('book.image_id')
+									.where('book.c_image_id', 'is not', null)
+									.select('book.c_image_id')
 									.orderBy('release_book.book_id')
 									.limit(1),
 							),
@@ -141,7 +141,7 @@ export class DBReleases {
 								eb
 									.selectFrom('image')
 									.selectAll('image')
-									.whereRef('image.id', '=', 'cte_book.image_id')
+									.whereRef('image.id', '=', 'cte_book.c_image_id')
 									.limit(1),
 							).as('image'),
 						)
@@ -249,7 +249,7 @@ export class DBReleases {
 								eb
 									.selectFrom('image')
 									.selectAll('image')
-									.whereRef('image.id', '=', 'cte_book.image_id')
+									.whereRef('image.id', '=', 'cte_book.c_image_id')
 									.limit(1),
 							).as('image'),
 						)
