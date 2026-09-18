@@ -314,7 +314,10 @@ export const load = async () => {
         hidden: boolean;
         locked: boolean;
         description: string;
+        duration: number | null;
+        image_id: number | null;
         release_date: number;
+        release_date_parsed: string | null;
         website: string | null;
         bookwalker: string | null;
         format: "digital" | "print" | "audio";
@@ -345,7 +348,10 @@ export const load = async () => {
         hidden: boolean;
         locked: boolean;
         description: string;
+        duration: number | null;
+        image_id: number | null;
         release_date: number;
+        release_date_parsed: string | null;
         website: string | null;
         bookwalker: string | null;
         format: "digital" | "print" | "audio";
@@ -353,6 +359,14 @@ export const load = async () => {
         isbn13: string | null;
         amazon: string | null;
         rakuten: string | null;
+        image: {
+            id: number;
+            filename: string;
+            height: number;
+            nsfw: boolean;
+            spoiler: boolean;
+            width: number;
+        } | null;
         publishers: {
             publisher_type: "publisher" | "imprint";
             id: number;
@@ -367,6 +381,7 @@ export const load = async () => {
             title_orig: string | null;
             romaji_orig: string | null;
             sort_order: number | null;
+            rtype: "complete" | "partial" | "omnibus";
             image: {
                 id: number;
                 filename: string;
