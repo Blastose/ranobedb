@@ -108,6 +108,7 @@ export interface Book {
 	hidden: boolean;
 	id: Generated<number>;
 	image_id: number | null;
+	c_image_id: number | null;
 	olang: Language;
 	locked: boolean;
 	release_date: number;
@@ -295,6 +296,7 @@ export interface Release {
 	format: ReleaseFormat;
 	hidden: boolean;
 	id: Generated<number>;
+	image_id: number | null;
 	isbn13: string | null;
 	lang: Language;
 	locked: boolean;
@@ -326,6 +328,7 @@ export interface ReleaseHist {
 	description: string;
 	duration: number | null;
 	format: ReleaseFormat;
+	image_id: number | null;
 	isbn13: string | null;
 	lang: Language;
 	pages: number | null;

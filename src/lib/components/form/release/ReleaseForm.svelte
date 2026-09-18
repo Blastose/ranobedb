@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { releaseSchema } from '$lib/server/zod/schema';
-	import SuperDebug, { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
+	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import TextField from '../TextField.svelte';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import Hr from '$lib/components/layout/Hr.svelte';
@@ -18,6 +18,7 @@
 	import NameDisplay from '$lib/components/display/NameDisplay.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
 	import LinkInput from '../LinkInput.svelte';
+	import ReleaseImageInput, { type RelatedReleaseImage } from './ReleaseImageInput.svelte';
 
 	interface Props {
 		release: ReleaseEdit | undefined;
@@ -25,9 +26,17 @@
 		type: 'add' | 'edit';
 		user: User | null;
 		actionUrl?: string | undefined;
+		relatedReleaseImages?: RelatedReleaseImage[];
 	}
 
-	let { release, releaseForm, type, user, actionUrl = undefined }: Props = $props();
+	let {
+		release,
+		releaseForm,
+		type,
+		user,
+		actionUrl = undefined,
+		relatedReleaseImages: releaseImageOptions = [],
+	}: Props = $props();
 
 	// svelte-ignore state_referenced_locally
 	const sForm = superForm(releaseForm, {
@@ -59,7 +68,13 @@
 
 <!-- <SuperDebug data={$form} /> -->
 
-<form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
+<form
+	method="post"
+	class="flex flex-col gap-4"
+	enctype="multipart/form-data"
+	action={actionUrl}
+	use:enhance
+>
 	{#if release && type === 'edit'}
 		<h1 class="text-xl font-bold">Editing <NameDisplay obj={release} /></h1>
 	{:else}
@@ -188,6 +203,10 @@
 
 	<ReleaseBookInput form={sForm} />
 	<ReleasePublisherInput form={sForm} field="publishers" />
+
+	<Hr />
+
+	<ReleaseImageInput form={sForm} {release} relatedReleaseImages={releaseImageOptions} />
 
 	<Hr />
 

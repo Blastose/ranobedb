@@ -269,7 +269,7 @@ export class DBSeries {
 							jsonObjectFrom(
 								eb
 									.selectFrom('image')
-									.whereRef('image.id', '=', 'book.image_id')
+									.whereRef('image.id', '=', 'book.c_image_id')
 									.selectAll('image')
 									.limit(1),
 							).as('image'),
@@ -433,7 +433,7 @@ export class DBSeries {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
-							'cte_book.image_id',
+							'cte_book.c_image_id',
 							'cte_book.lang',
 							'cte_book.c_release_date',
 							'cte_book.c_release_dates',
@@ -444,7 +444,7 @@ export class DBSeries {
 							jsonObjectFrom(
 								eb
 									.selectFrom('image')
-									.whereRef('image.id', '=', 'cte_book.image_id')
+									.whereRef('image.id', '=', 'cte_book.c_image_id')
 									.selectAll('image')
 									.limit(1),
 							).as('image'),
@@ -787,7 +787,7 @@ export class DBSeries {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
-							'cte_book.image_id',
+							'cte_book.c_image_id',
 							'cte_book.lang',
 							'cte_book.c_release_date',
 							'cte_book.c_release_dates',
@@ -798,7 +798,7 @@ export class DBSeries {
 							jsonObjectFrom(
 								eb
 									.selectFrom('image')
-									.whereRef('image.id', '=', 'cte_book.image_id')
+									.whereRef('image.id', '=', 'cte_book.c_image_id')
 									.selectAll('image')
 									.limit(1),
 							).as('image'),
@@ -1034,7 +1034,7 @@ export class DBSeries {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
-							'cte_book.image_id',
+							'cte_book.c_image_id',
 							'cte_book.lang',
 							'cte_book.c_release_date',
 							'series_book.book_type',
@@ -1207,7 +1207,7 @@ export class DBSeries {
 							'cte_book.title_orig',
 							'cte_book.romaji',
 							'cte_book.romaji_orig',
-							'cte_book.image_id',
+							'cte_book.c_image_id',
 							'cte_book.lang',
 							'cte_book.c_release_date',
 							'series_book_hist.book_type',

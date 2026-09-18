@@ -128,22 +128,6 @@
 					<BookEditionStaffInput form={sForm as any} />
 					<StaffNotInDbInput form={sForm} />
 				</section>
-
-				<section>
-					<h3 class="font-bold">Cover image</h3>
-					<div class="flex flex-col gap-2">
-						<img src={$form.img_url} alt="" width="120" />
-						<CheckboxField form={sForm} field={'use_img'} label="Use image" />
-						{#if $form.use_img}
-							<CheckboxField
-								form={sForm}
-								field={'image_nsfw'}
-								label="Mark image as NSFW"
-								showRequiredSymbolIfRequired={false}
-							/>
-						{/if}
-					</div>
-				</section>
 			</div>
 		{/if}
 	</section>
@@ -154,6 +138,22 @@
 		<h2 class="text-xl font-bold">Release data</h2>
 
 		<div class="flex flex-col gap-4">
+			<section>
+				<h3 class="font-bold">Cover image</h3>
+				<div class="flex flex-col gap-2">
+					<img src={$form.img_url} alt="" width="120" />
+					<CheckboxField form={sForm} field={'use_img'} label="Use image" />
+					{#if $form.use_img}
+						<CheckboxField
+							form={sForm}
+							field={'image_nsfw'}
+							label="Mark image as NSFW"
+							showRequiredSymbolIfRequired={false}
+						/>
+					{/if}
+				</div>
+			</section>
+
 			<TextField form={sForm} type="text" field="title" label="Title" placeholder="Title" />
 			<TextField
 				form={sForm}

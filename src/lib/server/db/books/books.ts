@@ -181,7 +181,7 @@ export class DBBooks {
 								eb
 									.selectFrom('image')
 									.selectAll('image')
-									.whereRef('image.id', '=', 'cte_book_2.image_id')
+									.whereRef('image.id', '=', 'cte_book_2.c_image_id')
 									.limit(1),
 							).as('image'),
 						)
@@ -271,7 +271,7 @@ export class DBBooks {
 				'cte_book.description',
 				'cte_book.description_ja',
 				'cte_book.id',
-				'cte_book.image_id',
+				'cte_book.c_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -288,7 +288,7 @@ export class DBBooks {
 					eb
 						.selectFrom('image')
 						.selectAll('image')
-						.whereRef('image.id', '=', 'cte_book.image_id')
+						.whereRef('image.id', '=', 'cte_book.c_image_id')
 						.limit(1),
 				).as('image'),
 				jsonObjectFrom(
@@ -452,11 +452,12 @@ export class DBBooks {
 			)
 			.selectFrom('cte_book')
 			.innerJoin('change', 'change.id', 'cte_book.id')
+			.innerJoin('book as current_book', 'current_book.id', 'change.item_id')
 			.select([
 				'cte_book.description',
 				'cte_book.description_ja',
 				'cte_book.id',
-				'cte_book.image_id',
+				'current_book.c_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -473,7 +474,7 @@ export class DBBooks {
 					eb
 						.selectFrom('image')
 						.selectAll('image')
-						.whereRef('image.id', '=', 'cte_book.image_id')
+						.whereRef('image.id', '=', 'current_book.c_image_id')
 						.limit(1),
 				).as('image'),
 				jsonObjectFrom(
@@ -642,12 +643,10 @@ export class DBBooks {
 		return this.ranobeDB.db
 			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
 			.selectFrom('cte_book')
-			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.select([
 				'cte_book.description',
 				'cte_book.description_ja',
 				'cte_book.id',
-				'cte_book.image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -657,18 +656,8 @@ export class DBBooks {
 				'cte_book.olang',
 				'cte_book.locked',
 				'cte_book.hidden',
-				'image.filename',
-				'image.height',
-				'image.width',
 			])
 			.select((eb) => [
-				jsonObjectFrom(
-					eb
-						.selectFrom('image')
-						.selectAll('image')
-						.whereRef('image.id', '=', 'cte_book.image_id')
-						.limit(1),
-				).as('image_obj'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('book_title')
@@ -725,13 +714,12 @@ export class DBBooks {
 					.where('change.item_name', '=', 'book'),
 			)
 			.selectFrom('cte_book')
-			.leftJoin('image', 'cte_book.image_id', 'image.id')
 			.innerJoin('change', 'change.id', 'cte_book.id')
 			.select([
 				'cte_book.description',
 				'cte_book.description_ja',
 				'cte_book.id',
-				'cte_book.image_id',
+				'cte_book.image_id as legacy_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -741,18 +729,8 @@ export class DBBooks {
 				'cte_book.olang',
 				'change.ilock as locked',
 				'change.ihid as hidden',
-				'image.filename',
-				'image.height',
-				'image.width',
 			])
 			.select((eb) => [
-				jsonObjectFrom(
-					eb
-						.selectFrom('image')
-						.selectAll('image')
-						.whereRef('image.id', '=', 'cte_book.image_id')
-						.limit(1),
-				).as('image_obj'),
 				jsonArrayFrom(
 					eb
 						.selectFrom('book_title_hist')
@@ -891,7 +869,7 @@ export class DBBooks {
 			.selectFrom('cte_book')
 			.select([
 				'cte_book.id',
-				'cte_book.image_id',
+				'cte_book.c_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -905,7 +883,7 @@ export class DBBooks {
 					eb
 						.selectFrom('image')
 						.selectAll('image')
-						.whereRef('image.id', '=', 'cte_book.image_id')
+						.whereRef('image.id', '=', 'cte_book.c_image_id')
 						.limit(1),
 				).as('image'),
 			)
@@ -949,3 +927,4 @@ export type BookOne = InferResult<ReturnType<DBBooks['getBook']>>[number];
 export type BookSeries = InferResult<ReturnType<DBBooks['getBookSeries']>>[number];
 export type Book = InferResult<ReturnType<DBBooks['getBooks']>>[number];
 export type BookEdit = InferResult<ReturnType<DBBooks['getBookEdit']>>[number];
+export type BookHistEdit = InferResult<ReturnType<DBBooks['getBookHistEdit']>>[number];

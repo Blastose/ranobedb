@@ -242,6 +242,7 @@ CREATE TABLE public.profile_image (
 CREATE TABLE public.book (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     image_id integer,
+    c_image_id integer,
     release_date integer NOT NULL,
     c_release_date integer NOT NULL,
     olang public.language NOT NULL,
@@ -250,7 +251,8 @@ CREATE TABLE public.book (
     description_ja text NOT NULL,
     description text NOT NULL,
     c_release_dates JSONB NOT NULL DEFAULT '{}'::jsonb,
-    FOREIGN KEY (image_id) REFERENCES public.image(id)
+    FOREIGN KEY (image_id) REFERENCES public.image(id),
+    FOREIGN KEY (c_image_id) REFERENCES public.image(id)
 );
 
 CREATE TABLE public.book_hist (
@@ -435,6 +437,7 @@ CREATE TABLE public.publisher_relation_hist (
 
 CREATE TABLE public.release (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    image_id integer,
     release_date integer NOT NULL,
     pages integer,
     duration integer,
@@ -449,11 +452,13 @@ CREATE TABLE public.release (
     website text,
     amazon text,
     bookwalker text,
-    rakuten text
+    rakuten text,
+    FOREIGN KEY (image_id) REFERENCES public.image(id)
 );
 
 CREATE TABLE public.release_hist (
     change_id integer NOT NULL,
+    image_id integer,
     release_date integer NOT NULL,
     pages integer,
     duration integer,
@@ -467,6 +472,7 @@ CREATE TABLE public.release_hist (
     amazon text,
     bookwalker text,
     rakuten text,
+    FOREIGN KEY (image_id) REFERENCES public.image(id),
     FOREIGN KEY (change_id) REFERENCES public.change(id),
     PRIMARY KEY (change_id)
 );

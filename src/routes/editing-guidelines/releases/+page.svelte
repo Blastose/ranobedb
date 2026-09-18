@@ -55,6 +55,14 @@
 		</section>
 
 		<section>
+			<h2>Cover image</h2>
+			<p>
+				Use the official cover for the specific release being added. You can reuse the image from an
+				existing release if it's the same. Mark the image as NSFW if appropriate.
+			</p>
+		</section>
+
+		<section>
 			<h2>Links</h2>
 			<section>
 				<h3>Website</h3>

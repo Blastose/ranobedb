@@ -18,5 +18,6 @@
 		type="add"
 		user={data.user}
 		actionUrl="/releases/add"
+		relatedReleaseImages={data.relatedReleaseImages}
 	/>
 </main>

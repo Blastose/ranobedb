@@ -20,6 +20,42 @@ test.describe('edit release mod', () => {
 		await expect(page).toHaveURL('/release/2');
 		await expect(page.locator('.toast-container')).toHaveText('Successfully edited release!');
 	});
+
+	test('Mod can reuse a cover from another release of the same book', async ({ page }) => {
+		await page.goto('/release/4/edit');
+
+		const relatedCover = page.getByRole('button', {
+			name: 'ダンジョンに出会いを求めるのは間違っているだろうか17',
+		});
+		await expect(relatedCover).toHaveAttribute('aria-pressed', 'false');
+		await relatedCover.click();
+		await expect(relatedCover).toHaveAttribute('aria-pressed', 'true');
+		await expect(page.getByLabel('Use existing image from image ID')).toHaveValue('3');
+
+		await page.getByLabel('Edit summary').fill('Reuse the Japanese release cover');
+		await page.locator('main form button[type="submit"]').click();
+
+		await expect(page).toHaveURL('/release/4');
+		await expect(page.locator('.toast-container')).toHaveText('Successfully edited release!');
+
+		await page.goto('/release/4/edit');
+		await expect(page.getByText('Image ID: 3', { exact: true })).toBeVisible();
+	});
+
+	test('Mod can remove the current cover', async ({ page }) => {
+		await page.goto('/release/1/edit');
+		await expect(page.getByText('Image ID: 1', { exact: true })).toBeVisible();
+		await page.getByLabel('Remove cover image').check();
+
+		await page.getByLabel('Edit summary').fill('Remove the current cover');
+		await page.locator('main form button[type="submit"]').click();
+
+		await expect(page).toHaveURL('/release/1');
+		await expect(page.locator('.toast-container')).toHaveText('Successfully edited release!');
+
+		await page.goto('/release/1/edit');
+		await expect(page.getByText('Currently no cover image')).toBeVisible();
+	});
 });
 
 test.describe('edit release user invalid permissions', () => {

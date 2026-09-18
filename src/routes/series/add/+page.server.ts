@@ -31,7 +31,6 @@ export const load = async ({ locals, url }) => {
 					romaji: '',
 				},
 			],
-			olang: 'ja',
 		},
 		zod4(seriesSchema),
 		{

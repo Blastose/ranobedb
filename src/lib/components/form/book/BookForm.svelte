@@ -1,11 +1,6 @@
 <script lang="ts">
 	import type { bookSchema } from '$lib/server/zod/schema';
-	import SuperDebug, {
-		fileProxy,
-		superForm,
-		type Infer,
-		type SuperValidated,
-	} from 'sveltekit-superforms';
+	import { superForm, type Infer, type SuperValidated } from 'sveltekit-superforms';
 	import SubmitButton from '$lib/components/form/SubmitButton.svelte';
 	import type { BookEdit } from '$lib/server/db/books/books';
 	import Hr from '$lib/components/layout/Hr.svelte';
@@ -15,12 +10,7 @@
 	import type { User } from '$lib/server/lucia/lucia';
 	import BookEditionStaffInput from './BookEditionStaffInput.svelte';
 	import TextareaFieldMarkdown from '../TextareaFieldMarkdown.svelte';
-	import { languageNames, languagesArray } from '$lib/db/dbConsts';
-	import SelectField from '../SelectField.svelte';
-	import { buildImageUrl } from '$lib/components/book/book';
-	import TextField from '../TextField.svelte';
 	import TitlesInput from './TitlesInput.svelte';
-	import CheckboxField from '../CheckboxField.svelte';
 
 	interface Props {
 		book: BookEdit | undefined;
@@ -46,26 +36,9 @@
 	const { form, enhance, delayed, submitting, errors } = sForm;
 
 	let submitButtonText = $derived(type === 'add' ? 'Submit' : 'Submit edit');
-
-	const file = fileProxy(form, 'image');
-
-	function clearFileInput() {
-		const el = document.querySelector("input[type='file']") as HTMLInputElement | null;
-		if (el) {
-			el.value = '';
-		}
-	}
 </script>
 
-<!-- <SuperDebug data={$form} /> -->
-
-<form
-	method="post"
-	class="flex flex-col gap-4"
-	enctype="multipart/form-data"
-	action={actionUrl}
-	use:enhance
->
+<form method="post" class="flex flex-col gap-4" action={actionUrl} use:enhance>
 	{#if book && type === 'edit'}
 		<h1 class="text-xl font-bold">Editing {book.title ?? book.title_orig ?? 'book'}</h1>
 	{:else}
@@ -98,20 +71,6 @@
 		labelId="descriptionjp-md"
 	/>
 
-	<SelectField
-		form={sForm}
-		field="olang"
-		dropdownOptions={languagesArray.map((item) => ({
-			display: languageNames[item],
-			value: item,
-		}))}
-		selectedValue={bookForm.data.olang}
-		label="Language"
-		showRequiredSymbolIfRequired={false}
-		resetPadding={true}
-		fit={true}
-	/>
-
 	<Hr />
 
 	<section>
@@ -124,76 +83,7 @@
 	<section class="flex flex-col gap-2">
 		<div>
 			<h2 class="text-xl font-bold">Cover image</h2>
-			{#if book?.image_obj}
-				<p>Current image</p>
-				<p>Image ID: {book.image_obj.filename?.replace('.jpg', '')}</p>
-				<div class="max-w-36">
-					<img src={buildImageUrl(book.image_obj.filename)} alt="" />
-				</div>
-			{:else}
-				<p>Currently no cover image for this book</p>
-			{/if}
-		</div>
-
-		<div>
-			<label class="flex flex-col gap-1">
-				<span>Upload new image (JPEG, PNG, WEBP; max 10MB)</span>
-				<input
-					type="file"
-					name="image"
-					accept="image/png, image/jpeg, image/webp"
-					bind:files={$file}
-					disabled={Boolean($form.image_id_manual)}
-				/>
-			</label>
-			{#if $file && $file.item && $file.item(0)}
-				<p>New image preview</p>
-				<div class="flex gap-2">
-					<div class="max-w-36">
-						<img src={URL.createObjectURL($file.item(0) ?? new Blob())} alt="" />
-					</div>
-					<button
-						class="sub-btn h-fit"
-						type="button"
-						onclick={() => {
-							$file = new DataTransfer().files;
-							clearFileInput();
-						}}>Remove uploaded file</button
-					>
-				</div>
-				<div class="pt-1">
-					<CheckboxField
-						form={sForm}
-						field="image_nsfw"
-						label="Mark image as NSFW"
-						showRequiredSymbolIfRequired={false}
-					/>
-				</div>
-			{/if}
-
-			{#if $errors.image}<span class="error-text-color">{$errors.image}</span>{/if}
-
-			{#if !Boolean($file && $file.item && $file.item(0))}
-				<p>or</p>
-
-				<div class="w-fit">
-					<TextField
-						form={sForm}
-						type="text"
-						field="image_id_manual"
-						label="Use exisiting image from image ID"
-						disabled={Boolean($file && $file.item && $file.item(0))}
-						resetPadding={true}
-					/>
-				</div>
-
-				{#if $form.image_id_manual}
-					<p>Image</p>
-					<div class="max-w-36">
-						<img src={buildImageUrl(`${$form.image_id_manual}.jpg`)} alt="" />
-					</div>
-				{/if}
-			{/if}
+			<p class="text-sm">Cover images had been moved to releases</p>
 		</div>
 	</section>
 

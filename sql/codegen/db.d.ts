@@ -121,8 +121,8 @@ export interface AuthSession {
 }
 
 export interface AuthUser {
-	display_prefs: Generated<Json>;
 	behavior_settings: Generated<Json>;
+	display_prefs: Generated<Json>;
 	home_display_settings: Generated<Json>;
 	id: string;
 	id_numeric: Generated<number>;
@@ -148,6 +148,7 @@ export interface AuthUserPersonalAccessToken {
 }
 
 export interface Book {
+	c_image_id: number | null;
 	c_release_date: number;
 	c_release_dates: Generated<Json>;
 	description: string;
@@ -336,6 +337,7 @@ export interface Release {
 	format: ReleaseFormat;
 	hidden: boolean;
 	id: Generated<number>;
+	image_id: number | null;
 	isbn13: string | null;
 	lang: Language;
 	locked: boolean;
@@ -367,6 +369,7 @@ export interface ReleaseHist {
 	description: string;
 	duration: number | null;
 	format: ReleaseFormat;
+	image_id: number | null;
 	isbn13: string | null;
 	lang: Language;
 	pages: number | null;

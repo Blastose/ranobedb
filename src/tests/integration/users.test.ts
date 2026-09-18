@@ -81,7 +81,6 @@ describe('users', () => {
 					editions: [],
 					hidden: false,
 					locked: false,
-					olang: 'ja',
 					titles: [{ lang: 'ja', official: true, title: 'Title' }],
 				},
 			},

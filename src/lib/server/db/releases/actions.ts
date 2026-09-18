@@ -16,6 +16,65 @@ import type {
 	ReleasePublisherHist,
 } from '$lib/server/db/dbTypes';
 import { getTodayAsDateNumber } from '$lib/components/form/release/releaseDate';
+import { generateNanoid, resizeImage, saveImageToR2 } from '../images/upload';
+import sizeOf from 'image-size';
+import { updateBookImageCache } from '../cron/book';
+
+type PendingImageUpload = {
+	buff: Buffer<ArrayBufferLike>;
+	filename: string;
+};
+
+async function resolveReleaseImage(
+	trx: Transaction<DB>,
+	release: Pick<
+		Infer<typeof releaseSchema>,
+		'image' | 'image_id' | 'image_id_manual' | 'image_nsfw' | 'remove_image'
+	>,
+): Promise<{ imageId: number | null | undefined; uploadImage: PendingImageUpload | null }> {
+	if (release.image) {
+		const imageBuffer = new Uint8Array(await release.image.arrayBuffer());
+		const resizedImageBuffer = await resizeImage(imageBuffer);
+		const { height, width } = sizeOf(resizedImageBuffer);
+
+		if (!height || !width || height > 2000) {
+			throw new Error('Bad image uploaded');
+		}
+
+		const insertedImage = await trx
+			.insertInto('image')
+			.values({
+				filename: generateNanoid() + '.jpg',
+				height,
+				nsfw: release.image_nsfw ?? false,
+				spoiler: true,
+				width,
+			})
+			.returning(['image.id', 'image.filename'])
+			.executeTakeFirstOrThrow();
+
+		return {
+			imageId: insertedImage.id,
+			uploadImage: { buff: resizedImageBuffer, filename: insertedImage.filename },
+		};
+	}
+
+	if (release.image_id_manual) {
+		const existingImage = await trx
+			.selectFrom('image')
+			.where('image.id', '=', release.image_id_manual)
+			.select('image.id')
+			.executeTakeFirst();
+
+		if (!existingImage) throw new Error('Invalid image id');
+		return { imageId: existingImage.id, uploadImage: null };
+	}
+
+	return {
+		imageId: release.remove_image ? null : release.image_id,
+		uploadImage: null,
+	};
+}
 
 async function sendSeriesNotifications(params: {
 	trx: Transaction<DB>;
@@ -33,7 +92,6 @@ async function sendSeriesNotifications(params: {
 				.innerJoin('auth_user', 'auth_user.id', 'user_list_series.user_id')
 				.innerJoin('series', 'series.id', 'series_book.series_id')
 				.innerJoin('book', 'book.id', 'release_book.book_id')
-				.leftJoin('image', 'image.id', 'book.image_id')
 				.where('release.id', '=', release_id)
 				.where('book.id', '=', book_id)
 				.where('release.hidden', '=', false)
@@ -95,7 +153,6 @@ async function sendSeriesNotifications(params: {
 					'release.release_date',
 					'release.id as release_id',
 					'auth_user.display_prefs',
-					'image.filename',
 				])
 				.select(
 					sql<boolean>`
@@ -190,7 +247,6 @@ async function sendStaffNotifications(params: {
 				.innerJoin('auth_user', 'auth_user.id', 'user_list_staff.user_id')
 				.innerJoin('staff', 'staff.id', 'staff_alias.staff_id')
 				.innerJoin('book', 'book.id', 'release_book.book_id')
-				.leftJoin('image', 'image.id', 'book.image_id')
 				.where('release.id', '=', release_id)
 				.where('book.id', '=', book_id)
 				.where('release.hidden', '=', false)
@@ -284,7 +340,6 @@ async function sendStaffNotifications(params: {
 					'release.release_date',
 					'release.id as release_id',
 					'auth_user.display_prefs',
-					'image.filename',
 					'staff_alias.name as staff_name',
 					'staff_alias.romaji as staff_romaji',
 				])
@@ -392,7 +447,7 @@ export class DBReleaseActions {
 	}
 
 	async editRelease(data: { release: Infer<typeof releaseSchema>; id: number }, user: User) {
-		await this.ranobeDB.runTransaction(async (trx) => {
+		const uploadImage = await this.ranobeDB.runTransaction(async (trx) => {
 			const currentRelease = await trx
 				.selectFrom('release')
 				.selectAll('release')
@@ -442,9 +497,12 @@ export class DBReleaseActions {
 				user,
 			);
 
+			const { imageId, uploadImage } = await resolveReleaseImage(trx, data.release);
+
 			await trx
 				.updateTable('release')
 				.set({
+					image_id: imageId,
 					hidden,
 					locked,
 					description: data.release.description ?? '',
@@ -467,6 +525,7 @@ export class DBReleaseActions {
 				.insertInto('release_hist')
 				.values({
 					change_id: change.change_id,
+					image_id: imageId,
 					description: data.release.description ?? '',
 					format: data.release.format,
 					isbn13: data.release.isbn13,
@@ -555,18 +614,32 @@ export class DBReleaseActions {
 			if (release_publisher_add.length > 0) {
 				await trx.insertInto('release_publisher').values(release_publisher_add).execute();
 			}
+
+			await updateBookImageCache(trx, [
+				...currentRelease.books.map((book) => book.id),
+				...data.release.books.map((book) => book.id),
+			]);
+
+			return uploadImage;
 		});
+
+		if (uploadImage) {
+			await saveImageToR2(uploadImage.filename, uploadImage.buff);
+		}
 	}
 
 	async addRelease(data: { release: Infer<typeof releaseSchema> }, user: User) {
-		return await this.ranobeDB.runTransaction(async (trx) => {
+		const res = await this.ranobeDB.runTransaction(async (trx) => {
 			const canChangeVisibility = permissions[user.role].includes('visibility');
 			const hidden = canChangeVisibility ? data.release.hidden : false;
 			const locked = canChangeVisibility ? data.release.hidden || data.release.locked : false;
 
+			const { imageId, uploadImage } = await resolveReleaseImage(trx, data.release);
+
 			const insertedRelease = await trx
 				.insertInto('release')
 				.values({
+					image_id: imageId,
 					hidden,
 					locked,
 					description: data.release.description ?? '',
@@ -601,6 +674,7 @@ export class DBReleaseActions {
 				.insertInto('release_hist')
 				.values({
 					change_id: change.change_id,
+					image_id: imageId,
 					description: data.release.description ?? '',
 					format: data.release.format,
 					isbn13: data.release.isbn13,
@@ -664,7 +738,18 @@ export class DBReleaseActions {
 				await trx.insertInto('release_publisher_hist').values(release_publisher_add_hist).execute();
 			}
 
-			return insertedRelease.id;
+			await updateBookImageCache(
+				trx,
+				data.release.books.map((book) => book.id),
+			);
+
+			return { id: insertedRelease.id, uploadImage };
 		});
+
+		if (res.uploadImage) {
+			await saveImageToR2(res.uploadImage.filename, res.uploadImage.buff);
+		}
+
+		return res.id;
 	}
 }

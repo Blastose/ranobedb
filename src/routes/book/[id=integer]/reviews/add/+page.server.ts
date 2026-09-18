@@ -26,7 +26,7 @@ export const load = async ({ params, locals, url }) => {
 		.getBook(bookId)
 		.clearSelect()
 		.select([
-			'cte_book.image_id',
+			'cte_book.c_image_id',
 			'cte_book.lang',
 			'cte_book.romaji',
 			'cte_book.romaji_orig',
@@ -42,7 +42,7 @@ export const load = async ({ params, locals, url }) => {
 				eb
 					.selectFrom('image')
 					.selectAll('image')
-					.whereRef('image.id', '=', 'cte_book.image_id')
+					.whereRef('image.id', '=', 'cte_book.c_image_id')
 					.limit(1),
 			).as('image'),
 		])

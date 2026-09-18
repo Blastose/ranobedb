@@ -76,7 +76,7 @@
 									{#if copyTo.langs}
 										<DropdownMenu.Sub>
 											<DropdownMenu.SubTrigger class="sidebar-item cursor-pointer items-center">
-												Copy as {toType}
+												Add {toType}
 												<div>
 													<Icon name="chevronRight" width="20" height="20" />
 												</div>
@@ -111,9 +111,7 @@
 									{:else}
 										<DropdownMenu.Item>
 											{#snippet child({ props })}
-												<a {...props} class="sidebar-item" href={getHref(toType)}
-													>Copy as {toType}</a
-												>
+												<a {...props} class="sidebar-item" href={getHref(toType)}>Add {toType}</a>
 											{/snippet}
 										</DropdownMenu.Item>
 									{/if}

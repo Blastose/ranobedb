@@ -7,6 +7,7 @@ import { hasEditPerms, hasVisibilityPerms } from '$lib/db/permissions';
 import { getCurrentVisibilityStatus } from '$lib/server/db/dbHelpers';
 import { db } from '$lib/server/db/db.js';
 import { buildRedirectUrl } from '$lib/utils/url.js';
+import { DBReleases } from '$lib/server/db/releases/releases.js';
 
 export const load = async ({ params, locals, url }) => {
 	if (!locals.user) {
@@ -49,6 +50,9 @@ export const load = async ({ params, locals, url }) => {
 		error(400);
 	}
 	const bookTitle = book.titles.find((v) => v.lang === lang.data.lang) || book.titles.at(0);
+	const relatedReleaseImages = await DBReleases.fromDB(db).getRelatedReleaseImages({
+		bookIds: [bookId],
+	});
 
 	const form = await superValidate(
 		{
@@ -71,5 +75,5 @@ export const load = async ({ params, locals, url }) => {
 		},
 	);
 
-	return { book, form };
+	return { book, form, relatedReleaseImages };
 };

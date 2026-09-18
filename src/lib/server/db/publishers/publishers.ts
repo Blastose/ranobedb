@@ -213,7 +213,7 @@ export class DBPublishers {
 			.clearSelect()
 			.select([
 				'cte_book.id',
-				'cte_book.image_id',
+				'cte_book.c_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -251,13 +251,13 @@ export class DBPublishers {
 					eb
 						.selectFrom('image')
 						.selectAll('image')
-						.whereRef('image.id', '=', 'cte_book.image_id')
+						.whereRef('image.id', '=', 'cte_book.c_image_id')
 						.limit(1),
 				).as('image'),
 			)
 			.groupBy([
 				'cte_book.id',
-				'cte_book.image_id',
+				'cte_book.c_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -344,7 +344,7 @@ export class DBPublishers {
 							jsonObjectFrom(
 								eb
 									.selectFrom('image')
-									.whereRef('image.id', '=', 'book.image_id')
+									.whereRef('image.id', '=', 'book.c_image_id')
 									.selectAll('image')
 									.limit(1),
 							).as('image'),

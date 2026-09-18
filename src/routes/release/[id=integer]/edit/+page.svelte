@@ -15,5 +15,11 @@
 <NoIndex />
 
 <main class="container-rndb">
-	<ReleaseForm releaseForm={data.form} {release} type="edit" user={data.user} />
+	<ReleaseForm
+		releaseForm={data.form}
+		{release}
+		type="edit"
+		user={data.user}
+		relatedReleaseImages={data.relatedReleaseImages}
+	/>
 </main>

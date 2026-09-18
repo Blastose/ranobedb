@@ -18,17 +18,19 @@ export const load = async ({ params }) => {
 		error(404);
 	}
 
-	const books = await db
-		.selectFrom('book')
-		.where('book.image_id', '=', id)
-		.select(['book.id', 'book.hidden'])
+	const releases = await db
+		.selectFrom('release')
+		.where('release.image_id', '=', id)
+		.where('release.hidden', '=', false)
+		.select(['release.id'])
+		.orderBy('release.id')
 		.execute();
 
 	const form = await superValidate({ nsfw: image.nsfw }, zod4(imageContentsSchema));
 
 	return {
 		image,
-		books,
+		releases,
 		form,
 	};
 };

@@ -45,7 +45,7 @@ export const load = async ({ params, locals }) => {
 						jsonObjectFrom(
 							eb
 								.selectFrom('image')
-								.whereRef('image.id', '=', 'cte_book.image_id')
+								.whereRef('image.id', '=', 'cte_book.c_image_id')
 								.selectAll('image')
 								.limit(1),
 						).as('image'),
