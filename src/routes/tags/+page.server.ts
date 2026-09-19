@@ -14,9 +14,9 @@ export const load = async ({ url }) => {
 
 	let query = db
 		.selectFrom('tag')
+		.leftJoin('series_tag', 'series_tag.tag_id', 'tag.id')
 		.selectAll('tag')
-		.select((eb) => eb.fn.count('tag.id').as('count'))
-		.innerJoin('series_tag', 'series_tag.tag_id', 'tag.id')
+		.select((eb) => eb.fn.count('series_tag.series_id').as('count'))
 		.groupBy('tag.id')
 		.orderBy('count', 'desc');
 	if (q) {
