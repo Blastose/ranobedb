@@ -59,7 +59,13 @@
 		{/snippet}
 	</DropdownMenu.Trigger>
 
-	<DropdownMenu.Content forceMount side="bottom" align="center" sideOffset={6}>
+	<DropdownMenu.Content
+		forceMount
+		side="bottom"
+		align="center"
+		sideOffset={6}
+		preventOverflowTextSelection={false}
+	>
 		{#snippet child({ props, wrapperProps, open })}
 			{#if open}
 				<div {...wrapperProps}>

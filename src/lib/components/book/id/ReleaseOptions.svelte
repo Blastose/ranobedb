@@ -68,7 +68,14 @@
 	</DropdownMenu.Trigger>
 
 	<DropdownMenu.Portal>
-		<DropdownMenu.Content forceMount {side} {align} sideOffset={6} preventScroll={false}>
+		<DropdownMenu.Content
+			forceMount
+			{side}
+			{align}
+			sideOffset={6}
+			preventScroll={false}
+			preventOverflowTextSelection={false}
+		>
 			{#snippet child({ wrapperProps, props, open: contentOpen })}
 				{#if contentOpen}
 					<div {...wrapperProps}>

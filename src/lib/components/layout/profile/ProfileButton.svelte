@@ -35,7 +35,13 @@
 	</DropdownMenu.Trigger>
 
 	<DropdownMenu.Portal>
-		<DropdownMenu.Content forceMount side="bottom" align="end" sideOffset={16}>
+		<DropdownMenu.Content
+			forceMount
+			side="bottom"
+			align="end"
+			sideOffset={16}
+			preventOverflowTextSelection={false}
+		>
 			{#snippet child({ wrapperProps, props, open: contentOpen })}
 				{#if contentOpen}
 					<div {...wrapperProps}>
