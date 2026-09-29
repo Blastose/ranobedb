@@ -10,40 +10,40 @@ import {
 	type Diff,
 } from '$lib/components/history/utils.js';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
-import type { ReleaseEdit } from './releases';
+import type { ReleaseHistFull } from './releases';
 
 export function getReleaseDiffs(params: {
-	prevReleaseHistEdit: ReleaseEdit;
-	releaseHistEdit: ReleaseEdit;
+	prevReleaseHistFull: ReleaseHistFull;
+	releaseHistFull: ReleaseHistFull;
 	displayPrefs: DisplayPrefs;
 }) {
-	const { prevReleaseHistEdit, releaseHistEdit, displayPrefs } = params;
+	const { prevReleaseHistFull, releaseHistFull, displayPrefs } = params;
 	const diffs: Diff[] = [];
 	pushIfNotUndefined(
 		diffs,
 		getDiffChars({
 			name: 'Title',
-			words1: prevReleaseHistEdit.title,
-			words2: releaseHistEdit.title,
+			words1: prevReleaseHistFull.title,
+			words2: releaseHistFull.title,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffChars({
 			name: 'Romaji',
-			words1: prevReleaseHistEdit.romaji,
-			words2: releaseHistEdit.romaji,
+			words1: prevReleaseHistFull.romaji,
+			words2: releaseHistFull.romaji,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffLines({
 			lines1: generateReleaseBookChangeStringFromBooks(
-				prevReleaseHistEdit['books'],
+				prevReleaseHistFull['books'],
 				displayPrefs.title_prefs,
 			),
 			lines2: generateReleaseBookChangeStringFromBooks(
-				releaseHistEdit['books'],
+				releaseHistFull['books'],
 				displayPrefs.title_prefs,
 			),
 			name: 'Books',
@@ -53,11 +53,11 @@ export function getReleaseDiffs(params: {
 		diffs,
 		getDiffLines({
 			lines1: generateReleasePublisherChangeStringFromPublishers(
-				prevReleaseHistEdit['publishers'],
+				prevReleaseHistFull['publishers'],
 				displayPrefs.names,
 			),
 			lines2: generateReleasePublisherChangeStringFromPublishers(
-				releaseHistEdit['publishers'],
+				releaseHistFull['publishers'],
 				displayPrefs.names,
 			),
 			name: 'Publishers',
@@ -67,112 +67,112 @@ export function getReleaseDiffs(params: {
 		diffs,
 		getDiffWords({
 			name: 'Hidden',
-			words1: prevReleaseHistEdit.hidden.toString(),
-			words2: releaseHistEdit.hidden.toString(),
+			words1: prevReleaseHistFull.hidden.toString(),
+			words2: releaseHistFull.hidden.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Locked',
-			words1: prevReleaseHistEdit.locked.toString(),
-			words2: releaseHistEdit.locked.toString(),
+			words1: prevReleaseHistFull.locked.toString(),
+			words2: releaseHistFull.locked.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Image',
-			words1: prevReleaseHistEdit.image_obj?.id?.toString(),
-			words2: releaseHistEdit.image_obj?.id?.toString(),
+			words1: prevReleaseHistFull.image_id?.toString(),
+			words2: releaseHistFull.image_id?.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Format',
-			words1: prevReleaseHistEdit.format,
-			words2: releaseHistEdit.format,
+			words1: prevReleaseHistFull.format,
+			words2: releaseHistFull.format,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffChars({
 			name: 'ISBN13',
-			words1: prevReleaseHistEdit.isbn13,
-			words2: releaseHistEdit.isbn13,
+			words1: prevReleaseHistFull.isbn13,
+			words2: releaseHistFull.isbn13,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Language',
-			words1: prevReleaseHistEdit.lang,
-			words2: releaseHistEdit.lang,
+			words1: prevReleaseHistFull.lang,
+			words2: releaseHistFull.lang,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffChars({
 			name: 'Pages',
-			words1: prevReleaseHistEdit.pages?.toString(),
-			words2: releaseHistEdit.pages?.toString(),
+			words1: prevReleaseHistFull.pages?.toString(),
+			words2: releaseHistFull.pages?.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffChars({
 			name: 'Duration',
-			words1: formatDuration(prevReleaseHistEdit.duration),
-			words2: formatDuration(releaseHistEdit.duration),
+			words1: formatDuration(prevReleaseHistFull.duration),
+			words2: formatDuration(releaseHistFull.duration),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffChars({
 			name: 'Release date',
-			words1: new DateNumber(prevReleaseHistEdit.release_date).getDateFormatted(),
-			words2: new DateNumber(releaseHistEdit.release_date).getDateFormatted(),
+			words1: new DateNumber(prevReleaseHistFull.release_date).getDateFormatted(),
+			words2: new DateNumber(releaseHistFull.release_date).getDateFormatted(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Note',
-			words1: prevReleaseHistEdit.description,
-			words2: releaseHistEdit.description,
+			words1: prevReleaseHistFull.description,
+			words2: releaseHistFull.description,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Website',
-			words1: prevReleaseHistEdit.website,
-			words2: releaseHistEdit.website,
+			words1: prevReleaseHistFull.website,
+			words2: releaseHistFull.website,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Amazon',
-			words1: prevReleaseHistEdit.amazon,
-			words2: releaseHistEdit.amazon,
+			words1: prevReleaseHistFull.amazon,
+			words2: releaseHistFull.amazon,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'BookWalker',
-			words1: prevReleaseHistEdit.bookwalker,
-			words2: releaseHistEdit.bookwalker,
+			words1: prevReleaseHistFull.bookwalker,
+			words2: releaseHistFull.bookwalker,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Rakuten',
-			words1: prevReleaseHistEdit.rakuten,
-			words2: releaseHistEdit.rakuten,
+			words1: prevReleaseHistFull.rakuten,
+			words2: releaseHistFull.rakuten,
 		}),
 	);
 

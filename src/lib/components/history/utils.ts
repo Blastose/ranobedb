@@ -19,16 +19,26 @@ export function generateLink(href: string, content: string) {
 }
 
 function generateSeriesBookChangeString(
-	book: TitleDisplay & { sort_order: number; id: number; book_type: SeriesBookType },
+	book: TitleDisplay & {
+		sort_order: number;
+		id: number;
+		book_type: SeriesBookType;
+		hidden?: boolean;
+	},
 	prefs: DisplayPrefs['title_prefs'],
 ) {
 	return `${generateLink(
 		`/book/${book.id}`,
 		getTitleDisplay({ obj: book, prefs }),
-	)} ${`[#${book.sort_order}]`} [${book.book_type}]`;
+	)}${book.hidden ? ' [Deleted]' : ''} ${`[#${book.sort_order}]`} [${book.book_type}]`;
 }
 export function generateSeriesBookChangeStringFromBooks(
-	books: (TitleDisplay & { sort_order: number; id: number; book_type: SeriesBookType })[],
+	books: (TitleDisplay & {
+		sort_order: number;
+		id: number;
+		book_type: SeriesBookType;
+		hidden?: boolean;
+	})[],
 	prefs: DisplayPrefs['title_prefs'],
 ) {
 	let str = '';
@@ -38,16 +48,16 @@ export function generateSeriesBookChangeStringFromBooks(
 	return str.trim();
 }
 function generateReleaseBookChangeString(
-	book: TitleDisplay & { rtype: ReleaseType; id: number },
+	book: TitleDisplay & { rtype: ReleaseType; id: number; hidden?: boolean },
 	prefs: DisplayPrefs['title_prefs'],
 ) {
 	return `${generateLink(
 		`/book/${book.id}`,
 		getTitleDisplay({ obj: book, prefs }),
-	)} ${` [${book.rtype}]`}`;
+	)}${book.hidden ? ' [Deleted]' : ''} ${` [${book.rtype}]`}`;
 }
 export function generateReleaseBookChangeStringFromBooks(
-	books: (TitleDisplay & { rtype: ReleaseType; id: number })[],
+	books: (TitleDisplay & { rtype: ReleaseType; id: number; hidden?: boolean })[],
 	prefs: DisplayPrefs['title_prefs'],
 ) {
 	let str = '';
@@ -62,13 +72,14 @@ function generateReleasePublisherChangeString(
 		name: string;
 		romaji: string | null;
 		publisher_type: ReleasePublisherType;
+		hidden?: boolean;
 	},
 	prefs: DisplayPrefs['names'],
 ) {
 	return `${generateLink(
 		`/publisher/${publisher.id}`,
 		getNameDisplay({ obj: publisher, prefs }),
-	)} ${` [${publisher.publisher_type}]`}`;
+	)}${publisher.hidden ? ' [Deleted]' : ''} ${` [${publisher.publisher_type}]`}`;
 }
 export function generateReleasePublisherChangeStringFromPublishers(
 	publishers: {
@@ -76,6 +87,7 @@ export function generateReleasePublisherChangeStringFromPublishers(
 		name: string;
 		romaji: string | null;
 		publisher_type: ReleasePublisherType;
+		hidden?: boolean;
 	}[],
 	prefs: DisplayPrefs['names'],
 ) {
@@ -142,13 +154,14 @@ function generateSeriesRelationChangeString(
 		romaji: string | null;
 		relation_type: SeriesRelType;
 		lang: Language;
+		hidden?: boolean;
 	},
 	prefs: DisplayPrefs['title_prefs'],
 ) {
 	return `${generateLink(
 		`/series/${series.id}`,
 		getTitleDisplay({ obj: series, prefs }),
-	)} ${` [${series.relation_type}]`}`;
+	)}${series.hidden ? ' [Deleted]' : ''} ${` [${series.relation_type}]`}`;
 }
 export function generateSeriesRelationChangeStringFromSeries(
 	series: {
@@ -157,6 +170,7 @@ export function generateSeriesRelationChangeStringFromSeries(
 		romaji: string | null;
 		relation_type: SeriesRelType;
 		lang: Language;
+		hidden?: boolean;
 	}[],
 	prefs: DisplayPrefs['title_prefs'],
 ) {
@@ -180,7 +194,7 @@ export function generateSeriesTagChangeStringFromSeries(
 	for (const tag of tags) {
 		str += generateSeriesTagChangeString(tag) + '\n';
 	}
-	return str;
+	return str.trim();
 }
 
 type StaffAlias = {
@@ -205,12 +219,13 @@ type PublisherRel = {
 	name: string;
 	romaji: string | null;
 	relation_type: PublisherRelType;
+	hidden?: boolean;
 };
 function generatePublisherRelChangeString(
 	publisher: PublisherRel,
 	prefs: DisplayPrefs['names'],
 ): string {
-	return `${generateLink(`/publisher/${publisher.id}`, getNameDisplay({ obj: publisher, prefs }))} [${publisher.relation_type}]`;
+	return `${generateLink(`/publisher/${publisher.id}`, getNameDisplay({ obj: publisher, prefs }))}${publisher.hidden ? ' [Deleted]' : ''} [${publisher.relation_type}]`;
 }
 export function generatePublisherRelChangeStringFromPublishers(
 	publishers: PublisherRel[],
@@ -223,7 +238,6 @@ export function generatePublisherRelChangeStringFromPublishers(
 	return str.trim();
 }
 type Edition = {
-	book_id: number;
 	title: string;
 	lang: Language | null;
 };
@@ -244,9 +258,10 @@ export type BookStaff = {
 	note: string;
 	role_type: StaffRole;
 	edition_name: string;
+	hidden?: boolean;
 };
 function generateBookStaffChangeString(staff: BookStaff, prefs: DisplayPrefs['names']): string {
-	return `${staff.edition_name !== 'Original edition' ? `[${staff.edition_name}] ` : ''}${generateLink(`/staff/${staff.staff_id}`, getNameDisplay({ obj: staff, prefs }))}${` [${staff.role_type}]${staff.note ? ` [${staff.note}]` : ''}`}`;
+	return `${staff.edition_name !== 'Original edition' ? `[${staff.edition_name}] ` : ''}${generateLink(`/staff/${staff.staff_id}`, getNameDisplay({ obj: staff, prefs }))}${staff.hidden ? ' [Deleted]' : ''}${` [${staff.role_type}]${staff.note ? ` [${staff.note}]` : ''}`}`;
 }
 export function generateBookStaffChangeStringFromStaffs(
 	staffs: BookStaff[],

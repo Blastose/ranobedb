@@ -20,9 +20,6 @@ function deleteKeysFromBookEdit(book: BookEdit | BookHistEdit) {
 	deleteObjKey(book, 'id');
 	deleteObjKeyInArray(book['titles'], 'book_id');
 	deleteObjKeyInArray(book['editions'], 'book_id');
-	if ('legacy_image_id' in book) {
-		deleteObjKey(book, 'legacy_image_id');
-	}
 }
 
 export function setupBookEditObjsForEqualityTest(

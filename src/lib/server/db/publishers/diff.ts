@@ -7,53 +7,53 @@ import {
 	type Diff,
 } from '$lib/components/history/utils.js';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
-import type { PublisherEdit } from './publishers';
+import type { PublisherHistFull } from './publishers';
 
 export function getPublisherDiffs(params: {
-	prevPublisherHistEdit: PublisherEdit;
-	publisherHistEdit: PublisherEdit;
+	prevPublisherHistFull: PublisherHistFull;
+	publisherHistFull: PublisherHistFull;
 	displayPrefs: DisplayPrefs;
 }) {
-	const { prevPublisherHistEdit, publisherHistEdit, displayPrefs } = params;
+	const { prevPublisherHistFull, publisherHistFull, displayPrefs } = params;
 	const diffs: Diff[] = [];
 	pushIfNotUndefined(
 		diffs,
 		getDiffChars({
 			name: 'Name',
-			words1: prevPublisherHistEdit.name,
-			words2: publisherHistEdit.name,
+			words1: prevPublisherHistFull.name,
+			words2: publisherHistFull.name,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffChars({
 			name: 'Romaji',
-			words1: prevPublisherHistEdit.romaji,
-			words2: publisherHistEdit.romaji,
+			words1: prevPublisherHistFull.romaji,
+			words2: publisherHistFull.romaji,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Primary language',
-			words1: prevPublisherHistEdit.lang,
-			words2: publisherHistEdit.lang,
+			words1: prevPublisherHistFull.lang,
+			words2: publisherHistFull.lang,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffLines({
 			name: 'Aliases',
-			lines1: prevPublisherHistEdit.aliases,
-			lines2: publisherHistEdit.aliases,
+			lines1: prevPublisherHistFull.aliases,
+			lines2: publisherHistFull.aliases,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Biography',
-			words1: prevPublisherHistEdit.description,
-			words2: publisherHistEdit.description,
+			words1: prevPublisherHistFull.description,
+			words2: publisherHistFull.description,
 		}),
 	);
 	pushIfNotUndefined(
@@ -61,11 +61,11 @@ export function getPublisherDiffs(params: {
 		getDiffLines({
 			name: 'Publisher relations',
 			lines1: generatePublisherRelChangeStringFromPublishers(
-				prevPublisherHistEdit['child_publishers'],
+				prevPublisherHistFull['child_publishers'],
 				displayPrefs.names,
 			),
 			lines2: generatePublisherRelChangeStringFromPublishers(
-				publisherHistEdit['child_publishers'],
+				publisherHistFull['child_publishers'],
 				displayPrefs.names,
 			),
 		}),
@@ -74,48 +74,48 @@ export function getPublisherDiffs(params: {
 		diffs,
 		getDiffWords({
 			name: 'Hidden',
-			words1: prevPublisherHistEdit.hidden.toString(),
-			words2: publisherHistEdit.hidden.toString(),
+			words1: prevPublisherHistFull.hidden.toString(),
+			words2: publisherHistFull.hidden.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Locked',
-			words1: prevPublisherHistEdit.locked.toString(),
-			words2: publisherHistEdit.locked.toString(),
+			words1: prevPublisherHistFull.locked.toString(),
+			words2: publisherHistFull.locked.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'BookWalker',
-			words1: prevPublisherHistEdit.bookwalker,
-			words2: publisherHistEdit.bookwalker,
+			words1: prevPublisherHistFull.bookwalker,
+			words2: publisherHistFull.bookwalker,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Wikidata',
-			words1: prevPublisherHistEdit.wikidata_id?.toString(),
-			words2: publisherHistEdit.wikidata_id?.toString(),
+			words1: prevPublisherHistFull.wikidata_id?.toString(),
+			words2: publisherHistFull.wikidata_id?.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Twitter',
-			words1: prevPublisherHistEdit.twitter_id,
-			words2: publisherHistEdit.twitter_id,
+			words1: prevPublisherHistFull.twitter_id,
+			words2: publisherHistFull.twitter_id,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Website',
-			words1: prevPublisherHistEdit.website,
-			words2: publisherHistEdit.website,
+			words1: prevPublisherHistFull.website,
+			words2: publisherHistFull.website,
 		}),
 	);
 

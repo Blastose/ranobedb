@@ -719,7 +719,6 @@ export class DBBooks {
 				'cte_book.description',
 				'cte_book.description_ja',
 				'cte_book.id',
-				'cte_book.image_id as legacy_image_id',
 				'cte_book.lang',
 				'cte_book.romaji',
 				'cte_book.romaji_orig',
@@ -776,6 +775,108 @@ export class DBBooks {
 									.whereRef('book_staff_alias_hist.eid', '=', 'book_edition_hist.eid')
 									.whereRef('book_staff_alias_hist.change_id', '=', 'cte_book.id')
 									.orderBy('book_staff_alias_hist.role_type'),
+							).as('staff'),
+						)
+						.orderBy('book_edition_hist.eid'),
+				).as('editions'),
+			])
+			.where('change.item_id', '=', params.id)
+			.where('change.item_name', '=', 'book');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision', 'desc');
+		}
+
+		return query;
+	}
+
+	getBookHistFull(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
+			.selectFrom('book_hist')
+			.innerJoin('change', 'change.id', 'book_hist.change_id')
+			.select([
+				'book_hist.description',
+				'book_hist.description_ja',
+				'book_hist.image_id as legacy_image_id',
+				'book_hist.olang',
+				'change.ilock as locked',
+				'change.ihid as hidden',
+			])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('book_title_hist')
+						.whereRef('book_title_hist.change_id', '=', 'book_hist.change_id')
+						.select([
+							'book_title_hist.lang',
+							'book_title_hist.official',
+							'book_title_hist.romaji',
+							'book_title_hist.title',
+						])
+						.orderBy('book_title_hist.lang'),
+				).as('titles'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('book_edition_hist')
+						.whereRef('book_edition_hist.change_id', '=', 'book_hist.change_id')
+						.select(['book_edition_hist.title', 'book_edition_hist.lang'])
+						.select((eb) =>
+							jsonArrayFrom(
+								eb
+									.selectFrom('book_staff_alias_hist')
+									.leftJoin('staff_alias', 'staff_alias.id', 'book_staff_alias_hist.staff_alias_id')
+									// This leftJoinLateral is needed because staff aliases can be deleted
+									.leftJoinLateral(
+										(eb) =>
+											eb
+												.selectFrom('staff_alias_hist')
+												.innerJoin(
+													'change as staff_change',
+													'staff_change.id',
+													'staff_alias_hist.change_id',
+												)
+												.select([
+													'staff_alias_hist.name',
+													'staff_alias_hist.romaji',
+													'staff_change.item_id as staff_id',
+												])
+												.whereRef(
+													'staff_alias_hist.aid',
+													'=',
+													'book_staff_alias_hist.staff_alias_id',
+												)
+												.where('staff_alias.id', 'is', null)
+												.where('staff_change.item_name', '=', 'staff')
+												.orderBy('staff_change.revision', 'desc')
+												.limit(1)
+												.as('deleted_alias'),
+										(join) => join.onTrue(),
+									)
+									.innerJoin('staff', (join) =>
+										join.on((eb) =>
+											eb(
+												'staff.id',
+												'=',
+												eb.fn.coalesce('staff_alias.staff_id', 'deleted_alias.staff_id'),
+											),
+										),
+									)
+									.select([
+										'book_staff_alias_hist.role_type',
+										'staff.id as staff_id',
+										'book_staff_alias_hist.note',
+									])
+									.select((eb) => [
+										eb.fn.coalesce('staff_alias.name', 'deleted_alias.name').as('name'),
+										eb.fn.coalesce('staff_alias.romaji', 'deleted_alias.romaji').as('romaji'),
+									])
+									.select('staff.hidden as hidden')
+									.whereRef('book_staff_alias_hist.eid', '=', 'book_edition_hist.eid')
+									.whereRef('book_staff_alias_hist.change_id', '=', 'book_hist.change_id')
+									.orderBy('book_staff_alias_hist.role_type')
+									.orderBy('book_staff_alias_hist.staff_alias_id'),
 							).as('staff'),
 						)
 						.orderBy('book_edition_hist.eid'),
@@ -928,3 +1029,4 @@ export type BookSeries = InferResult<ReturnType<DBBooks['getBookSeries']>>[numbe
 export type Book = InferResult<ReturnType<DBBooks['getBooks']>>[number];
 export type BookEdit = InferResult<ReturnType<DBBooks['getBookEdit']>>[number];
 export type BookHistEdit = InferResult<ReturnType<DBBooks['getBookHistEdit']>>[number];
+export type BookHistFull = InferResult<ReturnType<DBBooks['getBookHistFull']>>[number];

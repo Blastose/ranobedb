@@ -1267,8 +1267,108 @@ export class DBSeries {
 		}
 		return query;
 	}
+
+	getSeriesHistFull(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.with('cte_series_non_hist', () =>
+				withSeriesTitleCte(this.ranobeDB.user?.display_prefs.title_prefs),
+			)
+			.selectFrom('series_hist')
+			.innerJoin('change', 'change.id', 'series_hist.change_id')
+			.select([
+				'series_hist.bookwalker_id',
+				'series_hist.publication_status',
+				'series_hist.description',
+				'series_hist.aliases',
+				'series_hist.anidb_id',
+				'series_hist.start_date',
+				'series_hist.end_date',
+				'series_hist.web_novel',
+				'series_hist.website',
+				'series_hist.wikidata_id',
+				'series_hist.anilist_id',
+				'series_hist.mal_id',
+				'series_hist.olang',
+				'change.ihid as hidden',
+				'change.ilock as locked',
+			])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('cte_book')
+						.innerJoin('series_book_hist', 'series_book_hist.book_id', 'cte_book.id')
+						.select([
+							'cte_book.id',
+							'cte_book.title',
+							'cte_book.title_orig',
+							'cte_book.romaji',
+							'cte_book.romaji_orig',
+							'cte_book.lang',
+							'series_book_hist.book_type',
+							'series_book_hist.sort_order',
+						])
+						.whereRef('series_book_hist.change_id', '=', 'series_hist.change_id')
+						.select('cte_book.hidden as hidden')
+						.orderBy('sort_order', 'asc')
+						.orderBy('cte_book.id'),
+				).as('books'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_title_hist')
+						.whereRef('series_title_hist.change_id', '=', 'series_hist.change_id')
+						.select([
+							'series_title_hist.lang',
+							'series_title_hist.official',
+							'series_title_hist.title',
+							'series_title_hist.romaji',
+						])
+						.orderBy('series_title_hist.lang'),
+				).as('titles'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_tag_hist')
+						.innerJoin('tag', 'tag.id', 'series_tag_hist.tag_id')
+						.whereRef('series_tag_hist.change_id', '=', 'series_hist.change_id')
+						.select(['tag.id', 'tag.name'])
+						.orderBy('tag.ttype')
+						.orderBy('tag.name')
+						.orderBy('tag.id'),
+				).as('tags'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('series_relation_hist')
+						.innerJoin(
+							'cte_series_non_hist as child_series',
+							'child_series.id',
+							'series_relation_hist.id_child',
+						)
+						.select([
+							'child_series.id',
+							'child_series.title',
+							'child_series.romaji',
+							'child_series.lang',
+							'series_relation_hist.relation_type',
+						])
+						.select('child_series.hidden as hidden')
+						.whereRef('series_relation_hist.change_id', '=', 'series_hist.change_id')
+						.orderBy('series_relation_hist.relation_type')
+						.orderBy('child_series.id'),
+				).as('child_series'),
+			])
+			.where('change.item_id', '=', params.id)
+			.where('change.item_name', '=', 'series');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision', 'desc');
+		}
+		return query;
+	}
 }
 
 export type Series = InferResult<ReturnType<DBSeries['getSeriesOne']>>[number];
 export type SeriesMany = InferResult<ReturnType<DBSeries['getSeries']>>[number];
 export type SeriesEdit = InferResult<ReturnType<DBSeries['getSeriesOneEdit']>>[number];
+export type SeriesHistFull = InferResult<ReturnType<DBSeries['getSeriesHistFull']>>[number];

@@ -56,19 +56,19 @@ export const load = async ({ params, locals, url }) => {
 	}
 	let diffs: Diff[] = [];
 	if (previousRevision > 0) {
-		const [prevStaffHistEdit, staffHistEdit] = await Promise.all([
+		const [prevStaffHistFull, staffHistFull] = await Promise.all([
 			dbStaff
-				.getStaffHistOneEdit({
+				.getStaffHistFull({
 					id: staffId,
 					revision: previousRevision,
 				})
 				.executeTakeFirst(),
-			dbStaff.getStaffHistOneEdit({ id: staffId, revision }).executeTakeFirst(),
+			dbStaff.getStaffHistFull({ id: staffId, revision }).executeTakeFirst(),
 		]);
-		if (!prevStaffHistEdit || !staffHistEdit) {
+		if (!prevStaffHistFull || !staffHistFull) {
 			error(404);
 		}
-		diffs = getStaffDiffs({ prevStaffHistEdit, staffHistEdit });
+		diffs = getStaffDiffs({ prevStaffHistFull, staffHistFull });
 	}
 
 	const { count, totalPages, works } = await dbStaff.getWorksPaged({
