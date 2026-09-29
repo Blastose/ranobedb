@@ -869,7 +869,7 @@ export class DBBooks {
 										'book_staff_alias_hist.note',
 									])
 									.select((eb) => [
-										eb.fn.coalesce('staff_alias.name', 'deleted_alias.name').as('name'),
+										eb.fn.coalesce('staff_alias.name', 'deleted_alias.name').$notNull().as('name'),
 										eb.fn.coalesce('staff_alias.romaji', 'deleted_alias.romaji').as('romaji'),
 									])
 									.select('staff.hidden as hidden')
