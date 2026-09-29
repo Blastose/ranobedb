@@ -208,6 +208,44 @@ export class DBStaff {
 		return query;
 	}
 
+	getStaffHistFull(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
+			.selectFrom('staff_hist')
+			.innerJoin('change', 'change.id', 'staff_hist.change_id')
+			.select([
+				'staff_hist.bookwalker_gl_id as legacy_bookwalker_gl_id',
+				'staff_hist.description',
+				'staff_hist.bookwalker_id',
+				'staff_hist.bookwalker_gl_con_id',
+				'staff_hist.pixiv_id',
+				'staff_hist.twitter_id',
+				'staff_hist.website',
+				'staff_hist.wikidata_id',
+				'staff_hist.syosetu_id',
+				'staff_hist.kakuyomu_id',
+				'staff_hist.bsky_id',
+				'staff_hist.lang',
+			])
+			.select(['change.ihid as hidden', 'change.ilock as locked'])
+			.select((eb) =>
+				jsonArrayFrom(
+					eb
+						.selectFrom('staff_alias_hist as all_aliases')
+						.whereRef('all_aliases.change_id', '=', 'staff_hist.change_id')
+						.select(['all_aliases.main_alias', 'all_aliases.name', 'all_aliases.romaji'])
+						.orderBy('all_aliases.aid'),
+				).as('aliases'),
+			)
+			.where('change.item_id', '=', params.id)
+			.where('change.item_name', '=', 'staff');
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision', 'desc');
+		}
+		return query;
+	}
+
 	getBooksBelongingToStaff(staffId: number, userId?: string | undefined) {
 		return DBBooks.fromDB(this.ranobeDB.db, this.ranobeDB.user)
 			.getBooks({
@@ -457,3 +495,4 @@ type StaffSeriesWorks = {
 	series: StaffSeries[];
 };
 export type StaffWorks = StaffBooksWork | StaffSeriesWorks;
+export type StaffHistFull = InferResult<ReturnType<DBStaff['getStaffHistFull']>>[number];

@@ -15,7 +15,9 @@
 				type === 'new' ? part.added : part.removed}{@const doNotShowChange =
 				type === 'new'
 					? part.removed
-					: part.added}{#if doNotShowChange}<!-- Don't show the change -->{:else if changes.type === 'line'}{#each part.value.split('\n') as par}
+					: part.added}{#if doNotShowChange}<!-- Don't show the change -->{:else if changes.type === 'line'}{#each part.value
+					.split('\n')
+					.filter((line) => line.length > 0) as par}
 					{#if changes.textType === 'html'}
 						<p
 							class="w-fit {showDiffBg

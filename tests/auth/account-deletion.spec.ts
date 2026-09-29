@@ -18,17 +18,19 @@ test.describe('account deletion', () => {
 			.fill('password');
 		await page.getByRole('textbox', { name: 'To confirm account deletion,' }).fill('asdf');
 		await page.getByRole('button', { name: 'Delete account' }).click();
-		expect(page.getByText('Confirmation phrase must')).toBeVisible();
+		await expect(page.getByText('Confirmation phrase must')).toBeVisible();
 		await page
 			.getByRole('textbox', { name: 'To confirm account deletion,' })
 			.fill('delete my account');
 		await page.getByRole('button', { name: 'Delete account' }).click();
-		expect(page.getByText('Confirmation phrase must')).toBeVisible();
+		await expect(page.getByText('Confirmation phrase must')).toBeVisible();
 		await page
 			.getByRole('textbox', { name: 'To confirm account deletion,' })
 			.fill('Delete my account');
 		await page.getByRole('button', { name: 'Delete account' }).click();
-		expect(page.getByRole('heading', { name: 'Successfully deleted account!' })).toBeVisible();
+		await expect(
+			page.getByRole('heading', { name: 'Successfully deleted account!' }),
+		).toBeVisible();
 		await expect(page).toHaveURL('/deleted-account');
 
 		// Try login again (should fail)

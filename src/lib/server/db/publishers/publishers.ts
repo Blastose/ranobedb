@@ -201,6 +201,52 @@ export class DBPublishers {
 		return query;
 	}
 
+	getPublisherHistFull(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
+			.selectFrom('publisher_hist')
+			.innerJoin('change', 'change.id', 'publisher_hist.change_id')
+			.select([
+				'publisher_hist.aliases',
+				'publisher_hist.description',
+				'publisher_hist.name',
+				'publisher_hist.romaji',
+				'publisher_hist.bookwalker',
+				'publisher_hist.twitter_id',
+				'publisher_hist.website',
+				'publisher_hist.wikidata_id',
+				'publisher_hist.lang',
+			])
+			.select(['change.ihid as hidden', 'change.ilock as locked'])
+			.select((eb) =>
+				jsonArrayFrom(
+					eb
+						.selectFrom('publisher_relation_hist')
+						.innerJoin(
+							'publisher as child_publisher',
+							'child_publisher.id',
+							'publisher_relation_hist.id_child',
+						)
+						.select(['child_publisher.name', 'child_publisher.romaji', 'child_publisher.id'])
+						.select('publisher_relation_hist.relation_type')
+						.whereRef('publisher_relation_hist.change_id', '=', 'publisher_hist.change_id')
+						.select('child_publisher.hidden as hidden')
+						.orderBy('publisher_relation_hist.relation_type')
+						.orderBy((eb) => eb.fn.coalesce('child_publisher.romaji', 'child_publisher.name'))
+						.orderBy('child_publisher.id'),
+				).as('child_publishers'),
+			)
+			.where('change.item_id', '=', params.id)
+			.where('change.item_name', '=', 'publisher');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision', 'desc');
+		}
+
+		return query;
+	}
+
 	getBooksBelongingToPublisher(publisherId: number, userId?: string | undefined) {
 		return DBBooks.fromDB(this.ranobeDB.db, this.ranobeDB.user)
 			.getBooks()
@@ -511,3 +557,6 @@ type PublisherReleasesWorks = {
 	releases: PublisherReleases[];
 };
 export type PublisherWorks = PublisherBooksWork | PublisherSeriesWorks | PublisherReleasesWorks;
+export type PublisherHistFull = InferResult<
+	ReturnType<DBPublishers['getPublisherHistFull']>
+>[number];

@@ -54,19 +54,19 @@ export const load = async ({ params, locals }) => {
 	let diffs: Diff[] = [];
 	const displayPrefs = getDisplayPrefsUser(locals?.user);
 	if (previousRevision > 0) {
-		const [prevReleaseHistEdit, releaseHistEdit] = await Promise.all([
+		const [prevReleaseHistFull, releaseHistFull] = await Promise.all([
 			dbReleases
-				.getReleaseHistEdit({
+				.getReleaseHistFull({
 					id: releaseId,
 					revision: previousRevision,
 				})
 				.executeTakeFirst(),
-			dbReleases.getReleaseHistEdit({ id: releaseId, revision }).executeTakeFirst(),
+			dbReleases.getReleaseHistFull({ id: releaseId, revision }).executeTakeFirst(),
 		]);
-		if (!prevReleaseHistEdit || !releaseHistEdit) {
+		if (!prevReleaseHistFull || !releaseHistFull) {
 			error(404);
 		}
-		diffs = getReleaseDiffs({ prevReleaseHistEdit, releaseHistEdit, displayPrefs });
+		diffs = getReleaseDiffs({ prevReleaseHistFull, releaseHistFull, displayPrefs });
 	}
 
 	return {

@@ -20,21 +20,21 @@ export const load = async ({ params, locals }) => {
 	const changesPromise = new DBChanges(db)
 		.getChanges('book', bookId, [previousRevision, revision, revision + 1])
 		.execute();
-	const prevBookHistEditPromise =
+	const prevBookHistFullPromise =
 		previousRevision > 0
 			? dbBooks
-					.getBookHistEdit({
+					.getBookHistFull({
 						id: bookId,
 						revision: previousRevision,
 					})
 					.executeTakeFirst()
 			: undefined;
-	const bookHistEditPromise =
+	const bookHistFullPromise =
 		previousRevision > 0
-			? dbBooks.getBookHistEdit({ id: bookId, revision }).executeTakeFirst()
+			? dbBooks.getBookHistFull({ id: bookId, revision }).executeTakeFirst()
 			: undefined;
 
-	const [book, changes, currentBookVisibility, book_series, prevBookHistEdit, bookHistEdit] =
+	const [book, changes, currentBookVisibility, book_series, prevBookHistFull, bookHistFull] =
 		await Promise.all([
 			bookPromise,
 			changesPromise,
@@ -44,8 +44,8 @@ export const load = async ({ params, locals }) => {
 				.select(['hidden', 'locked'])
 				.executeTakeFirst(),
 			dbBooks.getBookSeries(bookId).executeTakeFirst(),
-			prevBookHistEditPromise,
-			bookHistEditPromise,
+			prevBookHistFullPromise,
+			bookHistFullPromise,
 		]);
 
 	const prevChange = changes.find((i) => i.revision === previousRevision);
@@ -67,10 +67,10 @@ export const load = async ({ params, locals }) => {
 	let diffs: Diff[] = [];
 	const displayPrefs = getDisplayPrefsUser(locals.user);
 	if (previousRevision > 0) {
-		if (!prevBookHistEdit || !bookHistEdit) {
+		if (!prevBookHistFull || !bookHistFull) {
 			error(404);
 		}
-		diffs = getBookDiffs({ prevBookHistEdit, bookHistEdit, displayPrefs });
+		diffs = getBookDiffs({ prevBookHistFull, bookHistFull, displayPrefs });
 	}
 
 	return {

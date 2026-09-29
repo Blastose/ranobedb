@@ -416,8 +416,81 @@ export class DBReleases {
 
 		return query;
 	}
+
+	getReleaseHistFull(params: { id: number; revision?: number }) {
+		let query = this.ranobeDB.db
+			.with('cte_book', () => withBookTitleCte(this.ranobeDB.user?.display_prefs.title_prefs))
+			.selectFrom('release_hist')
+			.innerJoin('change', 'change.id', 'release_hist.change_id')
+			.select([
+				'release_hist.image_id',
+				'release_hist.description',
+				'release_hist.format',
+				'release_hist.isbn13',
+				'release_hist.lang',
+				'release_hist.pages',
+				'release_hist.duration',
+				'release_hist.release_date',
+				'release_hist.romaji',
+				'release_hist.title',
+				'release_hist.amazon',
+				'release_hist.bookwalker',
+				'release_hist.rakuten',
+				'release_hist.website',
+			])
+			.select(['change.ihid as hidden', 'change.ilock as locked'])
+			.select((eb) => [
+				jsonArrayFrom(
+					eb
+						.selectFrom('publisher')
+						.innerJoin(
+							'release_publisher_hist',
+							'release_publisher_hist.publisher_id',
+							'publisher.id',
+						)
+						.select(['publisher.name', 'publisher.romaji', 'publisher_type', 'publisher.id'])
+						.whereRef('release_publisher_hist.change_id', '=', 'release_hist.change_id')
+						.select('publisher.hidden as hidden')
+						.orderBy('release_publisher_hist.publisher_type')
+						.orderBy((eb) => eb.fn.coalesce('publisher.romaji', 'publisher.name'))
+						.orderBy('publisher.id'),
+				).as('publishers'),
+				jsonArrayFrom(
+					eb
+						.selectFrom('cte_book')
+						.innerJoin('release_book_hist', (join) =>
+							join
+								.onRef('release_book_hist.book_id', '=', 'cte_book.id')
+								.onRef('release_book_hist.change_id', '=', 'release_hist.change_id'),
+						)
+						.select([
+							'cte_book.id',
+							'cte_book.title',
+							'cte_book.title_orig',
+							'cte_book.romaji',
+							'cte_book.romaji_orig',
+							'cte_book.lang',
+							'release_book_hist.rtype',
+						])
+						.select('cte_book.hidden as hidden')
+						.orderBy('cte_book.id')
+						.orderBy('release_book_hist.rtype'),
+				).as('books'),
+			])
+			.where('change.item_id', '=', params.id)
+			.where('change.item_name', '=', 'release');
+
+		if (params.revision) {
+			query = query.where('change.revision', '=', params.revision);
+		} else {
+			query = query.orderBy('change.revision', 'desc');
+		}
+
+		return query;
+	}
 }
 
 export type Release = InferResult<ReturnType<DBReleases['getRelease']>>[number];
 export type ReleaseWithImage = InferResult<ReturnType<DBReleases['getReleasesWithImage']>>[number];
 export type ReleaseEdit = InferResult<ReturnType<DBReleases['getReleaseEdit']>>[number];
+export type ReleaseHistFull = InferResult<ReturnType<DBReleases['getReleaseHistFull']>>[number];

@@ -22,7 +22,7 @@ export const load = async ({ params, locals }) => {
 		.getChanges('series', seriesId, [previousRevision, revision, revision + 1])
 		.execute();
 
-	const [series, changes, currentSeriesVisibility, prevSeriesHistEdit, seriesHistEdit] =
+	const [series, changes, currentSeriesVisibility, prevSeriesHistFull, seriesHistFull] =
 		await Promise.all([
 			seriesPromise,
 			changesPromise,
@@ -34,14 +34,14 @@ export const load = async ({ params, locals }) => {
 				.executeTakeFirst(),
 			previousRevision > 0
 				? dbSeries
-						.getSeriesHistOneEdit({
+						.getSeriesHistFull({
 							id: seriesId,
 							revision: previousRevision,
 						})
 						.executeTakeFirst()
 				: undefined,
 			previousRevision > 0
-				? dbSeries.getSeriesHistOneEdit({ id: seriesId, revision }).executeTakeFirst()
+				? dbSeries.getSeriesHistFull({ id: seriesId, revision }).executeTakeFirst()
 				: undefined,
 		]);
 
@@ -65,11 +65,11 @@ export const load = async ({ params, locals }) => {
 	let diffs: Diff[] = [];
 	const titlePrefs = getDisplayPrefsUser(locals?.user).title_prefs;
 	if (previousRevision > 0) {
-		if (!prevSeriesHistEdit || !seriesHistEdit) {
+		if (!prevSeriesHistFull || !seriesHistFull) {
 			error(404);
 		}
 
-		diffs = getSeriesDiffs({ prevSeriesHistEdit, seriesHistEdit, titlePrefs });
+		diffs = getSeriesDiffs({ prevSeriesHistFull, seriesHistFull, titlePrefs });
 	}
 
 	return {

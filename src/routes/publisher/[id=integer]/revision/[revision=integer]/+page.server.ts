@@ -61,19 +61,19 @@ export const load = async ({ params, locals, url }) => {
 	let diffs: Diff[] = [];
 	const displayPrefs = getDisplayPrefsUser(locals?.user);
 	if (previousRevision > 0) {
-		const [prevPublisherHistEdit, publisherHistEdit] = await Promise.all([
+		const [prevPublisherHistFull, publisherHistFull] = await Promise.all([
 			dbPublishers
-				.getPublisherHistEdit({
+				.getPublisherHistFull({
 					id: publisherId,
 					revision: previousRevision,
 				})
 				.executeTakeFirst(),
-			dbPublishers.getPublisherHistEdit({ id: publisherId, revision }).executeTakeFirst(),
+			dbPublishers.getPublisherHistFull({ id: publisherId, revision }).executeTakeFirst(),
 		]);
-		if (!prevPublisherHistEdit || !publisherHistEdit) {
+		if (!prevPublisherHistFull || !publisherHistFull) {
 			error(404);
 		}
-		diffs = getPublisherDiffs({ prevPublisherHistEdit, publisherHistEdit, displayPrefs });
+		diffs = getPublisherDiffs({ prevPublisherHistFull, publisherHistFull, displayPrefs });
 	}
 
 	const { count, totalPages, works } = await dbPublishers.getWorksPaged({

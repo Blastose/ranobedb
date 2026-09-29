@@ -9,58 +9,58 @@ import {
 	type Diff,
 } from '$lib/components/history/utils.js';
 import type { DisplayPrefs } from '$lib/server/zod/schema';
-import type { BookHistEdit } from './books';
+import type { BookHistFull } from './books';
 
 export function getBookDiffs(params: {
-	prevBookHistEdit: BookHistEdit;
-	bookHistEdit: BookHistEdit;
+	prevBookHistFull: BookHistFull;
+	bookHistFull: BookHistFull;
 	displayPrefs: DisplayPrefs;
 }) {
-	const { prevBookHistEdit, bookHistEdit, displayPrefs } = params;
+	const { prevBookHistFull, bookHistFull, displayPrefs } = params;
 	const diffs: Diff[] = [];
 
 	pushIfNotUndefined(
 		diffs,
 		getDiffTitle({
 			name: 'Title(s)',
-			title1: prevBookHistEdit['titles'],
-			title2: bookHistEdit['titles'],
+			title1: prevBookHistFull['titles'],
+			title2: bookHistFull['titles'],
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Hidden',
-			words1: prevBookHistEdit.hidden.toString(),
-			words2: bookHistEdit.hidden.toString(),
+			words1: prevBookHistFull.hidden.toString(),
+			words2: bookHistFull.hidden.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Locked',
-			words1: prevBookHistEdit.locked.toString(),
-			words2: bookHistEdit.locked.toString(),
+			words1: prevBookHistFull.locked.toString(),
+			words2: bookHistFull.locked.toString(),
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Original language',
-			words1: prevBookHistEdit.olang,
-			words2: bookHistEdit.olang,
+			words1: prevBookHistFull.olang,
+			words2: bookHistFull.olang,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffLines({
-			lines1: generateBookEditionChangeStringFromEditions(prevBookHistEdit['editions']),
-			lines2: generateBookEditionChangeStringFromEditions(bookHistEdit['editions']),
+			lines1: generateBookEditionChangeStringFromEditions(prevBookHistFull['editions']),
+			lines2: generateBookEditionChangeStringFromEditions(bookHistFull['editions']),
 			name: 'Editions',
 		}),
 	);
 	const prevHistStaff: BookStaff[] = [];
-	for (const ed of prevBookHistEdit['editions']) {
+	for (const ed of prevBookHistFull['editions']) {
 		for (const staff of ed.staff) {
 			prevHistStaff.push({
 				edition_name: ed.title,
@@ -69,11 +69,12 @@ export function getBookDiffs(params: {
 				role_type: staff.role_type,
 				romaji: staff.romaji,
 				staff_id: staff.staff_id,
+				hidden: staff.hidden,
 			});
 		}
 	}
 	const currentHistStaff: BookStaff[] = [];
-	for (const ed of bookHistEdit['editions']) {
+	for (const ed of bookHistFull['editions']) {
 		for (const staff of ed.staff) {
 			currentHistStaff.push({
 				edition_name: ed.title,
@@ -82,15 +83,16 @@ export function getBookDiffs(params: {
 				role_type: staff.role_type,
 				romaji: staff.romaji,
 				staff_id: staff.staff_id,
+				hidden: staff.hidden,
 			});
 		}
 	}
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
-			words1: prevBookHistEdit.legacy_image_id?.toString(),
-			words2: bookHistEdit.legacy_image_id?.toString(),
-			name: 'Image (legacy; unused)',
+			words1: prevBookHistFull.legacy_image_id?.toString(),
+			words2: bookHistFull.legacy_image_id?.toString(),
+			name: 'Image (legacy, no longer used)',
 		}),
 	);
 	pushIfNotUndefined(
@@ -105,16 +107,16 @@ export function getBookDiffs(params: {
 		diffs,
 		getDiffWords({
 			name: 'Description',
-			words1: prevBookHistEdit.description,
-			words2: bookHistEdit.description,
+			words1: prevBookHistFull.description,
+			words2: bookHistFull.description,
 		}),
 	);
 	pushIfNotUndefined(
 		diffs,
 		getDiffWords({
 			name: 'Description (Japanese)',
-			words1: prevBookHistEdit.description_ja,
-			words2: bookHistEdit.description_ja,
+			words1: prevBookHistFull.description_ja,
+			words2: bookHistFull.description_ja,
 		}),
 	);
 	return diffs;
