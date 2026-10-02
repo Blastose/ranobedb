@@ -4,29 +4,35 @@ import type { ReleasesApi } from '../../../../routes/api/v0/releases/+server';
 import type { SeriesApi } from '../../../../routes/api/v0/series/+server';
 import type { StaffApi } from '../../../../routes/api/v0/staff/+server';
 
-export async function search(term: string) {
+export async function search(term: string, signal?: AbortSignal) {
 	const termTrimmed = term.trim();
 
 	const booksLimit = 5;
 	const booksPromiseOuter = fetch(
 		`/api/v0/books?q=${encodeURIComponent(termTrimmed)}&limit=${booksLimit}`,
+		{ signal },
 	);
 
 	const seriesPromiseOuter = fetch(
 		`/api/v0/series?q=${encodeURIComponent(termTrimmed)}&limit=${booksLimit}`,
+		{ signal },
 	);
 
 	const publishersPromiseOuter = fetch(
 		`/api/v0/publishers?q=${encodeURIComponent(termTrimmed)}&limit=${booksLimit}`,
+		{ signal },
 	);
 
 	const staffPromiseOuter = fetch(
 		`/api/v0/staff?q=${encodeURIComponent(termTrimmed)}&limit=${booksLimit}`,
+		{ signal },
 	);
 
 	let releasesPromiseOuter: Promise<Response> | null;
 	if (termIsIsbn13(termTrimmed)) {
-		releasesPromiseOuter = fetch(`/api/v0/releases?q=${encodeURIComponent(termTrimmed)}&limit=1`);
+		releasesPromiseOuter = fetch(`/api/v0/releases?q=${encodeURIComponent(termTrimmed)}&limit=1`, {
+			signal,
+		});
 	} else {
 		releasesPromiseOuter = null;
 	}

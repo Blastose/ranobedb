@@ -11,51 +11,94 @@
 	import Cover from '$lib/components/image/Cover.svelte';
 
 	let debounceTimer: ReturnType<typeof setTimeout>;
+	let searchController: AbortController | undefined;
 	let loading = $state(false);
-	let focus_state: 'active' | 'not-active' = $state('not-active');
-
-	const debounce = (callback: () => void) => {
-		clearTimeout(debounceTimer);
-		debounceTimer = setTimeout(callback, 550);
-	};
-
-	let inputValue: string = $state('');
+	let searchFailed = $state(false);
+	let isSearchOpen = $state(false);
+	let inputValue = $state('');
 	let items: Awaited<ReturnType<typeof search>> | undefined = $state(undefined);
+	let searchInput: HTMLInputElement;
+	let searchSlot: HTMLDivElement;
+	let searchLeft = $state(0);
+
+	function updateSearchPosition() {
+		searchLeft = searchSlot.getBoundingClientRect().left;
+	}
+
+	function openSearch() {
+		updateSearchPosition();
+		if (!isSearchOpen && inputValue && !items) {
+			handleInputChange();
+		}
+		isSearchOpen = true;
+	}
+
+	function closeSearch() {
+		isSearchOpen = false;
+		cancelSearch();
+		loading = false;
+	}
+
+	function handleFocusOut(event: FocusEvent) {
+		if (event.relatedTarget instanceof Node && !searchSlot.contains(event.relatedTarget)) {
+			closeSearch();
+		}
+	}
+
+	function cancelSearch() {
+		clearTimeout(debounceTimer);
+		searchController?.abort();
+		searchController = undefined;
+	}
 
 	function handleInputChange() {
-		loading = true;
-		if (!inputValue) {
-			items = undefined;
-			loading = false;
-		} else {
-			debounce(async () => {
-				if (inputValue) {
-					const res = await search(inputValue);
-					items = res;
-					loading = false;
-				}
-			});
+		cancelSearch();
+		items = undefined;
+		searchFailed = false;
+		loading = Boolean(inputValue);
+		if (!inputValue) return;
+
+		const term = inputValue;
+		const controller = new AbortController();
+		searchController = controller;
+		debounceTimer = setTimeout(() => {
+			void loadResults(term, controller);
+		}, 550);
+	}
+
+	async function loadResults(term: string, controller: AbortController) {
+		try {
+			const results = await search(term, controller.signal);
+			if (!controller.signal.aborted) {
+				items = results;
+			}
+		} catch {
+			if (!controller.signal.aborted) {
+				searchFailed = true;
+				controller.abort();
+			}
+		} finally {
+			if (searchController === controller) {
+				loading = false;
+				searchController = undefined;
+			}
 		}
 	}
 
 	function clearInput() {
 		inputValue = '';
-		items = undefined;
-		loading = false;
-		focus_state = 'not-active';
+		handleInputChange();
+		isSearchOpen = true;
+		searchInput.focus();
 	}
 
-	onNavigate(() => {
-		focus_state = 'not-active';
-	});
+	onNavigate(closeSearch);
 
 	onMount(() => {
+		updateSearchPosition();
 		const searchOnLoad = () => {
-			const q = document.querySelector<HTMLInputElement>(
-				'div.search-input-container > input.search-input',
-			);
-			if (q?.value || q === document.activeElement) {
-				focus_state = 'active';
+			if (searchInput.value || searchInput === document.activeElement) {
+				isSearchOpen = true;
 				handleInputChange();
 			}
 		};
@@ -64,41 +107,53 @@
 		} else {
 			searchOnLoad();
 		}
+
+		return () => {
+			document.removeEventListener('DOMContentLoaded', searchOnLoad);
+			cancelSearch();
+		};
 	});
 </script>
 
+<svelte:window onresize={updateSearchPosition} />
+
 <div
-	class="search-input-container"
+	class="search-input-slot"
+	bind:this={searchSlot}
+	class:expanded={isSearchOpen}
+	style:--search-left="{searchLeft}px"
 	use:clickOutside
-	onoutclick={() => {
-		focus_state = 'not-active';
-	}}
+	onfocusin={openSearch}
+	onfocusout={handleFocusOut}
+	onoutclick={closeSearch}
 >
-	<input
-		name="q"
-		type="text"
-		class="input search-input"
-		aria-label={'Search'}
-		placeholder="Search"
-		autocomplete="off"
-		bind:value={inputValue}
-		oninput={handleInputChange}
-		onfocus={() => {
-			focus_state = 'active';
-		}}
-	/>
-	<div class="search-icon pointer-events-none">
-		<Icon name="search" />
+	<div class="search-input-container">
+		<input
+			name="q"
+			type="text"
+			class="input search-input"
+			aria-label={'Search'}
+			placeholder="Search"
+			autocomplete="off"
+			bind:this={searchInput}
+			bind:value={inputValue}
+			oninput={handleInputChange}
+		/>
+		<div class="search-icon pointer-events-none">
+			<Icon name="search" />
+		</div>
+		{#if inputValue}
+			<button class="absolute right-0 top-0 p-2" aria-label="Clear input" onclick={clearInput}>
+				<Icon name="close"></Icon>
+			</button>
+		{/if}
 	</div>
-	{#if inputValue}
-		<button class="absolute right-0 top-0 p-2" aria-label="Clear input" onclick={clearInput}>
-			<Icon name="close"></Icon>
-		</button>
-	{/if}
-	{#if focus_state === 'active' && inputValue}
+	{#if isSearchOpen && inputValue}
 		<div class="results-display thin-scrollbar" transition:fly={{ duration: 150, y: -10 }}>
 			<div class="flex flex-col gap-4">
-				{#if !loading && items}
+				{#if searchFailed}
+					<p>Could not load results. Please try again.</p>
+				{:else if !loading && items}
 					{#if items.series.series.length > 0}
 						<div class="flex flex-col gap-2">
 							<div class="flex justify-between">
@@ -269,25 +324,57 @@
 
 	.search-input-container {
 		position: relative;
+	}
+
+	.search-input-slot {
+		position: relative;
 		max-width: 36rem;
 	}
 
 	.input.search-input {
 		width: 100%;
-		max-width: 96px;
 		padding-left: 2.5rem;
 		padding-right: 2.5rem;
 	}
 
-	@media (min-width: 380px) {
-		.input.search-input {
-			max-width: 156px;
+	@media (max-width: 499px) {
+		.search-input-slot {
+			/* Reserve space so expansion doesn't move adjacent header controls. */
+			width: 96px;
+		}
+
+		.search-input-container {
+			width: 100%;
+			left: 0;
+			z-index: 1;
+			transition:
+				width 150ms ease,
+				left 150ms ease;
+		}
+
+		.search-input-slot.expanded .search-input-container {
+			width: calc(100vw - 2rem);
+			left: calc(1rem - var(--search-left));
+		}
+
+		.results-display {
+			/* Keep the dropdown anchored independently of the input's width animation. */
+			width: calc(100vw - 2rem);
+			left: calc(1rem - var(--search-left));
+			right: auto;
+			z-index: 1;
 		}
 	}
 
-	@media (min-width: 500px) {
-		.input.search-input {
-			max-width: 100%;
+	@media (min-width: 380px) and (max-width: 499px) {
+		.search-input-slot {
+			width: 156px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.search-input-container {
+			transition: none;
 		}
 	}
 
