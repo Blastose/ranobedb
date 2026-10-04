@@ -24,6 +24,7 @@ export async function getSeries(params: {
 	url: URL | URLSearchParams;
 	form: SuperValidated<Infer<typeof seriesFiltersSchema>>;
 	isList?: boolean;
+	seriesIds?: readonly number[];
 }) {
 	const { currentPage, q, db, listUser, currentUser, url, form, limit, isList } = params;
 
@@ -501,6 +502,10 @@ export async function getSeries(params: {
 	}
 	if (form.data.maxEndDate) {
 		query = query.where('cte_series.c_end_date', '<=', dateStringToNumber(form.data.maxEndDate));
+	}
+
+	if (params.seriesIds && params.seriesIds.length > 0) {
+		query = query.where('cte_series.id', 'in', params.seriesIds);
 	}
 
 	const {

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import type { PageProps } from '../../../routes/$types';
 	import BookImage from '$lib/components/book/BookImage.svelte';
 	import BookCarousel from '$lib/components/book/BookCarousel.svelte';
@@ -6,9 +7,9 @@
 	let { data }: { data: PageProps['data'] } = $props();
 </script>
 
-<BookCarousel>
+<BookCarousel viewAllLink={resolve('/seasonal-anime')}>
 	{#snippet link()}
-		<h2 class="text-lg font-bold">Fall 2026 Anime</h2>
+		<h2 class="text-lg font-bold">{data.seasonalAnimeSeason} Anime</h2>
 	{/snippet}
 	{#snippet items()}
 		{#each data.seasonalAnime as series (series.id)}

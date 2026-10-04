@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { DBReviews } from '$lib/server/db/reviews/reviews.js';
 import { DBSeries } from '$lib/server/db/series/series';
+import { seasonalAnimeSeriesIds, seasonalAnimeSeason } from '$lib/server/db/series/seasonal-anime';
 import { getReleases } from '$lib/server/db/releases/query.js';
 import { z } from 'zod/v4';
 
@@ -182,15 +183,7 @@ export const load = async ({ locals }) => {
 		.getSeries()
 		.clearOrderBy()
 		.orderBy('c_popularity', 'desc')
-		.where(
-			'cte_series.id',
-			'in',
-			[
-				365, 2378, 3486, 3768, 3962, 5308, 5853, 5868, 5973, 8403, 9269, 9635, 9685, 9708, 10099,
-				10234, 10289, 10371, 10970, 10981, 11129, 11222, 11726, 13000, 13369, 14006, 14157, 14258,
-				14671, 15042, 15144, 15702, 16601, 17092, 17673, 17726,
-			],
-		)
+		.where('cte_series.id', 'in', seasonalAnimeSeriesIds)
 		.limit(20)
 		.execute();
 
@@ -227,6 +220,7 @@ export const load = async ({ locals }) => {
 		mostPopularSeries,
 		licensedSeries,
 		seasonalAnime,
+		seasonalAnimeSeason,
 		homeDisplaySettings,
 		todayIso,
 		yesterdayIso,
