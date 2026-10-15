@@ -51,6 +51,14 @@
 	const { form, enhance, delayed, submitting } = sForm;
 
 	let submitButtonText = $derived(type === 'add' ? 'Submit' : 'Submit edit');
+	let endDateInputVersion = $state(0);
+
+	function copyStartDate() {
+		$form.end_date = $form.start_date;
+		// ReleaseDateInput initializes its dropdowns when mounted,
+		// so this is needed to force the end date component to re-render
+		endDateInputVersion += 1;
+	}
 </script>
 
 <!-- <SuperDebug data={$form} /> -->
@@ -105,15 +113,21 @@
 				$form = $form;
 			} else if (v === 'ongoing' || v === 'stalled' || v === 'unknown' || v === 'hiatus') {
 				$form.end_date = 99999999;
+				$form = $form;
 			}
 		}}
 	/>
 
 	<div class="flex flex-wrap gap-x-4">
 		<ReleaseDateInput form={sForm} field="start_date" label="Start date" />
-		{#key $form.publication_status}
-			<ReleaseDateInput form={sForm} field="end_date" label="End date" />
-		{/key}
+		<div class="flex flex-wrap items-end gap-2">
+			{#key `${$form.publication_status}:${endDateInputVersion}`}
+				<ReleaseDateInput form={sForm} field="end_date" label="End date" />
+			{/key}
+			{#if $form.start_date !== 99999999 && $form.books.length <= 2 && $form.end_date !== $form.start_date && ($form.publication_status === 'completed' || $form.publication_status === 'cancelled')}
+				<button type="button" class="sub-btn" onclick={copyStartDate}>Copy start date</button>
+			{/if}
+		</div>
 	</div>
 
 	<div class="max-w-md">
