@@ -1,4 +1,4 @@
-import { sql, type SelectQueryBuilder } from 'kysely';
+import { expressionBuilder, sql, type KyselyPlugin, type SelectQueryBuilder } from 'kysely';
 
 export function paginationBuilder<O, DB, TB extends keyof DB>(
 	query: SelectQueryBuilder<DB, TB, O>,
@@ -37,6 +37,23 @@ export async function paginationBuilderExecuteWithCountSameQuery<O, DB, TB exten
 	};
 }
 
+const paginationCountPlugin: KyselyPlugin = {
+	transformQuery({ node }) {
+		if (node.kind !== 'SelectQueryNode') {
+			throw new Error('Pagination counts require a SELECT query');
+		}
+
+		const source = { toOperationNode: () => node };
+		return expressionBuilder()
+			.selectFrom(sql`(${source})`.as('pagination_rows'))
+			.select((eb) => eb.fn.countAll<string>().as('count'))
+			.toOperationNode();
+	},
+	async transformResult({ result }) {
+		return result;
+	},
+};
+
 interface PageResult<O> {
 	result: O[];
 	count: string;
@@ -52,29 +69,28 @@ export async function paginationBuilderExecuteWithCount<O>(
 	countQuery?: SelectQueryBuilder<any, any, any>,
 	useOwnCountQuerySelect?: boolean,
 ): Promise<PageResult<O>> {
+	const sourceQuery = countQuery ?? query;
 	const [res, total] = await Promise.all([
 		query
 			.limit(pageOptions.limit)
 			.offset(pageOptions.limit * (pageOptions.page - 1))
 			.execute(),
-		countQuery !== undefined
-			? useOwnCountQuerySelect === true
-				? countQuery.executeTakeFirst()
-				: countQuery
-						.select((eb) => [eb.fn.countAll<string>().over().as('count')])
-						.executeTakeFirst()
-			: query
-					.clearSelect()
+		countQuery !== undefined && useOwnCountQuerySelect === true
+			? countQuery.$castTo<{ count: string }>().executeTakeFirst()
+			: sourceQuery
 					.clearOrderBy()
-					.select((eb) => [eb.fn.countAll<string>().over().as('count')])
-					.executeTakeFirst(),
+					.clearLimit()
+					.clearOffset()
+					.withPlugin(paginationCountPlugin)
+					.$castTo<{ count: string }>()
+					.executeTakeFirstOrThrow(),
 	]);
 
-	const count = total?.count || 0;
+	const count = String(total?.count ?? '0');
 	return {
 		result: res,
 		count,
-		totalPages: Math.ceil(count / pageOptions.limit),
+		totalPages: Math.ceil(Number(count) / pageOptions.limit),
 	};
 }
 
