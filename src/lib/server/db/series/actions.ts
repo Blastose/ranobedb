@@ -67,7 +67,22 @@ async function getSeriesForReverseRelation(params: { trx: Transaction<DB>; serie
 					.orderBy('tag.name'),
 			).as('tags'),
 		])
-		.selectAll('series')
+		.select([
+			'series.id',
+			'series.publication_status',
+			'series.description',
+			'series.bookwalker_id',
+			'series.aliases',
+			'series.end_date',
+			'series.start_date',
+			'series.anidb_id',
+			'series.web_novel',
+			'series.website',
+			'series.wikidata_id',
+			'series.anilist_id',
+			'series.mal_id',
+			'series.olang',
+		])
 		.where('series.id', 'in', params.series_ids)
 		.execute();
 }

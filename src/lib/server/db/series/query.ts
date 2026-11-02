@@ -116,12 +116,12 @@ export async function getSeries(params: {
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
 		query = query.orderBy(
-			(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+			(eb) => eb.ref('cte_series.sort_key'),
 			(ob) => ob.collate('numeric').asc(),
 		);
 	} else if (sort === 'Title desc') {
 		query = query.orderBy(
-			(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+			(eb) => eb.ref('cte_series.sort_key'),
 			(ob) => ob.collate('numeric').desc(),
 		);
 	} else if (sort === 'Start date asc') {
@@ -167,90 +167,51 @@ export async function getSeries(params: {
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query
-			.innerJoin('series_title', 'series_title.series_id', 'cte_series.id')
 			.select((eb) =>
-				eb.fn
-					.max(
-						eb
-							.case()
-							.when(
-								eb.or([
-									eb('series_title.title', 'ilike', q ?? ''),
-									eb('series_title.romaji', 'ilike', q ?? ''),
-								]),
+				eb
+					.selectFrom('series_title')
+					.whereRef('series_title.series_id', '=', 'cte_series.id')
+					.select((eb) =>
+						eb.fn
+							.max(
+								eb
+									.case()
+									.when(
+										eb.or([
+											eb('series_title.title', 'ilike', q ?? ''),
+											eb('series_title.romaji', 'ilike', q ?? ''),
+										]),
+									)
+									.then(2)
+									.when(
+										eb.fn('regexp_like', [
+											'cte_series.aliases',
+											eb.val(`^${escapeRegex(q)}$`),
+											eb.val('im'),
+										]),
+									)
+									.then(1)
+									.else(
+										eb.fn('greatest', [
+											eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
+											eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
+										]),
+									)
+									.end(),
 							)
-							.then(2)
-							.when(
-								eb.fn('regexp_like', [
-									'cte_series.aliases',
-									eb.val(`^${escapeRegex(q)}$`),
-									eb.val('im'),
-								]),
-							)
-							.then(1)
-							.else(
-								eb.fn('greatest', [
-									eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.title')]),
-									eb.fn('word_similarity', [eb.val(q), eb.ref('series_title.romaji')]),
-								]),
-							)
-							.end(),
+							.as('sim_score'),
 					)
 					.as('sim_score'),
 			)
 			.orderBy('sim_score', orderByDirection);
 
-		if (isList) {
-			query = query
-				.orderBy(
-					(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
-					(ob) => ob.collate('numeric').asc(),
-				)
-				.groupBy([
-					'cte_series.id',
-					'cte_series.hidden',
-					'cte_series.locked',
-					'cte_series.lang',
-					'cte_series.romaji',
-					'cte_series.romaji_orig',
-					'cte_series.title',
-					'cte_series.title_orig',
-					'cte_series.olang',
-					'cte_series.c_num_books',
-					'cte_series.c_start_date',
-					'cte_series.c_end_date',
-					'cte_series.c_popularity',
-					'cte_series.aliases',
-					'score',
-					'last_updated',
-					'added',
-					'started',
-					'finished',
-				]);
-		} else {
-			query = query
-				.orderBy('c_popularity', 'desc')
-				.orderBy(
-					(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
-					(ob) => ob.collate('numeric').asc(),
-				)
-				.groupBy([
-					'cte_series.id',
-					'cte_series.hidden',
-					'cte_series.locked',
-					'cte_series.lang',
-					'cte_series.romaji',
-					'cte_series.romaji_orig',
-					'cte_series.title',
-					'cte_series.title_orig',
-					'cte_series.olang',
-					'cte_series.c_num_books',
-					'cte_series.c_start_date',
-					'cte_series.c_end_date',
-					'cte_series.c_popularity',
-					'cte_series.aliases',
-				]);
+		if (!isList) {
+			query = query.orderBy('c_popularity', 'desc');
 		}
+		query = query.orderBy(
+			(eb) => eb.ref('cte_series.sort_key'),
+			(ob) => ob.collate('numeric').asc(),
+		);
 	}
 
 	if (
@@ -261,7 +222,7 @@ export async function getSeries(params: {
 			query = query.orderBy('c_popularity', 'desc');
 		}
 		query = query.orderBy(
-			(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+			(eb) => eb.ref('cte_series.sort_key'),
 			(ob) => ob.collate('numeric').asc(),
 		);
 	}
@@ -368,7 +329,7 @@ export async function getSeries(params: {
 							),
 					)
 					.$if(useTagsFilters, (qb) => {
-						let rqb = qb
+						const rqb = qb
 							.innerJoin('series_tag', 'series_tag.series_id', 'series.id')
 							.$if(form.data.tagsInclude.length > 0, (qb2) =>
 								qb2

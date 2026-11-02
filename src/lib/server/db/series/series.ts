@@ -7,6 +7,7 @@ import {
 	sql,
 	type SqlBool,
 } from 'kysely';
+import { titleSelection } from '../titleSelection';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
@@ -76,14 +77,7 @@ function titleHistCaseBuilder(
 export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 	const eb = expressionBuilder<DB, never>();
 	return eb
-		.selectFrom('series')
-		.innerJoin('series_title', 'series_title.series_id', 'series.id')
-		.leftJoin('series_title as series_title_orig', (join) =>
-			join
-				.onRef('series_title_orig.series_id', '=', 'series.id')
-				.onRef('series_title_orig.lang', '=', 'series.olang'),
-		)
-		.distinctOn('series.id')
+		.selectFrom(titleSelection('series', langPrios ?? defaultLangPrio).as('series'))
 		.select([
 			'series.id',
 			'series.hidden',
@@ -108,11 +102,13 @@ export function withSeriesTitleCte(langPrios?: LanguagePriority[]) {
 			'series.mal_id',
 			'series.olang',
 			'series.c_num_books',
-		])
-		.select(['series_title.lang', 'series_title.romaji', 'series_title.title'])
-		.select(['series_title_orig.title as title_orig', 'series_title_orig.romaji as romaji_orig'])
-		.orderBy('series.id')
-		.orderBy((eb) => titleCaseBuilder(eb, langPrios ?? defaultLangPrio));
+			'series.lang',
+			'series.romaji',
+			'series.title',
+			'series.title_orig',
+			'series.romaji_orig',
+			'series.sort_key',
+		]);
 }
 
 export function withSeriesHistTitleCte(langPrios?: LanguagePriority[]) {
@@ -239,7 +235,8 @@ export class DBSeries {
 									.onRef('user_list_label.user_id', '=', 'user_list_series.user_id')
 									.onRef('user_list_label.id', '=', 'user_list_series_label.label_id'),
 							)
-							.where('user_list_label.id', 'in', labels!),
+							.where('user_list_label.id', 'in', labels!)
+							.distinct(),
 					)
 					.$if(params?.listStatus === 'In my list' && !labels && Boolean(userId), (qb) =>
 						qb.innerJoin('user_list_series', (join) =>

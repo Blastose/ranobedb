@@ -1,7 +1,7 @@
 import { listLabelsSchema, bookFiltersObjSchema, bookFiltersSchema } from '$lib/server/zod/schema';
 import { superValidate, type Infer, type SuperValidated } from 'sveltekit-superforms';
 import { DBBooks } from './books';
-import { DeduplicateJoinsPlugin, sql, type Expression, type Kysely, type SqlBool } from 'kysely';
+import { DeduplicateJoinsPlugin, type Expression, type Kysely, type SqlBool } from 'kysely';
 import type { DB } from '../dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
 import { zod4 } from 'sveltekit-superforms/adapters';
@@ -75,12 +75,12 @@ export async function getBooks(params: {
 	const sort = form.data.sort;
 	if (sort === 'Title asc') {
 		query = query.orderBy(
-			(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+			(eb) => eb.ref('cte_book.sort_key'),
 			(ob) => ob.collate('numeric').asc(),
 		);
 	} else if (sort === 'Title desc') {
 		query = query.orderBy(
-			(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+			(eb) => eb.ref('cte_book.sort_key'),
 			(ob) => ob.collate('numeric').desc(),
 		);
 	} else if (sort === 'Release date asc') {
@@ -110,64 +110,39 @@ export async function getBooks(params: {
 	} else if (sort.startsWith('Relevance') && useQuery) {
 		const orderByDirection = sort.split(' ').slice(-1)[0] as 'asc' | 'desc';
 		query = query
-			.innerJoin('book_title', 'book_title.book_id', 'cte_book.id')
 			.select((eb) =>
-				eb.fn
-					.max(
-						eb
-							.case()
-							.when(
-								eb.or([
-									eb('book_title.title', 'ilike', q ?? ''),
-									eb('book_title.romaji', 'ilike', q ?? ''),
-								]),
+				eb
+					.selectFrom('book_title')
+					.whereRef('book_title.book_id', '=', 'cte_book.id')
+					.select((eb) =>
+						eb.fn
+							.max(
+								eb
+									.case()
+									.when(
+										eb.or([
+											eb('book_title.title', 'ilike', q ?? ''),
+											eb('book_title.romaji', 'ilike', q ?? ''),
+										]),
+									)
+									.then(2)
+									.else(
+										eb.fn('greatest', [
+											eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
+											eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
+										]),
+									)
+									.end(),
 							)
-							.then(2)
-							.else(
-								eb.fn('greatest', [
-									eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.title')]),
-									eb.fn('word_similarity', [eb.val(q), eb.ref('book_title.romaji')]),
-								]),
-							)
-							.end(),
+							.as('sim_score'),
 					)
 					.as('sim_score'),
 			)
 			.orderBy('sim_score', orderByDirection)
 			.orderBy(
-				(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+				(eb) => eb.ref('cte_book.sort_key'),
 				(ob) => ob.collate('numeric').asc(),
 			);
-		if (isList) {
-			query = query.groupBy([
-				'cte_book.id',
-				'cte_book.c_image_id',
-				'cte_book.lang',
-				'cte_book.romaji',
-				'cte_book.romaji_orig',
-				'cte_book.title',
-				'cte_book.title_orig',
-				'cte_book.c_release_date',
-				'cte_book.olang',
-				'score',
-				'last_updated',
-				'added',
-				'started',
-				'finished',
-			]);
-		} else {
-			query = query.groupBy([
-				'cte_book.id',
-				'cte_book.c_image_id',
-				'cte_book.lang',
-				'cte_book.romaji',
-				'cte_book.romaji_orig',
-				'cte_book.title',
-				'cte_book.title_orig',
-				'cte_book.c_release_date',
-				'cte_book.olang',
-			]);
-		}
 	}
 
 	if (
@@ -175,7 +150,7 @@ export async function getBooks(params: {
 		(sort.startsWith('Relevance') && !useQuery)
 	) {
 		query = query.orderBy(
-			(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+			(eb) => eb.ref('cte_book.sort_key'),
 			(ob) => ob.collate('numeric').asc(),
 		);
 	}

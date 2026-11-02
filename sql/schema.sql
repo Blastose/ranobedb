@@ -241,6 +241,7 @@ CREATE TABLE public.profile_image (
 -- TODO Remove release_date when all books have releases with the correct release date
 CREATE TABLE public.book (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    titles jsonb NOT NULL DEFAULT '{}'::jsonb,
     image_id integer,
     c_image_id integer,
     release_date integer NOT NULL,
@@ -525,6 +526,7 @@ CREATE TABLE public.saved_filter (
 
 CREATE TABLE public.series (
     id integer NOT NULL GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    titles jsonb NOT NULL DEFAULT '{}'::jsonb,
     bookwalker_id integer,
     anidb_id integer,
     mal_id integer,
@@ -836,6 +838,66 @@ CREATE TABLE public.kv_store (
     updated_at timestamptz NOT NULL DEFAULT NOW()
 );
 
+CREATE FUNCTION "sync_book_titles_cache"() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+    IF TG_OP = 'TRUNCATE' THEN
+        UPDATE "book" SET titles = '{}'::jsonb;
+        RETURN NULL;
+    END IF;
+    IF TG_OP = 'UPDATE' AND NEW IS NOT DISTINCT FROM OLD THEN
+        RETURN NULL;
+    END IF;
+    IF TG_OP = 'DELETE' OR (TG_OP = 'UPDATE' AND
+        (OLD."book_id", OLD.lang) IS DISTINCT FROM (NEW."book_id", NEW.lang)) THEN
+        UPDATE "book" SET titles = titles - OLD.lang::text
+        WHERE id = OLD."book_id";
+    END IF;
+    IF TG_OP <> 'DELETE' THEN
+        UPDATE "book" SET titles = jsonb_set(titles,
+            ARRAY[NEW.lang::text], jsonb_build_object('title', NEW.title,
+                'romaji', NEW.romaji, 'official', NEW.official))
+        WHERE id = NEW."book_id";
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER "book_titles_cache" AFTER INSERT OR UPDATE OR DELETE ON "book_title"
+    FOR EACH ROW EXECUTE FUNCTION "sync_book_titles_cache"();
+
+CREATE TRIGGER "book_titles_cache_truncate" AFTER TRUNCATE ON "book_title"
+    FOR EACH STATEMENT EXECUTE FUNCTION "sync_book_titles_cache"();
+
+CREATE FUNCTION "sync_series_titles_cache"() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+    IF TG_OP = 'TRUNCATE' THEN
+        UPDATE "series" SET titles = '{}'::jsonb;
+        RETURN NULL;
+    END IF;
+    IF TG_OP = 'UPDATE' AND NEW IS NOT DISTINCT FROM OLD THEN
+        RETURN NULL;
+    END IF;
+    IF TG_OP = 'DELETE' OR (TG_OP = 'UPDATE' AND
+        (OLD."series_id", OLD.lang) IS DISTINCT FROM (NEW."series_id", NEW.lang)) THEN
+        UPDATE "series" SET titles = titles - OLD.lang::text
+        WHERE id = OLD."series_id";
+    END IF;
+    IF TG_OP <> 'DELETE' THEN
+        UPDATE "series" SET titles = jsonb_set(titles,
+            ARRAY[NEW.lang::text], jsonb_build_object('title', NEW.title,
+                'romaji', NEW.romaji, 'official', NEW.official))
+        WHERE id = NEW."series_id";
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+CREATE TRIGGER "series_titles_cache" AFTER INSERT OR UPDATE OR DELETE ON "series_title"
+    FOR EACH ROW EXECUTE FUNCTION "sync_series_titles_cache"();
+
+CREATE TRIGGER "series_titles_cache_truncate" AFTER TRUNCATE ON "series_title"
+    FOR EACH STATEMENT EXECUTE FUNCTION "sync_series_titles_cache"();
+
 CREATE INDEX book_staff_alias_book_id_idx ON public.book_staff_alias USING btree (book_id);
 
 CREATE INDEX release_book_book_id_idx ON public.release_book USING btree (book_id);
@@ -853,14 +915,14 @@ CREATE INDEX user_list_series_label_series_id_idx ON public.user_list_series_lab
 CREATE INDEX IF NOT EXISTS staff_alias_hist_change_id_idx ON public.staff_alias_hist USING btree (change_id);
 
 -- trigram indices
-CREATE INDEX IF NOT EXISTS book_title_title_trgm_idx ON book_title USING GIST (title gist_trgm_ops);
+CREATE INDEX IF NOT EXISTS book_title_title_trgm_idx ON book_title USING GIN (title gin_trgm_ops);
 
-CREATE INDEX IF NOT EXISTS book_title_romaji_trgm_idx ON book_title USING GIST (romaji gist_trgm_ops);
+CREATE INDEX IF NOT EXISTS book_title_romaji_trgm_idx ON book_title USING GIN (romaji gin_trgm_ops);
 
-CREATE INDEX IF NOT EXISTS series_title_title_trgm_idx ON series_title USING GIST (title gist_trgm_ops);
+CREATE INDEX IF NOT EXISTS series_title_title_trgm_idx ON series_title USING GIN (title gin_trgm_ops);
 
-CREATE INDEX IF NOT EXISTS series_title_romaji_trgm_idx ON series_title USING GIST (romaji gist_trgm_ops);
+CREATE INDEX IF NOT EXISTS series_title_romaji_trgm_idx ON series_title USING GIN (romaji gin_trgm_ops);
 
-CREATE INDEX IF NOT EXISTS release_title_trgm_idx ON release USING GIST (title gist_trgm_ops);
+CREATE INDEX IF NOT EXISTS release_title_trgm_idx ON release USING GIN (title gin_trgm_ops);
 
-CREATE INDEX IF NOT EXISTS release_romaji_trgm_idx ON release USING GIST (romaji gist_trgm_ops);
+CREATE INDEX IF NOT EXISTS release_romaji_trgm_idx ON release USING GIN (romaji gin_trgm_ops);

@@ -41,6 +41,17 @@ export type DateString = ColumnType<string, string, string>;
 
 export type Language = (typeof languagesArray)[number];
 
+export type TitlesCache = Partial<
+	Record<
+		Language,
+		{
+			title: string;
+			romaji: string | null;
+			official: boolean;
+		}
+	>
+>;
+
 export type ListLabelTarget = 'book' | 'both' | 'series';
 
 export type UserListReleaseStatus = (typeof userListReleaseStatus)[number];
@@ -103,6 +114,7 @@ export interface AuthUserPersonalAccessToken {
 }
 
 export interface Book {
+	titles: ColumnType<TitlesCache, undefined, never>;
 	description: string;
 	description_ja: string;
 	hidden: boolean;
@@ -361,6 +373,7 @@ export interface SavedFilter {
 }
 
 export interface Series {
+	titles: ColumnType<TitlesCache, undefined, never>;
 	aliases: string;
 	anidb_id: number | null;
 	anilist_id: number | null;

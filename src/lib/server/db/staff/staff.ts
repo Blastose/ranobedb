@@ -1,6 +1,6 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
-import { Kysely, sql, type InferResult } from 'kysely';
+import { Kysely, type InferResult } from 'kysely';
 import { DBBooks, withBookTitleCte } from '../books/books';
 import type { DB, StaffRole } from '$lib/server/db/dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
@@ -247,16 +247,36 @@ export class DBStaff {
 	}
 
 	getBooksBelongingToStaff(staffId: number, userId?: string | undefined) {
+		const staffCredits = this.ranobeDB.db
+			.selectFrom('book_staff_alias')
+			.innerJoin('staff_alias', 'staff_alias.id', 'book_staff_alias.staff_alias_id')
+			.where('staff_alias.staff_id', '=', staffId)
+			.select([
+				'book_staff_alias.book_id',
+				'staff_alias.name',
+				'staff_alias.main_alias',
+				'staff_alias.staff_id',
+				'book_staff_alias.note',
+			])
+			.select(({ fn, cast }) =>
+				fn
+					.agg<StaffRole[]>('array_agg', [cast('book_staff_alias.role_type', 'text')])
+					.distinct()
+					.as('role_types'),
+			)
+			.groupBy([
+				'book_staff_alias.book_id',
+				'staff_alias.name',
+				'staff_alias.main_alias',
+				'staff_alias.staff_id',
+				'book_staff_alias.note',
+			]);
+
 		return DBBooks.fromDB(this.ranobeDB.db, this.ranobeDB.user)
 			.getBooks({
 				userId: userId,
 			})
-			.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'cte_book.id')
-			.innerJoin('staff_alias', (join) =>
-				join
-					.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
-					.on('staff_alias.staff_id', '=', staffId),
-			)
+			.innerJoin(staffCredits.as('staff_credits'), 'staff_credits.book_id', 'cte_book.id')
 			.clearSelect()
 			.select([
 				'cte_book.id',
@@ -266,10 +286,10 @@ export class DBStaff {
 				'cte_book.romaji_orig',
 				'cte_book.title',
 				'cte_book.title_orig',
-				'staff_alias.name',
-				'staff_alias.main_alias',
-				'staff_alias.staff_id',
-				'book_staff_alias.note',
+				'staff_credits.name',
+				'staff_credits.main_alias',
+				'staff_credits.staff_id',
+				'staff_credits.note',
 			])
 			.$if(typeof userId === 'string', (qb) =>
 				qb.select((eb) =>
@@ -289,12 +309,7 @@ export class DBStaff {
 					).as('label'),
 				),
 			)
-			.select(({ fn, cast }) => [
-				fn
-					.agg<StaffRole[]>('array_agg', [cast('book_staff_alias.role_type', 'text')])
-					.distinct()
-					.as('role_types'),
-			])
+			.select('staff_credits.role_types')
 			.select((eb) =>
 				jsonObjectFrom(
 					eb
@@ -305,37 +320,36 @@ export class DBStaff {
 				).as('image'),
 			)
 			.where('cte_book.hidden', '=', false)
-			.groupBy([
-				'cte_book.id',
-				'cte_book.c_image_id',
-				'cte_book.lang',
-				'cte_book.romaji',
-				'cte_book.romaji_orig',
-				'cte_book.title',
-				'cte_book.title_orig',
-				'cte_book.c_release_date',
-				'staff_alias.name',
-				'staff_alias.main_alias',
-				'staff_alias.staff_id',
-				'book_staff_alias.note',
-			])
 			.orderBy('cte_book.c_release_date', 'desc')
 			.orderBy(
-				(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+				(eb) => eb.ref('cte_book.sort_key'),
 				(ob) => ob.collate('numeric').asc(),
 			);
 	}
 
 	getSeriesBelongingToStaff(staffId: number, userId?: string | undefined) {
-		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
-			.getSeries({ userId })
-			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
+		const staffSeriesCredits = this.ranobeDB.db
+			.selectFrom('series_book')
 			.innerJoin('book', 'book.id', 'series_book.book_id')
 			.innerJoin('book_staff_alias', 'book_staff_alias.book_id', 'series_book.book_id')
-			.innerJoin('staff_alias', (join) =>
-				join
-					.onRef('staff_alias.id', '=', 'book_staff_alias.staff_alias_id')
-					.on('staff_alias.staff_id', '=', staffId),
+			.innerJoin('staff_alias', 'staff_alias.id', 'book_staff_alias.staff_alias_id')
+			.where('staff_alias.staff_id', '=', staffId)
+			.where('book.hidden', '=', false)
+			.select('series_book.series_id')
+			.select(({ fn, cast }) =>
+				fn
+					.agg<StaffRole[]>('array_agg', [cast('book_staff_alias.role_type', 'text')])
+					.distinct()
+					.as('role_types'),
+			)
+			.groupBy('series_book.series_id');
+
+		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
+			.getSeries({ userId })
+			.innerJoin(
+				staffSeriesCredits.as('staff_series_credits'),
+				'staff_series_credits.series_id',
+				'cte_series.id',
 			)
 			.clearSelect()
 			.select([
@@ -369,12 +383,7 @@ export class DBStaff {
 					).as('label'),
 				]),
 			)
-			.select(({ fn, cast }) => [
-				fn
-					.agg<StaffRole[]>('array_agg', [cast('book_staff_alias.role_type', 'text')])
-					.distinct()
-					.as('role_types'),
-			])
+			.select('staff_series_credits.role_types')
 			.select((eb) => [
 				jsonObjectFrom(
 					eb
@@ -407,24 +416,9 @@ export class DBStaff {
 				).as('book'),
 			])
 			.where('cte_series.hidden', '=', false)
-			.where('book.hidden', '=', false)
-			.groupBy([
-				'cte_series.title',
-				'cte_series.bookwalker_id',
-				'cte_series.hidden',
-				'cte_series.locked',
-				'cte_series.lang',
-				'cte_series.id',
-				'cte_series.publication_status',
-				'cte_series.romaji',
-				'cte_series.romaji_orig',
-				'cte_series.title_orig',
-				'cte_series.title',
-				'cte_series.c_latest_release_date',
-			])
 			.orderBy('cte_series.c_latest_release_date', 'desc')
 			.orderBy(
-				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+				(eb) => eb.ref('cte_series.sort_key'),
 				(ob) => ob.collate('numeric').asc(),
 			);
 	}
