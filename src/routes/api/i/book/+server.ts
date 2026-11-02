@@ -36,23 +36,27 @@ async function getBookByTitle(title: string, titleAsNumber: number, user: User |
 		.selectFrom('cte_book')
 		.select(['cte_book.title as name', 'cte_book.id', 'cte_book.romaji', 'cte_book.lang'])
 		.where('cte_book.hidden', '=', false)
-		.innerJoin('book_title', 'book_title.book_id', 'cte_book.id')
 		.select((eb) =>
-			eb.fn
-				.max(
-					eb.fn('greatest', [
-						eb.fn('word_similarity', [eb.val(title), eb.ref('book_title.title')]),
-						eb.fn('word_similarity', [eb.val(title), eb.ref('book_title.romaji')]),
-					]),
+			eb
+				.selectFrom('book_title')
+				.whereRef('book_title.book_id', '=', 'cte_book.id')
+				.select((eb) =>
+					eb.fn
+						.max(
+							eb.fn('greatest', [
+								eb.fn('word_similarity', [eb.val(title), eb.ref('book_title.title')]),
+								eb.fn('word_similarity', [eb.val(title), eb.ref('book_title.romaji')]),
+							]),
+						)
+						.as('sim_score'),
 				)
 				.as('sim_score'),
 		)
 		.orderBy('sim_score', 'desc')
 		.orderBy(
-			(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+			(eb) => eb.ref('cte_book.sort_key'),
 			(ob) => ob.collate('numeric').asc(),
 		)
-		.groupBy(['cte_book.id', 'cte_book.title', 'cte_book.romaji', 'cte_book.lang'])
 		.limit(16)
 		.execute();
 }
@@ -65,7 +69,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
 	}
 
 	const nameAsNumber = Number(form.data.name);
-	let name = form.data.name;
+	const name = form.data.name;
 	const s = await getBookByTitle(name, nameAsNumber, locals.user);
 	return json(s);
 };

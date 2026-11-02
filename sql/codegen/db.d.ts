@@ -159,6 +159,7 @@ export interface Book {
 	locked: boolean;
 	olang: Language;
 	release_date: number;
+	titles: Generated<Json>;
 }
 
 export interface BookEdition {
@@ -422,6 +423,7 @@ export interface Series {
 	olang: Language;
 	publication_status: SeriesStatus;
 	start_date: number;
+	titles: Generated<Json>;
 	web_novel: string | null;
 	website: string | null;
 	wikidata_id: number | null;

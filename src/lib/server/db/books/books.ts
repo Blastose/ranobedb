@@ -1,5 +1,6 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { type InferResult, type ExpressionBuilder, expressionBuilder, Kysely, sql } from 'kysely';
+import { titleSelection } from '../titleSelection';
 import { RanobeDB } from '$lib/server/db/db';
 import type { DB } from '$lib/server/db/dbTypes';
 import { type LanguagePriority } from '$lib/server/zod/schema';
@@ -68,19 +69,26 @@ function titleHistCaseBuilder(
 export function withBookTitleCte(langPrios?: LanguagePriority[]) {
 	const eb = expressionBuilder<DB, never>();
 	return eb
-		.selectFrom('book')
-		.innerJoin('book_title', 'book_title.book_id', 'book.id')
-		.leftJoin('book_title as book_title_orig', (join) =>
-			join
-				.onRef('book_title_orig.book_id', '=', 'book.id')
-				.onRef('book_title_orig.lang', '=', 'book.olang'),
-		)
-		.distinctOn('book.id')
-		.selectAll('book')
-		.select(['book_title.lang', 'book_title.romaji', 'book_title.title'])
-		.select(['book_title_orig.title as title_orig', 'book_title_orig.romaji as romaji_orig'])
-		.orderBy('book.id')
-		.orderBy((eb) => titleCaseBuilder(eb, langPrios ?? defaultLangPrio));
+		.selectFrom(titleSelection('book', langPrios ?? defaultLangPrio).as('book'))
+		.select([
+			'book.id',
+			'book.description',
+			'book.description_ja',
+			'book.hidden',
+			'book.locked',
+			'book.image_id',
+			'book.c_image_id',
+			'book.olang',
+			'book.release_date',
+			'book.c_release_date',
+			'book.c_release_dates',
+			'book.lang',
+			'book.title',
+			'book.romaji',
+			'book.title_orig',
+			'book.romaji_orig',
+			'book.sort_key',
+		]);
 }
 
 export function withBookHistTitleCte(langPrios?: LanguagePriority[]) {
@@ -948,7 +956,8 @@ export class DBBooks {
 									.onRef('user_list_label.user_id', '=', 'user_list_book.user_id')
 									.onRef('user_list_label.id', '=', 'user_list_book_label.label_id'),
 							)
-							.where('user_list_label.id', 'in', labels!),
+							.where('user_list_label.id', 'in', labels!)
+							.distinct(),
 					)
 					.$if(params?.listStatus === 'In my list' && !labels && Boolean(userId), (qb) =>
 						qb.innerJoin('user_list_book', (join) =>

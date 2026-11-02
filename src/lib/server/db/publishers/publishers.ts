@@ -1,6 +1,6 @@
 import { jsonArrayFrom, jsonObjectFrom } from 'kysely/helpers/postgres';
 import { RanobeDB } from '$lib/server/db/db';
-import { sql, type InferResult, type Kysely } from 'kysely';
+import { type InferResult, type Kysely } from 'kysely';
 import { DBBooks } from '../books/books';
 import type { DB, ReleasePublisherType } from '$lib/server/db/dbTypes';
 import type { User } from '$lib/server/lucia/lucia';
@@ -248,14 +248,27 @@ export class DBPublishers {
 	}
 
 	getBooksBelongingToPublisher(publisherId: number, userId?: string | undefined) {
+		const publishedBooks = this.ranobeDB.db
+			.selectFrom('release_publisher')
+			.innerJoin('release_book', 'release_book.release_id', 'release_publisher.release_id')
+			.innerJoin('release', 'release.id', 'release_book.release_id')
+			.where('release_publisher.publisher_id', '=', publisherId)
+			.where('release.hidden', '=', false)
+			.select('release_book.book_id')
+			.select(({ fn, cast }) =>
+				fn
+					.agg<ReleasePublisherType[]>('array_agg', [
+						cast('release_publisher.publisher_type', 'text'),
+					])
+					.distinct()
+					.as('publisher_type'),
+			)
+			.groupBy('release_book.book_id');
+
 		return DBBooks.fromDB(this.ranobeDB.db, this.ranobeDB.user)
 			.getBooks()
-			.innerJoin('release_book', 'release_book.book_id', 'cte_book.id')
-			.innerJoin('release_publisher', 'release_book.release_id', 'release_publisher.release_id')
-			.innerJoin('release', 'release.id', 'release_book.release_id')
+			.innerJoin(publishedBooks.as('published_books'), 'published_books.book_id', 'cte_book.id')
 			.where('cte_book.hidden', '=', false)
-			.where('release.hidden', '=', false)
-			.where('release_publisher.publisher_id', '=', publisherId)
 			.clearSelect()
 			.select([
 				'cte_book.id',
@@ -284,14 +297,7 @@ export class DBPublishers {
 					).as('label'),
 				),
 			)
-			.select(({ fn, cast }) => [
-				fn
-					.agg<ReleasePublisherType[]>('array_agg', [
-						cast('release_publisher.publisher_type', 'text'),
-					])
-					.distinct()
-					.as('publisher_type'),
-			])
+			.select('published_books.publisher_type')
 			.select((eb) =>
 				jsonObjectFrom(
 					eb
@@ -301,19 +307,9 @@ export class DBPublishers {
 						.limit(1),
 				).as('image'),
 			)
-			.groupBy([
-				'cte_book.id',
-				'cte_book.c_image_id',
-				'cte_book.lang',
-				'cte_book.romaji',
-				'cte_book.romaji_orig',
-				'cte_book.title',
-				'cte_book.title_orig',
-				'cte_book.c_release_date',
-			])
 			.orderBy('cte_book.c_release_date', 'desc')
 			.orderBy(
-				(eb) => eb.fn.coalesce('cte_book.romaji', 'cte_book.title'),
+				(eb) => eb.ref('cte_book.sort_key'),
 				(ob) => ob.collate('numeric').asc(),
 			);
 	}
@@ -331,15 +327,34 @@ export class DBPublishers {
 	}
 
 	getSeriesBelongingToPublisher(publisherId: number, userId?: string | undefined) {
-		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
-			.getSeries()
-			.innerJoin('series_book', 'series_book.series_id', 'cte_series.id')
-			.innerJoin('release_book', 'release_book.book_id', 'series_book.book_id')
-			.innerJoin('release_publisher', 'release_publisher.release_id', 'release_book.release_id')
+		const publishedSeries = this.ranobeDB.db
+			.selectFrom('release_publisher')
+			.innerJoin('release_book', 'release_book.release_id', 'release_publisher.release_id')
+			.innerJoin('series_book', 'series_book.book_id', 'release_book.book_id')
+			.innerJoin('book', 'book.id', 'series_book.book_id')
 			.innerJoin('release', 'release.id', 'release_book.release_id')
 			.where('release_publisher.publisher_id', '=', publisherId)
-			.where('cte_series.hidden', '=', false)
 			.where('release.hidden', '=', false)
+			.where('book.hidden', '=', false)
+			.select('series_book.series_id')
+			.select(({ fn, cast }) =>
+				fn
+					.agg<ReleasePublisherType[]>('array_agg', [
+						cast('release_publisher.publisher_type', 'text'),
+					])
+					.distinct()
+					.as('publisher_types'),
+			)
+			.groupBy('series_book.series_id');
+
+		return DBSeries.fromDB(this.ranobeDB.db, this.ranobeDB.user)
+			.getSeries()
+			.innerJoin(
+				publishedSeries.as('published_series'),
+				'published_series.series_id',
+				'cte_series.id',
+			)
+			.where('cte_series.hidden', '=', false)
 			.clearSelect()
 			.select([
 				'cte_series.title',
@@ -372,14 +387,7 @@ export class DBPublishers {
 					).as('label'),
 				]),
 			)
-			.select(({ fn, cast }) => [
-				fn
-					.agg<ReleasePublisherType[]>('array_agg', [
-						cast('release_publisher.publisher_type', 'text'),
-					])
-					.distinct()
-					.as('publisher_types'),
-			])
+			.select('published_series.publisher_types')
 			.select((eb) => [
 				jsonObjectFrom(
 					eb
@@ -411,23 +419,9 @@ export class DBPublishers {
 						.select(({ fn }) => [fn.countAll().as('count')]),
 				).as('volumes'),
 			])
-			.groupBy([
-				'cte_series.title',
-				'cte_series.bookwalker_id',
-				'cte_series.hidden',
-				'cte_series.locked',
-				'cte_series.lang',
-				'cte_series.id',
-				'cte_series.publication_status',
-				'cte_series.romaji',
-				'cte_series.romaji_orig',
-				'cte_series.title_orig',
-				'cte_series.title',
-				'cte_series.c_latest_release_date',
-			])
 			.orderBy('cte_series.c_latest_release_date', 'desc')
 			.orderBy(
-				(eb) => eb.fn.coalesce('cte_series.romaji', 'cte_series.title'),
+				(eb) => eb.ref('cte_series.sort_key'),
 				(ob) => ob.collate('numeric').asc(),
 			);
 	}
@@ -437,10 +431,12 @@ export class DBPublishers {
 			.selectFrom('series')
 			.innerJoin('series_book', 'series_book.series_id', 'series.id')
 			.innerJoin('release_book', 'release_book.book_id', 'series_book.book_id')
+			.innerJoin('book', 'book.id', 'release_book.book_id')
 			.innerJoin('release_publisher', 'release_publisher.release_id', 'release_book.release_id')
 			.innerJoin('release', 'release.id', 'release_book.release_id')
 			.where('release_publisher.publisher_id', '=', publisherId)
 			.where('series.hidden', '=', false)
+			.where('book.hidden', '=', false)
 			.where('release.hidden', '=', false)
 			.groupBy(['series.id']);
 	}
