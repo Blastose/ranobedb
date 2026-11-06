@@ -1,423 +1,314 @@
 <script lang="ts">
-	import Hr from '$lib/components/layout/Hr.svelte';
-	import PageTitle from '$lib/components/layout/PageTitle.svelte';
+	import { anchors } from '$lib/components/api-docs/anchors';
+	import CodeBlock from '$lib/components/api-docs/CodeBlock.svelte';
+	import EndpointDoc from '$lib/components/api-docs/EndpointDoc.svelte';
+	import FieldNotes from '$lib/components/api-docs/FieldNotes.svelte';
+	import OverviewSection from '$lib/components/api-docs/OverviewSection.svelte';
+	import ParamList from '$lib/components/api-docs/ParamList.svelte';
+	import SectionHeading from '$lib/components/api-docs/SectionHeading.svelte';
+	import StatusCodes from '$lib/components/api-docs/StatusCodes.svelte';
+	import JumpMenu from '$lib/components/api-docs/JumpMenu.svelte';
+	import TocNav from '$lib/components/api-docs/TocNav.svelte';
+	import { copyState } from '$lib/components/api-docs/copy.svelte';
+	import { scrollFade, scrollSpy } from '$lib/components/api-docs/scrollspy.svelte';
+	import type { EndpointGroup } from '$lib/components/api-docs/types';
+	import {
+		commonTypes,
+		databaseGroups,
+		dbErrorExamples,
+		dbStatusCodes,
+		docToc,
+		errorExamples,
+		quickstartCurl,
+		typeLinks,
+		userExampleCurl,
+		userGroups,
+		userStatusCodes,
+	} from './endpoints';
+	import { responseExamples } from './examples';
+	import { responseTypes, type ExampleKey, type ResponseKey } from './response-types';
 
-	let { data } = $props();
+	let activeId = $state<string>();
+	/** The mobile jump bar; its height is part of the scroll-spy offset. */
+	let jump = $state<HTMLDetailsElement>();
+
+	const tocIds = docToc.flatMap((group) => [
+		...(group.id ? [group.id] : []),
+		...group.entries.map((entry) => entry.id),
+	]);
+
+	const exampleFor = (key: ResponseKey | undefined) =>
+		key && key in responseExamples ? responseExamples[key as ExampleKey] : undefined;
+
+	$effect(() =>
+		scrollSpy({
+			ids: tocIds,
+			getOffset: () =>
+				parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-height')) +
+				(jump?.offsetHeight ?? 0),
+			onChange: (id) => (activeId = id),
+		}),
+	);
 </script>
 
-<PageTitle title="API" />
+<svelte:head><title>RanobeDB API v0</title></svelte:head>
 
-<main class="container-rndb flex flex-col gap-2">
-	<h1 class="text-4xl font-bold">RanobeDB API v0</h1>
-
-	<div class="markdown">
-		<section>
-			<h2>Introduction</h2>
-			<p>
-				This page describes the use of RanobeDB's public API to query information from its database.
-				This API is marked as v0 and is still in development and missing some features.
-			</p>
-			<p>
-				This API is for non-commercial use only and the data is licensed under the <a
-					href="https://opendatacommons.org/licenses/odbl/1-0/"
-					target="_blank">Open Database License</a
-				>
-				and the
-				<a href="https://opendatacommons.org/licenses/dbcl/1-0/" target="_blank"
-					>Database Contents License</a
-				>.
-			</p>
-			<p>
-				You can visit the <a
-					href="https://discord.com/channels/1252094266650656788/1259922625300529294"
-					class="link">#development</a
-				>
-				channel on our <a href="https://discord.gg/ZeAnhGncFx" target="_blank">Discord server</a> to ask
-				for any help or if you have any questions.
-			</p>
+{#snippet groups(groups: EndpointGroup<ResponseKey>[])}
+	{#each groups as group (group.id)}
+		<section aria-labelledby={group.id}>
+			<SectionHeading level={3} id={group.id} label={group.title} />
+			{#if group.curl}
+				<p class="eyebrow">Example request</p>
+				<CodeBlock
+					code={group.curl}
+					id={`curl-${group.id}`}
+					label={`Copy curl for ${group.title}`}
+				/>
+			{/if}
+			{#each group.endpoints as endpoint, index (endpoint.id)}
+				<EndpointDoc
+					{endpoint}
+					{typeLinks}
+					openExample={index === 0}
+					responseType={endpoint.responseKey ? responseTypes[endpoint.responseKey] : undefined}
+					example={exampleFor(endpoint.responseKey)}
+				/>
+			{/each}
 		</section>
+	{/each}
+{/snippet}
 
-		<section>
-			<h2>Usage</h2>
-			<p><strong>API endpoint:</strong> <code>https://ranobedb.org/api/v0</code></p>
-			<p>
-				Successful responses will return <code>200 OK</code> with
-				<code>content-type: application/json</code>. An unsuccessful response will have a
-				<code>4xx - 5xx</code> code.
-			</p>
-			<p>The responses of each endpoint are given as TypeScript types.</p>
-			<p>
-				The search params used in the endpoints are similar to the ones used on the website. You can
-				visit a page and add some filters to see what the url search params should look like. For
-				example, <a
-					href="/api/v0/books?q=seishun+buta+yarou&rl=en&rll=or&rf=print&rfl=or&sort=Relevance+desc&staff=195&sl=and&p=41&pl=or"
-					><code
-						>/books?q=seishun+buta+yarou&rl=en&rll=or&rf=print&rfl=or&sort=Relevance+desc&staff=195&sl=and&p=41&pl=or</code
-					></a
-				>.
-			</p>
-			<p>
-				There are currently no rate-limits, but please do not exceed over 60 requests in 1 minute.
-			</p>
-			<p>
-				The API currently only supports read-only endpoints. Other features (like user lists) may be
-				added in the feature.
-			</p>
-		</section>
+<main id={anchors.top} class="docs-scope container-rndb pb-16">
+	<div class="doc-layout">
+		<div class="doc-main min-w-0">
+			<header class="mb-5">
+				<h1 class="text-4xl font-bold">RanobeDB API v0</h1>
+				<p class="mt-1 text-[var(--docs-muted)]">
+					Read-only database queries and authenticated endpoints for your own user lists.
+				</p>
+			</header>
 
-		<div class="mt-4">
-			<Hr />
+			<p class="sr-only" aria-live="polite">{copyState.id ? 'Copied to clipboard' : ''}</p>
+
+			<JumpMenu groups={docToc} {activeId} bind:element={jump} />
+
+			<div class="markdown doc-body min-w-0 [overflow-wrap:anywhere]">
+				<OverviewSection
+					{quickstartCurl}
+					quickstartResponse={responseExamples.booksResponse}
+					bookEndpointId={databaseGroups[0].endpoints[1].id}
+					putResponseType={responseTypes.userPutResponse}
+					deleteResponseType={responseTypes.userDeleteResponse}
+				/>
+
+				<section class="api-docs" aria-labelledby={anchors.databaseQuerying}>
+					<SectionHeading level={2} id={anchors.databaseQuerying} label="Database querying" />
+					<p class="max-w-[70ch]">
+						Read-only endpoints. No authentication is required. Example responses are trimmed real
+						responses from the public database: long strings end in an ellipsis and arrays keep a
+						subset of their items.
+					</p>
+
+					<section aria-labelledby={anchors.dbCommonTypes}>
+						<SectionHeading level={3} id={anchors.dbCommonTypes} label="Common types" />
+						<ParamList params={commonTypes.database} {typeLinks} />
+					</section>
+
+					<FieldNotes id={anchors.dbFieldNotes} />
+
+					<StatusCodes id={anchors.dbStatusCodes} rows={dbStatusCodes} errors={dbErrorExamples}>
+						<p>
+							The API does not enforce the guideline on <a href={`#${anchors.rateLimits}`}
+								>Rate limits</a
+							>, so it has no rate-limit status code.
+						</p>
+					</StatusCodes>
+
+					{@render groups(databaseGroups)}
+				</section>
+
+				<section class="api-docs" aria-labelledby={anchors.user}>
+					<SectionHeading level={2} id={anchors.user} label="User" />
+					<p class="max-w-[70ch]">
+						These endpoints require <a href={`#${anchors.authentication}`}>authentication</a>.
+						Request bodies are JSON. Invalid bodies return <code>400</code> with a description of
+						the invalid fields. Entities that do not exist, or list entries that are not in your
+						list on
+						<code>DELETE</code>, also return <code>400</code> — not <code>404</code>.
+					</p>
+					<p>
+						Field names use the exact casing defined by the API. Some are camelCase (for example
+						<code>readingStatus</code>) and some are snake_case (for example
+						<code>release_status</code>); both are intentional.
+					</p>
+
+					<p class="eyebrow">Example request</p>
+					<CodeBlock
+						code={userExampleCurl}
+						id="curl-user-book"
+						label="Copy curl for PUT /user/book"
+					/>
+
+					<StatusCodes id={anchors.userStatusCodes} rows={userStatusCodes} errors={errorExamples} />
+
+					<section aria-labelledby={anchors.userCommonTypes}>
+						<SectionHeading level={3} id={anchors.userCommonTypes} label="Common types" />
+						<ParamList params={commonTypes.user} {typeLinks} />
+					</section>
+
+					{@render groups(userGroups)}
+				</section>
+
+				<p class="mt-8">
+					<a class="back-top" href={`#${anchors.top}`}>Back to top ↑</a>
+				</p>
+			</div>
 		</div>
 
-		<section class="api-docs mt-6">
-			<h2>Database querying</h2>
-			<section>
-				<h3>Common types</h3>
-				<div class="params">
-					<span>Language</span>
-					<span>
-						'ja' | 'en' | 'zh-Hans' | 'zh-Hant' | 'fr' | 'es' | 'ko' | 'ar' | 'bg' | 'ca' | 'cs' |
-						'ck' | 'da' | 'de' | 'el' | 'eo' | 'eu' | 'fa' | 'fi' | 'ga' | 'gd' | 'he' | 'hi' | 'hr'
-						| 'hu' | 'id' | 'it' | 'iu' | 'mk' | 'ms' | 'la' | 'lt' | 'lv' | 'nl' | 'no' | 'pl' |
-						'pt-pt' | 'pt-br' | 'ro' | 'ru' | 'sk' | 'sl' | 'sr' | 'sv' | 'ta' | 'th' | 'tr' | 'uk'
-						| 'ur' | 'vi'</span
-					>
-				</div>
-			</section>
-			<section>
-				<h3>Books</h3>
-				<section>
-					<h4>GET /books</h4>
-					<section>
-						<h5>Params</h5>
-						<div class="params">
-							<span>q</span>
-							<span>string</span>
-
-							<span>page</span>
-							<span>number</span>
-
-							<span>limit</span>
-							<span>number <span>Default 24; Max: 100</span></span>
-
-							<span>rl</span>
-							<span>Language[] <span>Release lanuages</span></span>
-
-							<span>rll</span>
-							<span>'and' | 'or' <span>Release lanuages logic</span></span>
-
-							<span>rf</span>
-							<span>('digital' | 'print' | 'audio')[] <span>Release formats</span></span>
-
-							<span>rfl</span>
-							<span>'and' | 'or' <span>Release formats logic</span></span>
-
-							<span>staff</span>
-							<span>number[] <span>The id of staff</span></span>
-
-							<span>sl</span>
-							<span>'and' | 'or' <span>Staff logic</span></span>
-
-							<span>p</span>
-							<span>number[] <span>The id of publishers</span></span>
-
-							<span>pl</span>
-							<span>'and' | 'or' <span>Publisher logic</span></span>
-
-							<span>sort</span>
-							<span
-								>'Relevance desc' | 'Relevance asc' | 'Title asc' | 'Title desc' | 'Release date
-								asc' | 'Release date desc'</span
-							>
-						</div>
-					</section>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.booksResponse}</pre>
-					</section>
-				</section>
-				<section>
-					<h4>GET /book/[id]</h4>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.bookResponse}</pre>
-					</section>
-				</section>
-			</section>
-			<section>
-				<h3>Series</h3>
-				<section>
-					<h4>GET /series</h4>
-					<section>
-						<h5>Params</h5>
-						<div class="params">
-							<span>q</span>
-							<span>string</span>
-
-							<span>page</span>
-							<span>number</span>
-
-							<span>limit</span>
-							<span>number <span>Default 24; Max: 100</span></span>
-
-							<span>pubStatus</span>
-							<span>'ongoing' | 'completed' | 'hiatus' | 'stalled' | 'cancelled' | 'unknown'</span>
-
-							<span>genresInclude</span>
-							<span>number[]</span>
-
-							<span>genresExclude</span>
-							<span>number[]</span>
-
-							<span>tagsInclude</span>
-							<span>number[]</span>
-
-							<span>tagsExclude</span>
-							<span>number[]</span>
-
-							<span>til</span>
-							<span>'and' | 'or' <span>Tags include logic</span></span>
-
-							<span>tel</span>
-							<span>'and' | 'or' <span>Tags exclude logic</span></span>
-
-							<span>rl</span>
-							<span>Language[] <span>Release lanuages</span></span>
-
-							<span>rll</span>
-							<span>'and' | 'or' <span>Release lanuages logic</span></span>
-
-							<span>rf</span>
-							<span>('digital' | 'print' | 'audio')[] <span>Release formats</span></span>
-
-							<span>rfl</span>
-							<span>'and' | 'or' <span>Release formats logic</span></span>
-
-							<span>staff</span>
-							<span>number[] <span>The id of staff</span></span>
-
-							<span>sl</span>
-							<span>'and' | 'or' <span>Staff logic</span></span>
-
-							<span>p</span>
-							<span>number[] <span>The id of publishers</span></span>
-
-							<span>pl</span>
-							<span>'and' | 'or' <span>Publisher logic</span></span>
-
-							<span>sort</span>
-							<span>
-								'Relevance desc' | 'Relevance asc' | 'Title asc' | 'Title desc' | 'Start date asc' |
-								'Start date desc' | 'End date asc' | 'End date desc' | 'Num. books asc' | 'Num.
-								books desc'</span
-							>
-						</div>
-					</section>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.seriesResponse}</pre>
-					</section>
-				</section>
-				<section>
-					<h4>GET /series/[id]</h4>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.seriesOneResponse}</pre>
-					</section>
-				</section>
-			</section>
-			<section>
-				<h3>Releases</h3>
-				<section>
-					<h4>GET /releases</h4>
-					<section>
-						<h5>Params</h5>
-						<div class="params">
-							<span>q</span>
-							<span>string</span>
-
-							<span>page</span>
-							<span>number</span>
-
-							<span>limit</span>
-							<span>number <span>Default 24; Max: 100</span></span>
-
-							<span>rl</span>
-							<span>Language[] <span>Release lanuages</span></span>
-
-							<span>rll</span>
-							<span>'and' | 'or' <span>Release lanuages logic</span></span>
-
-							<span>rf</span>
-							<span>('digital' | 'print' | 'audio')[] <span>Release formats</span></span>
-
-							<span>rfl</span>
-							<span>'and' | 'or' <span>Release formats logic</span></span>
-
-							<span>p</span>
-							<span>number[] <span>The id of publishers</span></span>
-
-							<span>pl</span>
-							<span>'and' | 'or' <span>Publisher logic</span></span>
-
-							<span>minDate</span>
-							<span>ISO date <span>E.g. 2025-01-01</span></span>
-
-							<span>maxDate</span>
-							<span>ISO date <span>E.g. 2025-01-01</span></span>
-
-							<span>sort</span>
-							<span>
-								'Relevance desc' | 'Relevance asc' | 'Title asc' | 'Title desc' | 'Release date asc'
-								| 'Release date desc' | 'Pages asc' | 'Pages desc'</span
-							>
-						</div>
-					</section>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.releasesResponse}</pre>
-					</section>
-				</section>
-				<section>
-					<h4>GET /release/[id]</h4>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.releaseResponse}</pre>
-					</section>
-				</section>
-			</section>
-			<section>
-				<h3>Staff</h3>
-				<section>
-					<h4>GET /staff</h4>
-					<section>
-						<h5>Params</h5>
-						<div class="params">
-							<span>q</span>
-							<span>string</span>
-
-							<span>page</span>
-							<span>number</span>
-
-							<span>limit</span>
-							<span>number (max 100)</span>
-
-							<span>lang</span>
-							<span>Language[] <span>Staff language</span></span>
-
-							<span>sort</span>
-							<span>'Name asc' | 'Name desc'</span>
-						</div>
-					</section>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.staffResponse}</pre>
-					</section>
-				</section>
-				<section>
-					<h4>GET /staff/[id]</h4>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.staffOneResponse}</pre>
-					</section>
-				</section>
-			</section>
-			<section>
-				<h3>Publishers</h3>
-				<section>
-					<h4>GET /publishers</h4>
-					<section>
-						<h5>Params</h5>
-						<div class="params">
-							<span>q</span>
-							<span>string</span>
-
-							<span>page</span>
-							<span>number</span>
-
-							<span>limit</span>
-							<span>number (max 100)</span>
-
-							<span>lang</span>
-							<span>Language[] <span>Publisher language</span></span>
-
-							<span>sort</span>
-							<span>'Name asc' | 'Name desc'</span>
-						</div>
-					</section>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.publishersResponse}</pre>
-					</section>
-				</section>
-				<section>
-					<h4>GET /publisher/[id]</h4>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.publisherResponse}</pre>
-					</section>
-				</section>
-			</section>
-			<section>
-				<h3>Tags</h3>
-				<section>
-					<h4>GET /tags</h4>
-					<section>
-						<h5>Params</h5>
-						<div class="params">
-							<span>q</span>
-							<span>string</span>
-
-							<span>page</span>
-							<span>number</span>
-
-							<span>limit</span>
-							<span>number (max 100)</span>
-						</div>
-					</section>
-					<section>
-						<h5>Response</h5>
-						<pre>{data.tagsResponse}</pre>
-					</section>
-				</section>
-			</section>
-		</section>
+		<aside class="doc-rail">
+			<div class="doc-rail-inner thin-scrollbar" use:scrollFade>
+				<TocNav groups={docToc} label="On this page" {activeId} />
+			</div>
+		</aside>
 	</div>
 </main>
 
 <style>
-	.api-docs {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
+	.docs-scope {
+		--docs-surface: var(--primary-100);
+		--docs-surface-strong: var(--primary-200);
+		--docs-surface-hover: var(--primary-300);
+		--docs-border: var(--primary-300);
+		--docs-text: var(--text-light);
+		--docs-muted: var(--text-light-sub-alt);
+		--docs-focus: var(--primary-500);
+		/* Height of the sticky jump bar, which only exists below the desktop breakpoint. */
+		--docs-sticky: 3.5rem;
+		--docs-scroll-margin: calc(var(--header-height) + var(--docs-sticky) + 1rem);
 	}
 
-	.api-docs .params {
+	:global(.dark) .docs-scope {
+		--docs-surface: var(--dark-500);
+		--docs-surface-strong: var(--dark-400);
+		--docs-surface-hover: var(--dark-300);
+		--docs-border: var(--dark-400);
+		--docs-text: var(--text-dark);
+		--docs-muted: var(--text-dark-sub-alt);
+		--docs-focus: var(--link-dark);
+	}
+
+	.doc-layout {
 		display: grid;
-		grid-template-columns: 125px 1fr;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 2rem;
+		align-items: start;
 	}
 
-	.params {
-		background-color: rgb(216, 216, 228);
-		border-radius: 0.25rem;
-		padding: 0.25rem 0.5rem;
-		margin: 0.25rem 0rem;
+	.doc-rail {
+		display: none;
+	}
+
+	.doc-rail-inner {
+		max-height: calc(100dvh - var(--header-height) - 2rem);
+		overflow-y: auto;
+		padding-right: 0.5rem;
+		/* Keeps a focused or current link clear of the fade below. */
+		scroll-padding-bottom: 2.5rem;
+	}
+
+	/* Every link stays reachable; the fade only signals that the list continues. */
+	.doc-rail-inner:global(.has-more) {
+		mask-image: linear-gradient(to bottom, black calc(100% - 2.5rem), transparent);
+	}
+
+	.back-top {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.75rem;
+		padding: 0 1rem;
+		border: 1px solid var(--docs-border);
+		border-radius: 9999px;
 		font-size: 0.875rem;
+		text-decoration: none;
 	}
 
-	:global(.dark) .params {
-		background-color: rgb(49, 49, 51);
+	.back-top:hover {
+		background-color: var(--docs-surface);
 	}
 
-	.params span:nth-child(even) {
-		display: flex;
-		flex-direction: column;
+	/* The first section of the page has no rule above it. */
+	:global(.doc-body > section:first-child > .doc-heading-2) {
+		margin-top: 0;
+		padding-top: 0;
+		border-top: 0;
 	}
-	.params span:nth-child(even) > span {
-		color: #7f7d86;
+
+	/* Shared with EndpointDoc, whose elements this component's scoped styles cannot reach. */
+	:global(.docs-scope .heading-anchor) {
+		font-weight: 400;
+		text-decoration: none;
+		opacity: 0;
+		color: var(--docs-muted);
+		transition: opacity 150ms;
+	}
+
+	:global(.docs-scope :is(.doc-heading, .endpoint-head):hover .heading-anchor),
+	:global(.docs-scope .heading-anchor:focus-visible) {
+		opacity: 1;
+	}
+
+	/* The one small-caps label style: eyebrows, example labels and details summaries. */
+	:global(.docs-scope .eyebrow) {
 		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		line-height: 1.1rem;
+		text-transform: uppercase;
+		color: var(--docs-muted);
 	}
-	:global(.dark) .params span:nth-child(even) > span {
-		color: #a3a3ad;
+
+	:global(:where(.docs-scope) p.eyebrow) {
+		margin: 1rem 0 0.375rem;
+	}
+
+	:global(.docs-scope :is(a, button, summary):focus-visible) {
+		outline: 2px solid var(--docs-focus);
+		outline-offset: 2px;
+		border-radius: 0.125rem;
+	}
+
+	/* Headings only take focus after a jump link; they are not controls, so no ring. */
+	:global(.docs-scope :is(h2, h3, h4)[tabindex='-1']:focus) {
+		outline: none;
+	}
+
+	@media (min-width: 1024px) {
+		.docs-scope {
+			--docs-sticky: 0rem;
+		}
+
+		.doc-layout {
+			grid-template-columns: minmax(0, 1fr) 16rem;
+			gap: 2.5rem;
+		}
+
+		.doc-rail {
+			display: block;
+			position: sticky;
+			top: calc(var(--header-height) + 1rem);
+			align-self: start;
+		}
+	}
+
+	@media (hover: none) {
+		:global(.docs-scope .heading-anchor) {
+			opacity: 1;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		:global(.docs-scope .heading-anchor) {
+			transition: none;
+		}
 	}
 </style>
